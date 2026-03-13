@@ -1,3 +1,4 @@
+// Trigger redeploy to fix stuck building state
 import { withAuth } from "next-auth/middleware"
 import { NextResponse } from "next/server"
 
