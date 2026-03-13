@@ -46,10 +46,14 @@ export async function POST(req: Request) {
             { message: "Usuário criado com sucesso", user: userWithoutPassword },
             { status: 201 }
         )
-    } catch (error) {
+    } catch (error: any) {
         console.error("Registration error:", error)
         return NextResponse.json(
-            { message: "Erro ao criar usuário" },
+            {
+                message: "Erro ao criar usuário",
+                error: error?.message || String(error),
+                code: error?.code
+            },
             { status: 500 }
         )
     }
