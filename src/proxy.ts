@@ -1,10 +1,18 @@
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
+import { withAuth } from "next-auth/middleware"
 
-export function proxy(request: NextRequest) {
-    return NextResponse.next()
-}
+export default withAuth({
+    pages: {
+        signIn: "/login",
+    },
+})
 
 export const config = {
-    matcher: [] // Demo mode: No routes protected
+    matcher: [
+        "/carteira/:path*",
+        "/dashboard/:path*",
+        "/planejamento/:path*",
+        "/onboarding/:path*",
+        "/jornada/:path*",
+        "/portfolio/:path*",
+    ]
 }
