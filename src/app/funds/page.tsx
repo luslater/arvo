@@ -3,10 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 
 export default async function FundsPage() {
-    const funds = await prisma.fund.findMany({
-        take: 50,
-        orderBy: { sharpeRatio: 'desc' }
-    })
+    // Mock para contornar a remoção do modelo Fund
+    const funds: any[] = []
 
     return (
         <div className="min-h-screen bg-background p-8">
@@ -17,7 +15,7 @@ export default async function FundsPage() {
                     {funds.length === 0 ? (
                         <p className="text-muted-foreground">Nenhum fundo encontrado. Importe dados via script.</p>
                     ) : (
-                        funds.map((fund) => (
+                        funds.map((fund: any) => (
                             <Card key={fund.id} className="hover:bg-accent/5 transition-colors">
                                 <CardContent className="flex items-center justify-between p-6">
                                     <div>
