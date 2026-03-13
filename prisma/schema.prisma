@@ -1,0 +1,67 @@
+// This is your Prisma schema file
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  password      String
+  name          String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  profile       Profile?
+  assets        Asset[]
+  financialPlan FinancialPlan?
+}
+
+model Profile {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  portfolioType   String?  // ABRIGO, RITMO, VANGUARDA, OCEANO
+  saldo           Float    @default(0)
+  emergencyFund   Float    @default(0)
+  totalCarteira   Float    @default(0)
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Asset {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  ticker          String
+  name            String
+  category        String
+  value           Float
+  quantity        Float    @default(1)
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model FinancialPlan {
+  id                    String   @id @default(cuid())
+  userId                String   @unique
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  desiredLifestyleCost  Float
+  monthlyContribution   Float
+  investmentPeriod      Int
+  expectedReturn        Float    @default(12)
+  
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+}
