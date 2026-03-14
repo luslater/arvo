@@ -9,6 +9,12 @@ export default withAuth(
         const isPremiumRoute =
             pathname.startsWith("/dashboard") ||
             pathname.startsWith("/portfolio") ||
+            pathname.startsWith("/carteira") ||
+            pathname.startsWith("/jornada") ||
+            pathname.startsWith("/educacao") ||
+            pathname.startsWith("/onboarding") ||
+            pathname.startsWith("/questionnaire") ||
+            pathname.startsWith("/funds") ||
             pathname === "/planejamento"
 
         // Se for uma rota premium e o usuário não for PREMIUM ou ADMIN, redireciona para checkout
