@@ -17,10 +17,8 @@ export default withAuth(
             pathname.startsWith("/funds") ||
             pathname === "/planejamento"
 
-        // Se for uma rota premium e o usuário não for PREMIUM ou ADMIN, redireciona para checkout
-        if (isPremiumRoute && token?.subscriptionStatus !== "PREMIUM" && token?.subscriptionStatus !== "ADMIN") {
-            return NextResponse.redirect(new URL("/checkout", req.url))
-        }
+        // Remoção da trava global: Usuários FREE agora podem acessar o painel (Freemium).
+        // Restrições de assinatura serão tratadas via UI (Paywall / Blur).
 
         return NextResponse.next()
     },

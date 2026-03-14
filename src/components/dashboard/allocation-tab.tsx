@@ -15,13 +15,15 @@ interface AllocationTabProps {
     userProfile: PortfolioType
     capital: number
     emergencyFund: number
+    subscriptionStatus: string
 }
 
 export function AllocationTab({
     userAssets,
     userProfile,
     capital,
-    emergencyFund
+    emergencyFund,
+    subscriptionStatus
 }: AllocationTabProps) {
     const allocations = PORTFOLIO_ALLOCATIONS[userProfile]
     const totals = getTotalsByType(userProfile)
@@ -68,6 +70,9 @@ export function AllocationTab({
         value: percentage,
         percentage: percentage.toFixed(1)
     }))
+
+    const isPremiumProfile = userProfile !== "ABRIGO"
+    const isLocked = subscriptionStatus === "FREE" && isPremiumProfile
 
     return (
         <div className="space-y-6">
@@ -145,91 +150,110 @@ export function AllocationTab({
                 </CardContent>
             </Card>
 
-            {/* Charts Comparison */}
-            <div className="grid md:grid-cols-2 gap-6">
-                <Card className="border-0 shadow-sm bg-white">
-                    <CardHeader>
-                        <CardTitle className="text-base font-semibold text-center">Sua Carteira Atual</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <ResponsiveContainer width="100%" height={250}>
-                            <PieChart>
-                                <Pie
-                                    data={currentData}
-                                    cx="50%"
-                                    cy="50%"
-                                    innerRadius={50}
-                                    outerRadius={80}
-                                    paddingAngle={2}
-                                    dataKey="value"
-                                >
-                                    {currentData.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={COLORS[entry.name as keyof typeof COLORS] || "#9CA3AF"} />
-                                    ))}
-                                </Pie>
-                                <Tooltip formatter={(value: number) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value)} />
-                                <Legend />
-                            </PieChart>
-                        </ResponsiveContainer>
-                    </CardContent>
-                </Card>
-
-                <Card className="border-0 shadow-sm bg-white">
-                    <CardHeader>
-                        <CardTitle className="text-base font-semibold text-center">Recomendação ({profileInfo.title})</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <ResponsiveContainer width="100%" height={250}>
-                            <PieChart>
-                                <Pie
-                                    data={recommendedData}
-                                    cx="50%"
-                                    cy="50%"
-                                    innerRadius={50}
-                                    outerRadius={80}
-                                    paddingAngle={2}
-                                    dataKey="value"
-                                >
-                                    {recommendedData.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={COLORS[entry.name as keyof typeof COLORS] || "#9CA3AF"} />
-                                    ))}
-                                </Pie>
-                                <Tooltip formatter={(value: number) => `${value.toFixed(1)}%`} />
-                                <Legend />
-                            </PieChart>
-                        </ResponsiveContainer>
-                    </CardContent>
-                </Card>
-            </div>
-
-            {/* Recommended Funds List */}
-            <Card className="border-0 shadow-sm bg-white">
-                <CardHeader>
-                    <CardTitle className="text-lg font-semibold">Fundos Recomendados</CardTitle>
-                    <CardDescription>Composição ideal para seu perfil</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <div className="space-y-2">
-                        {allocations.map((fund, index) => (
-                            <div
-                                key={index}
-                                className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-                            >
-                                <div>
-                                    <p className="font-medium text-sm text-gray-900">{fund.name}</p>
-                                    <p className="text-xs text-gray-500">{fund.type}</p>
-                                </div>
-                                <div className="text-right">
-                                    <p className="font-semibold text-sm text-primary">{fund.percentage}%</p>
-                                    <p className="text-xs text-gray-500">
-                                        Meta: {new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(capital * (fund.percentage / 100))}
-                                    </p>
-                                </div>
-                            </div>
-                        ))}
+            <div className="relative">
+                {isLocked && (
+                    <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white/40 backdrop-blur-[6px] rounded-xl border border-gray-200 shadow-sm p-6 text-center">
+                        <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mb-4 border-4 border-white shadow-md">
+                            <Target className="w-8 h-8 text-emerald-600" />
+                        </div>
+                        <h3 className="text-2xl font-bold text-gray-900 mb-2">Carteira {profileInfo.title} Restrita</h3>
+                        <p className="text-gray-600 max-w-md mb-6 font-medium">
+                            Explore as estratégias dinâmicas de alocação de fundos projetadas especificamente para o seu perfil fazendo o upgrade para o Premium.
+                        </p>
+                        <a href="/checkout/pagamento" className="inline-flex items-center justify-center h-12 px-8 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
+                            DESBLOQUEAR ACESSO PREMIUM
+                        </a>
                     </div>
-                </CardContent>
-            </Card>
+                )}
+
+                <div className={isLocked ? "opacity-30 pointer-events-none select-none" : ""}>
+                    {/* Charts Comparison */}
+                    <div className="grid md:grid-cols-2 gap-6 mb-6">
+                        <Card className="border-0 shadow-sm bg-white">
+                            <CardHeader>
+                                <CardTitle className="text-base font-semibold text-center">Sua Carteira Atual</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <ResponsiveContainer width="100%" height={250}>
+                                    <PieChart>
+                                        <Pie
+                                            data={currentData}
+                                            cx="50%"
+                                            cy="50%"
+                                            innerRadius={50}
+                                            outerRadius={80}
+                                            paddingAngle={2}
+                                            dataKey="value"
+                                        >
+                                            {currentData.map((entry, index) => (
+                                                <Cell key={`cell-${index}`} fill={COLORS[entry.name as keyof typeof COLORS] || "#9CA3AF"} />
+                                            ))}
+                                        </Pie>
+                                        <Tooltip formatter={(value: number) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value)} />
+                                        <Legend />
+                                    </PieChart>
+                                </ResponsiveContainer>
+                            </CardContent>
+                        </Card>
+
+                        <Card className="border-0 shadow-sm bg-white">
+                            <CardHeader>
+                                <CardTitle className="text-base font-semibold text-center">Recomendação ({profileInfo.title})</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <ResponsiveContainer width="100%" height={250}>
+                                    <PieChart>
+                                        <Pie
+                                            data={recommendedData}
+                                            cx="50%"
+                                            cy="50%"
+                                            innerRadius={50}
+                                            outerRadius={80}
+                                            paddingAngle={2}
+                                            dataKey="value"
+                                        >
+                                            {recommendedData.map((entry, index) => (
+                                                <Cell key={`cell-${index}`} fill={COLORS[entry.name as keyof typeof COLORS] || "#9CA3AF"} />
+                                            ))}
+                                        </Pie>
+                                        <Tooltip formatter={(value: number) => `${value.toFixed(1)}%`} />
+                                        <Legend />
+                                    </PieChart>
+                                </ResponsiveContainer>
+                            </CardContent>
+                        </Card>
+                    </div>
+
+                    {/* Recommended Funds List */}
+                    <Card className="border-0 shadow-sm bg-white">
+                        <CardHeader>
+                            <CardTitle className="text-lg font-semibold">Fundos Recomendados</CardTitle>
+                            <CardDescription>Composição ideal para seu perfil</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="space-y-2">
+                                {allocations.map((fund, index) => (
+                                    <div
+                                        key={index}
+                                        className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                                    >
+                                        <div>
+                                            <p className="font-medium text-sm text-gray-900">{fund.name}</p>
+                                            <p className="text-xs text-gray-500">{fund.type}</p>
+                                        </div>
+                                        <div className="text-right">
+                                            <p className="font-semibold text-sm text-primary">{fund.percentage}%</p>
+                                            <p className="text-xs text-gray-500">
+                                                Meta: {new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(capital * (fund.percentage / 100))}
+                                            </p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
+            </div>
         </div>
     )
 }

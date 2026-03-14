@@ -12,6 +12,7 @@ import { AssetsTab } from "@/components/dashboard/assets-tab"
 import { AllocationTab } from "@/components/dashboard/allocation-tab"
 import type { UserAsset } from "@/lib/asset-types"
 import type { PortfolioType } from "@/lib/portfolio-allocations"
+import { useSession } from "next-auth/react"
 
 export default function CarteiraPage() {
     const [userAssets, setUserAssets] = useState<UserAsset[]>([])
@@ -19,6 +20,8 @@ export default function CarteiraPage() {
     const [reserva, setReserva] = useState(0)
     const [totalCarteira, setTotalCarteira] = useState(0)
     const [userProfile, setUserProfile] = useState<string | null>(null)
+    const { data: session } = useSession()
+    const subscriptionStatus = (session?.user?.subscriptionStatus as string) || "FREE"
 
     // Load data
     useEffect(() => {
@@ -123,6 +126,7 @@ export default function CarteiraPage() {
                             reserva={reserva}
                             totalCarteira={totalCarteira}
                             userProfile={userProfile}
+                            subscriptionStatus={subscriptionStatus}
                             onTransactionComplete={loadData}
                         />
                     </TabsContent>
@@ -144,6 +148,7 @@ export default function CarteiraPage() {
                             userProfile={(userProfile as PortfolioType) || "RITMO"}
                             capital={totalCarteira}
                             emergencyFund={reserva}
+                            subscriptionStatus={subscriptionStatus}
                         />
                     </TabsContent>
                 </Tabs>

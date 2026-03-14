@@ -16,6 +16,7 @@ interface OverviewTabProps {
     reserva: number
     totalCarteira: number
     userProfile: string | null
+    subscriptionStatus: string
     onTransactionComplete: () => void
 }
 
@@ -25,6 +26,7 @@ export function OverviewTab({
     reserva,
     totalCarteira,
     userProfile,
+    subscriptionStatus,
     onTransactionComplete
 }: OverviewTabProps) {
     const totalPatrimonio = totalCarteira + saldo + reserva

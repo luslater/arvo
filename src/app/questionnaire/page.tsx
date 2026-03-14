@@ -72,11 +72,18 @@ export default function QuestionnairePage() {
                         </div>
 
                         <div>
-                            <p className="text-sm text-gray-600  mb-1">{profileInfo.subtitle}</p>
+                            <p className="text-sm text-gray-600 mb-1">{profileInfo.subtitle}</p>
                             <h1 className="text-4xl font-light mb-3">Carteira {profileInfo.title}</h1>
-                            <p className="text-gray-600  text-lg max-w-xl mx-auto">
+                            <p className="text-gray-600 text-lg max-w-xl mx-auto mb-6">
                                 {profileInfo.description}
                             </p>
+
+                            {profile !== "ABRIGO" && (
+                                <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-700 rounded-full border border-emerald-200 text-sm font-medium">
+                                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                                    Esta é uma estratégia da assinatura Premium. Você pode explorar a plataforma antes de desbloqueá-la.
+                                </div>
+                            )}
                         </div>
 
                         <div className="pt-6">
