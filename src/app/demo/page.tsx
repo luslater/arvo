@@ -4,7 +4,8 @@ import { useState, useMemo } from "react"
 import { motion } from "framer-motion"
 import {
     Target, Wallet, PiggyBank, CalendarDays,
-    ArrowRight, Star, Info, ChevronRight
+    ArrowRight, Star, Info, ChevronRight,
+    ShieldCheck
 } from "lucide-react"
 import { Slider } from "@/components/ui/slider"
 import { Label } from "@/components/ui/label"
