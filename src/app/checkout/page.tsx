@@ -9,7 +9,7 @@ import Link from "next/link"
 import { useSession, signOut } from "next-auth/react"
 
 export default function CheckoutPage() {
-    const { data: session } = useSession()
+    const { data: session, status } = useSession()
 
     const benefits = [
         "Acesso completo ao Planejamento Financeiro",
@@ -29,7 +29,9 @@ export default function CheckoutPage() {
                     <Link href="/">
                         <Image src="/arvo-logo.png" alt="ARVO" width={80} height={40} className="invert mix-blend-screen brightness-150" />
                     </Link>
-                    {session?.user ? (
+                    {status === "loading" ? (
+                        <div className="w-20 h-8 animate-pulse bg-slate-800 rounded-lg"></div>
+                    ) : session?.user ? (
                         <div className="flex items-center gap-4">
                             <span className="!text-slate-300 font-medium text-sm">Olá, {session.user.name?.split(' ')[0]}</span>
                             <Button variant="ghost" onClick={() => signOut({ callbackUrl: '/' })} className="!text-slate-400 hover:!text-white font-bold">Sair</Button>
@@ -40,6 +42,19 @@ export default function CheckoutPage() {
                         </Link>
                     )}
                 </nav>
+
+                {session?.user && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="mb-8 p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-xl flex items-center gap-3"
+                    >
+                        <Zap className="w-5 h-5 text-emerald-400" />
+                        <p className="font-medium text-emerald-100">
+                            <strong>Quase lá, {session.user.name?.split(' ')[0]}!</strong> Sua conta foi criada/acessada. Finalize sua assinatura abaixo para liberar o acesso ao Dashboard e a toda a plataforma.
+                        </p>
+                    </motion.div>
+                )}
 
                 <div className="grid lg:grid-cols-2 gap-16 items-center">
                     <div className="space-y-8">
@@ -113,7 +128,7 @@ export default function CheckoutPage() {
                                 <div className="pt-6 border-t border-slate-800 space-y-4">
                                     <Link href="/checkout/pagamento" className="w-full block">
                                         <Button className="w-full h-14 bg-emerald-600 hover:bg-emerald-500 text-lg font-bold rounded-2xl group transition-all text-white shadow-lg shadow-emerald-500/20">
-                                            QUERO MEU ACESSO AGORA
+                                            {session?.user ? "FINALIZAR MINHA ASSINATURA" : "QUERO MEU ACESSO AGORA"}
                                             <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                                         </Button>
                                     </Link>
