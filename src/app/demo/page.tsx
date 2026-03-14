@@ -72,10 +72,10 @@ export default function DemoPage() {
                                 <Star className="w-3 h-3 fill-emerald-600" />
                                 Simulador Aberto
                             </motion.div>
-                            <h1 className="text-6xl md:text-7xl font-extralight tracking-tighter leading-[0.9]">
+                            <h1 className="text-6xl md:text-7xl font-light tracking-tighter leading-[0.9] text-slate-950">
                                 Descubra o poder do seu <span className="font-semibold italic text-emerald-600">dinheiro.</span>
                             </h1>
-                            <p className="text-xl text-slate-500 font-light leading-relaxed">
+                            <p className="text-xl text-slate-600 font-normal leading-relaxed">
                                 Use nosso simulador profissional para projetar sua liberdade financeira. Sem amarras, sem custos.
                             </p>
                         </div>
@@ -135,22 +135,22 @@ export default function DemoPage() {
                             <div className="absolute -top-20 -right-20 w-64 h-64 bg-emerald-500/20 blur-[80px] rounded-full" />
 
                             <div className="space-y-2">
-                                <p className="text-[10px] uppercase font-bold tracking-[0.2em] text-slate-500">Resultado Projetado</p>
-                                <h2 className="text-5xl md:text-6xl font-extralight tracking-tighter">
+                                <p className="text-[10px] uppercase font-bold tracking-[0.2em] text-slate-300">Resultado Projetado</p>
+                                <h2 className="text-5xl md:text-6xl font-light tracking-tighter text-white">
                                     {formatBRL(projection?.projectedValueReal || 0)}
                                 </h2>
-                                <p className="text-xs text-slate-500">Valor real, já descontando a inflação (IPCA)</p>
+                                <p className="text-xs text-slate-300 font-medium">Valor real, já descontando a inflação (IPCA)</p>
                             </div>
 
                             <div className="pt-10 border-t border-slate-800 space-y-4">
                                 <div className="flex justify-between items-end">
                                     <div className="space-y-1">
-                                        <p className="text-[10px] uppercase font-bold tracking-widest text-slate-500">Renda Mensal Passiva</p>
-                                        <p className="text-4xl font-semibold text-emerald-400">{formatBRL(monthlyPassiveIncome)}</p>
+                                        <p className="text-[10px] uppercase font-bold tracking-widest text-slate-300">Renda Mensal Passiva</p>
+                                        <p className="text-4xl font-bold text-emerald-400">{formatBRL(monthlyPassiveIncome)}</p>
                                     </div>
                                     <div className="text-right">
-                                        <p className="text-[10px] uppercase font-bold text-slate-500">Sua Meta</p>
-                                        <p className="text-xl font-light">{formatBRL(desiredLifestyleCost)}</p>
+                                        <p className="text-[10px] uppercase font-bold text-slate-300">Sua Meta</p>
+                                        <p className="text-xl font-medium text-white">{formatBRL(desiredLifestyleCost)}</p>
                                     </div>
                                 </div>
 
@@ -180,7 +180,7 @@ export default function DemoPage() {
                     </div>
                 </div>
 
-                <footer className="mt-24 pt-12 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-8 text-slate-400 text-xs font-bold tracking-widest uppercase">
+                <footer className="mt-24 pt-12 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-8 text-slate-500 text-xs font-bold tracking-widest uppercase">
                     <div className="flex items-center gap-4">
                         <ShieldCheck className="w-4 h-4 text-emerald-500" />
                         Segurança de Dados Bancroft
