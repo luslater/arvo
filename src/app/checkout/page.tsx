@@ -27,7 +27,7 @@ export default function CheckoutPage() {
                         <Image src="/arvo-logo.png" alt="ARVO" width={80} height={40} className="brightness-0 invert" />
                     </Link>
                     <Link href="/login">
-                        <Button variant="ghost" className="text-slate-200 hover:text-white hover:bg-white/10">Entrar</Button>
+                        <Button variant="ghost" className="!text-slate-100 hover:!text-white hover:bg-white/10 font-bold">Entrar</Button>
                     </Link>
                 </nav>
 
@@ -46,16 +46,16 @@ export default function CheckoutPage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.1 }}
-                            className="text-6xl md:text-7xl font-light tracking-tighter leading-none text-white"
+                            className="text-6xl md:text-7xl font-bold tracking-tighter leading-none !text-white"
                         >
-                            Assuma o controle total do seu <span className="font-semibold italic text-emerald-400 underline decoration-emerald-500/30">patrimônio.</span>
+                            Assuma o controle total do seu <span className="italic !text-emerald-400 underline decoration-emerald-500/30">patrimônio.</span>
                         </motion.h1>
 
                         <motion.p
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.2 }}
-                            className="text-xl text-slate-200 font-normal max-w-lg leading-relaxed"
+                            className="text-xl !text-slate-100 font-semibold max-w-lg leading-relaxed mt-4"
                         >
                             Desbloqueie ferramentas avançadas de projeção, acompanhamento de ativos e modelos de alocação profissional.
                         </motion.p>
@@ -69,9 +69,9 @@ export default function CheckoutPage() {
                             {benefits.map((benefit, i) => (
                                 <div key={i} className="flex items-center gap-3">
                                     <div className="flex-shrink-0 w-5 h-5 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                                        <Check className="w-3 h-3 text-emerald-400" />
+                                        <Check className="w-3 h-3 !text-emerald-400" />
                                     </div>
-                                    <span className="text-slate-100 font-medium">{benefit}</span>
+                                    <span className="!text-white font-bold text-lg">{benefit}</span>
                                 </div>
                             ))}
                         </motion.div>
@@ -86,18 +86,18 @@ export default function CheckoutPage() {
                             <CardContent className="p-8 space-y-8">
                                 <div className="flex justify-between items-start">
                                     <div>
-                                        <h3 className="text-2xl font-bold text-white">ARVO Premium</h3>
-                                        <p className="text-slate-300 text-sm font-medium">Plano de Acesso Vitalício (Beta)</p>
+                                        <h3 className="text-3xl font-black !text-white tracking-tight">ARVO Premium</h3>
+                                        <p className="!text-slate-100 text-sm font-bold uppercase tracking-wider mt-1">Plano de Acesso Vitalício (Beta)</p>
                                     </div>
-                                    <Zap className="w-8 h-8 text-emerald-400 fill-emerald-400" />
+                                    <Zap className="w-10 h-10 !text-emerald-400 !fill-emerald-400" />
                                 </div>
 
                                 <div className="space-y-1">
                                     <div className="flex items-baseline gap-2">
-                                        <span className="text-5xl font-bold text-white">R$ 497</span>
-                                        <span className="text-slate-300 font-medium">/ único</span>
+                                        <span className="text-6xl font-black !text-white">R$ 497</span>
+                                        <span className="!text-slate-100 font-bold text-xl">/ único</span>
                                     </div>
-                                    <p className="text-xs text-emerald-400 font-bold uppercase tracking-wider">Aproveite o preço de pré-lançamento</p>
+                                    <p className="text-sm !text-emerald-400 font-black uppercase tracking-widest mt-2">Aproveite o preço de pré-lançamento</p>
                                 </div>
 
                                 <div className="pt-6 border-t border-slate-800 space-y-4">
@@ -105,8 +105,8 @@ export default function CheckoutPage() {
                                         QUERO MEU ACESSO AGORA
                                         <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                                     </Button>
-                                    <div className="flex items-center justify-center gap-2 text-[10px] text-slate-300 uppercase tracking-widest font-bold">
-                                        <ShieldCheck className="w-3 h-3 text-emerald-400" />
+                                    <div className="flex items-center justify-center gap-2 text-xs !text-slate-100 uppercase tracking-widest font-black">
+                                        <ShieldCheck className="w-4 h-4 !text-emerald-400" />
                                         Pagamento Seguro · Acesso Imediato
                                     </div>
                                 </div>
@@ -116,8 +116,8 @@ export default function CheckoutPage() {
                                         <div className="absolute inset-0 bg-emerald-500/20" />
                                     </div>
                                     <div className="text-sm">
-                                        <p className="font-bold text-white">Dúvida sobre o acesso?</p>
-                                        <p className="text-slate-200 text-xs font-medium">Fale com nosso time agora.</p>
+                                        <p className="font-black !text-white text-base">Dúvida sobre o acesso?</p>
+                                        <p className="!text-emerald-400 text-xs font-black uppercase tracking-widest">Fale com nosso time agora.</p>
                                     </div>
                                 </div>
                             </CardContent>

@@ -135,22 +135,22 @@ export default function DemoPage() {
                             <div className="absolute -top-20 -right-20 w-64 h-64 bg-emerald-500/20 blur-[80px] rounded-full" />
 
                             <div className="space-y-2">
-                                <p className="text-[10px] uppercase font-bold tracking-[0.2em] text-slate-300">Resultado Projetado</p>
-                                <h2 className="text-5xl md:text-6xl font-light tracking-tighter text-white">
+                                <p className="text-[10px] uppercase font-black tracking-[0.3em] !text-slate-200">Resultado Projetado</p>
+                                <h2 className="text-5xl md:text-7xl font-black tracking-tighter !text-white drop-shadow-sm">
                                     {formatBRL(projection?.projectedValueReal || 0)}
                                 </h2>
-                                <p className="text-xs text-slate-300 font-medium">Valor real, já descontando a inflação (IPCA)</p>
+                                <p className="text-sm !text-slate-100 font-bold">Valor real, já descontando a inflação (IPCA)</p>
                             </div>
 
                             <div className="pt-10 border-t border-slate-800 space-y-4">
                                 <div className="flex justify-between items-end">
                                     <div className="space-y-1">
-                                        <p className="text-[10px] uppercase font-bold tracking-widest text-slate-300">Renda Mensal Passiva</p>
-                                        <p className="text-4xl font-bold text-emerald-400">{formatBRL(monthlyPassiveIncome)}</p>
+                                        <p className="text-[10px] uppercase font-black tracking-widest !text-slate-300">Renda Mensal Passiva</p>
+                                        <p className="text-4xl font-black !text-emerald-400">{formatBRL(monthlyPassiveIncome)}</p>
                                     </div>
                                     <div className="text-right">
-                                        <p className="text-[10px] uppercase font-bold text-slate-300">Sua Meta</p>
-                                        <p className="text-xl font-medium text-white">{formatBRL(desiredLifestyleCost)}</p>
+                                        <p className="text-[10px] uppercase font-black !text-slate-300">Sua Meta</p>
+                                        <p className="text-2xl font-black !text-white">{formatBRL(desiredLifestyleCost)}</p>
                                     </div>
                                 </div>
 
