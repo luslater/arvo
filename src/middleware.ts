@@ -4,19 +4,33 @@ import { NextResponse } from "next/server"
 
 export default withAuth(
     function middleware(req) {
+        const token = req.nextauth.token
+        const { pathname } = req.nextUrl
+        const isPremiumRoute =
+            pathname.startsWith("/dashboard") ||
+            pathname.startsWith("/portfolio") ||
+            pathname === "/planejamento"
+
+        // Se for uma rota premium e o usuário não for PREMIUM ou ADMIN, redireciona para checkout
+        if (isPremiumRoute && token?.subscriptionStatus !== "PREMIUM" && token?.subscriptionStatus !== "ADMIN") {
+            return NextResponse.redirect(new URL("/checkout", req.url))
+        }
+
         return NextResponse.next()
     },
     {
         callbacks: {
             authorized: ({ token, req }) => {
                 const { pathname } = req.nextUrl
-                // Rotas que NÃO precisam de login
+                // Rotas que NÃO precisam de login (Públicas)
                 if (
                     pathname === "/" ||
                     pathname === "/login" ||
                     pathname === "/register" ||
+                    pathname === "/checkout" || // Permite ver a página de venda
+                    pathname.startsWith("/demo") || // Futura página de simulador liberado
                     pathname.startsWith("/api") ||
-                    pathname.includes(".") // arquivos estáticos
+                    pathname.includes(".")
                 ) {
                     return true
                 }

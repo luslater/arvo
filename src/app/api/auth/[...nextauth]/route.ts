@@ -61,12 +61,25 @@ export const authOptions: NextAuthOptions = {
             if (token && session.user) {
                 // @ts-ignore
                 session.user.id = token.id
+                // @ts-ignore
+                session.user.subscriptionStatus = token.subscriptionStatus
             }
             return session
         },
         async jwt({ token, user }) {
             if (user) {
                 token.id = user.id
+                // @ts-ignore
+                token.subscriptionStatus = user.subscriptionStatus || "FREE"
+            } else if (token.id) {
+                // Refresh subscription status from DB if it's not in the token
+                const dbUser = await prisma.user.findUnique({
+                    where: { id: token.id as string },
+                    select: { subscriptionStatus: true }
+                })
+                if (dbUser) {
+                    token.subscriptionStatus = dbUser.subscriptionStatus
+                }
             }
             return token
         }
