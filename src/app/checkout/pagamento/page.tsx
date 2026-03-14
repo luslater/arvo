@@ -88,7 +88,7 @@ export default function PaymentPage() {
                                 <div className="pt-6 border-t border-white/5 space-y-3">
                                     <div className="flex justify-between text-sm">
                                         <span className="!text-slate-100 font-bold">Plano Premium</span>
-                                        <span className="font-bold !text-white">R$ 497,00</span>
+                                        <span className="font-bold !text-white">12x R$ 42,00</span>
                                     </div>
                                     <div className="flex justify-between text-sm">
                                         <span className="text-emerald-400 font-bold">Taxa de Adesão (Beta)</span>
@@ -96,7 +96,7 @@ export default function PaymentPage() {
                                     </div>
                                     <div className="flex justify-between items-end pt-4 border-t border-white/5">
                                         <span className="text-lg font-bold !text-white">Total</span>
-                                        <span className="text-3xl font-black !text-emerald-400 tracking-tighter">R$ 497,00</span>
+                                        <span className="text-3xl font-black !text-emerald-400 tracking-tighter">12x R$ 42,00</span>
                                     </div>
                                 </div>
                             </CardContent>
@@ -194,7 +194,7 @@ export default function PaymentPage() {
 
                                     <div className="space-y-4 max-w-sm mx-auto">
                                         <div className="p-4 bg-slate-950 rounded-xl border border-slate-800 text-[11px] font-mono break-all !text-slate-100 border-dashed leading-relaxed font-bold">
-                                            00020126420014br.gov.bcb.pix0120suporte@arvo.com.br5204000053039865406497.0058 02BR5915ARVO0PAYMENT6009SAO PAULO62070503***6304E2D3
+                                            00020126420014br.gov.bcb.pix0120suporte@arvo.com.br52040000530398654064504.0058 02BR5915ARVO0PAYMENT6009SAO PAULO62070503***6304E2D3
                                         </div>
                                         <Button
                                             className="w-full h-12 bg-slate-800 hover:bg-slate-700 !text-white text-xs font-black uppercase tracking-widest rounded-xl transition-all active:scale-95 border border-slate-700"

@@ -94,10 +94,10 @@ export default function CheckoutPage() {
 
                                 <div className="space-y-1">
                                     <div className="flex items-baseline gap-2">
-                                        <span className="text-6xl font-black !text-white">R$ 497</span>
-                                        <span className="!text-slate-100 font-bold text-xl">/ único</span>
+                                        <span className="text-3xl font-bold !text-slate-100">12x</span>
+                                        <span className="text-6xl font-black !text-white">R$ 42</span>
                                     </div>
-                                    <p className="text-sm !text-emerald-400 font-black uppercase tracking-widest mt-2">Aproveite o preço de pré-lançamento</p>
+                                    <p className="text-sm !text-emerald-400 font-black uppercase tracking-widest mt-2">Acesso Vitalício · Oferta de Lançamento</p>
                                 </div>
 
                                 <div className="pt-6 border-t border-slate-800 space-y-4">
