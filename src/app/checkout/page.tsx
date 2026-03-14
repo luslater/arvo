@@ -24,7 +24,7 @@ export default function CheckoutPage() {
             <div className="max-w-7xl mx-auto px-6 py-12 relative z-10">
                 <nav className="flex justify-between items-center mb-20">
                     <Link href="/">
-                        <Image src="/arvo-logo.png" alt="ARVO" width={80} height={40} className="invert brightness-[100]" />
+                        <Image src="/arvo-logo.png" alt="ARVO" width={80} height={40} className="invert grayscale brightness-200" />
                     </Link>
                     <Link href="/login">
                         <Button variant="ghost" className="!text-slate-100 hover:!text-white hover:bg-white/10 font-bold">Entrar</Button>
@@ -36,10 +36,10 @@ export default function CheckoutPage() {
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/30 !text-white text-[10px] font-black uppercase tracking-widest shadow-lg shadow-emerald-500/10"
+                            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/30 !text-slate-50 text-[10px] font-black uppercase tracking-widest shadow-lg shadow-emerald-500/10"
                         >
                             <Star className="w-3 h-3 fill-emerald-400 !text-emerald-400" />
-                            Acesso Premium
+                            <span className="!text-white">Acesso Premium</span>
                         </motion.div>
 
                         <motion.h1
