@@ -30,6 +30,16 @@ const formatBRL = (val: number) =>
         maximumFractionDigits: 0,
     }).format(val)
 
+const formatNumber = (val: number) => {
+    if (val === undefined || val === null) return ""
+    return val.toLocaleString("pt-BR")
+}
+
+const parseNumber = (val: string) => {
+    const clean = val.replace(/\D/g, "")
+    return clean === "" ? 0 : parseInt(clean, 10)
+}
+
 // ─── Tooltip customizado ───────────────────────────────────────────────────────
 interface TooltipPayloadItem {
     name: string
@@ -71,6 +81,26 @@ function ArvoSliderControl({
     isCurrency?: boolean
     icon: React.ReactNode
 }) {
+    // Para evitar que o cursor pule ao digitar, usamos o valor do pai diretamente
+    // mas formatamos na exibição. Se for %, tratamos como decimal.
+    const displayValue = unit === "%"
+        ? value.toString().replace(".", ",")
+        : formatNumber(value)
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const raw = e.target.value
+
+        if (unit === "%") {
+            // Permite digitar vírgula para decimais
+            const normalized = raw.replace(",", ".")
+            const val = parseFloat(normalized)
+            if (!isNaN(val)) onChange(val)
+        } else {
+            const val = parseNumber(raw)
+            onChange(val)
+        }
+    }
+
     return (
         <div className="space-y-5 group">
             <div className="flex justify-between items-center">
@@ -85,9 +115,9 @@ function ArvoSliderControl({
                 <div className="flex items-center gap-1">
                     {isCurrency && <span className="text-xs font-bold text-slate-300">R$</span>}
                     <input
-                        type="number"
-                        value={value}
-                        onChange={(e) => onChange(Number(e.target.value))}
+                        type="text"
+                        value={displayValue}
+                        onChange={handleInputChange}
                         className="w-28 text-right text-2xl font-light tracking-tighter bg-transparent outline-none border-b border-transparent focus:border-emerald-500 transition-colors"
                     />
                     {!isCurrency && unit && (
@@ -104,12 +134,13 @@ function ArvoSliderControl({
                 className="[&_[role=slider]]:h-5 [&_[role=slider]]:w-5 [&_[role=slider]]:bg-white [&_[role=slider]]:border-emerald-500 [&_[role=slider]]:border-2"
             />
             <div className="flex justify-between text-[10px] text-slate-300 font-medium">
-                <span>{isCurrency ? formatBRL(min) : `${min}${unit}`}</span>
-                <span>{isCurrency ? formatBRL(max) : `${max}${unit}`}</span>
+                <span>{isCurrency ? formatBRL(min) : `${formatNumber(min)}${unit}`}</span>
+                <span>{isCurrency ? formatBRL(max) : `${formatNumber(max)}${unit}`}</span>
             </div>
         </div>
     )
 }
+
 
 // ─── Página Principal ──────────────────────────────────────────────────────────
 export default function PlanejamentoPage() {
@@ -122,6 +153,13 @@ export default function PlanejamentoPage() {
     const [desiredLifestyleCost, setDesiredLifestyleCost] = useState(12000)
     const [viewMode, setViewMode] = useState<"NOMINAL" | "REAL">("NOMINAL")
     const [saved, setSaved] = useState(false)
+
+    // Internal state for formatting the desired cost input
+    const [desiredLifestyleCostInput, setDesiredLifestyleCostInput] = useState(formatNumber(12000))
+
+    useEffect(() => {
+        setDesiredLifestyleCostInput(formatNumber(desiredLifestyleCost))
+    }, [desiredLifestyleCost])
 
     // Carrega dados do localStorage (integração com onboarding/perfil)
     useEffect(() => {
@@ -240,7 +278,7 @@ export default function PlanejamentoPage() {
                             <ArvoSliderControl
                                 label="Patrimônio Atual"
                                 value={currentValue}
-                                min={0} max={2000000} step={5000}
+                                min={0} max={2000000} step={1000}
                                 onChange={setCurrentValue}
                                 isCurrency
                                 icon={<Wallet className="w-4 h-4" />}
@@ -249,7 +287,7 @@ export default function PlanejamentoPage() {
                             <ArvoSliderControl
                                 label="Aporte Mensal"
                                 value={monthlyContribution}
-                                min={0} max={50000} step={100}
+                                min={0} max={50000} step={50}
                                 onChange={setMonthlyContribution}
                                 isCurrency
                                 icon={<PiggyBank className="w-4 h-4" />}
@@ -267,7 +305,7 @@ export default function PlanejamentoPage() {
                             <ArvoSliderControl
                                 label="Rentabilidade Nominal"
                                 value={nominalReturn}
-                                min={4} max={20} step={0.5}
+                                min={4} max={20} step={0.1}
                                 onChange={setNominalReturn}
                                 unit="%"
                                 icon={<TrendingUp className="w-4 h-4" />}
@@ -292,16 +330,16 @@ export default function PlanejamentoPage() {
                                 <div className="flex items-center gap-1">
                                     <span className="text-sm font-bold text-emerald-600">R$</span>
                                     <input
-                                        type="number"
-                                        value={desiredLifestyleCost}
-                                        onChange={(e) => setDesiredLifestyleCost(Number(e.target.value))}
+                                        type="text"
+                                        value={desiredLifestyleCostInput}
+                                        onChange={(e) => setDesiredLifestyleCost(parseNumber(e.target.value))}
                                         className="bg-transparent text-right font-bold text-2xl text-emerald-600 outline-none w-28 border-b border-emerald-100 focus:border-emerald-500 transition-colors"
                                     />
                                 </div>
                             </div>
                             <Slider
                                 value={[desiredLifestyleCost]}
-                                min={1000} max={50000} step={500}
+                                min={1000} max={50000} step={100}
                                 onValueChange={(v: number[]) => setDesiredLifestyleCost(v[0])}
                                 className="[&_[role=slider]]:bg-emerald-600 [&_[role=slider]]:border-emerald-600"
                             />
@@ -310,6 +348,7 @@ export default function PlanejamentoPage() {
                                 <span>R$ 50.000</span>
                             </div>
                         </div>
+
 
                         {/* TAXA REAL IMPLÍCITA */}
                         {projection && (
