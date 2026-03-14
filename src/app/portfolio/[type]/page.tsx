@@ -90,13 +90,19 @@ export default function PortfolioDetailPage({ params }: { params: Promise<{ type
     ].filter(item => item.value > 0)
 
     const COLORS = {
+        "Pós-Fixado (DI / Caixa)": "#C9B8A3",
+        "IPCA+ (Inflação)": "#A89178",
+        "Prefixados": "#8B7355",
+        "Multimercados": "#A8C5A1",
+        "Ações Brasil": "#7BA3C4",
+        "Internacional / FX": "#5687AF",
         "Renda Fixa": "#C9B8A3",
         "Renda Fixa Inflação": "#A89178",
         "Multimercado": "#A8C5A1",
         "Renda Variável": "#7BA3C4",
         "Ações": "#7BA3C4",
         "Alternativo": "#89C4D4",
-        "Reserva de Emergência": "#8B7355",
+        "Reserva de Emergência": "#6B7280",
     }
 
 
