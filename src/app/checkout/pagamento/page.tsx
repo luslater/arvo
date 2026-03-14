@@ -118,11 +118,11 @@ export default function PaymentPage() {
                     <div className="lg:col-span-3">
                         <Tabs defaultValue="card" className="w-full">
                             <TabsList className="w-full bg-slate-900 border border-slate-800 p-1 h-14 rounded-2xl mb-8">
-                                <TabsTrigger value="card" className="flex-1 rounded-xl data-[state=active]:bg-slate-800 data-[state=active]:!text-white font-bold gap-2">
+                                <TabsTrigger value="card" className="flex-1 rounded-xl data-[state=active]:bg-slate-800 data-[state=active]:!text-white !text-slate-300 font-black gap-2 transition-all">
                                     <CreditCard className="w-4 h-4" />
                                     Cartão
                                 </TabsTrigger>
-                                <TabsTrigger value="pix" className="flex-1 rounded-xl data-[state=active]:bg-slate-800 data-[state=active]:!text-white font-bold gap-2">
+                                <TabsTrigger value="pix" className="flex-1 rounded-xl data-[state=active]:bg-slate-800 data-[state=active]:!text-white !text-slate-300 font-black gap-2 transition-all">
                                     <QrCode className="w-4 h-4" />
                                     PIX
                                 </TabsTrigger>
@@ -180,31 +180,37 @@ export default function PaymentPage() {
                             <TabsContent value="pix">
                                 <div className="space-y-8 text-center bg-slate-900/50 p-10 rounded-[2rem] border border-slate-800">
                                     <div className="space-y-2">
-                                        <p className="text-xl font-bold !text-white">Escaneie o QR Code</p>
-                                        <p className="text-sm !text-slate-100 font-bold">O pagamento por PIX é liberado instantaneamente.</p>
+                                        <p className="text-2xl font-black !text-white tracking-tight">Escaneie o QR Code</p>
+                                        <p className="text-base !text-slate-100 font-bold">O pagamento por PIX é liberado instantaneamente.</p>
                                     </div>
 
-                                    <div className="w-48 h-48 bg-white p-4 rounded-3xl mx-auto flex items-center justify-center border-4 border-emerald-500/20 shadow-xl">
+                                    <div className="w-56 h-56 bg-white p-6 rounded-3xl mx-auto flex items-center justify-center border-4 border-emerald-500/20 shadow-2xl relative group">
                                         {/* Simulação de QR Code */}
-                                        <div className="w-full h-full bg-slate-100 flex flex-col items-center justify-center opacity-50 border-2 border-dashed border-slate-300">
-                                            <QrCode className="w-12 h-12 text-slate-400" />
-                                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter mt-2">QR Code Fake</span>
+                                        <div className="w-full h-full bg-slate-100 flex flex-col items-center justify-center border-2 border-dashed border-slate-300">
+                                            <QrCode className="w-16 h-16 text-slate-800" />
+                                            <span className="text-[12px] font-black text-slate-800 uppercase tracking-tighter mt-3">QR Code Premium</span>
                                         </div>
                                     </div>
 
-                                    <div className="space-y-4">
-                                        <div className="p-4 bg-slate-950 rounded-xl border border-slate-800 text-[10px] font-mono break-all text-slate-500 leading-tight">
+                                    <div className="space-y-4 max-w-sm mx-auto">
+                                        <div className="p-4 bg-slate-950 rounded-xl border border-slate-800 text-[11px] font-mono break-all !text-slate-100 border-dashed leading-relaxed font-bold">
                                             00020126420014br.gov.bcb.pix0120suporte@arvo.com.br5204000053039865406497.0058 02BR5915ARVO0PAYMENT6009SAO PAULO62070503***6304E2D3
                                         </div>
                                         <Button
-                                            className="w-full bg-slate-800 hover:bg-slate-700 text-xs font-black uppercase tracking-widest rounded-xl"
-                                            onClick={() => alert("Link PIX Copiado!")}
+                                            className="w-full h-12 bg-slate-800 hover:bg-slate-700 !text-white text-xs font-black uppercase tracking-widest rounded-xl transition-all active:scale-95 border border-slate-700"
+                                            onClick={() => {
+                                                navigator.clipboard.writeText("00020126420014br.gov.bcb.pix0120suporte@arvo.com.br5204000053039865406497.0058 02BR5915ARVO0PAYMENT6009SAO PAULO62070503***6304E2D3")
+                                                alert("Link PIX Copiado!")
+                                            }}
                                         >
                                             COPIAR CÓDIGO PIX
                                         </Button>
                                     </div>
 
-                                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Aguardando confirmação automática...</p>
+                                    <div className="flex items-center justify-center gap-2">
+                                        <div className="w-2 h-2 bg-emerald-500 animate-pulse rounded-full" />
+                                        <p className="text-xs !text-emerald-400 font-black uppercase tracking-widest leading-none">Aguardando confirmação em tempo real</p>
+                                    </div>
                                 </div>
                             </TabsContent>
                         </Tabs>
