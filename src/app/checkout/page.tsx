@@ -37,7 +37,7 @@ export default function CheckoutPage() {
                             <Button variant="ghost" onClick={() => signOut({ callbackUrl: '/' })} className="!text-slate-400 hover:!text-white font-bold">Sair</Button>
                         </div>
                     ) : (
-                        <Link href="/login">
+                        <Link href="/login?callbackUrl=/checkout/pagamento">
                             <Button variant="ghost" className="!text-slate-100 hover:!text-white hover:bg-white/10 font-bold">Entrar</Button>
                         </Link>
                     )}
