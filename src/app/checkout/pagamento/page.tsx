@@ -81,7 +81,7 @@ export default function PaymentPage() {
                                     </div>
                                     <div>
                                         <p className="font-bold !text-white text-base">ARVO Premium</p>
-                                        <p className="text-xs !text-slate-200 font-bold">Acesso Vitalício + Consultoria</p>
+                                        <p className="text-xs !text-slate-200 font-bold">Acesso Premium + Consultoria</p>
                                     </div>
                                 </div>
 

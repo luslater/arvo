@@ -87,7 +87,7 @@ export default function CheckoutPage() {
                                 <div className="flex justify-between items-start">
                                     <div>
                                         <h3 className="text-3xl font-black !text-white tracking-tight">ARVO Premium</h3>
-                                        <p className="!text-slate-100 text-sm font-bold uppercase tracking-wider mt-1">Plano de Acesso Vitalício (Beta)</p>
+                                        <p className="!text-slate-100 text-sm font-bold uppercase tracking-wider mt-1">Plano de Assinatura (Beta)</p>
                                     </div>
                                     <Zap className="w-10 h-10 !text-emerald-400 !fill-emerald-400" />
                                 </div>
@@ -95,9 +95,9 @@ export default function CheckoutPage() {
                                 <div className="space-y-1">
                                     <div className="flex items-baseline gap-2">
                                         <span className="text-3xl font-bold !text-slate-100">12x</span>
-                                        <span className="text-6xl font-black !text-white">R$ 42</span>
+                                        <span className="text-6xl font-black !text-white">R$ 42,00</span>
                                     </div>
-                                    <p className="text-sm !text-emerald-400 font-black uppercase tracking-widest mt-2">Acesso Vitalício · Oferta de Lançamento</p>
+                                    <p className="text-sm !text-emerald-400 font-black uppercase tracking-widest mt-2">Acesso Premium · Oferta de Lançamento</p>
                                 </div>
 
                                 <div className="pt-6 border-t border-slate-800 space-y-4">
