@@ -58,7 +58,7 @@ export default function PaymentPage() {
             <div className="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-emerald-500/5 to-transparent pointer-events-none" />
 
             <div className="max-w-5xl mx-auto px-6 py-12 relative z-10">
-                <Link href="/checkout" className="inline-flex items-center gap-2 text-slate-400 hover:text-white mb-12 group transition-colors">
+                <Link href="/checkout" className="inline-flex items-center gap-2 !text-slate-100 hover:!text-white mb-12 group transition-colors font-bold">
                     <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
                     Voltar para oferta
                 </Link>
@@ -67,7 +67,7 @@ export default function PaymentPage() {
                     {/* Lateral: Resumo */}
                     <div className="lg:col-span-2 space-y-8">
                         <div>
-                            <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/30 mb-4 px-3 py-1 font-bold tracking-widest uppercase text-[10px]">
+                            <Badge className="bg-emerald-500/10 !text-emerald-300 border-emerald-500/30 mb-4 px-3 py-1 font-black tracking-widest uppercase text-[10px]">
                                 Checkout Seguro
                             </Badge>
                             <h1 className="text-4xl font-black !text-white leading-tight">Finalize seu acesso Premium</h1>
@@ -80,15 +80,15 @@ export default function PaymentPage() {
                                         <Zap className="w-6 h-6 text-emerald-400 fill-emerald-400" />
                                     </div>
                                     <div>
-                                        <p className="font-bold !text-white">ARVO Premium</p>
-                                        <p className="text-xs text-slate-400">Acesso Vitalício + Consultoria</p>
+                                        <p className="font-bold !text-white text-base">ARVO Premium</p>
+                                        <p className="text-xs !text-slate-200 font-bold">Acesso Vitalício + Consultoria</p>
                                     </div>
                                 </div>
 
                                 <div className="pt-6 border-t border-white/5 space-y-3">
                                     <div className="flex justify-between text-sm">
-                                        <span className="text-slate-400">Plano Premium</span>
-                                        <span className="font-medium">R$ 497,00</span>
+                                        <span className="!text-slate-100 font-bold">Plano Premium</span>
+                                        <span className="font-bold !text-white">R$ 497,00</span>
                                     </div>
                                     <div className="flex justify-between text-sm">
                                         <span className="text-emerald-400 font-bold">Taxa de Adesão (Beta)</span>
@@ -103,12 +103,12 @@ export default function PaymentPage() {
                         </Card>
 
                         <div className="space-y-4">
-                            <div className="flex items-center gap-3 text-slate-400 text-xs font-bold uppercase tracking-widest">
-                                <ShieldCheck className="w-4 h-4 text-emerald-500" />
+                            <div className="flex items-center gap-3 !text-slate-100 text-xs font-black uppercase tracking-widest">
+                                <ShieldCheck className="w-4 h-4 !text-emerald-400" />
                                 Ambiente Criptografado
                             </div>
-                            <div className="flex items-center gap-3 text-slate-400 text-xs font-bold uppercase tracking-widest">
-                                <Lock className="w-4 h-4 text-emerald-500" />
+                            <div className="flex items-center gap-3 !text-slate-100 text-xs font-black uppercase tracking-widest">
+                                <Lock className="w-4 h-4 !text-emerald-400" />
                                 Pagamento Processado pela ARVO
                             </div>
                         </div>
@@ -131,37 +131,37 @@ export default function PaymentPage() {
                             <TabsContent value="card">
                                 <form onSubmit={handlePayment} className="space-y-6">
                                     <div className="space-y-2">
-                                        <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Nome no Cartão</Label>
+                                        <Label className="text-xs font-black uppercase tracking-widest !text-slate-100">Nome no Cartão</Label>
                                         <Input
                                             placeholder="NOME IGUAL AO CARTÃO"
-                                            className="h-14 bg-slate-900 border-slate-800 rounded-xl focus:border-emerald-500 transition-all font-medium uppercase placeholder:text-slate-600"
+                                            className="h-14 bg-slate-900 border-slate-800 rounded-xl focus:border-emerald-500 transition-all font-bold uppercase !text-white placeholder:text-slate-400"
                                             required
                                         />
                                     </div>
 
                                     <div className="space-y-2">
-                                        <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Número do Cartão</Label>
+                                        <Label className="text-xs font-black uppercase tracking-widest !text-slate-100">Número do Cartão</Label>
                                         <Input
                                             placeholder="0000 0000 0000 0000"
-                                            className="h-14 bg-slate-900 border-slate-800 rounded-xl focus:border-emerald-500 transition-all font-medium placeholder:text-slate-600"
+                                            className="h-14 bg-slate-900 border-slate-800 rounded-xl focus:border-emerald-500 transition-all font-bold !text-white placeholder:text-slate-400"
                                             required
                                         />
                                     </div>
 
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="space-y-2">
-                                            <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Validade</Label>
+                                            <Label className="text-xs font-black uppercase tracking-widest !text-slate-100">Validade</Label>
                                             <Input
                                                 placeholder="MM/AA"
-                                                className="h-14 bg-slate-900 border-slate-800 rounded-xl focus:border-emerald-500 transition-all font-medium placeholder:text-slate-600 text-center"
+                                                className="h-14 bg-slate-900 border-slate-800 rounded-xl focus:border-emerald-500 transition-all font-bold !text-white placeholder:text-slate-400 text-center"
                                                 required
                                             />
                                         </div>
                                         <div className="space-y-2">
-                                            <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">CVC</Label>
+                                            <Label className="text-xs font-black uppercase tracking-widest !text-slate-100">CVC</Label>
                                             <Input
                                                 placeholder="000"
-                                                className="h-14 bg-slate-900 border-slate-800 rounded-xl focus:border-emerald-500 transition-all font-medium placeholder:text-slate-600 text-center"
+                                                className="h-14 bg-slate-900 border-slate-800 rounded-xl focus:border-emerald-500 transition-all font-bold !text-white placeholder:text-slate-400 text-center"
                                                 required
                                             />
                                         </div>
@@ -181,7 +181,7 @@ export default function PaymentPage() {
                                 <div className="space-y-8 text-center bg-slate-900/50 p-10 rounded-[2rem] border border-slate-800">
                                     <div className="space-y-2">
                                         <p className="text-xl font-bold !text-white">Escaneie o QR Code</p>
-                                        <p className="text-sm text-slate-400">O pagamento por PIX é liberado instantaneamente.</p>
+                                        <p className="text-sm !text-slate-100 font-bold">O pagamento por PIX é liberado instantaneamente.</p>
                                     </div>
 
                                     <div className="w-48 h-48 bg-white p-4 rounded-3xl mx-auto flex items-center justify-center border-4 border-emerald-500/20 shadow-xl">
