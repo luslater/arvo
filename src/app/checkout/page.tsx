@@ -101,10 +101,12 @@ export default function CheckoutPage() {
                                 </div>
 
                                 <div className="pt-6 border-t border-slate-800 space-y-4">
-                                    <Button className="w-full h-14 bg-emerald-600 hover:bg-emerald-500 text-lg font-bold rounded-2xl group transition-all text-white shadow-lg shadow-emerald-500/20">
-                                        QUERO MEU ACESSO AGORA
-                                        <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                                    </Button>
+                                    <Link href="https://wa.me/5511999999999?text=Olá! Quero meu acesso premium no ARVO." target="_blank" className="w-full block">
+                                        <Button className="w-full h-14 bg-emerald-600 hover:bg-emerald-500 text-lg font-bold rounded-2xl group transition-all text-white shadow-lg shadow-emerald-500/20">
+                                            QUERO MEU ACESSO AGORA
+                                            <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                                        </Button>
+                                    </Link>
                                     <div className="flex items-center justify-center gap-2 text-xs !text-slate-100 uppercase tracking-widest font-black">
                                         <ShieldCheck className="w-4 h-4 !text-emerald-400" />
                                         Pagamento Seguro · Acesso Imediato
