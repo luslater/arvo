@@ -14,18 +14,31 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
 import Image from "next/image"
+import { useSession } from "next-auth/react"
 
 export default function PaymentPage() {
+    const { update } = useSession()
     const [isProcessing, setIsProcessing] = useState(false)
     const [isSuccess, setIsSuccess] = useState(false)
 
-    const handlePayment = (e: React.FormEvent) => {
+    const handlePayment = async (e: React.FormEvent) => {
         e.preventDefault()
         setIsProcessing(true)
-        setTimeout(() => {
+
+        try {
+            const res = await fetch("/api/checkout/simulate", { method: "POST" })
+            if (res.ok) {
+                await update() // Force session refresh
+                setIsSuccess(true)
+            } else {
+                alert("Erro ao processar pagamento. Verifique se você está logado.")
+            }
+        } catch (error) {
+            console.error(error)
+            alert("Erro de conexão ao processar pagamento.")
+        } finally {
             setIsProcessing(false)
-            setIsSuccess(true)
-        }, 2000)
+        }
     }
 
     if (isSuccess) {

@@ -6,8 +6,11 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import Image from "next/image"
 import Link from "next/link"
+import { useSession, signOut } from "next-auth/react"
 
 export default function CheckoutPage() {
+    const { data: session } = useSession()
+
     const benefits = [
         "Acesso completo ao Planejamento Financeiro",
         "Monitoramento de Carteiras em tempo real",
@@ -26,9 +29,16 @@ export default function CheckoutPage() {
                     <Link href="/">
                         <Image src="/arvo-logo.png" alt="ARVO" width={80} height={40} className="invert mix-blend-screen brightness-150" />
                     </Link>
-                    <Link href="/login">
-                        <Button variant="ghost" className="!text-slate-100 hover:!text-white hover:bg-white/10 font-bold">Entrar</Button>
-                    </Link>
+                    {session?.user ? (
+                        <div className="flex items-center gap-4">
+                            <span className="!text-slate-300 font-medium text-sm">Olá, {session.user.name?.split(' ')[0]}</span>
+                            <Button variant="ghost" onClick={() => signOut({ callbackUrl: '/' })} className="!text-slate-400 hover:!text-white font-bold">Sair</Button>
+                        </div>
+                    ) : (
+                        <Link href="/login">
+                            <Button variant="ghost" className="!text-slate-100 hover:!text-white hover:bg-white/10 font-bold">Entrar</Button>
+                        </Link>
+                    )}
                 </nav>
 
                 <div className="grid lg:grid-cols-2 gap-16 items-center">

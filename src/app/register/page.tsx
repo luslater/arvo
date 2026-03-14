@@ -1,15 +1,18 @@
 "use client"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useState, Suspense } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ThemeToggle } from "@/components/theme-toggle"
 
-export default function RegisterPage() {
+function RegisterForm() {
     const router = useRouter()
+    const searchParams = useSearchParams()
+    const callbackUrl = searchParams.get("callbackUrl") || "/carteira"
+
     const [name, setName] = useState("")
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
@@ -42,7 +45,8 @@ export default function RegisterPage() {
             }
 
             // After register, redirect to login
-            router.push("/login?registered=true")
+            const callbackParam = callbackUrl !== "/carteira" ? `&callbackUrl=${encodeURIComponent(callbackUrl)}` : ""
+            router.push(`/login?registered=true${callbackParam}`)
         } catch (err) {
             setError("Ocorreu um erro na rede. Tente novamente.")
         } finally {
@@ -126,12 +130,20 @@ export default function RegisterPage() {
 
                     <div className="mt-6 text-center text-sm">
                         <span className="text-gray-600">Já tem uma conta?</span>{" "}
-                        <Link href="/login" className="text-gray-900 font-medium hover:underline">
+                        <Link href={`/login${callbackUrl !== "/carteira" ? `?callbackUrl=${encodeURIComponent(callbackUrl)}` : ""}`} className="text-gray-900 font-medium hover:underline">
                             Entrar
                         </Link>
                     </div>
                 </CardContent>
             </Card>
         </div>
+    )
+}
+
+export default function RegisterPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-white p-4">Carregando...</div>}>
+            <RegisterForm />
+        </Suspense>
     )
 }

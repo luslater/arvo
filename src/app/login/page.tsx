@@ -1,7 +1,7 @@
 "use client"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useState, Suspense } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import { signIn } from "next-auth/react"
 import Image from "next/image"
 import Link from "next/link"
@@ -9,8 +9,11 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ThemeToggle } from "@/components/theme-toggle"
 
-export default function LoginPage() {
+function LoginForm() {
     const router = useRouter()
+    const searchParams = useSearchParams()
+    const callbackUrl = searchParams.get("callbackUrl") || "/carteira"
+
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [error, setError] = useState("")
@@ -31,7 +34,7 @@ export default function LoginPage() {
             if (res?.error) {
                 setError("Credenciais inválidas. Tente novamente.")
             } else {
-                router.push("/carteira")
+                router.push(callbackUrl)
             }
         } catch (err) {
             setError("Ocorreu um erro ao tentar entrar.")
@@ -42,7 +45,7 @@ export default function LoginPage() {
 
     const handleGoogleSignIn = async () => {
         setLoading(true)
-        await signIn("google", { callbackUrl: "/carteira" })
+        await signIn("google", { callbackUrl })
     }
 
     return (
@@ -131,12 +134,20 @@ export default function LoginPage() {
 
                     <div className="mt-6 text-center text-sm">
                         <span className="text-gray-600 ">Não tem uma conta?</span>{" "}
-                        <Link href="/register" className="text-gray-900  font-medium hover:underline">
+                        <Link href={`/register${callbackUrl !== "/carteira" ? `?callbackUrl=${encodeURIComponent(callbackUrl)}` : ""}`} className="text-gray-900  font-medium hover:underline">
                             Cadastre-se
                         </Link>
                     </div>
                 </CardContent>
             </Card>
         </div>
+    )
+}
+
+export default function LoginPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-white p-4">Carregando...</div>}>
+            <LoginForm />
+        </Suspense>
     )
 }
