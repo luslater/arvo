@@ -31,12 +31,21 @@ export default function QuestionnairePage() {
             const totalPts = newAnswers.reduce((sum, pts) => sum + pts, 0)
             const userProfile = calculateProfile(totalPts)
 
-            // Save to localStorage
-            if (typeof window !== "undefined") {
-                localStorage.setItem("userProfile", userProfile)
-            }
-
-            setShowResult(true)
+            // Save to Database API instead of localStorage
+            fetch("/api/user/profile", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ portfolioType: userProfile })
+            }).then(() => {
+                if (typeof window !== "undefined") {
+                    // Keep a local copy to avoid flash if needed, but primarily trust the DB
+                    localStorage.setItem("userProfile", userProfile)
+                }
+                setShowResult(true)
+            }).catch((err) => {
+                console.error("Error saving profile to database", err)
+                setShowResult(true)
+            })
         }
     }
 

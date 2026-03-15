@@ -58,11 +58,12 @@ export const authOptions: NextAuthOptions = {
     ],
     callbacks: {
         async session({ session, token }) {
-            if (token && session.user) {
-                // @ts-ignore
-                session.user.id = token.id
-                // @ts-ignore
-                session.user.subscriptionStatus = token.subscriptionStatus
+            if (session.user) {
+                // Check if user status implies premium based on existing checks
+                const isPremium = token?.subscriptionStatus === "PREMIUM" || token?.subscriptionStatus === "ADMIN"
+
+                session.user.subscriptionStatus = isPremium ? "PREMIUM" : "FREE"
+                session.user.id = token.id as string
             }
             return session
         },
@@ -75,9 +76,11 @@ export const authOptions: NextAuthOptions = {
                 // Refresh subscription status from DB if it's not in the token
                 const dbUser = await prisma.user.findUnique({
                     where: { id: token.id as string },
+                    // @ts-ignore
                     select: { subscriptionStatus: true }
                 })
                 if (dbUser) {
+                    // @ts-ignore
                     token.subscriptionStatus = dbUser.subscriptionStatus
                 }
             }

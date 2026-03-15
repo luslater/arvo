@@ -23,50 +23,65 @@ export default function CarteiraPage() {
     const { data: session } = useSession()
     const subscriptionStatus = (session?.user?.subscriptionStatus as string) || "FREE"
 
+    const [isLoading, setIsLoading] = useState(true)
+
     // Load data
     useEffect(() => {
-        if (typeof window !== "undefined") {
-            loadData()
+        loadData()
+    }, [session])
+
+    const loadData = async () => {
+        if (!session?.user?.email) return
+
+        setIsLoading(true)
+        try {
+            const res = await fetch("/api/user/profile")
+            if (res.ok) {
+                const data = await res.json()
+                setUserProfile(data.portfolioType)
+                setSaldo(data.saldo)
+                setReserva(data.emergencyFund)
+                setTotalCarteira(data.totalCarteira)
+                setUserAssets(data.assets || [])
+            }
+        } catch (error) {
+            console.error("Error loading user profile:", error)
+        } finally {
+            setIsLoading(false)
         }
-    }, [])
-
-    const loadData = () => {
-        // Load profile
-        const profile = localStorage.getItem("userProfile")
-        setUserProfile(profile)
-
-        // Load user assets
-        const assetsStr = localStorage.getItem("userAssets")
-        if (assetsStr) {
-            const assets: UserAsset[] = JSON.parse(assetsStr)
-            setUserAssets(assets)
-            const total = assets.reduce((sum, asset) => sum + asset.value, 0)
-            setTotalCarteira(total)
-        }
-
-        // Load saldo and reserva
-        const saldoValue = Number(localStorage.getItem("saldo") || "0") / 100
-        const reservaValue = Number(localStorage.getItem("emergencyFund") || "0") / 100
-        setSaldo(saldoValue)
-        setReserva(reservaValue)
     }
 
-    const handleUpdateAssets = (newAssets: UserAsset[]) => {
+    const handleUpdateAssets = async (newAssets: UserAsset[]) => {
         setUserAssets(newAssets)
         const total = newAssets.reduce((sum, asset) => sum + asset.value, 0)
         setTotalCarteira(total)
-        localStorage.setItem("userAssets", JSON.stringify(newAssets))
-        localStorage.setItem("portfolioCapital", (total * 100).toString())
+
+        // Update profile in DB in background
+        fetch("/api/user/profile", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ totalCarteira: total })
+        })
     }
 
-    const handleUpdateSaldo = (newSaldo: number) => {
+    const handleUpdateSaldo = async (newSaldo: number) => {
         setSaldo(newSaldo)
-        localStorage.setItem("saldo", (newSaldo * 100).toString())
+        // Update in background
+        fetch("/api/user/profile", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ saldo: newSaldo })
+        })
     }
 
-    const handleUpdateReserva = (newReserva: number) => {
+    const handleUpdateReserva = async (newReserva: number) => {
         setReserva(newReserva)
-        localStorage.setItem("emergencyFund", (newReserva * 100).toString())
+        // Update in background
+        fetch("/api/user/profile", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ emergencyFund: newReserva })
+        })
     }
 
     return (

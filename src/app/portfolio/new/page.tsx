@@ -12,16 +12,30 @@ export default function NewPortfolioPage() {
     const router = useRouter()
     const [capital, setCapital] = useState(0)
     const [emergencyFund, setEmergencyFund] = useState(0)
+    const [isLoading, setIsLoading] = useState(false)
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        // Store values in localStorage for now
-        localStorage.setItem("portfolioCapital", (capital * 100).toString())
-        localStorage.setItem("emergencyFund", (emergencyFund * 100).toString())
+        setIsLoading(true)
 
-        // Get saved profile or default to RITMO
-        const profile = localStorage.getItem("userProfile") || "RITMO"
-        router.push(`/portfolio/${profile.toLowerCase()}`)
+        try {
+            await fetch("/api/user/profile", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    saldo: capital, // Starting capital as saldo
+                    emergencyFund: emergencyFund,
+                    totalCarteira: 0
+                })
+            })
+
+            // Get saved profile from local storage placeholder or default to RITMO
+            const profile = localStorage.getItem("userProfile") || "RITMO"
+            router.push(`/portfolio/${profile.toLowerCase()}`)
+        } catch (error) {
+            console.error(error)
+            setIsLoading(false)
+        }
     }
 
     const formatCurrency = (value: number) => {
@@ -100,11 +114,11 @@ export default function NewPortfolioPage() {
 
                         <Button
                             type="submit"
-                            disabled={!isValid}
+                            disabled={!isValid || isLoading}
                             className="w-full bg-gray-100 text-gray-900 hover:bg-gray-900 hover:text-white disabled:opacity-50 rounded-md"
                         >
-                            Ver Minha Carteira
-                            <ArrowRight className="ml-2 h-4 w-4" />
+                            {isLoading ? "Salvando..." : "Ver Minha Carteira"}
+                            {!isLoading && <ArrowRight className="ml-2 h-4 w-4" />}
                         </Button>
                     </form>
                 </CardContent>

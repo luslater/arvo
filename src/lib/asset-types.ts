@@ -20,6 +20,7 @@ export type AssetType = typeof ASSET_TYPES[number]["id"]
 export type Indexador = "Prefixado" | "Pós-fixado" | "IPCA+" | "Renda Variável"
 
 export interface UserAsset {
+    id?: string
     type: AssetType
     name: string
     quantity: number

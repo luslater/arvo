@@ -28,8 +28,9 @@ export function AssetsTab({
 
     // Local state for editing to avoid constant parent updates, 
     // but we'll sync changes immediately for now to keep it simple
-    const handleAddAsset = (type: AssetType) => {
+    const handleAddAsset = async (type: AssetType) => {
         const newAsset: UserAsset = {
+            id: `temp-${Date.now()}`,
             type,
             name: "",
             quantity: 1,
@@ -38,17 +39,69 @@ export function AssetsTab({
             rentabilidade: 0,
             prazo: ""
         }
+
+        // Optimistic UI
         onUpdateAssets([...userAssets, newAsset])
+
+        try {
+            const res = await fetch("/api/user/assets", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(newAsset)
+            })
+            if (res.ok) {
+                const created = await res.json()
+                // Replace temp ID with real ID silently via closure
+                const updatedAssets = userAssets.map((a: UserAsset) => a.id === newAsset.id ? { ...a, id: created.id } : a)
+                // If it isn't in userAssets (edge case), we just append
+                if (!updatedAssets.find(a => a.id === created.id)) {
+                    updatedAssets.push({ ...newAsset, id: created.id })
+                }
+                onUpdateAssets(updatedAssets)
+            }
+        } catch (e) {
+            console.error(e)
+        }
     }
 
-    const handleRemoveAsset = (index: number) => {
-        onUpdateAssets(userAssets.filter((_, i) => i !== index))
+    const handleRemoveAsset = async (index: number) => {
+        const asset = userAssets[index]
+        const newArray = userAssets.filter((_, i) => i !== index)
+        onUpdateAssets(newArray)
+
+        if (asset.id && !asset.id.startsWith("temp-")) {
+            try {
+                await fetch("/api/user/assets", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ action: "DELETE", id: asset.id })
+                })
+            } catch (e) { console.error(e) }
+        }
     }
 
-    const handleUpdateAsset = (index: number, field: keyof UserAsset, value: any) => {
+    const handleUpdateAsset = async (index: number, field: keyof UserAsset, value: any) => {
         const updated = [...userAssets]
         updated[index] = { ...updated[index], [field]: value }
         onUpdateAssets(updated)
+
+        const asset = updated[index]
+        if (asset.id && !asset.id.startsWith("temp-")) {
+            try {
+                await fetch("/api/user/assets", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        id: asset.id,
+                        type: asset.type,
+                        name: asset.name,
+                        value: asset.value,
+                        quantity: asset.quantity,
+                        category: ASSET_TYPES.find(t => t.id === asset.type)?.category
+                    })
+                })
+            } catch (e) { console.error(e) }
+        }
     }
 
     const handleDragStart = (type: AssetType) => {
