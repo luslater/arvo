@@ -89,7 +89,7 @@ export default function DemoPage() {
                                 </div>
                                 <Slider
                                     value={[currentValue]}
-                                    max={1000000} step={1000}
+                                    max={1000000} step={5000}
                                     onValueChange={(v) => setCurrentValue(v[0])}
                                     className="[&_[role=slider]]:bg-emerald-600"
                                 />
