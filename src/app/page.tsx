@@ -20,19 +20,19 @@ export default function Home() {
     }, [])
 
     return (
-        <div className="flex min-h-screen flex-col font-sans bg-slate-50 text-slate-900 selection:bg-emerald-100">
+        <div className="flex min-h-screen flex-col font-sans bg-slate-50 text-slate-900 selection:bg-blue-100">
             {/* Header / Navbar */}
             <header className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-white/90 backdrop-blur-md shadow-sm border-b border-slate-200/50' : 'bg-transparent'}`}>
                 <div className="container mx-auto max-w-7xl flex h-20 items-center justify-between px-6">
-                    <Link href="/" className="flex items-center">
-                        <Image src="/arvo-logo.png" alt="ARVO" width={80} height={40} className={`transition-all ${scrolled ? 'opacity-100' : 'brightness-0 invert opacity-100'}`} />
+                    <Link href="/" className="flex items-center bg-white/10 rounded-lg py-1.5 px-3 backdrop-blur-sm border border-white/5">
+                        <Image src="/arvo-logo.png" alt="ARVO" width={85} height={42} className="transition-all" />
                     </Link>
                     <div className="flex items-center gap-6">
-                        <Link href="/login" className={`hidden md:block font-medium text-sm transition-colors hover:text-emerald-500 ${scrolled ? 'text-slate-600' : 'text-slate-200 hover:text-white'}`}>
+                        <Link href="/login" className={`hidden md:block font-medium text-sm transition-colors hover:text-blue-500 ${scrolled ? 'text-slate-600' : 'text-slate-200 hover:text-white'}`}>
                             Log in
                         </Link>
                         <Link href="/register">
-                            <Button className={`rounded-full px-6 font-semibold transition-all ${scrolled ? 'bg-slate-900 text-white hover:bg-emerald-600 hover:text-white' : 'bg-white text-slate-900 hover:bg-emerald-50'}`}>
+                            <Button className={`rounded-full px-6 font-semibold transition-all ${scrolled ? 'bg-slate-900 text-white hover:bg-blue-600 hover:text-white' : 'bg-white text-slate-900 hover:bg-blue-50'}`}>
                                 Começar Agora
                             </Button>
                         </Link>
@@ -42,11 +42,11 @@ export default function Home() {
 
             {/* Hero Section */}
             <main className="flex-1">
-                <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 bg-[#020617] overflow-hidden text-white flex flex-col justify-center min-h-[90vh]">
+                <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 bg-[#0A192F] overflow-hidden text-white flex flex-col justify-center min-h-[90vh]">
                     {/* Background Gradients */}
                     <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-emerald-600/20 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/3" />
-                        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-600/20 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/3" />
+                        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-blue-600/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/3" />
+                        <div className="absolute top-1/2 left-0 w-[600px] h-[600px] bg-slate-400/10 rounded-full blur-[120px] -translate-y-1/2 -translate-x-1/3" />
                     </div>
 
                     <div className="container mx-auto max-w-7xl px-6 relative z-10">
@@ -59,26 +59,26 @@ export default function Home() {
                                 transition={{ duration: 0.8, ease: "easeOut" }}
                                 className="space-y-8"
                             >
-                                <div className="inline-flex items-center rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-sm font-medium text-emerald-300">
+                                <div className="inline-flex items-center rounded-full border border-blue-500/30 bg-blue-500/10 px-3 py-1 text-sm font-medium text-blue-300">
                                     <ShieldCheck className="mr-2 h-4 w-4" />
                                     <span>Modelo 100% Fee-Only</span>
                                 </div>
                                 <h1 className="text-5xl md:text-7xl font-light tracking-tighter leading-[1.1]">
-                                    Invista do seu jeito, <br /> com total <span className="font-semibold text-emerald-400">transparência.</span>
+                                    Invista do seu jeito, <br /> com total <span className="font-semibold text-blue-400">transparência.</span>
                                 </h1>
                                 <p className="text-xl md:text-2xl font-light text-slate-300 max-w-xl leading-relaxed">
                                     Assuma o controle do seu patrimônio com carteiras inteligentes, recomendação imparcial e planejamento financeiro personalizado. Sem taxas ocultas.
                                 </p>
 
                                 <ul className="space-y-3 pt-4 text-slate-300 font-light">
-                                    <li className="flex items-center gap-3"><div className="h-5 w-5 rounded-full bg-emerald-500/20 flex items-center justify-center"><div className="h-2 w-2 rounded-full bg-emerald-400" /></div> Zero comissões e rebates escondidos no seu portfólio</li>
-                                    <li className="flex items-center gap-3"><div className="h-5 w-5 rounded-full bg-emerald-500/20 flex items-center justify-center"><div className="h-2 w-2 rounded-full bg-emerald-400" /></div> Carteiras baseadas em dados e perfis reais de risco</li>
-                                    <li className="flex items-center gap-3"><div className="h-5 w-5 rounded-full bg-emerald-500/20 flex items-center justify-center"><div className="h-2 w-2 rounded-full bg-emerald-400" /></div> Planejamento transparente acompanhado por especialistas</li>
+                                    <li className="flex items-center gap-3"><div className="h-5 w-5 rounded-full bg-blue-500/20 flex items-center justify-center"><div className="h-2 w-2 rounded-full bg-blue-400" /></div> Zero comissões e rebates escondidos no seu portfólio</li>
+                                    <li className="flex items-center gap-3"><div className="h-5 w-5 rounded-full bg-blue-500/20 flex items-center justify-center"><div className="h-2 w-2 rounded-full bg-blue-400" /></div> Carteiras baseadas em dados e perfis reais de risco</li>
+                                    <li className="flex items-center gap-3"><div className="h-5 w-5 rounded-full bg-blue-500/20 flex items-center justify-center"><div className="h-2 w-2 rounded-full bg-blue-400" /></div> Planejamento transparente acompanhado por especialistas</li>
                                 </ul>
 
                                 <div className="flex flex-wrap items-center gap-4 pt-6">
                                     <Link href="/register">
-                                        <Button size="lg" className="rounded-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-8 h-14 text-lg">
+                                        <Button size="lg" className="rounded-full bg-blue-500 hover:bg-blue-400 text-slate-950 font-bold px-8 h-14 text-lg">
                                             Criar Conta Grátis
                                         </Button>
                                     </Link>
@@ -100,18 +100,18 @@ export default function Home() {
                                 {/* Floating elements pretending to be the app */}
                                 <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[340px] h-[680px] bg-slate-900 rounded-[3rem] border-8 border-slate-800 shadow-2xl overflow-hidden transform -rotate-6 transition-transform hover:-rotate-3 duration-500 origin-bottom">
                                     {/* Mock UI Header */}
-                                    <div className="h-24 bg-gradient-to-br from-emerald-900 to-slate-900 p-6 flex flex-col justify-end">
-                                        <div className="text-emerald-400 text-xs font-bold tracking-widest uppercase mb-1">Carteira Ritmo</div>
+                                    <div className="h-24 bg-gradient-to-br from-blue-900 to-slate-900 p-6 flex flex-col justify-end">
+                                        <div className="text-blue-400 text-xs font-bold tracking-widest uppercase mb-1">Carteira Ritmo</div>
                                         <div className="text-white text-3xl font-light">R$ 1.250.000</div>
                                     </div>
                                     {/* Mock UI Body */}
                                     <div className="p-6 space-y-6 bg-slate-950 h-full">
                                         <div className="flex items-end gap-2 pb-4 border-b border-slate-800">
-                                            <div className="h-16 w-8 bg-emerald-500 rounded-t-sm opacity-20"></div>
-                                            <div className="h-24 w-8 bg-emerald-500 rounded-t-sm opacity-40"></div>
-                                            <div className="h-12 w-8 bg-emerald-500 rounded-t-sm opacity-60"></div>
-                                            <div className="h-32 w-8 bg-emerald-500 rounded-t-sm opacity-80"></div>
-                                            <div className="h-40 w-8 bg-emerald-500 rounded-t-sm"></div>
+                                            <div className="h-16 w-8 bg-blue-500 rounded-t-sm opacity-20"></div>
+                                            <div className="h-24 w-8 bg-blue-500 rounded-t-sm opacity-40"></div>
+                                            <div className="h-12 w-8 bg-blue-500 rounded-t-sm opacity-60"></div>
+                                            <div className="h-32 w-8 bg-blue-500 rounded-t-sm opacity-80"></div>
+                                            <div className="h-40 w-8 bg-blue-500 rounded-t-sm"></div>
                                         </div>
 
                                         <div className="space-y-4">
@@ -119,7 +119,7 @@ export default function Home() {
                                                 <div key={i} className="flex items-center justify-between bg-slate-900 p-4 rounded-xl border border-slate-800">
                                                     <div className="flex items-center gap-3">
                                                         <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center">
-                                                            <div className="w-3 h-3 rounded-full bg-emerald-400"></div>
+                                                            <div className="w-3 h-3 rounded-full bg-blue-400"></div>
                                                         </div>
                                                         <div>
                                                             <div className="w-20 h-2 bg-slate-700 rounded mb-2"></div>
@@ -138,7 +138,7 @@ export default function Home() {
                                     <div className="text-xs text-slate-400 uppercase font-bold tracking-widest mb-1">Score de Aderência</div>
                                     <div className="flex items-end gap-2">
                                         <div className="text-4xl font-light text-white">98%</div>
-                                        <div className="text-sm text-emerald-400 font-medium mb-1 flex items-center"><TrendingUp className="w-3 h-3 mr-1" /> Excelente</div>
+                                        <div className="text-sm text-blue-400 font-medium mb-1 flex items-center"><TrendingUp className="w-3 h-3 mr-1" /> Excelente</div>
                                     </div>
                                 </div>
                             </motion.div>
@@ -147,24 +147,24 @@ export default function Home() {
                 </section>
 
                 {/* Stats Bar */}
-                <section className="bg-emerald-600 text-white border-y border-emerald-700">
+                <section className="bg-blue-600 text-white border-y border-blue-700">
                     <div className="container mx-auto max-w-7xl px-6 py-12">
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 text-center divide-x divide-emerald-500/30">
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 text-center divide-x divide-blue-500/30">
                             <div>
                                 <div className="text-3xl md:text-5xl font-light mb-1">100%</div>
-                                <div className="text-sm font-semibold uppercase tracking-widest text-emerald-200">Fee-Only</div>
+                                <div className="text-sm font-semibold uppercase tracking-widest text-blue-200">Fee-Only</div>
                             </div>
                             <div>
                                 <div className="text-3xl md:text-5xl font-light mb-1">R$ 0</div>
-                                <div className="text-sm font-semibold uppercase tracking-widest text-emerald-200">Comissões Ocultas</div>
+                                <div className="text-sm font-semibold uppercase tracking-widest text-blue-200">Comissões Ocultas</div>
                             </div>
                             <div>
                                 <div className="text-3xl md:text-5xl font-light mb-1">4</div>
-                                <div className="text-sm font-semibold uppercase tracking-widest text-emerald-200">Carteiras Inteligentes</div>
+                                <div className="text-sm font-semibold uppercase tracking-widest text-blue-200">Carteiras Inteligentes</div>
                             </div>
                             <div>
                                 <div className="text-3xl md:text-5xl font-light mb-1">Sim</div>
-                                <div className="text-sm font-semibold uppercase tracking-widest text-emerald-200">Foco no seu Sucesso</div>
+                                <div className="text-sm font-semibold uppercase tracking-widest text-blue-200">Foco no seu Sucesso</div>
                             </div>
                         </div>
                     </div>
@@ -191,8 +191,8 @@ export default function Home() {
                             </div>
 
                             {/* Card 2 */}
-                            <div className="group relative overflow-hidden rounded-3xl bg-emerald-900 aspect-[4/5] flex flex-col justify-end p-8">
-                                <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-emerald-900/40 to-transparent z-10" />
+                            <div className="group relative overflow-hidden rounded-3xl bg-blue-900 aspect-[4/5] flex flex-col justify-end p-8">
+                                <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-blue-900/40 to-transparent z-10" />
                                 <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=800&auto=format&fit=crop')] bg-cover bg-center opacity-50 group-hover:scale-105 transition-transform duration-700" />
                                 <div className="relative z-20 space-y-3">
                                     <div className="inline-block px-3 py-1 bg-white/20 backdrop-blur-md text-white text-xs font-bold uppercase tracking-widest rounded-full mb-2">Acumulação</div>
@@ -224,21 +224,21 @@ export default function Home() {
 
                         <div className="grid lg:grid-cols-2 gap-16 items-center mb-32">
                             <div className="space-y-6 order-2 lg:order-1">
-                                <div className="text-emerald-600 font-bold uppercase tracking-widest text-sm">Carteiras Gerenciadas ARVO</div>
+                                <div className="text-blue-600 font-bold uppercase tracking-widest text-sm">Carteiras Gerenciadas ARVO</div>
                                 <h3 className="text-3xl md:text-5xl font-light text-slate-900 leading-tight">Diversificação global em índices, gerenciada para você.</h3>
                                 <p className="text-xl text-slate-600 font-light leading-relaxed">
                                     Faça o nosso questionário e encontraremos a alocação perfeita baseada em dados reais. Nós indicamos os melhores fundos passivos para compor o seu portfólio com rebalanceamento constante sugerido no aplicativo.
                                 </p>
                                 <ul className="space-y-4 pt-4">
                                     <li className="flex gap-4">
-                                        <div className="mt-1 bg-emerald-100 text-emerald-600 p-1.5 rounded-full h-fit"><Target className="w-4 h-4" /></div>
+                                        <div className="mt-1 bg-blue-100 text-blue-600 p-1.5 rounded-full h-fit"><Target className="w-4 h-4" /></div>
                                         <div>
                                             <h4 className="font-semibold text-slate-900">Alinhado ao seu perfil de conforto</h4>
                                             <p className="text-slate-600 font-light text-sm">Adequação exata do portfólio para você dormir tranquilo, nem muito risco, nem conversador demais.</p>
                                         </div>
                                     </li>
                                     <li className="flex gap-4">
-                                        <div className="mt-1 bg-emerald-100 text-emerald-600 p-1.5 rounded-full h-fit"><Globe className="w-4 h-4" /></div>
+                                        <div className="mt-1 bg-blue-100 text-blue-600 p-1.5 rounded-full h-fit"><Globe className="w-4 h-4" /></div>
                                         <div>
                                             <h4 className="font-semibold text-slate-900">Design sustentável de longo prazo</h4>
                                             <p className="text-slate-600 font-light text-sm">Diversificação testada focada em captura de mercado primário com baixo custo operacional.</p>
@@ -247,7 +247,7 @@ export default function Home() {
                                 </ul>
                                 <div className="pt-6">
                                     <Link href="/questionnaire">
-                                        <Button size="lg" className="rounded-full bg-slate-900 hover:bg-emerald-600 text-white px-8 h-12">
+                                        <Button size="lg" className="rounded-full bg-slate-900 hover:bg-blue-600 text-white px-8 h-12">
                                             Responder Questionário
                                         </Button>
                                     </Link>
@@ -285,19 +285,19 @@ export default function Home() {
                                     <div className="flex justify-between items-end mb-8">
                                         <div>
                                             <div className="text-xs uppercase tracking-widest text-slate-500 font-bold mb-1">Capital Acumulado R$</div>
-                                            <div className="text-4xl font-light text-emerald-400">R$ 2.450.300</div>
+                                            <div className="text-4xl font-light text-blue-400">R$ 2.450.300</div>
                                         </div>
                                     </div>
                                     {/* Chart bars fake */}
-                                    <div className="flex items-end gap-2 h-40 pb-4 border-b border-emerald-900/50">
+                                    <div className="flex items-end gap-2 h-40 pb-4 border-b border-blue-900/50">
                                         {[20, 30, 45, 60, 80, 100, 120, 150].map((h, i) => (
-                                            <div key={i} className="flex-1 rounded-t-sm bg-gradient-to-t from-emerald-600 to-emerald-400" style={{ height: `${h}%` }}></div>
+                                            <div key={i} className="flex-1 rounded-t-sm bg-gradient-to-t from-blue-600 to-blue-400" style={{ height: `${h}%` }}></div>
                                         ))}
                                     </div>
                                     <div className="pt-6 space-y-4">
                                         <div className="flex justify-between text-sm"><span className="text-slate-400">Renda Mensal Passiva</span><span className="font-semibold">R$ 10.200</span></div>
-                                        <div className="h-1.5 w-full bg-slate-800 rounded-full"><div className="h-full w-[85%] bg-emerald-500 rounded-full"></div></div>
-                                        <div className="text-xs text-right font-light text-emerald-400">85% da Meta (Regra dos 4%)</div>
+                                        <div className="h-1.5 w-full bg-slate-800 rounded-full"><div className="h-full w-[85%] bg-blue-500 rounded-full"></div></div>
+                                        <div className="text-xs text-right font-light text-blue-400">85% da Meta (Regra dos 4%)</div>
                                     </div>
                                 </div>
                             </div>
@@ -340,11 +340,11 @@ export default function Home() {
 
                         <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
                             <div className="bg-slate-800 rounded-3xl p-10 border border-slate-700">
-                                <h3 className="text-2xl font-light mb-6 text-emerald-400">Modelo ARVO (Fee-Only)</h3>
+                                <h3 className="text-2xl font-light mb-6 text-blue-400">Modelo ARVO (Fee-Only)</h3>
                                 <ul className="space-y-6 font-light">
-                                    <li className="flex items-start gap-4"><div className="mt-1 bg-emerald-500/20 text-emerald-400 p-1 rounded-full"><ShieldCheck className="w-4 h-4" /></div> Nós cobramos uma assinatura fixa, independente do valor aportado ou produto financeiro.</li>
-                                    <li className="flex items-start gap-4"><div className="mt-1 bg-emerald-500/20 text-emerald-400 p-1 rounded-full"><ShieldCheck className="w-4 h-4" /></div> O nosso único incentivo é que seu patrimônio performe e cresça consistentemente.</li>
-                                    <li className="flex items-start gap-4"><div className="mt-1 bg-emerald-500/20 text-emerald-400 p-1 rounded-full"><ShieldCheck className="w-4 h-4" /></div> Sugerimos os fundos estritamente mais baratos e que compõem portfólios vencedores.</li>
+                                    <li className="flex items-start gap-4"><div className="mt-1 bg-blue-500/20 text-blue-400 p-1 rounded-full"><ShieldCheck className="w-4 h-4" /></div> Nós cobramos uma assinatura fixa, independente do valor aportado ou produto financeiro.</li>
+                                    <li className="flex items-start gap-4"><div className="mt-1 bg-blue-500/20 text-blue-400 p-1 rounded-full"><ShieldCheck className="w-4 h-4" /></div> O nosso único incentivo é que seu patrimônio performe e cresça consistentemente.</li>
+                                    <li className="flex items-start gap-4"><div className="mt-1 bg-blue-500/20 text-blue-400 p-1 rounded-full"><ShieldCheck className="w-4 h-4" /></div> Sugerimos os fundos estritamente mais baratos e que compõem portfólios vencedores.</li>
                                 </ul>
                             </div>
                             <div className="bg-slate-950/50 rounded-3xl p-10 border border-slate-800">
@@ -412,10 +412,10 @@ export default function Home() {
                 </section>
 
                 {/* Final CTA Full width */}
-                <section className="bg-emerald-600 border-y border-emerald-700 py-32 text-center text-white px-6">
+                <section className="bg-blue-600 border-y border-blue-700 py-32 text-center text-white px-6">
                     <h2 className="text-4xl md:text-6xl font-extralight mb-8">Poupe e invista <span className="font-semibold italic">para o que vem a seguir.</span></h2>
                     <Link href="/register">
-                        <Button size="lg" className="rounded-full bg-white text-emerald-600 hover:bg-slate-50 font-bold px-10 h-16 text-xl shadow-2xl">
+                        <Button size="lg" className="rounded-full bg-white text-blue-600 hover:bg-slate-50 font-bold px-10 h-16 text-xl shadow-2xl">
                             Abrir Conta na Arvo
                         </Button>
                     </Link>
