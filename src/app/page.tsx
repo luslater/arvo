@@ -24,8 +24,8 @@ export default function Home() {
             {/* Header / Navbar */}
             <header className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-white/90 backdrop-blur-md shadow-sm border-b border-slate-200/50' : 'bg-transparent'}`}>
                 <div className="container mx-auto max-w-7xl flex h-20 items-center justify-between px-6">
-                    <Link href="/" className="flex items-center bg-white/10 rounded-lg py-1.5 px-3 backdrop-blur-sm border border-white/5">
-                        <Image src="/arvo-logo.png" alt="ARVO" width={85} height={42} className="transition-all" />
+                    <Link href="/" className="flex items-center">
+                        <Image src="/arvo-logo-transparent.png" alt="ARVO" width={85} height={42} className={`transition-all ${scrolled ? 'invert' : 'opacity-100'}`} />
                     </Link>
                     <div className="flex items-center gap-6">
                         <Link href="/login" className={`hidden md:block font-medium text-sm transition-colors hover:text-blue-500 ${scrolled ? 'text-slate-600' : 'text-slate-200 hover:text-white'}`}>
@@ -180,35 +180,35 @@ export default function Home() {
 
                         <div className="grid md:grid-cols-3 gap-8">
                             {/* Card 1 */}
-                            <div className="group relative overflow-hidden rounded-3xl bg-slate-900 aspect-[4/5] flex flex-col justify-end p-8">
+                            <div className="group relative overflow-hidden rounded-3xl bg-slate-900 aspect-[4/5] flex flex-col justify-end p-8 text-white">
                                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent z-10" />
                                 <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1579621970588-a3f5ce5a08ae?q=80&w=800&auto=format&fit=crop')] bg-cover bg-center opacity-50 group-hover:scale-105 transition-transform duration-700" />
                                 <div className="relative z-20 space-y-3">
-                                    <div className="inline-block px-3 py-1 bg-white/20 backdrop-blur-md text-white text-xs font-bold uppercase tracking-widest rounded-full mb-2">Fundação</div>
-                                    <h3 className="text-3xl text-white font-light leading-tight">Construindo sua Reserva</h3>
-                                    <p className="text-slate-300 font-light">Estratégias para rentabilizar seu caixa com liquidez imediata e proteção contra inflação, a fundação de todo portfólio.</p>
+                                    <div className="inline-block px-3 py-1 bg-white/20 backdrop-blur-md !text-white text-xs font-bold uppercase tracking-widest rounded-full mb-2">Fundação</div>
+                                    <h3 className="text-3xl !text-white font-light leading-tight">Construindo sua Reserva</h3>
+                                    <p className="!text-slate-300 font-light">Estratégias para rentabilizar seu caixa com liquidez imediata e proteção contra inflação, a fundação de todo portfólio.</p>
                                 </div>
                             </div>
 
                             {/* Card 2 */}
-                            <div className="group relative overflow-hidden rounded-3xl bg-blue-900 aspect-[4/5] flex flex-col justify-end p-8">
+                            <div className="group relative overflow-hidden rounded-3xl bg-blue-900 aspect-[4/5] flex flex-col justify-end p-8 text-white">
                                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-blue-900/40 to-transparent z-10" />
                                 <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=800&auto=format&fit=crop')] bg-cover bg-center opacity-50 group-hover:scale-105 transition-transform duration-700" />
                                 <div className="relative z-20 space-y-3">
-                                    <div className="inline-block px-3 py-1 bg-white/20 backdrop-blur-md text-white text-xs font-bold uppercase tracking-widest rounded-full mb-2">Acumulação</div>
-                                    <h3 className="text-3xl text-white font-light leading-tight">Crescimento Patrimonial</h3>
-                                    <p className="text-slate-300 font-light">As carteiras <strong className="font-semibold text-white">Ritmo</strong> e <strong className="font-semibold text-white">Vanguarda</strong> maximizam retorno no longo prazo respeitando seu conforto com a volatilidade.</p>
+                                    <div className="inline-block px-3 py-1 bg-white/20 backdrop-blur-md !text-white text-xs font-bold uppercase tracking-widest rounded-full mb-2">Acumulação</div>
+                                    <h3 className="text-3xl !text-white font-light leading-tight">Crescimento Patrimonial</h3>
+                                    <p className="!text-slate-300 font-light">As carteiras <strong className="font-semibold !text-white">Ritmo</strong> e <strong className="font-semibold !text-white">Vanguarda</strong> maximizam retorno no longo prazo respeitando seu conforto com a volatilidade.</p>
                                 </div>
                             </div>
 
                             {/* Card 3 */}
-                            <div className="group relative overflow-hidden rounded-3xl bg-blue-900 aspect-[4/5] flex flex-col justify-end p-8">
+                            <div className="group relative overflow-hidden rounded-3xl bg-blue-900 aspect-[4/5] flex flex-col justify-end p-8 text-white">
                                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-blue-900/40 to-transparent z-10" />
                                 <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=800&auto=format&fit=crop')] bg-cover bg-center opacity-60 group-hover:scale-105 transition-transform duration-700" />
                                 <div className="relative z-20 space-y-3">
-                                    <div className="inline-block px-3 py-1 bg-white/20 backdrop-blur-md text-white text-xs font-bold uppercase tracking-widest rounded-full mb-2">Diversificação Global</div>
-                                    <h3 className="text-3xl text-white font-light leading-tight">Acesso ao Mundo Real</h3>
-                                    <p className="text-slate-300 font-light">Através da carteira <strong className="font-semibold text-white">Oceano</strong>, explore ativos globais, S&P 500 e setores de ponta para dolarizar sua tese.</p>
+                                    <div className="inline-block px-3 py-1 bg-white/20 backdrop-blur-md !text-white text-xs font-bold uppercase tracking-widest rounded-full mb-2">Diversificação Global</div>
+                                    <h3 className="text-3xl !text-white font-light leading-tight">Acesso ao Mundo Real</h3>
+                                    <p className="!text-slate-300 font-light">Através da carteira <strong className="font-semibold !text-white">Oceano</strong>, explore ativos globais, S&P 500 e setores de ponta para dolarizar sua tese.</p>
                                 </div>
                             </div>
                         </div>
@@ -427,7 +427,7 @@ export default function Home() {
                 <div className="container mx-auto max-w-7xl px-6">
                     <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-16">
                         <div className="col-span-2 md:col-span-1">
-                            <Image src="/arvo-logo.png" alt="ARVO" width={80} height={40} className="brightness-0 invert mb-6 opacity-50" />
+                            <Image src="/arvo-logo-transparent.png" alt="ARVO" width={80} height={40} className="mb-6 opacity-50" />
                         </div>
                         <div>
                             <h4 className="text-white font-semibold mb-4 text-sm">Investimentos</h4>
