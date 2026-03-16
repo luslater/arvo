@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggle"
-import { Trophy, LogOut, User } from "lucide-react"
+import { Trophy, LogOut, User, Settings } from "lucide-react"
 import Link from "next/link"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { OverviewTab } from "@/components/dashboard/overview-tab"
@@ -12,7 +12,7 @@ import { AssetsTab } from "@/components/dashboard/assets-tab"
 import { AllocationTab } from "@/components/dashboard/allocation-tab"
 import type { UserAsset } from "@/lib/asset-types"
 import type { PortfolioType } from "@/lib/portfolio-allocations"
-import { useSession } from "next-auth/react"
+import { useSession, signOut } from "next-auth/react"
 
 export default function CarteiraPage() {
     const [userAssets, setUserAssets] = useState<UserAsset[]>([])
@@ -22,6 +22,7 @@ export default function CarteiraPage() {
     const [userProfile, setUserProfile] = useState<string | null>(null)
     const { data: session } = useSession()
     const subscriptionStatus = (session?.user?.subscriptionStatus as string) || "FREE"
+    const [isMenuOpen, setIsMenuOpen] = useState(false)
 
     const [isLoading, setIsLoading] = useState(true)
 
@@ -102,15 +103,69 @@ export default function CarteiraPage() {
                             </nav>
                         </div>
 
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-3 relative">
                             <Link href="/jornada">
                                 <Button variant="ghost" size="sm" className="text-yellow-600 hover:text-yellow-700 hover:bg-yellow-50">
                                     <Trophy className="h-4 w-4 mr-2" />
                                     Nível 3
                                 </Button>
                             </Link>
-                            <div className="h-8 w-8 rounded-full bg-gray-100 flex items-center justify-center border border-gray-200">
-                                <User className="h-4 w-4 text-gray-600" />
+
+                            <div className="relative">
+                                <button
+                                    onClick={() => setIsMenuOpen(!isMenuOpen)}
+                                    className="h-10 w-10 rounded-full bg-slate-50 flex items-center justify-center border border-slate-200 hover:bg-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-200"
+                                >
+                                    {session?.user?.image ? (
+                                        <img src={session.user.image} alt="User avatar" className="h-10 w-10 rounded-full object-cover" />
+                                    ) : (
+                                        <User className="h-5 w-5 text-slate-600" />
+                                    )}
+                                </button>
+
+                                {isMenuOpen && (
+                                    <>
+                                        {/* Overlay para fechar ao clicar fora */}
+                                        <div className="fixed inset-0 z-40" onClick={() => setIsMenuOpen(false)} />
+
+                                        {/* Menu suspenso */}
+                                        <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-slate-100 py-2 z-50 animate-in fade-in slide-in-from-top-2">
+                                            <div className="px-4 py-3 border-b border-slate-100 mb-1">
+                                                <p className="text-sm font-semibold text-slate-900 truncate">
+                                                    {session?.user?.name || "Minha Conta"}
+                                                </p>
+                                                <p className="text-xs text-slate-500 truncate mt-0.5">
+                                                    {session?.user?.email || ""}
+                                                </p>
+                                                <div className="mt-2 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-indigo-50 border border-indigo-100">
+                                                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
+                                                    <p className="text-[10px] text-indigo-700 uppercase tracking-widest font-bold">
+                                                        {subscriptionStatus}
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <button
+                                                onClick={() => {
+                                                    setIsMenuOpen(false)
+                                                    // alert("Indo para Configurações...")
+                                                }}
+                                                className="w-full text-left px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 hover:text-slate-900 flex items-center gap-3 transition-colors"
+                                            >
+                                                <Settings className="h-4 w-4 text-slate-400" />
+                                                Configurações
+                                            </button>
+
+                                            <button
+                                                onClick={() => signOut({ callbackUrl: '/login' })}
+                                                className="w-full text-left px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 flex items-center gap-3 transition-colors"
+                                            >
+                                                <LogOut className="h-4 w-4" />
+                                                Sair da conta
+                                            </button>
+                                        </div>
+                                    </>
+                                )}
                             </div>
                         </div>
                     </div>
