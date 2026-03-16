@@ -2,6 +2,7 @@
 
 import { use, useState, useEffect } from "react"
 import Link from "next/link"
+import { useSession } from "next-auth/react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ThemeToggle } from "@/components/theme-toggle"
@@ -28,26 +29,40 @@ export default function PortfolioDetailPage({ params }: { params: Promise<{ type
         ? OCEANO_INFO
         : getProfileDescription(portfolioType as "ABRIGO" | "RITMO" | "VANGUARDA")
 
-    const capital = typeof window !== "undefined" ? Number(localStorage.getItem("portfolioCapital") || "5000000") / 100 : 50000
-    const emergencyFund = typeof window !== "undefined" ? Number(localStorage.getItem("emergencyFund") || "1000000") / 100 : 10000
-
-    // Load user assets and calculate adherence score
+    const { data: session } = useSession()
+    const [capital, setCapital] = useState(50000)
+    const [emergencyFund, setEmergencyFund] = useState(10000)
+    const [userAssets, setUserAssets] = useState<UserAsset[]>([])
     const [adherenceScore, setAdherenceScore] = useState<AdherenceScore | null>(null)
 
+    // Load data from DB Profile instead of localStorage
     useEffect(() => {
-        if (typeof window !== "undefined") {
-            const userAssetsStr = localStorage.getItem("userAssets")
-            if (userAssetsStr) {
-                try {
-                    const userAssets: UserAsset[] = JSON.parse(userAssetsStr)
-                    const score = calculateAdherenceScore(userAssets, portfolioType)
-                    setAdherenceScore(score)
-                } catch (e) {
-                    console.error("Error loading user assets:", e)
+        const loadProfileData = async () => {
+            if (!session?.user?.id) return
+
+            try {
+                const res = await fetch("/api/user/profile")
+                if (res.ok) {
+                    const data = await res.json()
+                    const profileCapital = (data.saldo || 0) + (data.totalCarteira || 0)
+                    const profileEmergency = data.emergencyFund || 0
+
+                    if (profileCapital > 0) setCapital(profileCapital)
+                    if (profileEmergency > 0) setEmergencyFund(profileEmergency)
+
+                    if (data.assets && data.assets.length > 0) {
+                        setUserAssets(data.assets)
+                        const score = calculateAdherenceScore(data.assets, portfolioType)
+                        setAdherenceScore(score)
+                    }
                 }
+            } catch (e) {
+                console.error("Error loading profile data:", e)
             }
         }
-    }, [portfolioType])
+
+        loadProfileData()
+    }, [session, portfolioType])
 
     const colorClasses = {
         ABRIGO: "from-[#C9B8A3] to-[#8B7355]",
@@ -300,11 +315,8 @@ export default function PortfolioDetailPage({ params }: { params: Promise<{ type
                                             <PieChart>
                                                 <Pie
                                                     data={(() => {
-                                                        if (typeof window === "undefined") return []
-                                                        const userAssetsStr = localStorage.getItem("userAssets")
-                                                        if (!userAssetsStr) return []
+                                                        if (userAssets.length === 0) return []
 
-                                                        const userAssets: UserAsset[] = JSON.parse(userAssetsStr)
                                                         const typeMap: Record<string, number> = {}
 
                                                         userAssets.forEach(asset => {
@@ -333,11 +345,8 @@ export default function PortfolioDetailPage({ params }: { params: Promise<{ type
                                                     label={({ percentage }: any) => `${percentage}%`}
                                                 >
                                                     {(() => {
-                                                        if (typeof window === "undefined") return []
-                                                        const userAssetsStr = localStorage.getItem("userAssets")
-                                                        if (!userAssetsStr) return []
+                                                        if (userAssets.length === 0) return []
 
-                                                        const userAssets: UserAsset[] = JSON.parse(userAssetsStr)
                                                         const typeMap: Record<string, number> = {}
 
                                                         userAssets.forEach(asset => {

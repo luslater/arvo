@@ -9,6 +9,7 @@ import { ThemeToggle } from "@/components/theme-toggle"
 import { ArrowLeft, Upload, X, TrendingUp, DollarSign, Shield, Briefcase } from "lucide-react"
 import { ASSET_TYPES, type AssetType, type UserAsset, type Indexador } from "@/lib/asset-types"
 import Link from "next/link"
+import { useSession } from "next-auth/react"
 import { CurrencyInput } from "@/components/ui/currency-input"
 
 export default function AdaptPortfolioPage() {
@@ -18,6 +19,8 @@ export default function AdaptPortfolioPage() {
     const [saldo, setSaldo] = useState(0)
     const [reserva, setReserva] = useState(0)
     const [draggedType, setDraggedType] = useState<AssetType | null>(null)
+    const [isSaving, setIsSaving] = useState(false)
+    const { data: session } = useSession()
 
     const addAsset = (type: AssetType) => {
         const newAsset: UserAsset = {
@@ -68,19 +71,57 @@ export default function AdaptPortfolioPage() {
         }
     }
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (selectedAssets.length === 0) {
             alert("Adicione pelo menos um ativo à sua carteira")
             return
         }
 
-        localStorage.setItem("userAssets", JSON.stringify(selectedAssets))
-        localStorage.setItem("portfolioCapital", (totalCarteira * 100).toString())
-        localStorage.setItem("saldo", (saldo * 100).toString())
-        localStorage.setItem("emergencyFund", (reserva * 100).toString())
+        setIsSaving(true)
+        try {
+            // Salvar Configuração de Capital
+            await fetch("/api/user/profile", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    saldo,
+                    emergencyFund: reserva,
+                    totalCarteira
+                })
+            })
 
-        const profile = localStorage.getItem("userProfile") || "RITMO"
-        router.push(`/portfolio/${profile.toLowerCase()}`)
+            // Salvar Ativos
+            await Promise.all(
+                selectedAssets.map(asset =>
+                    fetch("/api/user/assets", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            type: asset.type,
+                            value: asset.value,
+                            quantity: asset.quantity || 1,
+                            name: asset.name,
+                            category: "outros",
+                            ticker: asset.name || asset.type
+                        })
+                    })
+                )
+            )
+
+            // Puxar o perfil atual do DB (ou manter local pra fallback rápido visual)
+            const profileReq = await fetch("/api/user/profile")
+            let profileType = "RITMO"
+            if (profileReq.ok) {
+                const profileData = await profileReq.json()
+                profileType = profileData.portfolioType || "RITMO"
+            }
+
+            router.push(`/portfolio/${profileType.toLowerCase()}`)
+        } catch (error) {
+            console.error(error)
+            alert("Erro ao salvar os ativos. Tente novamente.")
+            setIsSaving(false)
+        }
     }
 
     const assetsByCategory = ASSET_TYPES.reduce((acc, asset) => {
@@ -320,11 +361,12 @@ export default function AdaptPortfolioPage() {
                     <div className="flex justify-end">
                         <Button
                             onClick={handleSubmit}
+                            disabled={isSaving}
                             className="bg-gray-100 text-gray-900 hover:bg-gray-900 hover:text-white font-semibold shadow-lg hover:shadow-xl transition-all"
                             size="lg"
                         >
-                            <span className="">Ver Recomendações e Score</span>
-                            <TrendingUp className="ml-2 h-5 w-5" />
+                            <span className="">{isSaving ? "Salvando Base de Dados..." : "Ver Recomendações e Score"}</span>
+                            {!isSaving && <TrendingUp className="ml-2 h-5 w-5" />}
                         </Button>
                     </div>
                 )}

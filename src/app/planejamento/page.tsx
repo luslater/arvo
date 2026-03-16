@@ -17,6 +17,7 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import Image from "next/image"
+import { useSession } from "next-auth/react"
 import {
     projectFinancialPlan,
     getAlignmentLabel,
@@ -154,6 +155,8 @@ export default function PlanejamentoPage() {
     const [viewMode, setViewMode] = useState<"NOMINAL" | "REAL">("NOMINAL")
     const [saved, setSaved] = useState(false)
 
+    const { data: session } = useSession()
+
     // Internal state for formatting the desired cost input
     const [desiredLifestyleCostInput, setDesiredLifestyleCostInput] = useState(formatNumber(12000))
 
@@ -161,28 +164,46 @@ export default function PlanejamentoPage() {
         setDesiredLifestyleCostInput(formatNumber(desiredLifestyleCost))
     }, [desiredLifestyleCost])
 
-    // Carrega dados do localStorage (integração com onboarding/perfil)
+    // Carrega dados do Banco de Dados via API
     useEffect(() => {
-        if (typeof window === "undefined") return
+        if (!session?.user?.id) return
 
-        const savedLifestyle = localStorage.getItem("desiredLifestyleCost")
-        if (savedLifestyle) setDesiredLifestyleCost(Number(savedLifestyle))
+        const loadData = async () => {
+            try {
+                const res = await fetch("/api/user/financial-plan")
+                if (res.ok) {
+                    const data = await res.json()
 
-        const portfolioCapital = Number(localStorage.getItem("portfolioCapital") || "0") / 100
-        const emergencyFund = Number(localStorage.getItem("emergencyFund") || "0") / 100
-        const saldo = Number(localStorage.getItem("saldo") || "0") / 100
-        const total = portfolioCapital + emergencyFund + saldo
-        if (total > 0) setCurrentValue(total)
+                    if (data.plan) {
+                        setDesiredLifestyleCost(data.plan.desiredLifestyleCost)
+                        setMonthlyContribution(data.plan.monthlyContribution)
+                        setInvestmentPeriod(data.plan.investmentPeriod)
+                        setNominalReturn(data.plan.expectedReturn)
+                    }
 
-        const profile = localStorage.getItem("userProfile") || "RITMO"
-        const returnByProfile: Record<string, number> = {
-            ABRIGO: 10.5,
-            RITMO: 12,
-            VANGUARDA: 14,
-            OCEANO: 13,
+                    if (data.profile) {
+                        const total = data.profile.saldo + data.profile.emergencyFund + data.profile.totalCarteira
+                        if (total > 0) setCurrentValue(total)
+
+                        if (!data.plan) {
+                            const profile = data.profile.portfolioType || "RITMO"
+                            const returnByProfile: Record<string, number> = {
+                                ABRIGO: 10.5,
+                                RITMO: 12,
+                                VANGUARDA: 14,
+                                OCEANO: 13,
+                            }
+                            setNominalReturn(returnByProfile[profile] ?? 12)
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error("Erro ao puxar dados do banco:", error)
+            }
         }
-        setNominalReturn(returnByProfile[profile] ?? 12)
-    }, [])
+
+        loadData()
+    }, [session])
 
     // Projeção financeira (usa lib existente)
     const projection = useMemo(() => {
@@ -223,13 +244,23 @@ export default function PlanejamentoPage() {
         (monthlyPassiveIncome / Math.max(desiredLifestyleCost, 1)) * 100
     )
 
-    const handleSave = () => {
-        if (typeof window === "undefined") return
-        localStorage.setItem("desiredLifestyleCost", desiredLifestyleCost.toString())
-        localStorage.setItem("monthlyContribution", monthlyContribution.toString())
-        localStorage.setItem("investmentPeriod", investmentPeriod.toString())
-        setSaved(true)
-        setTimeout(() => setSaved(false), 2500)
+    const handleSave = async () => {
+        try {
+            await fetch("/api/user/financial-plan", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    desiredLifestyleCost,
+                    monthlyContribution,
+                    investmentPeriod,
+                    expectedReturn: nominalReturn
+                })
+            })
+            setSaved(true)
+            setTimeout(() => setSaved(false), 2500)
+        } catch (error) {
+            console.error("Erro ao salvar no banco:", error)
+        }
     }
 
     return (
