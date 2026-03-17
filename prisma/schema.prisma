@@ -94,6 +94,7 @@ model FinancialPlan {
   monthlyContribution   Float
   investmentPeriod      Int
   expectedReturn        Float    @default(12)
+  currentCapital        Float?
   
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt

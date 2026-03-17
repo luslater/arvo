@@ -179,11 +179,16 @@ export default function PlanejamentoPage() {
                         setMonthlyContribution(data.plan.monthlyContribution)
                         setInvestmentPeriod(data.plan.investmentPeriod)
                         setNominalReturn(data.plan.expectedReturn)
+                        if (data.plan.currentCapital !== null && data.plan.currentCapital !== undefined) {
+                            setCurrentValue(data.plan.currentCapital)
+                        }
                     }
 
                     if (data.profile) {
-                        const total = data.profile.saldo + data.profile.emergencyFund + data.profile.totalCarteira
-                        if (total > 0) setCurrentValue(total)
+                        if (!data.plan || data.plan.currentCapital === null || data.plan.currentCapital === undefined) {
+                            const total = data.profile.saldo + data.profile.emergencyFund + data.profile.totalCarteira
+                            if (total > 0) setCurrentValue(total)
+                        }
 
                         if (!data.plan) {
                             const profile = data.profile.portfolioType || "RITMO"
@@ -253,7 +258,8 @@ export default function PlanejamentoPage() {
                     desiredLifestyleCost,
                     monthlyContribution,
                     investmentPeriod,
-                    expectedReturn: nominalReturn
+                    expectedReturn: nominalReturn,
+                    currentCapital: currentValue
                 })
             })
             setSaved(true)

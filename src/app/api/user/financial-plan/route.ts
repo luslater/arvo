@@ -40,7 +40,7 @@ export async function PUT(req: Request) {
 
     try {
         const body = await req.json()
-        const { desiredLifestyleCost, monthlyContribution, investmentPeriod, expectedReturn } = body
+        const { desiredLifestyleCost, monthlyContribution, investmentPeriod, expectedReturn, currentCapital } = body
 
         // Validate basic types
         if (
@@ -60,14 +60,16 @@ export async function PUT(req: Request) {
                 desiredLifestyleCost,
                 monthlyContribution,
                 investmentPeriod,
-                expectedReturn
+                expectedReturn,
+                ...(currentCapital !== undefined && { currentCapital })
             },
             create: {
                 userId: session.user.id,
                 desiredLifestyleCost,
                 monthlyContribution,
                 investmentPeriod,
-                expectedReturn
+                expectedReturn,
+                currentCapital: currentCapital ?? null
             }
         })
 
