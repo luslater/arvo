@@ -18,6 +18,7 @@ interface OverviewTabProps {
     userProfile: string | null
     subscriptionStatus: string
     onTransactionComplete: () => void
+    realUserProfile: string | null
 }
 
 export function OverviewTab({
@@ -27,9 +28,12 @@ export function OverviewTab({
     totalCarteira,
     userProfile,
     subscriptionStatus,
-    onTransactionComplete
+    onTransactionComplete,
+    realUserProfile
 }: OverviewTabProps) {
     const totalPatrimonio = totalCarteira + saldo + reserva
+
+    const isPreviewing = realUserProfile && userProfile && realUserProfile !== userProfile;
 
     const profileInfo = userProfile === "OCEANO"
         ? OCEANO_INFO
@@ -39,6 +43,27 @@ export function OverviewTab({
 
     return (
         <div className="space-y-6">
+
+            {/* Premium CTA Dashboard Banner */}
+            {subscriptionStatus === "FREE" && (
+                <div className="bg-gradient-to-r from-emerald-500 to-emerald-700 rounded-xl p-6 text-white shadow-md flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center shrink-0">
+                            <Rocket className="w-6 h-6 text-white" />
+                        </div>
+                        <div>
+                            <h3 className="font-bold text-lg">Libere o Potencial Completo da sua Carteira</h3>
+                            <p className="text-emerald-100 text-sm mt-1">Visualizando outras carteiras? Assine o Premium para destrancar a alocação exata de ativos como Vanguarda e Ritmo.</p>
+                        </div>
+                    </div>
+                    <Button asChild variant="secondary" className="w-full md:w-auto bg-white text-emerald-700 hover:bg-emerald-50 font-bold px-8 shadow-sm">
+                        <Link href="/checkout/pagamento">
+                            Upgrade Premium
+                        </Link>
+                    </Button>
+                </div>
+            )}
+
             {/* Quick Stats */}
             <Card className="border-0 shadow-sm bg-white">
                 <CardContent className="pt-6">
@@ -99,9 +124,12 @@ export function OverviewTab({
                         </div>
                         <div className="flex-1 space-y-4">
                             <div>
-                                <p className="text-sm text-gray-500 font-medium uppercase tracking-wide">Seu Perfil de Investidor</p>
-                                <h3 className="text-3xl font-light text-gray-900 mt-1">
+                                <p className="text-sm text-gray-500 font-medium uppercase tracking-wide">
+                                    {isPreviewing ? "Visualizando Perfil" : "Seu Perfil de Investidor"}
+                                </p>
+                                <h3 className="text-3xl font-light text-gray-900 mt-1 flex items-center gap-3">
                                     {userProfile ? `Carteira ${userProfile}` : "Perfil não definido"}
+                                    {isPreviewing && <span className="text-xs bg-amber-100 text-amber-700 px-2 py-1 rounded-md font-bold tracking-wider">MODO PREVISÃO</span>}
                                 </h3>
                             </div>
 

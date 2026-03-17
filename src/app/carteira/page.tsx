@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggle"
-import { Trophy, LogOut, User, Settings } from "lucide-react"
+import { Trophy, LogOut, User, Settings, ChevronDown, Check } from "lucide-react"
 import Link from "next/link"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { OverviewTab } from "@/components/dashboard/overview-tab"
@@ -20,9 +20,11 @@ export default function CarteiraPage() {
     const [reserva, setReserva] = useState(0)
     const [totalCarteira, setTotalCarteira] = useState(0)
     const [userProfile, setUserProfile] = useState<string | null>(null)
+    const [viewingProfile, setViewingProfile] = useState<string | null>(null)
     const { data: session } = useSession()
     const subscriptionStatus = (session?.user?.subscriptionStatus as string) || "FREE"
     const [isMenuOpen, setIsMenuOpen] = useState(false)
+    const [isSelectorOpen, setIsSelectorOpen] = useState(false)
 
     const [isLoading, setIsLoading] = useState(true)
 
@@ -40,6 +42,7 @@ export default function CarteiraPage() {
             if (res.ok) {
                 const data = await res.json()
                 setUserProfile(data.portfolioType)
+                setViewingProfile(data.portfolioType)
                 setSaldo(data.saldo)
                 setReserva(data.emergencyFund)
                 setTotalCarteira(data.totalCarteira)
@@ -104,12 +107,19 @@ export default function CarteiraPage() {
                         </div>
 
                         <div className="flex items-center gap-3 relative">
-                            <Link href="/jornada">
-                                <Button variant="ghost" size="sm" className="text-yellow-600 hover:text-yellow-700 hover:bg-yellow-50">
+                            {subscriptionStatus === "FREE" && (
+                                <Button asChild variant="default" size="sm" className="hidden sm:inline-flex bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-bold border-0 shadow-md">
+                                    <Link href="/checkout/pagamento">
+                                        Seja Premium
+                                    </Link>
+                                </Button>
+                            )}
+                            <Button asChild variant="ghost" size="sm" className="text-yellow-600 hover:text-yellow-700 hover:bg-yellow-50">
+                                <Link href="/jornada">
                                     <Trophy className="h-4 w-4 mr-2" />
                                     Nível 3
-                                </Button>
-                            </Link>
+                                </Link>
+                            </Button>
 
                             <div className="relative">
                                 <button
@@ -174,6 +184,51 @@ export default function CarteiraPage() {
 
             {/* Main Content */}
             <div className="max-w-7xl mx-auto px-6 py-8">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                    <div>
+                        <h1 className="text-2xl font-bold text-gray-900">Sua Carteira</h1>
+                        <p className="text-gray-500 text-sm mt-1">
+                            Acompanhe e simule carteiras de investimento
+                        </p>
+                    </div>
+
+                    <div className="relative">
+                        <button
+                            onClick={() => setIsSelectorOpen(!isSelectorOpen)}
+                            className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-50 transition-colors text-sm font-medium text-gray-700"
+                        >
+                            Visualizando: {viewingProfile || "Carregando..."}
+                            <ChevronDown className="h-4 w-4 text-gray-400" />
+                        </button>
+
+                        {isSelectorOpen && (
+                            <>
+                                <div className="fixed inset-0 z-40" onClick={() => setIsSelectorOpen(false)} />
+                                <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-50">
+                                    <div className="px-3 py-2 border-b border-gray-100 mb-1">
+                                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Mudar Visualização</p>
+                                    </div>
+                                    {["ABRIGO", "RITMO", "VANGUARDA", "OCEANO"].map((prof) => (
+                                        <button
+                                            key={prof}
+                                            onClick={() => {
+                                                setViewingProfile(prof)
+                                                setIsSelectorOpen(false)
+                                            }}
+                                            className={`w-full text-left px-4 py-2.5 text-sm flex items-center justify-between transition-colors ${viewingProfile === prof ? "bg-indigo-50 text-indigo-700 font-medium" : "text-gray-700 hover:bg-gray-50"}`}
+                                        >
+                                            <span className="flex items-center gap-2">
+                                                {prof} {prof === userProfile && <span className="text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded-full font-bold ml-1 border border-slate-200">MEU PERFIL</span>}
+                                            </span>
+                                            {viewingProfile === prof && <Check className="h-4 w-4 text-indigo-600" />}
+                                        </button>
+                                    ))}
+                                </div>
+                            </>
+                        )}
+                    </div>
+                </div>
+
                 <Tabs defaultValue="overview" className="space-y-6">
                     <div className="flex justify-center">
                         <TabsList className="bg-white border border-gray-200 shadow-sm p-1 h-auto rounded-full">
@@ -195,9 +250,10 @@ export default function CarteiraPage() {
                             saldo={saldo}
                             reserva={reserva}
                             totalCarteira={totalCarteira}
-                            userProfile={userProfile}
+                            userProfile={viewingProfile}
                             subscriptionStatus={subscriptionStatus}
                             onTransactionComplete={loadData}
+                            realUserProfile={userProfile}
                         />
                     </TabsContent>
 
@@ -215,10 +271,11 @@ export default function CarteiraPage() {
                     <TabsContent value="allocation" className="space-y-6 animate-in fade-in-50 duration-300">
                         <AllocationTab
                             userAssets={userAssets}
-                            userProfile={(userProfile as PortfolioType) || "RITMO"}
+                            userProfile={(viewingProfile as PortfolioType) || "RITMO"}
                             capital={totalCarteira}
                             emergencyFund={reserva}
                             subscriptionStatus={subscriptionStatus}
+                            realUserProfile={userProfile}
                         />
                     </TabsContent>
                 </Tabs>

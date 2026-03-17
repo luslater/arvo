@@ -16,6 +16,7 @@ interface AllocationTabProps {
     capital: number
     emergencyFund: number
     subscriptionStatus: string
+    realUserProfile: string | null
 }
 
 export function AllocationTab({
@@ -23,7 +24,8 @@ export function AllocationTab({
     userProfile,
     capital,
     emergencyFund,
-    subscriptionStatus
+    subscriptionStatus,
+    realUserProfile
 }: AllocationTabProps) {
     const allocations = PORTFOLIO_ALLOCATIONS[userProfile]
     const totals = getTotalsByType(userProfile)
