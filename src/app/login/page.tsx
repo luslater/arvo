@@ -12,7 +12,7 @@ import { ThemeToggle } from "@/components/theme-toggle"
 function LoginForm() {
     const router = useRouter()
     const searchParams = useSearchParams()
-    const callbackUrl = searchParams.get("callbackUrl") || "/carteira"
+    const callbackUrl = searchParams.get("callbackUrl") || "/dashboard"
 
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
@@ -134,7 +134,7 @@ function LoginForm() {
 
                     <div className="mt-6 text-center text-sm">
                         <span className="text-gray-600 ">Não tem uma conta?</span>{" "}
-                        <Link href={`/register${callbackUrl !== "/carteira" ? `?callbackUrl=${encodeURIComponent(callbackUrl)}` : ""}`} className="text-gray-900  font-medium hover:underline">
+                        <Link href={`/register${callbackUrl !== "/dashboard" ? `?callbackUrl=${encodeURIComponent(callbackUrl)}` : ""}`} className="text-gray-900  font-medium hover:underline">
                             Cadastre-se
                         </Link>
                     </div>

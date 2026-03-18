@@ -11,7 +11,7 @@ import { ThemeToggle } from "@/components/theme-toggle"
 function RegisterForm() {
     const router = useRouter()
     const searchParams = useSearchParams()
-    const callbackUrl = searchParams.get("callbackUrl") || "/carteira"
+    const callbackUrl = searchParams.get("callbackUrl") || "/dashboard"
 
     const [name, setName] = useState("")
     const [email, setEmail] = useState("")
@@ -45,7 +45,7 @@ function RegisterForm() {
             }
 
             // After register, redirect to login
-            const callbackParam = callbackUrl !== "/carteira" ? `&callbackUrl=${encodeURIComponent(callbackUrl)}` : ""
+            const callbackParam = callbackUrl !== "/dashboard" ? `&callbackUrl=${encodeURIComponent(callbackUrl)}` : ""
             router.push(`/login?registered=true${callbackParam}`)
         } catch (err) {
             setError("Ocorreu um erro na rede. Tente novamente.")
@@ -130,7 +130,7 @@ function RegisterForm() {
 
                     <div className="mt-6 text-center text-sm">
                         <span className="text-gray-600">Já tem uma conta?</span>{" "}
-                        <Link href={`/login${callbackUrl !== "/carteira" ? `?callbackUrl=${encodeURIComponent(callbackUrl)}` : ""}`} className="text-gray-900 font-medium hover:underline">
+                        <Link href={`/login${callbackUrl !== "/dashboard" ? `?callbackUrl=${encodeURIComponent(callbackUrl)}` : ""}`} className="text-gray-900 font-medium hover:underline">
                             Entrar
                         </Link>
                     </div>
