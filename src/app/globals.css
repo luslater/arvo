@@ -1,5 +1,30 @@
 @import "tailwindcss";
 
+@theme {
+  /* Dashboard Colors — ARVO Brand */
+  --color-dash-bg: #F4F6F9;
+  --color-dash-surface: #FFFFFF;
+  --color-dash-surface-active: #EEF2F7;
+  --color-dash-border: rgba(10, 25, 47, 0.08);
+  --color-dash-border-strong: rgba(10, 25, 47, 0.18);
+  --color-dash-text: #0A192F;
+  --color-dash-text-muted: #4A5568;
+  --color-dash-text-light: #94A3B8;
+  --color-dash-accent: #0A192F;
+  --color-dash-accent-light: #EEF2F7;
+  --color-dash-accent-mid: #1E3A5F;
+  --color-dash-danger: #C0392B;
+  --color-dash-danger-light: #FBEAEA;
+  --color-dash-amber: #B8860B;
+  --color-dash-amber-light: #FDF6E3;
+  --color-dash-blue: #1B4F8A;
+  --color-dash-blue-light: #EAF0F9;
+
+  /* Fonts */
+  --font-serif: var(--font-dm-serif);
+  --font-sans: var(--font-dm-sans);
+}
+
 /* ARVO Design System - Pastel Palette */
 :root {
   /* Base Colors */
