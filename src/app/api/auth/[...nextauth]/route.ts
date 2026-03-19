@@ -30,9 +30,7 @@ export const authOptions: NextAuthOptions = {
                 }
 
                 const user = await prisma.user.findUnique({
-                    where: {
-                        email: credentials.email
-                    }
+                    where: { email: credentials.email }
                 })
 
                 if (!user || !user.password) {
@@ -52,6 +50,10 @@ export const authOptions: NextAuthOptions = {
                     id: user.id,
                     email: user.email,
                     name: user.name,
+                    // @ts-ignore
+                    accountStatus: user.accountStatus,
+                    // @ts-ignore
+                    subscriptionStatus: user.subscriptionStatus,
                 }
             }
         })
@@ -59,11 +61,10 @@ export const authOptions: NextAuthOptions = {
     callbacks: {
         async session({ session, token }) {
             if (session.user) {
-                // Check if user status implies premium based on existing checks
-                const isPremium = token?.subscriptionStatus === "PREMIUM" || token?.subscriptionStatus === "ADMIN"
-
-                session.user.subscriptionStatus = isPremium ? "PREMIUM" : "FREE"
                 session.user.id = token.id as string
+                session.user.accountStatus = token.accountStatus as string
+                const isPremium = token?.subscriptionStatus === "PREMIUM" || token?.subscriptionStatus === "ADMIN"
+                session.user.subscriptionStatus = isPremium ? "PREMIUM" : "FREE"
             }
             return session
         },
@@ -71,17 +72,21 @@ export const authOptions: NextAuthOptions = {
             if (user) {
                 token.id = user.id
                 // @ts-ignore
+                token.accountStatus = user.accountStatus || "PENDING"
+                // @ts-ignore
                 token.subscriptionStatus = user.subscriptionStatus || "FREE"
             } else if (token.id) {
-                // Refresh subscription status from DB if it's not in the token
+                // Refresh from DB on each request to pick up admin changes
                 const dbUser = await prisma.user.findUnique({
                     where: { id: token.id as string },
                     // @ts-ignore
-                    select: { subscriptionStatus: true }
+                    select: { subscriptionStatus: true, accountStatus: true }
                 })
                 if (dbUser) {
                     // @ts-ignore
                     token.subscriptionStatus = dbUser.subscriptionStatus
+                    // @ts-ignore
+                    token.accountStatus = dbUser.accountStatus
                 }
             }
             return token
@@ -90,5 +95,4 @@ export const authOptions: NextAuthOptions = {
 }
 
 const handler = NextAuth(authOptions)
-
 export { handler as GET, handler as POST }

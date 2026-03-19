@@ -13,12 +13,7 @@ export async function POST(req: Request) {
             )
         }
 
-        // Check if user already exists
-        const existingUser = await prisma.user.findUnique({
-            where: {
-                email,
-            },
-        })
+        const existingUser = await prisma.user.findUnique({ where: { email } })
 
         if (existingUser) {
             return NextResponse.json(
@@ -27,33 +22,29 @@ export async function POST(req: Request) {
             )
         }
 
-        // Hash password
         const hashedPassword = await bcrypt.hash(password, 10)
 
-        // Create user
+        // Create user with PENDING status — requires admin approval
         const user = await prisma.user.create({
             data: {
                 name,
                 email,
                 password: hashedPassword,
+                // @ts-ignore — field added via schema migration
+                accountStatus: "PENDING",
             },
         })
 
-        // Remove password from response
         const { password: _, ...userWithoutPassword } = user
 
         return NextResponse.json(
-            { message: "Usuário criado com sucesso", user: userWithoutPassword },
+            { message: "Cadastro recebido! Aguardando aprovação.", user: userWithoutPassword },
             { status: 201 }
         )
     } catch (error: any) {
         console.error("Registration error:", error)
         return NextResponse.json(
-            {
-                message: "Erro ao criar usuário",
-                error: error?.message || String(error),
-                code: error?.code
-            },
+            { message: "Erro ao criar usuário", error: error?.message || String(error), code: error?.code },
             { status: 500 }
         )
     }

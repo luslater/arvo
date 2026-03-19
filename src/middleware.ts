@@ -6,19 +6,32 @@ export default withAuth(
     function middleware(req) {
         const token = req.nextauth.token
         const { pathname } = req.nextUrl
-        const isPremiumRoute =
-            pathname.startsWith("/dashboard") ||
-            pathname.startsWith("/portfolio") ||
-            pathname.startsWith("/carteira") ||
-            pathname.startsWith("/jornada") ||
-            pathname.startsWith("/educacao") ||
-            pathname.startsWith("/onboarding") ||
-            pathname.startsWith("/questionnaire") ||
-            pathname.startsWith("/funds") ||
-            pathname === "/planejamento"
 
-        // Remoção da trava global: Usuários FREE agora podem acessar o painel (Freemium).
-        // Restrições de assinatura serão tratadas via UI (Paywall / Blur).
+        // Allow public pages regardless
+        if (
+            pathname === "/" ||
+            pathname === "/login" ||
+            pathname === "/register" ||
+            pathname === "/pending" ||
+            pathname === "/checkout" ||
+            pathname.startsWith("/demo") ||
+            pathname.startsWith("/api") ||
+            pathname.includes(".")
+        ) {
+            return NextResponse.next()
+        }
+
+        // If user is logged in but PENDING, redirect to /pending
+        // @ts-ignore
+        const accountStatus = token?.accountStatus
+        if (accountStatus === "PENDING" && pathname !== "/pending") {
+            return NextResponse.redirect(new URL("/pending", req.url))
+        }
+
+        // If user is REJECTED, redirect to login with message
+        if (accountStatus === "REJECTED" && pathname !== "/login") {
+            return NextResponse.redirect(new URL("/login?error=rejected", req.url))
+        }
 
         return NextResponse.next()
     },
@@ -26,19 +39,20 @@ export default withAuth(
         callbacks: {
             authorized: ({ token, req }) => {
                 const { pathname } = req.nextUrl
-                // Rotas que NÃO precisam de login (Públicas)
+                // Public pages — no auth required
                 if (
                     pathname === "/" ||
                     pathname === "/login" ||
                     pathname === "/register" ||
-                    pathname === "/checkout" || // Permite ver a página de venda
-                    pathname.startsWith("/demo") || // Futura página de simulador liberado
+                    pathname === "/pending" ||
+                    pathname === "/checkout" ||
+                    pathname.startsWith("/demo") ||
                     pathname.startsWith("/api") ||
                     pathname.includes(".")
                 ) {
                     return true
                 }
-                // Todas as outras rotas exigem token (estar logado)
+                // All other routes require login
                 return !!token
             },
         },
