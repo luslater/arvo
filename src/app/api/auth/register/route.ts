@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import bcrypt from "bcrypt"
+import { sendNewUserNotification } from "@/lib/email"
 
 export async function POST(req: Request) {
     try {
@@ -34,6 +35,13 @@ export async function POST(req: Request) {
                 accountStatus: "PENDING",
             },
         })
+
+        // Notify admin — fire and forget (registration succeeds even if email fails)
+        sendNewUserNotification({
+            name: user.name,
+            email: user.email!,
+            registeredAt: user.createdAt,
+        }).catch(err => console.error("Email notification failed:", err))
 
         const { password: _, ...userWithoutPassword } = user
 
