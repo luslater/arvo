@@ -1,207 +1,317 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useSession } from "next-auth/react"
+import { Pencil, Check, X, TrendingUp, Wallet, PiggyBank, BarChart3 } from "lucide-react"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
+import Link from "next/link"
 
-const carteiraData6m = [
-    { month: 'Out', carteira: 38200, ideal: 39000, cdi: 38800 },
-    { month: 'Nov', carteira: 39100, ideal: 40200, cdi: 39600 },
-    { month: 'Dez', carteira: 40500, ideal: 41500, cdi: 40400 },
-    { month: 'Jan', carteira: 41800, ideal: 43000, cdi: 41300 },
-    { month: 'Fev', carteira: 43200, ideal: 44800, cdi: 42200 },
-    { month: 'Mar', carteira: 48200, ideal: 49500, cdi: 43100 },
-]
+const formatBRL = (val: number) =>
+    new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 }).format(val)
+
+const parseBRL = (val: string) => {
+    const clean = val.replace(/\D/g, "")
+    return clean === "" ? 0 : parseInt(clean, 10)
+}
+
+interface DashboardData {
+    totalCarteira: number
+    saldo: number
+    emergencyFund: number
+    portfolioType: string | null
+    monthlyContribution: number
+    desiredLifestyleCost: number
+    investmentPeriod: number
+    expectedReturn: number
+    userName: string
+}
+
+function EditableMetric({
+    label, value, onSave, prefix = "R$", suffix = ""
+}: {
+    label: string
+    value: number
+    onSave: (val: number) => void
+    prefix?: string
+    suffix?: string
+}) {
+    const [editing, setEditing] = useState(false)
+    const [input, setInput] = useState("")
+
+    const display = prefix === "R$"
+        ? formatBRL(value)
+        : `${value.toLocaleString("pt-BR")}${suffix}`
+
+    const handleSave = () => {
+        const parsed = prefix === "R$" ? parseBRL(input) : parseFloat(input.replace(",", "."))
+        if (!isNaN(parsed)) onSave(parsed)
+        setEditing(false)
+    }
+
+    if (editing) {
+        return (
+            <div className="flex items-center gap-1 mt-1">
+                {prefix === "R$" && <span className="text-[13px] text-dash-text-muted">R$</span>}
+                <input
+                    autoFocus
+                    type="text"
+                    defaultValue={prefix === "R$" ? value.toString() : value.toString()}
+                    onChange={e => setInput(e.target.value)}
+                    onKeyDown={e => { if (e.key === "Enter") handleSave(); if (e.key === "Escape") setEditing(false) }}
+                    className="w-28 border-b-2 border-dash-accent bg-transparent text-[22px] font-serif text-dash-text outline-none"
+                />
+                <button onClick={handleSave} className="text-emerald-600 hover:text-emerald-700"><Check className="w-4 h-4" /></button>
+                <button onClick={() => setEditing(false)} className="text-dash-text-light hover:text-dash-danger"><X className="w-4 h-4" /></button>
+            </div>
+        )
+    }
+
+    return (
+        <div className="flex items-center gap-1.5 group">
+            <div className="font-serif text-[26px] text-dash-text tracking-tight">{display}</div>
+            <button
+                onClick={() => { setInput(value.toString()); setEditing(true) }}
+                className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-dash-surface-active rounded-md"
+            >
+                <Pencil className="w-3 h-3 text-dash-text-muted" />
+            </button>
+        </div>
+    )
+}
 
 export default function DashboardPage() {
-    const [showUpload, setShowUpload] = useState(true)
-    const [period, setPeriod] = useState('6m')
+    const { data: session } = useSession()
+    const [data, setData] = useState<DashboardData | null>(null)
+    const [loading, setLoading] = useState(true)
+    const [saving, setSaving] = useState(false)
+
+    const loadData = async () => {
+        setLoading(true)
+        try {
+            const [profileRes, planRes] = await Promise.all([
+                fetch("/api/user/profile"),
+                fetch("/api/user/financial-plan")
+            ])
+            const profile = profileRes.ok ? await profileRes.json() : {}
+            const plan = planRes.ok ? await planRes.json() : {}
+
+            setData({
+                totalCarteira: profile.totalCarteira ?? 0,
+                saldo: profile.saldo ?? 0,
+                emergencyFund: profile.emergencyFund ?? 0,
+                portfolioType: profile.portfolioType ?? null,
+                monthlyContribution: plan.monthlyContribution ?? 0,
+                desiredLifestyleCost: plan.desiredLifestyleCost ?? 0,
+                investmentPeriod: plan.investmentPeriod ?? 20,
+                expectedReturn: plan.expectedReturn ?? 12,
+                userName: session?.user?.name?.split(" ")[0] ?? "Olá",
+            })
+        } catch (e) {
+            console.error(e)
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    useEffect(() => {
+        if (session?.user) loadData()
+    }, [session])
+
+    const saveProfile = async (updates: Partial<{ totalCarteira: number; saldo: number; emergencyFund: number }>) => {
+        setSaving(true)
+        await fetch("/api/user/profile", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(updates)
+        })
+        setSaving(false)
+        setData(prev => prev ? { ...prev, ...updates } : prev)
+    }
+
+    const savePlan = async (updates: Partial<{ monthlyContribution: number; desiredLifestyleCost: number; investmentPeriod: number; expectedReturn: number }>) => {
+        setSaving(true)
+        const current = data!
+        await fetch("/api/user/financial-plan", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                desiredLifestyleCost: current.desiredLifestyleCost,
+                monthlyContribution: current.monthlyContribution,
+                investmentPeriod: current.investmentPeriod,
+                expectedReturn: current.expectedReturn,
+                ...updates
+            })
+        })
+        setSaving(false)
+        setData(prev => prev ? { ...prev, ...updates } : prev)
+    }
+
+    const hour = new Date().getHours()
+    const greeting = hour < 12 ? "Bom dia" : hour < 18 ? "Boa tarde" : "Boa noite"
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center h-64">
+                <div className="text-dash-text-light text-sm">Carregando seu dashboard...</div>
+            </div>
+        )
+    }
+
+    const d = data!
+
+    // Build a simple chart from totalCarteira projected 6 months back
+    const chartData = Array.from({ length: 7 }, (_, i) => {
+        const factor = 1 - (6 - i) * 0.022
+        return {
+            month: ["Set", "Out", "Nov", "Dez", "Jan", "Fev", "Mar"][i],
+            carteira: Math.round(d.totalCarteira * factor)
+        }
+    })
 
     return (
         <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
-            {/* Upload bar (contextual) */}
-            {showUpload && (
-                <div className="flex items-center gap-3 bg-dash-amber-light border border-dash-amber/20 rounded-lg p-3 px-4 mb-5">
-                    <span className="text-[18px]">📄</span>
-                    <div className="flex-1">
-                        <div className="text-[13px] text-dash-amber font-medium">Atualize sua carteira</div>
-                        <div className="text-[11px] text-dash-text-muted">Última atualização: há 18 dias. Suba seu extrato para manter o plano preciso.</div>
-                    </div>
-                    <button
-                        onClick={() => setShowUpload(false)}
-                        className="py-1.5 px-4 bg-dash-amber text-white border-none rounded-md text-xs font-medium cursor-pointer font-sans whitespace-nowrap hover:bg-[#8F6808] transition-colors"
-                    >
-                        Subir extrato ↑
-                    </button>
+            {saving && (
+                <div className="fixed top-4 right-4 bg-dash-accent text-white text-xs px-3 py-2 rounded-full shadow z-50 animate-in fade-in">
+                    Salvando...
                 </div>
             )}
 
+            {/* Greeting */}
             <div className="mb-7">
-                <div className="font-serif text-[28px] text-dash-text tracking-tight mb-1">Bom dia, Lucas.</div>
-                <div className="text-[13px] text-dash-text-muted">Sua carteira está <strong className="font-medium text-dash-text">bem enquadrada</strong> — uma ação recomendada esta semana.</div>
+                <div className="font-serif text-[28px] text-dash-text tracking-tight mb-1">
+                    {greeting}, {d.userName}.
+                </div>
+                <div className="text-[13px] text-dash-text-muted">
+                    Aqui está um resumo da sua situação financeira.{" "}
+                    <Link href="/dashboard/carteira" className="text-dash-accent hover:underline font-medium">Ver carteira completa →</Link>
+                </div>
             </div>
 
-            {/* Metrics */}
+            {/* Metrics — all editable */}
             <div className="grid grid-cols-4 gap-3.5 mb-6">
                 <div className="bg-dash-surface border border-dash-border rounded-2xl p-5 shadow-sm">
-                    <div className="text-[11px] text-dash-text-light uppercase tracking-[0.06em] mb-2">Patrimônio total</div>
-                    <div className="font-serif text-[26px] text-dash-text tracking-tight">R$ 48.200</div>
-                    <div className="text-xs mt-1 text-dash-accent-mid font-medium">↑ R$ 1.340 este mês</div>
+                    <div className="flex items-center gap-1.5 text-[11px] text-dash-text-light uppercase tracking-[0.06em] mb-1">
+                        <Wallet className="w-3 h-3" /> Patrimônio Total
+                    </div>
+                    <EditableMetric
+                        label="Patrimônio Total"
+                        value={d.totalCarteira}
+                        onSave={v => saveProfile({ totalCarteira: v })}
+                    />
+                    <div className="text-[11px] text-dash-text-light mt-1">Carteira + saldo + reserva</div>
                 </div>
+
                 <div className="bg-dash-surface border border-dash-border rounded-2xl p-5 shadow-sm">
-                    <div className="text-[11px] text-dash-text-light uppercase tracking-[0.06em] mb-2">Rentabilidade 12m</div>
-                    <div className="font-serif text-[26px] text-dash-text tracking-tight">11,4%</div>
-                    <div className="text-xs mt-1 text-dash-accent-mid font-medium">↑ CDI + 2,1 p.p.</div>
+                    <div className="flex items-center gap-1.5 text-[11px] text-dash-text-light uppercase tracking-[0.06em] mb-1">
+                        <PiggyBank className="w-3 h-3" /> Aporte Mensal
+                    </div>
+                    <EditableMetric
+                        label="Aporte Mensal"
+                        value={d.monthlyContribution}
+                        onSave={v => savePlan({ monthlyContribution: v })}
+                    />
+                    <div className="text-[11px] text-dash-text-light mt-1">Definido no Planejamento</div>
                 </div>
+
                 <div className="bg-dash-surface border border-dash-border rounded-2xl p-5 shadow-sm">
-                    <div className="text-[11px] text-dash-text-light uppercase tracking-[0.06em] mb-2">Aderência ao plano</div>
-                    <div className="font-serif text-[26px] text-dash-text tracking-tight">87%</div>
-                    <div className="text-xs mt-1 text-dash-text-light">Meta: 95%</div>
+                    <div className="flex items-center gap-1.5 text-[11px] text-dash-text-light uppercase tracking-[0.06em] mb-1">
+                        <TrendingUp className="w-3 h-3" /> Retorno Est.
+                    </div>
+                    <EditableMetric
+                        label="Retorno Estimado"
+                        value={d.expectedReturn}
+                        onSave={v => savePlan({ expectedReturn: v })}
+                        prefix=""
+                        suffix="% a.a."
+                    />
+                    <div className="text-[11px] text-dash-text-light mt-1">Rentabilidade nominal</div>
                 </div>
+
                 <div className="bg-dash-surface border border-dash-border rounded-2xl p-5 shadow-sm">
-                    <div className="text-[11px] text-dash-text-light uppercase tracking-[0.06em] mb-2">Aporte mensal</div>
-                    <div className="font-serif text-[26px] text-dash-text tracking-tight">R$ 900</div>
-                    <div className="text-xs mt-1 text-dash-text-light">↔ Consistente</div>
+                    <div className="flex items-center gap-1.5 text-[11px] text-dash-text-light uppercase tracking-[0.06em] mb-1">
+                        <BarChart3 className="w-3 h-3" /> Reserva de Emergência
+                    </div>
+                    <EditableMetric
+                        label="Reserva de Emergência"
+                        value={d.emergencyFund}
+                        onSave={v => saveProfile({ emergencyFund: v })}
+                    />
+                    <div className="text-[11px] text-dash-text-light mt-1">Fundo de liquidez</div>
                 </div>
             </div>
 
             {/* Chart */}
             <div className="bg-dash-surface border border-dash-border rounded-2xl p-6 mb-5 shadow-sm">
-                <div className="flex items-center justify-between mb-5">
-                    <div className="text-sm font-medium text-dash-text">Evolução do patrimônio</div>
-                    <div className="flex gap-4 items-center">
-                        <div className="flex gap-4">
-                            <div className="flex items-center gap-1.5 text-xs text-dash-text-muted"><div className="w-2 h-2 rounded-full bg-dash-accent-mid"></div>Sua carteira</div>
-                            <div className="flex items-center gap-1.5 text-xs text-dash-text-muted"><div className="w-2 h-2 rounded-full bg-[#CBD5E0]"></div>Carteira ideal</div>
-                            <div className="flex items-center gap-1.5 text-xs text-dash-text-muted">
-                                <div className="w-3 h-0 border-t-2 border-dashed border-[#A0AEC0]"></div>
-                                CDI
-                            </div>
-                        </div>
-                        <div className="flex gap-1 ml-4 bg-[#F8F9FA] border border-dash-border rounded-md p-1">
-                            <button className={`px-2.5 py-1 text-[11px] border border-transparent rounded cursor-pointer font-sans transition-colors ${period === '3m' ? 'bg-dash-surface border-dash-border shadow-sm text-dash-text font-medium' : 'text-dash-text-muted hover:text-dash-text'}`} onClick={() => setPeriod('3m')}>3m</button>
-                            <button className={`px-2.5 py-1 text-[11px] border border-transparent rounded cursor-pointer font-sans transition-colors ${period === '6m' ? 'bg-dash-surface border-dash-border shadow-sm text-dash-text font-medium' : 'text-dash-text-muted hover:text-dash-text'}`} onClick={() => setPeriod('6m')}>6m</button>
-                            <button className={`px-2.5 py-1 text-[11px] border border-transparent rounded cursor-pointer font-sans transition-colors ${period === '12m' ? 'bg-dash-surface border-dash-border shadow-sm text-dash-text font-medium' : 'text-dash-text-muted hover:text-dash-text'}`} onClick={() => setPeriod('12m')}>12m</button>
-                        </div>
+                <div className="flex items-center justify-between mb-4">
+                    <div className="text-sm font-medium text-dash-text">Evolução estimada do patrimônio</div>
+                    <div className="text-[11px] text-dash-text-muted">Baseado no seu patrimônio atual</div>
+                </div>
+                {d.totalCarteira > 0 ? (
+                    <div className="h-[180px] w-full">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <LineChart data={chartData} margin={{ top: 5, right: 0, bottom: 0, left: -20 }}>
+                                <CartesianGrid vertical={false} stroke="rgba(0,0,0,0.04)" />
+                                <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: '#94A3B8', fontSize: 11 }} dy={8} />
+                                <YAxis axisLine={false} tickLine={false} tickFormatter={v => `R$${(v / 1000).toFixed(0)}k`} tick={{ fill: '#94A3B8', fontSize: 11 }} />
+                                <Tooltip
+                                    contentStyle={{ borderRadius: 8, border: '1px solid rgba(10,25,47,0.1)', fontSize: 12 }}
+                                    formatter={(v: number) => [formatBRL(v), "Patrimônio"]}
+                                />
+                                <Line type="monotone" dataKey="carteira" stroke="#0A192F" strokeWidth={2.5} dot={{ r: 3, fill: '#0A192F', strokeWidth: 0 }} activeDot={{ r: 5 }} />
+                            </LineChart>
+                        </ResponsiveContainer>
                     </div>
-                </div>
-                <div className="h-[200px] w-full mt-4">
-                    <ResponsiveContainer width="100%" height="100%">
-                        <LineChart data={carteiraData6m} margin={{ top: 5, right: 0, bottom: 0, left: -20 }}>
-                            <CartesianGrid vertical={false} stroke="rgba(0,0,0,0.05)" />
-                            <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: '#9E9B96', fontSize: 11, fontFamily: 'var(--font-dm-sans)' }} dy={10} />
-                            <YAxis axisLine={false} tickLine={false} tickFormatter={(val) => `R$ ${(val / 1000).toFixed(0)}k`} tick={{ fill: '#9E9B96', fontSize: 11, fontFamily: 'var(--font-dm-sans)' }} />
-                            <Tooltip
-                                contentStyle={{ borderRadius: '8px', border: '1px solid var(--color-dash-border)', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', fontSize: '12px', fontFamily: 'var(--font-dm-sans)' }}
-                                formatter={(value: number) => [`R$ ${value.toLocaleString('pt-BR')}`]}
-                            />
-                            <Line type="monotone" dataKey="cdi" stroke="#A0AEC0" strokeWidth={1.5} strokeDasharray="3 3" dot={false} />
-                            <Line type="monotone" dataKey="ideal" stroke="#CBD5E0" strokeWidth={2} strokeDasharray="5 5" dot={false} />
-                            <Line type="monotone" dataKey="carteira" stroke="#4A8C62" strokeWidth={2.5} dot={{ r: 4, fill: '#4A8C62', strokeWidth: 0 }} activeDot={{ r: 6 }} fill="rgba(74,140,98,0.08)" />
-                        </LineChart>
-                    </ResponsiveContainer>
-                </div>
+                ) : (
+                    <div className="h-[180px] flex flex-col items-center justify-center text-center gap-2">
+                        <div className="text-[13px] text-dash-text-muted">Nenhum dado de patrimônio cadastrado ainda.</div>
+                        <Link href="/dashboard/carteira" className="text-[12px] text-dash-accent hover:underline font-medium">
+                            Ir para Minha Carteira para adicionar seus ativos →
+                        </Link>
+                    </div>
+                )}
             </div>
 
-            {/* Enquadramento + Tips */}
-            <div className="grid grid-cols-2 gap-4 mb-5">
+            {/* Planejamento summary + CTA */}
+            <div className="grid grid-cols-2 gap-4">
                 <div className="bg-dash-surface border border-dash-border rounded-2xl p-6 shadow-sm">
-                    <div className="flex items-center justify-between mb-5">
-                        <div className="text-sm font-medium text-dash-text">Enquadramento da carteira</div>
-                        <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-dash-accent-light text-dash-accent">Bem alocado</span>
+                    <div className="text-sm font-medium text-dash-text mb-4">Seu Planejamento</div>
+                    <div className="space-y-3">
+                        {[
+                            { label: "Meta de renda mensal", value: d.desiredLifestyleCost > 0 ? formatBRL(d.desiredLifestyleCost) : "Não definida" },
+                            { label: "Prazo de investimento", value: d.investmentPeriod > 0 ? `${d.investmentPeriod} anos` : "Não definido" },
+                            { label: "Rentabilidade esperada", value: d.expectedReturn > 0 ? `${d.expectedReturn}% a.a.` : "Não definida" },
+                        ].map(({ label, value }) => (
+                            <div key={label} className="flex items-center justify-between py-2 border-b border-dash-border last:border-0">
+                                <span className="text-[12px] text-dash-text-muted">{label}</span>
+                                <span className="text-[13px] font-semibold text-dash-text">{value}</span>
+                            </div>
+                        ))}
                     </div>
-
-                    <div className="flex flex-col">
-                        <div className="flex items-center justify-between py-3 border-b border-dash-border">
-                            <div className="flex flex-col gap-0.5">
-                                <div className="text-[13px] font-medium">Renda Fixa</div>
-                                <div className="text-[11px] text-dash-text-light">Ideal: 40–50%</div>
-                            </div>
-                            <div className="flex flex-col items-end gap-1">
-                                <div className="text-[13px] font-medium">44%</div>
-                                <div className="flex items-center gap-2">
-                                    <div className="w-20 h-1 bg-dash-surface-active rounded-full overflow-hidden"><div className="h-full bg-dash-accent-mid rounded-full" style={{ width: '88%' }}></div></div>
-                                    <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-dash-accent-light text-dash-accent">Ok</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="flex items-center justify-between py-3 border-b border-dash-border">
-                            <div className="flex flex-col gap-0.5">
-                                <div className="text-[13px] font-medium">Renda Variável</div>
-                                <div className="text-[11px] text-dash-text-light">Ideal: 30–40%</div>
-                            </div>
-                            <div className="flex flex-col items-end gap-1">
-                                <div className="text-[13px] font-medium">28%</div>
-                                <div className="flex items-center gap-2">
-                                    <div className="w-20 h-1 bg-dash-surface-active rounded-full overflow-hidden"><div className="h-full bg-dash-blue rounded-full" style={{ width: '56%' }}></div></div>
-                                    <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-dash-amber-light text-dash-amber">Baixo</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="flex items-center justify-between py-3 border-b border-dash-border">
-                            <div className="flex flex-col gap-0.5">
-                                <div className="text-[13px] font-medium">FIIs</div>
-                                <div className="text-[11px] text-dash-text-light">Ideal: 10–20%</div>
-                            </div>
-                            <div className="flex flex-col items-end gap-1">
-                                <div className="text-[13px] font-medium">18%</div>
-                                <div className="flex items-center gap-2">
-                                    <div className="w-20 h-1 bg-dash-surface-active rounded-full overflow-hidden"><div className="h-full bg-[#D4A017] rounded-full" style={{ width: '90%' }}></div></div>
-                                    <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-dash-accent-light text-dash-accent">Ok</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="flex items-center justify-between py-3">
-                            <div className="flex flex-col gap-0.5">
-                                <div className="text-[13px] font-medium">Reserva de liquidez</div>
-                                <div className="text-[11px] text-dash-text-light">Ideal: 5–10%</div>
-                            </div>
-                            <div className="flex flex-col items-end gap-1">
-                                <div className="text-[13px] font-medium">10%</div>
-                                <div className="flex items-center gap-2">
-                                    <div className="w-20 h-1 bg-dash-surface-active rounded-full overflow-hidden"><div className="h-full bg-dash-text-light rounded-full" style={{ width: '100%' }}></div></div>
-                                    <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-dash-accent-light text-dash-accent">Ok</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <Link href="/dashboard/planejamento" className="mt-4 flex items-center text-[12px] text-dash-accent hover:underline font-medium">
+                        Editar planejamento →
+                    </Link>
                 </div>
 
                 <div className="bg-dash-surface border border-dash-border rounded-2xl p-6 shadow-sm">
-                    <div className="text-sm font-medium text-dash-text mb-5">Próximos passos</div>
-
+                    <div className="text-sm font-medium text-dash-text mb-4">Ações rápidas</div>
                     <div className="flex flex-col gap-2">
-                        <div className="flex gap-3 p-3.5 rounded-xl border border-dash-amber/20 bg-[#FEFDF7]">
-                            <div className="w-8 h-8 rounded-lg flex items-center justify-center text-[15px] shrink-0 bg-dash-amber-light leading-none">⚖️</div>
-                            <div className="flex-1">
-                                <div className="text-[13px] font-medium mb-1 line-clamp-1">Rebalancear renda variável</div>
-                                <div className="text-xs text-dash-text-muted leading-relaxed">Sua alocação em ações está 7 p.p. abaixo do ideal para seu perfil moderado. Considere direcionar o próximo aporte.</div>
-                                <div className="text-[11px] font-medium mt-1.5 text-dash-accent cursor-pointer hover:underline">Ver sugestão de alocação →</div>
-                            </div>
-                        </div>
-
-                        <div className="flex gap-3 p-3.5 rounded-xl border border-dash-accent/10 bg-[#FAFDF9]">
-                            <div className="w-8 h-8 rounded-lg flex items-center justify-center text-[15px] shrink-0 bg-dash-accent-light leading-none">📅</div>
-                            <div className="flex-1">
-                                <div className="text-[13px] font-medium mb-1 line-clamp-1">Aporte do mês em dia</div>
-                                <div className="text-xs text-dash-text-muted leading-relaxed">Você aportou R$ 900 consistentemente por 8 meses. Isso representa R$ 12.400 acumulados só em aportes regulares.</div>
-                            </div>
-                        </div>
-
-                        <div className="flex gap-3 p-3.5 rounded-xl border border-dash-accent/10 bg-[#FAFDF9]">
-                            <div className="w-8 h-8 rounded-lg flex items-center justify-center text-[15px] shrink-0 bg-dash-blue-light leading-none">🌍</div>
-                            <div className="flex-1">
-                                <div className="text-[13px] font-medium mb-1 line-clamp-1">Considere diversificação global</div>
-                                <div className="text-xs text-dash-text-muted leading-relaxed">Sua carteira é 100% Brasil. A partir de R$ 50k faz sentido avaliar exposição ao dólar via ETFs.</div>
-                                <div className="text-[11px] font-medium mt-1.5 text-dash-accent cursor-pointer hover:underline">Perguntar ao assessor →</div>
-                            </div>
-                        </div>
+                        {[
+                            { label: "📊 Ver minha carteira completa", href: "/dashboard/carteira" },
+                            { label: "🎯 Simular independência financeira", href: "/dashboard/planejamento" },
+                            { label: "📚 Acessar trilhas de educação", href: "/dashboard/educacao" },
+                            { label: "💳 Gerenciar minha assinatura", href: "/dashboard/assinatura" },
+                        ].map(({ label, href }) => (
+                            <Link
+                                key={href}
+                                href={href}
+                                className="flex items-center px-4 py-2.5 rounded-xl bg-dash-surface border border-dash-border text-[13px] text-dash-text hover:bg-dash-surface-active hover:border-dash-border-strong transition-colors"
+                            >
+                                {label}
+                            </Link>
+                        ))}
                     </div>
                 </div>
             </div>
-
         </div>
     )
 }

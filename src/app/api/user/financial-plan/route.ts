@@ -23,8 +23,9 @@ export async function GET(req: Request) {
         }
 
         return NextResponse.json({
-            plan: user.financialPlan || null,
-            profile: user.profile || null,
+            ...(user.financialPlan || {}),
+            // also expose profile data for convenience
+            riskProfile: user.profile?.portfolioType ?? null,
         })
     } catch (error) {
         console.error("Error fetching financial plan:", error)
@@ -61,7 +62,7 @@ export async function PUT(req: Request) {
                 monthlyContribution,
                 investmentPeriod,
                 expectedReturn,
-                ...(currentCapital !== undefined && { currentCapital })
+                ...(currentCapital !== undefined && { currentCapital } as any)
             },
             create: {
                 userId: session.user.id,
@@ -69,7 +70,7 @@ export async function PUT(req: Request) {
                 monthlyContribution,
                 investmentPeriod,
                 expectedReturn,
-                currentCapital: currentCapital ?? null
+                ...(currentCapital !== undefined && { currentCapital } as any)
             }
         })
 
