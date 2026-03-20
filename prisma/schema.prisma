@@ -17,6 +17,8 @@ model User {
   emailVerified DateTime?
   image         String?
   password      String?
+  cpf           String?
+  phone         String?
   accountStatus     String    @default("PENDING") // PENDING, APPROVED, REJECTED
   role              String    @default("USER")
   subscriptionStatus String   @default("FREE") // FREE, PREMIUM, ADMIN

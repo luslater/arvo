@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import bcrypt from "bcrypt"
-import { sendNewUserNotification } from "@/lib/email"
+import { sendNewUserNotification, sendRegistrationPendingEmail } from "@/lib/email"
 
 export async function POST(req: Request) {
     try {
-        const { name, email, password } = await req.json()
+        const { name, email, password, cpf, phone } = await req.json()
 
         if (!email || !password) {
             return NextResponse.json(
@@ -25,23 +25,35 @@ export async function POST(req: Request) {
 
         const hashedPassword = await bcrypt.hash(password, 10)
 
-        // Create user with PENDING status — requires admin approval
+        // Create user with PENDING status and CPF/phone
         const user = await prisma.user.create({
             data: {
                 name,
                 email,
                 password: hashedPassword,
-                // @ts-ignore — field added via schema migration
+                // @ts-ignore — fields added via schema migration
                 accountStatus: "PENDING",
+                cpf: cpf || null,
+                phone: phone || null,
             },
         })
 
-        // Notify admin — fire and forget (registration succeeds even if email fails)
+        // Notify admin with all info — fire and forget
         sendNewUserNotification({
             name: user.name,
             email: user.email!,
+            // @ts-ignore
+            cpf: user.cpf,
+            // @ts-ignore
+            phone: user.phone,
             registeredAt: user.createdAt,
-        }).catch(err => console.error("Email notification failed:", err))
+        }).catch(err => console.error("Admin email failed:", err))
+
+        // Confirm to the user that their registration is under review
+        sendRegistrationPendingEmail({
+            name: user.name,
+            email: user.email!,
+        }).catch(err => console.error("Pending email failed:", err))
 
         const { password: _, ...userWithoutPassword } = user
 
