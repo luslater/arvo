@@ -14,10 +14,40 @@ function LoginForm() {
     const searchParams = useSearchParams()
     const callbackUrl = searchParams.get("callbackUrl") || "/dashboard"
 
-    const [email, setEmail] = useState("")
+    const [identifier, setIdentifier] = useState("")
     const [password, setPassword] = useState("")
     const [error, setError] = useState("")
     const [loading, setLoading] = useState(false)
+
+    // Mask for CPF or CNPJ
+    const handleIdentifierChange = (value: string) => {
+        // Se contiver qualquer letra, assumimos que é e-mail e não mascaramos
+        if (/[a-zA-Z@]/.test(value)) {
+            setIdentifier(value)
+            return
+        }
+
+        const raw = value.replace(/\D/g, "")
+        if (raw.length <= 11) {
+            // CPF
+            setIdentifier(
+                raw
+                    .replace(/(\d{3})(\d)/, "$1.$2")
+                    .replace(/(\d{3})(\d)/, "$1.$2")
+                    .replace(/(\d{3})(\d{1,2})$/, "$1-$2")
+            )
+        } else {
+            // CNPJ
+            setIdentifier(
+                raw
+                    .slice(0, 14)
+                    .replace(/(\d{2})(\d)/, "$1.$2")
+                    .replace(/(\d{3})(\d)/, "$1.$2")
+                    .replace(/(\d{3})(\d)/, "$1/$2")
+                    .replace(/(\d{4})(\d{1,2})$/, "$1-$2")
+            )
+        }
+    }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -26,7 +56,7 @@ function LoginForm() {
 
         try {
             const res = await signIn("credentials", {
-                email,
+                identifier,
                 password,
                 redirect: false,
             })
@@ -71,15 +101,15 @@ function LoginForm() {
 
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div className="space-y-2">
-                            <label htmlFor="email" className="text-sm font-medium">
-                                Email
+                            <label htmlFor="identifier" className="text-sm font-medium">
+                                Email, CPF ou CNPJ
                             </label>
                             <input
-                                id="email"
-                                type="email"
-                                placeholder="seu@email.com"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                id="identifier"
+                                type="text"
+                                placeholder="seu@email.com ou 000.000.000-00"
+                                value={identifier}
+                                onChange={(e) => handleIdentifierChange(e.target.value)}
                                 className="w-full px-3 py-2 border border-gray-300  rounded-md bg-white  focus:outline-none focus:ring-2 focus:ring-gray-900 :ring-white"
                                 required
                             />

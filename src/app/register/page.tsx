@@ -8,14 +8,24 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ThemeToggle } from "@/components/theme-toggle"
 
-// ─── CPF mask ────────────────────────────────────────────────────────────────
-function maskCPF(value: string) {
-    return value
-        .replace(/\D/g, "")
-        .slice(0, 11)
-        .replace(/(\d{3})(\d)/, "$1.$2")
-        .replace(/(\d{3})(\d)/, "$1.$2")
-        .replace(/(\d{3})(\d{1,2})$/, "$1-$2")
+// ─── CPF / CNPJ mask ─────────────────────────────────────────────────────────
+function maskCpfCnpj(value: string) {
+    const raw = value.replace(/\D/g, "")
+    if (raw.length <= 11) {
+        // CPF
+        return raw
+            .replace(/(\d{3})(\d)/, "$1.$2")
+            .replace(/(\d{3})(\d)/, "$1.$2")
+            .replace(/(\d{3})(\d{1,2})$/, "$1-$2")
+    } else {
+        // CNPJ
+        return raw
+            .slice(0, 14)
+            .replace(/(\d{2})(\d)/, "$1.$2")
+            .replace(/(\d{3})(\d)/, "$1.$2")
+            .replace(/(\d{3})(\d)/, "$1/$2")
+            .replace(/(\d{4})(\d{1,2})$/, "$1-$2")
+    }
 }
 
 // ─── Phone mask ───────────────────────────────────────────────────────────────
@@ -37,11 +47,18 @@ function RegisterForm() {
     const [cpf, setCpf] = useState("")
     const [phone, setPhone] = useState("")
     const [password, setPassword] = useState("")
+    const [confirmPassword, setConfirmPassword] = useState("")
     const [error, setError] = useState("")
     const [loading, setLoading] = useState(false)
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
+
+        if (password !== confirmPassword) {
+            setError("As senhas não coincidem. Por favor, verifique.")
+            return
+        }
+
         setLoading(true)
         setError("")
 
@@ -122,17 +139,17 @@ function RegisterForm() {
                             />
                         </div>
 
-                        {/* CPF + Celular na mesma linha */}
+                        {/* CPF/CNPJ + Celular na mesma linha */}
                         <div className="grid grid-cols-2 gap-3">
                             <div>
-                                <label htmlFor="cpf" className={labelClass}>CPF</label>
+                                <label htmlFor="cpf" className={labelClass}>CPF / CNPJ</label>
                                 <input
                                     id="cpf"
                                     type="text"
                                     required
                                     placeholder="000.000.000-00"
                                     value={cpf}
-                                    onChange={e => setCpf(maskCPF(e.target.value))}
+                                    onChange={e => setCpf(maskCpfCnpj(e.target.value))}
                                     className={inputClass}
                                 />
                             </div>
@@ -150,19 +167,34 @@ function RegisterForm() {
                             </div>
                         </div>
 
-                        {/* Senha */}
-                        <div>
-                            <label htmlFor="password" className={labelClass}>Senha</label>
-                            <input
-                                id="password"
-                                type="password"
-                                required
-                                placeholder="Mínimo 6 caracteres"
-                                minLength={6}
-                                value={password}
-                                onChange={e => setPassword(e.target.value)}
-                                className={inputClass}
-                            />
+                        {/* Senhas na mesma linha */}
+                        <div className="grid grid-cols-2 gap-3">
+                            <div>
+                                <label htmlFor="password" className={labelClass}>Senha</label>
+                                <input
+                                    id="password"
+                                    type="password"
+                                    required
+                                    placeholder="Mínimo 6 caracteres"
+                                    minLength={6}
+                                    value={password}
+                                    onChange={e => setPassword(e.target.value)}
+                                    className={inputClass}
+                                />
+                            </div>
+                            <div>
+                                <label htmlFor="confirmPassword" className={labelClass}>Confirmar Senha</label>
+                                <input
+                                    id="confirmPassword"
+                                    type="password"
+                                    required
+                                    placeholder="Repita a senha"
+                                    minLength={6}
+                                    value={confirmPassword}
+                                    onChange={e => setConfirmPassword(e.target.value)}
+                                    className={inputClass}
+                                />
+                            </div>
                         </div>
 
                         <Button
