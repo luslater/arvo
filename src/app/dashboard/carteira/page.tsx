@@ -30,9 +30,10 @@ export default function DashboardCarteiraPage() {
         if (!session?.user?.email) return
         setIsLoading(true)
         try {
-            const res = await fetch("/api/user/profile", {
+            // Bypass Browser and Edge caches completely using a timestamp
+            const res = await fetch(`/api/user/profile?t=${Date.now()}`, {
                 cache: "no-store",
-                headers: { "Cache-Control": "no-cache" }
+                headers: { "Cache-Control": "no-cache, no-store, must-revalidate" }
             })
             if (res.ok) {
                 const data = await res.json()
