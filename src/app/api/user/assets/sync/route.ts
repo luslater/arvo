@@ -12,6 +12,8 @@ export async function POST(req: Request) {
             return new NextResponse("Unauthorized", { status: 401 })
         }
 
+        const userId = session.user.id as string
+
         const body = await req.json()
         const { assets } = body
 
@@ -22,11 +24,11 @@ export async function POST(req: Request) {
         // Delete all old assets and recreate them with the new fields
         await prisma.$transaction([
             prisma.asset.deleteMany({
-                where: { userId: session.user.id }
+                where: { userId }
             }),
             prisma.asset.createMany({
                 data: assets.map((a: any) => ({
-                    userId: session.user!.id,
+                    userId,
                     ticker: a.type || a.ticker || "outro",
                     value: a.value || 0,
                     quantity: a.quantity || 1,

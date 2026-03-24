@@ -254,6 +254,8 @@ export default function CarteiraPage() {
                             subscriptionStatus={subscriptionStatus}
                             onTransactionComplete={loadData}
                             realUserProfile={userProfile}
+                            onNavigateToAssets={() => { }}
+                            onNavigateToPlanning={() => { }}
                         />
                     </TabsContent>
 
