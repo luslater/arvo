@@ -30,7 +30,10 @@ export default function DashboardCarteiraPage() {
         if (!session?.user?.email) return
         setIsLoading(true)
         try {
-            const res = await fetch("/api/user/profile")
+            const res = await fetch("/api/user/profile", {
+                cache: "no-store",
+                headers: { "Cache-Control": "no-cache" }
+            })
             if (res.ok) {
                 const data = await res.json()
                 setUserProfile(data.portfolioType)
