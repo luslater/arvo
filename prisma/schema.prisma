@@ -83,6 +83,9 @@ model Asset {
   category        String
   value           Float
   quantity        Float    @default(1)
+  indexador       String?
+  rentabilidade   Float?
+  prazo           String?
   
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt

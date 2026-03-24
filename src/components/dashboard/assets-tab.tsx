@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { TrendingUp, DollarSign, Shield, Briefcase, X, Plus } from "lucide-react"
+import { TrendingUp, DollarSign, Shield, Briefcase, X, Plus, Save, Loader2 } from "lucide-react"
 import { ASSET_TYPES, type AssetType, type UserAsset, type Indexador } from "@/lib/asset-types"
 import { CurrencyInput } from "@/components/ui/currency-input"
 
@@ -25,9 +25,9 @@ export function AssetsTab({
     onUpdateReserva
 }: AssetsTabProps) {
     const [draggedType, setDraggedType] = useState<AssetType | null>(null)
+    const [isSaving, setIsSaving] = useState(false)
 
-    // Local state for editing to avoid constant parent updates, 
-    // but we'll sync changes immediately for now to keep it simple
+    // Local state for editing without constant individual server updates
     const handleAddAsset = async (type: AssetType) => {
         const newAsset: UserAsset = {
             id: `temp-${Date.now()}`,
@@ -40,67 +40,38 @@ export function AssetsTab({
             prazo: ""
         }
 
-        // Optimistic UI
         onUpdateAssets([...userAssets, newAsset])
-
-        try {
-            const res = await fetch("/api/user/assets", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(newAsset)
-            })
-            if (res.ok) {
-                const created = await res.json()
-                // Replace temp ID with real ID silently via closure
-                const updatedAssets = userAssets.map((a: UserAsset) => a.id === newAsset.id ? { ...a, id: created.id } : a)
-                // If it isn't in userAssets (edge case), we just append
-                if (!updatedAssets.find(a => a.id === created.id)) {
-                    updatedAssets.push({ ...newAsset, id: created.id })
-                }
-                onUpdateAssets(updatedAssets)
-            }
-        } catch (e) {
-            console.error(e)
-        }
     }
 
     const handleRemoveAsset = async (index: number) => {
-        const asset = userAssets[index]
         const newArray = userAssets.filter((_, i) => i !== index)
         onUpdateAssets(newArray)
-
-        if (asset.id && !asset.id.startsWith("temp-")) {
-            try {
-                await fetch("/api/user/assets", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ action: "DELETE", id: asset.id })
-                })
-            } catch (e) { console.error(e) }
-        }
     }
 
     const handleUpdateAsset = async (index: number, field: keyof UserAsset, value: any) => {
         const updated = [...userAssets]
         updated[index] = { ...updated[index], [field]: value }
         onUpdateAssets(updated)
+    }
 
-        const asset = updated[index]
-        if (asset.id && !asset.id.startsWith("temp-")) {
-            try {
-                await fetch("/api/user/assets", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        id: asset.id,
-                        type: asset.type,
-                        name: asset.name,
-                        value: asset.value,
-                        quantity: asset.quantity,
-                        category: ASSET_TYPES.find(t => t.id === asset.type)?.category
-                    })
-                })
-            } catch (e) { console.error(e) }
+    const handleSaveSync = async () => {
+        setIsSaving(true)
+        try {
+            const res = await fetch("/api/user/assets/sync", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ assets: userAssets })
+            })
+            if (res.ok) {
+                alert("Carteira salva com sucesso!")
+            } else {
+                alert("Erro ao salvar carteira.")
+            }
+        } catch (e) {
+            console.error(e)
+            alert("Erro na conexão ao salvar as alterações.")
+        } finally {
+            setIsSaving(false)
         }
     }
 
@@ -228,97 +199,113 @@ export function AssetsTab({
                         </p>
                     </div>
                 ) : (
-                    <div className="space-y-3">
-                        {userAssets.map((asset, index) => {
-                            const assetType = ASSET_TYPES.find(t => t.id === asset.type)
-                            return (
-                                <div key={index} className="p-4 bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-all text-left">
-                                    <div className="grid grid-cols-1 lg:grid-cols-8 gap-4 items-end">
-                                        {/* Tipo */}
-                                        <div>
-                                            <label className="text-xs text-gray-500 block mb-1">Tipo</label>
-                                            <div className="text-sm font-medium text-primary px-2 py-1 bg-primary/10 rounded inline-block">
-                                                {assetType?.label}
+                    <div className="space-y-4">
+                        <div className="flex items-center justify-between px-2">
+                            <h3 className="text-sm font-semibold text-dash-text text-left">Sua Lista de Ativos</h3>
+                            <Button size="sm" onClick={handleSaveSync} disabled={isSaving} className="bg-indigo-600 hover:bg-indigo-700 text-white gap-2">
+                                {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                                Salvar Carteira
+                            </Button>
+                        </div>
+                        <div className="space-y-3">
+                            {userAssets.map((asset, index) => {
+                                const assetType = ASSET_TYPES.find(t => t.id === asset.type)
+                                return (
+                                    <div key={index} className="p-4 bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-all text-left">
+                                        <div className="grid grid-cols-1 lg:grid-cols-8 gap-4 items-end">
+                                            {/* Tipo */}
+                                            <div>
+                                                <label className="text-xs text-gray-500 block mb-1">Tipo</label>
+                                                <div className="text-sm font-medium text-primary px-2 py-1 bg-primary/10 rounded inline-block">
+                                                    {assetType?.label}
+                                                </div>
+                                            </div>
+
+                                            {/* Nome */}
+                                            <div className="lg:col-span-2">
+                                                <label className="text-xs text-gray-500 block mb-1">Nome do Ativo</label>
+                                                <input
+                                                    type="text"
+                                                    value={asset.name}
+                                                    onChange={(e) => handleUpdateAsset(index, "name", e.target.value)}
+                                                    placeholder="Ex: PETR4"
+                                                    className="w-full px-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                                                />
+                                            </div>
+
+                                            {/* Indexador */}
+                                            <div>
+                                                <label className="text-xs text-gray-500 block mb-1">Indexador</label>
+                                                <select
+                                                    value={asset.indexador}
+                                                    onChange={(e) => handleUpdateAsset(index, "indexador", e.target.value as Indexador)}
+                                                    className="w-full px-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white"
+                                                >
+                                                    <option>Prefixado</option>
+                                                    <option>Pós-fixado</option>
+                                                    <option>IPCA+</option>
+                                                    <option>Renda Variável</option>
+                                                </select>
+                                            </div>
+
+                                            {/* Rentabilidade */}
+                                            <div>
+                                                <label className="text-xs text-gray-500 block mb-1">Rent. %</label>
+                                                <input
+                                                    type="number"
+                                                    step="0.1"
+                                                    value={asset.rentabilidade || ""}
+                                                    onChange={(e) => handleUpdateAsset(index, "rentabilidade", Number(e.target.value))}
+                                                    placeholder="0"
+                                                    className="w-full px-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                                                />
+                                            </div>
+
+                                            {/* Prazo */}
+                                            <div>
+                                                <label className="text-xs text-gray-500 block mb-1">Prazo (Mês/Ano)</label>
+                                                <input
+                                                    type="text"
+                                                    value={asset.prazo}
+                                                    onChange={(e) => {
+                                                        let val = e.target.value.replace(/\D/g, '')
+                                                        if (val.length > 2) {
+                                                            val = val.substring(0, 2) + '/' + val.substring(2, 6)
+                                                        }
+                                                        handleUpdateAsset(index, "prazo", val)
+                                                    }}
+                                                    placeholder="Ex: 10/2027"
+                                                    maxLength={7}
+                                                    className="w-full px-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                                                />
+                                            </div>
+
+                                            {/* Valor */}
+                                            <div>
+                                                <label className="text-xs text-gray-500 block mb-1">Valor (R$)</label>
+                                                <CurrencyInput
+                                                    value={asset.value || 0}
+                                                    onChange={(val) => handleUpdateAsset(index, "value", val)}
+                                                    placeholder="R$ 0,00"
+                                                    className="w-full px-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary font-semibold"
+                                                />
+                                            </div>
+
+                                            {/* Remove */}
+                                            <div>
+                                                <button
+                                                    onClick={() => handleRemoveAsset(index)}
+                                                    className="p-2 hover:bg-red-50 text-gray-400 hover:text-red-500 rounded-full transition-colors"
+                                                    title="Remover ativo"
+                                                >
+                                                    <X className="h-5 w-5" />
+                                                </button>
                                             </div>
                                         </div>
-
-                                        {/* Nome */}
-                                        <div className="lg:col-span-2">
-                                            <label className="text-xs text-gray-500 block mb-1">Nome do Ativo</label>
-                                            <input
-                                                type="text"
-                                                value={asset.name}
-                                                onChange={(e) => handleUpdateAsset(index, "name", e.target.value)}
-                                                placeholder="Ex: PETR4"
-                                                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                                            />
-                                        </div>
-
-                                        {/* Indexador */}
-                                        <div>
-                                            <label className="text-xs text-gray-500 block mb-1">Indexador</label>
-                                            <select
-                                                value={asset.indexador}
-                                                onChange={(e) => handleUpdateAsset(index, "indexador", e.target.value as Indexador)}
-                                                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white"
-                                            >
-                                                <option>Prefixado</option>
-                                                <option>Pós-fixado</option>
-                                                <option>IPCA+</option>
-                                                <option>Renda Variável</option>
-                                            </select>
-                                        </div>
-
-                                        {/* Rentabilidade */}
-                                        <div>
-                                            <label className="text-xs text-gray-500 block mb-1">Rent. %</label>
-                                            <input
-                                                type="number"
-                                                step="0.1"
-                                                value={asset.rentabilidade || ""}
-                                                onChange={(e) => handleUpdateAsset(index, "rentabilidade", Number(e.target.value))}
-                                                placeholder="0"
-                                                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                                            />
-                                        </div>
-
-                                        {/* Prazo */}
-                                        <div>
-                                            <label className="text-xs text-gray-500 block mb-1">Prazo</label>
-                                            <input
-                                                type="text"
-                                                value={asset.prazo}
-                                                onChange={(e) => handleUpdateAsset(index, "prazo", e.target.value)}
-                                                placeholder="2027-12-31"
-                                                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                                            />
-                                        </div>
-
-                                        {/* Valor */}
-                                        <div>
-                                            <label className="text-xs text-gray-500 block mb-1">Valor (R$)</label>
-                                            <CurrencyInput
-                                                value={asset.value || 0}
-                                                onChange={(val) => handleUpdateAsset(index, "value", val)}
-                                                placeholder="R$ 0,00"
-                                                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary font-semibold"
-                                            />
-                                        </div>
-
-                                        {/* Remove */}
-                                        <div>
-                                            <button
-                                                onClick={() => handleRemoveAsset(index)}
-                                                className="p-2 hover:bg-red-50 text-gray-400 hover:text-red-500 rounded-full transition-colors"
-                                                title="Remover ativo"
-                                            >
-                                                <X className="h-5 w-5" />
-                                            </button>
-                                        </div>
                                     </div>
-                                </div>
-                            )
-                        })}
+                                )
+                            })}
+                        </div>
                     </div>
                 )}
             </div>

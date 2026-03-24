@@ -116,8 +116,8 @@ export default function DashboardCarteiraPage() {
                                             setIsSelectorOpen(false)
                                         }}
                                         className={`w-full text-left px-4 py-2.5 text-sm flex items-center justify-between transition-colors ${viewingProfile === prof
-                                                ? "bg-dash-accent-light text-dash-accent font-semibold"
-                                                : "text-dash-text hover:bg-dash-surface-active"
+                                            ? "bg-dash-accent-light text-dash-accent font-semibold"
+                                            : "text-dash-text hover:bg-dash-surface-active"
                                             }`}
                                     >
                                         <span className="flex items-center gap-2">
@@ -158,6 +158,13 @@ export default function DashboardCarteiraPage() {
                         subscriptionStatus={subscriptionStatus}
                         onTransactionComplete={loadData}
                         realUserProfile={userProfile}
+                        onNavigateToAssets={() => {
+                            const assetsTab = document.querySelector('[value="assets"]') as HTMLElement
+                            assetsTab?.click()
+                        }}
+                        onNavigateToPlanning={() => {
+                            window.location.href = '/dashboard/planejamento'
+                        }}
                     />
                 </TabsContent>
 

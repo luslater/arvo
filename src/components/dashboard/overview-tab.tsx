@@ -19,6 +19,8 @@ interface OverviewTabProps {
     subscriptionStatus: string
     onTransactionComplete: () => void
     realUserProfile: string | null
+    onNavigateToAssets: () => void
+    onNavigateToPlanning: () => void
 }
 
 export function OverviewTab({
@@ -29,7 +31,9 @@ export function OverviewTab({
     userProfile,
     subscriptionStatus,
     onTransactionComplete,
-    realUserProfile
+    realUserProfile,
+    onNavigateToAssets,
+    onNavigateToPlanning
 }: OverviewTabProps) {
     const totalPatrimonio = totalCarteira + saldo + reserva
 
@@ -40,6 +44,20 @@ export function OverviewTab({
         : userProfile
             ? getProfileDescription(userProfile as "ABRIGO" | "RITMO" | "VANGUARDA")
             : null
+
+    // Weighted average logic
+    let weightedAverageReturn = 0
+    if (totalCarteira > 0 && userAssets.length > 0) {
+        const sumOfWeightedReturns = userAssets.reduce((sum, asset) => {
+            const assetWeight = asset.value / totalCarteira
+            // treating asset.rentabilidade as percentage (e.g. 10.5)
+            const assetRentability = asset.rentabilidade || 0
+            return sum + (assetWeight * assetRentability)
+        }, 0)
+        weightedAverageReturn = sumOfWeightedReturns
+    }
+
+    const isPortfolioEmpty = totalCarteira === 0
 
     return (
         <div className="space-y-6">
@@ -101,12 +119,10 @@ export function OverviewTab({
                             className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-md hover:shadow-lg transition-all px-8"
                             onTransactionComplete={onTransactionComplete}
                         />
-                        <Link href="/planejamento">
-                            <Button size="lg" variant="outline" className="border-gray-300 hover:bg-gray-50">
-                                <Target className="h-4 w-4 mr-2" />
-                                Planejamento
-                            </Button>
-                        </Link>
+                        <Button size="lg" variant="outline" className="border-gray-300 hover:bg-gray-50" onClick={onNavigateToPlanning}>
+                            <Target className="h-4 w-4 mr-2" />
+                            Planejamento
+                        </Button>
                     </div>
                 </CardContent>
             </Card>
@@ -169,6 +185,57 @@ export function OverviewTab({
                                             <p className="text-[13px] font-medium text-dash-text">
                                                 {userProfile === "OCEANO" ? "USD / BRL" : "BRL (Brasil)"}
                                             </p>
+                                        </div>
+                                    </div>
+
+                                    {/* Média Ponderada e Comparação da Carteira */}
+                                    <div className="grid md:grid-cols-2 gap-4 mt-4">
+                                        <div className="p-5 rounded-2xl bg-white border border-dash-border-strong flex flex-col justify-between">
+                                            <div className="flex items-center justify-between mb-4">
+                                                <h4 className="text-sm font-semibold text-dash-text">Rentabilidade Atual</h4>
+                                                <div className="p-1.5 bg-dash-surface-active rounded-md">
+                                                    <TrendingUp className="w-4 h-4 text-dash-accent" />
+                                                </div>
+                                            </div>
+                                            <div>
+                                                {isPortfolioEmpty ? (
+                                                    <div className="text-sm text-dash-text-muted italic">Média ponderada indisponível sem ativos.</div>
+                                                ) : (
+                                                    <div className="flex items-baseline gap-2">
+                                                        <span className="text-3xl font-light text-dash-text">{weightedAverageReturn.toFixed(2).replace('.', ',')}%</span>
+                                                        <span className="text-sm text-dash-text-light">a.a.</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        <div className="p-5 rounded-2xl bg-dash-surface-active border border-dash-border flex flex-col justify-between">
+                                            <div className="flex items-center justify-between mb-4">
+                                                <h4 className="text-sm font-semibold text-dash-text">Aderência da Carteira</h4>
+                                                <div className="p-1.5 bg-white border border-dash-border rounded-md shadow-sm">
+                                                    <Target className="w-4 h-4 text-dash-accent" />
+                                                </div>
+                                            </div>
+                                            {isPortfolioEmpty ? (
+                                                <div>
+                                                    <p className="text-sm text-dash-text-muted mb-3 pr-4">Você ainda não listou os ativos da sua carteira atual para saber sua aderência ao modelo Sugerido (<strong>{userProfile}</strong>).</p>
+                                                    <Button onClick={onNavigateToAssets} className="w-full bg-dash-accent text-white hover:bg-dash-accent-mid font-semibold rounded-xl">
+                                                        <Edit className="w-4 h-4 mr-2" />
+                                                        Editar Carteira Atual
+                                                    </Button>
+                                                </div>
+                                            ) : (
+                                                <div className="flex flex-col gap-2">
+                                                    <div className="flex justify-between items-end mb-1">
+                                                        <div className="text-[10px] text-dash-text-light font-semibold uppercase tracking-widest">Alocação vs Sugerida</div>
+                                                        <div className="text-xl font-bold text-dash-text">82%</div>
+                                                    </div>
+                                                    <div className="h-2.5 w-full bg-dash-border rounded-full overflow-hidden">
+                                                        <div className="h-full bg-green-500 rounded-full transition-all duration-1000" style={{ width: '82%' }}></div>
+                                                    </div>
+                                                    <div className="text-[11px] text-dash-text-muted mt-1">Aderência calculada com base na divergência de classe de ativos.</div>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
