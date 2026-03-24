@@ -288,7 +288,7 @@ export async function POST(req: Request) {
             });
         }
 
-        const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         // Convert frontend history format to Gemini format if needed
         // Simple implementation: just append the new message to the chat
@@ -312,10 +312,10 @@ export async function POST(req: Request) {
 
         return NextResponse.json({ text });
 
-    } catch (error) {
+    } catch (error: any) {
         console.error("Erro no chat Gemini:", error);
         return NextResponse.json(
-            { error: "Desculpe, tive um problema ao processar sua mensagem. Tente novamente." },
+            { error: `Desculpe, tive um problema ao processar sua mensagem. Detalhe: ${error.message || error}` },
             { status: 500 }
         );
     }

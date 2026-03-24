@@ -51,29 +51,14 @@ export default function DashboardCarteiraPage() {
         setUserAssets(newAssets)
         const total = newAssets.reduce((sum, asset) => sum + asset.value, 0)
         setTotalCarteira(total)
-        fetch("/api/user/profile", {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ totalCarteira: total })
-        })
     }
 
     const handleUpdateSaldo = async (newSaldo: number) => {
         setSaldo(newSaldo)
-        fetch("/api/user/profile", {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ saldo: newSaldo })
-        })
     }
 
     const handleUpdateReserva = async (newReserva: number) => {
         setReserva(newReserva)
-        fetch("/api/user/profile", {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ emergencyFund: newReserva })
-        })
     }
 
     if (isLoading) {

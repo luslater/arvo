@@ -57,15 +57,23 @@ export function AssetsTab({
     const handleSaveSync = async () => {
         setIsSaving(true)
         try {
-            const res = await fetch("/api/user/assets/sync", {
+            const resAssets = await fetch("/api/user/assets/sync", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ assets: userAssets })
             })
-            if (res.ok) {
+
+            const total = userAssets.reduce((sum, asset) => sum + (asset.value || 0), 0)
+            const resProfile = await fetch("/api/user/profile", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ saldo, emergencyFund: reserva, totalCarteira: total })
+            })
+
+            if (resAssets.ok && resProfile.ok) {
                 alert("Carteira salva com sucesso!")
             } else {
-                alert("Erro ao salvar carteira.")
+                alert("Erro ao salvar dados (verifique a conexão).")
             }
         } catch (e) {
             console.error(e)
