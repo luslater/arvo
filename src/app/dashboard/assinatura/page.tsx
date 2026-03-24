@@ -47,7 +47,7 @@ export default function DashboardAssinaturaPage() {
 
                 {!isPremium && (
                     <Link
-                        href="/checkout/pagamento"
+                        href="/premium"
                         className="flex items-center gap-2 px-6 py-3 text-sm font-semibold rounded-xl w-fit transition-colors hover:opacity-90"
                         style={{ backgroundColor: '#0A192F', color: '#FFFFFF' }}
                     >
@@ -73,7 +73,7 @@ export default function DashboardAssinaturaPage() {
                         </div>
                     </div>
                     <Link
-                        href="/checkout/pagamento"
+                        href="/premium"
                         className="flex items-center gap-2 px-6 py-3 rounded-xl font-bold whitespace-nowrap transition-opacity hover:opacity-90 shrink-0"
                         style={{ backgroundColor: '#FFFFFF', color: '#0A192F', fontSize: 14 }}
                     >
@@ -127,7 +127,7 @@ export default function DashboardAssinaturaPage() {
 
                     {!isPremium && (
                         <Link
-                            href="/checkout/pagamento"
+                            href="/premium"
                             className="mt-5 flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-bold rounded-xl transition-colors hover:opacity-90"
                             style={{ backgroundColor: '#FFFFFF', color: '#0A192F' }}
                         >

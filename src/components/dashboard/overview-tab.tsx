@@ -141,12 +141,35 @@ export function OverviewTab({
                                         </p>
                                     </div>
 
-                                    <div className="grid md:grid-cols-3 gap-4">
-                                        <div className="p-3 rounded bg-gray-50 border border-gray-100">
-                                            <p className="text-xs text-gray-500 uppercase font-semibold">Objetivo</p>
-                                            <p className="text-sm text-gray-900">{profileInfo.subtitle}</p>
+                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                        <div className="p-3 rounded-xl bg-dash-surface-active border border-dash-border">
+                                            <p className="text-[11px] text-dash-text-light uppercase tracking-wider font-semibold mb-1">Objetivo</p>
+                                            <p className="text-[13px] font-medium text-dash-text">{profileInfo.subtitle}</p>
                                         </div>
-                                        {/* Add more stats if available in profileInfo */}
+                                        <div className="p-3 rounded-xl bg-dash-surface-active border border-dash-border">
+                                            <p className="text-[11px] text-dash-text-light uppercase tracking-wider font-semibold mb-1">Retorno (Est.)</p>
+                                            <p className="text-[13px] font-medium text-dash-text">
+                                                {userProfile === "ABRIGO" ? "10,5% a.a." :
+                                                    userProfile === "RITMO" ? "12,2% a.a." :
+                                                        userProfile === "VANGUARDA" ? "14,5% a.a." :
+                                                            userProfile === "OCEANO" ? "16,0% a.a." : "--"}
+                                            </p>
+                                        </div>
+                                        <div className="p-3 rounded-xl bg-dash-surface-active border border-dash-border">
+                                            <p className="text-[11px] text-dash-text-light uppercase tracking-wider font-semibold mb-1">Risco e Volatil.</p>
+                                            <p className="text-[13px] font-medium text-dash-text">
+                                                {userProfile === "ABRIGO" ? "Baixo" :
+                                                    userProfile === "RITMO" ? "Moderado" :
+                                                        userProfile === "VANGUARDA" ? "Arrojado" :
+                                                            userProfile === "OCEANO" ? "Alto Global" : "--"}
+                                            </p>
+                                        </div>
+                                        <div className="p-3 rounded-xl bg-dash-surface-active border border-dash-border">
+                                            <p className="text-[11px] text-dash-text-light uppercase tracking-wider font-semibold mb-1">Moeda / Foco</p>
+                                            <p className="text-[13px] font-medium text-dash-text">
+                                                {userProfile === "OCEANO" ? "USD / BRL" : "BRL (Brasil)"}
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
                             ) : (

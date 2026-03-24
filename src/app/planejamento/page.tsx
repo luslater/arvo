@@ -174,32 +174,26 @@ export default function PlanejamentoPage() {
                 if (res.ok) {
                     const data = await res.json()
 
-                    if (data.plan) {
-                        setDesiredLifestyleCost(data.plan.desiredLifestyleCost)
-                        setMonthlyContribution(data.plan.monthlyContribution)
-                        setInvestmentPeriod(data.plan.investmentPeriod)
-                        setNominalReturn(data.plan.expectedReturn)
-                        if (data.plan.currentCapital !== null && data.plan.currentCapital !== undefined) {
-                            setCurrentValue(data.plan.currentCapital)
+                    // The API was updated to return flat fields
+                    if (data.desiredLifestyleCost) setDesiredLifestyleCost(data.desiredLifestyleCost)
+                    if (data.monthlyContribution) setMonthlyContribution(data.monthlyContribution)
+                    if (data.investmentPeriod) setInvestmentPeriod(data.investmentPeriod)
+
+                    if (data.expectedReturn) {
+                        setNominalReturn(data.expectedReturn)
+                    } else if (data.riskProfile) {
+                        const returnByProfile: Record<string, number> = {
+                            "CONSERVADOR": 9,
+                            "MODERADO_CONSERVADOR": 10,
+                            "MODERADO": 11,
+                            "MODERADO_ARROJADO": 12,
+                            "ARROJADO": 13,
                         }
+                        setNominalReturn(returnByProfile[data.riskProfile] ?? 12)
                     }
 
-                    if (data.profile) {
-                        if (!data.plan || data.plan.currentCapital === null || data.plan.currentCapital === undefined) {
-                            const total = data.profile.saldo + data.profile.emergencyFund + data.profile.totalCarteira
-                            if (total > 0) setCurrentValue(total)
-                        }
-
-                        if (!data.plan) {
-                            const profile = data.profile.portfolioType || "RITMO"
-                            const returnByProfile: Record<string, number> = {
-                                ABRIGO: 10.5,
-                                RITMO: 12,
-                                VANGUARDA: 14,
-                                OCEANO: 13,
-                            }
-                            setNominalReturn(returnByProfile[profile] ?? 12)
-                        }
+                    if (data.currentCapital !== undefined && data.currentCapital !== null) {
+                        setCurrentValue(data.currentCapital)
                     }
                 }
             } catch (error) {

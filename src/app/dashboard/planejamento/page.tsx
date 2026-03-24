@@ -192,7 +192,11 @@ export default function PlanejamentoDashboardPage() {
                             "MODERADO_ARROJADO": 12,
                             "ARROJADO": 13,
                         }
-                        setNominalReturn(returnByProfile[profile] ?? 12)
+
+                        // Default to profile's return only if not explicitly saved by the user
+                        if (!data.expectedReturn) {
+                            setNominalReturn(returnByProfile[profile] ?? 12)
+                        }
                     }
                 }
             } catch (error) {

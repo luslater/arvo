@@ -22,6 +22,7 @@ export interface ProjectionResult {
     gap: number // positive = surplus, negative = deficit
     monthlyData: MonthlyProjection[]
     recommendation: string
+    requiredMonthlyContribution: number // Aporte ideal para fechar o gap
 }
 
 export interface MonthlyProjection {
@@ -190,6 +191,18 @@ export function projectFinancialPlan(plan: FinancialPlan): ProjectionResult {
     // Generate monthly projections (Both)
     const monthlyData = generateMonthlyProjections(plan)
 
+    // Calculate the required monthly PMT to hit the goal exactly
+    let requiredMonthlyContribution = plan.monthlyContribution;
+    if (requiredCapitalNominal > 0 && monthlyRateNominal > 0 && totalMonths > 0) {
+        const r = monthlyRateNominal / 100;
+        const n = totalMonths;
+        const pv = plan.currentValue;
+        const fv = requiredCapitalNominal;
+
+        const idealPmt = (fv - pv * Math.pow(1 + r, n)) * (r / (Math.pow(1 + r, n) - 1));
+        requiredMonthlyContribution = idealPmt > 0 ? idealPmt : 0;
+    }
+
     // Generate recommendation
     const recommendation = generateRecommendation(alignmentScore, gap)
 
@@ -201,7 +214,8 @@ export function projectFinancialPlan(plan: FinancialPlan): ProjectionResult {
         alignmentScore,
         gap,
         monthlyData,
-        recommendation
+        recommendation,
+        requiredMonthlyContribution
     }
 }
 

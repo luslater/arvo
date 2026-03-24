@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react"
 import { useSession } from "next-auth/react"
 import { Pencil, Check, X, TrendingUp, Wallet, PiggyBank, BarChart3 } from "lucide-react"
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
+import { DashboardCharts } from "@/components/dashboard-charts"
+import { projectFinancialPlan } from "@/lib/financial-planning"
 import Link from "next/link"
 
 const formatBRL = (val: number) =>
@@ -159,14 +160,16 @@ export default function DashboardPage() {
 
     const d = data!
 
-    // Build a simple chart from totalCarteira projected 6 months back
-    const chartData = Array.from({ length: 7 }, (_, i) => {
-        const factor = 1 - (6 - i) * 0.022
-        return {
-            month: ["Set", "Out", "Nov", "Dez", "Jan", "Fev", "Mar"][i],
-            carteira: Math.round(d.totalCarteira * factor)
-        }
+    const projection = projectFinancialPlan({
+        currentValue: d.totalCarteira,
+        monthlyContribution: d.monthlyContribution,
+        investmentPeriod: d.investmentPeriod,
+        nominalReturn: d.expectedReturn,
+        inflationRate: 4.87, // media IPCA
+        desiredLifestyleCost: d.desiredLifestyleCost,
     })
+
+    // The chart data is now managed internally by DashboardCharts
 
     return (
         <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
@@ -241,35 +244,11 @@ export default function DashboardPage() {
             </div>
 
             {/* Chart */}
-            <div className="bg-dash-surface border border-dash-border rounded-2xl p-6 mb-5 shadow-sm">
-                <div className="flex items-center justify-between mb-4">
-                    <div className="text-sm font-medium text-dash-text">Evolução estimada do patrimônio</div>
-                    <div className="text-[11px] text-dash-text-muted">Baseado no seu patrimônio atual</div>
-                </div>
-                {d.totalCarteira > 0 ? (
-                    <div className="h-[180px] w-full">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <LineChart data={chartData} margin={{ top: 5, right: 0, bottom: 0, left: -20 }}>
-                                <CartesianGrid vertical={false} stroke="rgba(0,0,0,0.04)" />
-                                <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: '#94A3B8', fontSize: 11 }} dy={8} />
-                                <YAxis axisLine={false} tickLine={false} tickFormatter={v => `R$${(v / 1000).toFixed(0)}k`} tick={{ fill: '#94A3B8', fontSize: 11 }} />
-                                <Tooltip
-                                    contentStyle={{ borderRadius: 8, border: '1px solid rgba(10,25,47,0.1)', fontSize: 12 }}
-                                    formatter={(v: number) => [formatBRL(v), "Patrimônio"]}
-                                />
-                                <Line type="monotone" dataKey="carteira" stroke="#0A192F" strokeWidth={2.5} dot={{ r: 3, fill: '#0A192F', strokeWidth: 0 }} activeDot={{ r: 5 }} />
-                            </LineChart>
-                        </ResponsiveContainer>
-                    </div>
-                ) : (
-                    <div className="h-[180px] flex flex-col items-center justify-center text-center gap-2">
-                        <div className="text-[13px] text-dash-text-muted">Nenhum dado de patrimônio cadastrado ainda.</div>
-                        <Link href="/dashboard/carteira" className="text-[12px] text-dash-accent hover:underline font-medium">
-                            Ir para Minha Carteira para adicionar seus ativos →
-                        </Link>
-                    </div>
-                )}
-            </div>
+            <DashboardCharts
+                patrimonioTotal={d.totalCarteira}
+                profileType={d.portfolioType}
+                startDate={null}
+            />
 
             {/* Planejamento summary + CTA */}
             <div className="grid grid-cols-2 gap-4">
@@ -277,13 +256,14 @@ export default function DashboardPage() {
                     <div className="text-sm font-medium text-dash-text mb-4">Seu Planejamento</div>
                     <div className="space-y-3">
                         {[
-                            { label: "Meta de renda mensal", value: d.desiredLifestyleCost > 0 ? formatBRL(d.desiredLifestyleCost) : "Não definida" },
-                            { label: "Prazo de investimento", value: d.investmentPeriod > 0 ? `${d.investmentPeriod} anos` : "Não definido" },
-                            { label: "Rentabilidade esperada", value: d.expectedReturn > 0 ? `${d.expectedReturn}% a.a.` : "Não definida" },
-                        ].map(({ label, value }) => (
+                            { label: "Meta de renda mensal", value: d.desiredLifestyleCost > 0 ? formatBRL(d.desiredLifestyleCost) : "Não definida", highlight: false },
+                            { label: "Prazo para investir", value: d.investmentPeriod > 0 ? `${d.investmentPeriod} anos restantes` : "Não definido", highlight: false },
+                            { label: "Aporte mensal sugerido", value: projection.requiredMonthlyContribution > 0 ? formatBRL(projection.requiredMonthlyContribution) : "Atingido!", highlight: true },
+                            { label: "Rentabilidade esperada", value: d.expectedReturn > 0 ? `${d.expectedReturn}% a.a.` : "Não definida", highlight: false },
+                        ].map(({ label, value, highlight }) => (
                             <div key={label} className="flex items-center justify-between py-2 border-b border-dash-border last:border-0">
-                                <span className="text-[12px] text-dash-text-muted">{label}</span>
-                                <span className="text-[13px] font-semibold text-dash-text">{value}</span>
+                                <span className={`text-[12px] ${highlight ? 'text-dash-accent font-medium' : 'text-dash-text-muted'}`}>{label}</span>
+                                <span className={`text-[13px] font-semibold ${highlight ? 'text-dash-accent' : 'text-dash-text'}`}>{value}</span>
                             </div>
                         ))}
                     </div>

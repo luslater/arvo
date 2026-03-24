@@ -25,8 +25,8 @@ function NavLink({ href, icon, label, exact }: NavItem) {
         <Link
             href={href}
             className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-[13px] transition-colors ${isActive
-                    ? 'bg-dash-accent-light text-dash-accent font-semibold'
-                    : 'text-dash-text-muted hover:bg-dash-surface-active hover:text-dash-text font-normal'
+                ? 'bg-dash-accent-light text-dash-accent font-semibold'
+                : 'text-dash-text-muted hover:bg-dash-surface-active hover:text-dash-text font-normal'
                 }`}
         >
             <span className={`${isActive ? 'opacity-100' : 'opacity-60'}`}>{icon}</span>
@@ -60,9 +60,10 @@ export function DashboardSidebar() {
                 <span className="text-[10px] font-semibold text-dash-text-light uppercase tracking-widest px-3 py-2 mt-4">Aprendizado</span>
                 <NavLink href="/dashboard/educacao" icon={<BookOpen className="w-4 h-4" />} label="Educação" />
 
-                <span className="text-[10px] font-semibold text-dash-text-light uppercase tracking-widest px-3 py-2 mt-4">Conta</span>
+                <span className="text-[10px] font-semibold text-dash-text-light uppercase tracking-widest px-3 py-2 mt-4">Conta & Contato</span>
                 <NavLink href="/dashboard/assinatura" icon={<CreditCard className="w-4 h-4" />} label="Assinatura" />
-                <NavLink href="/dashboard/ajuda" icon={<HelpCircle className="w-4 h-4" />} label="Ajuda" />
+                <NavLink href="/dashboard/agendamento" icon={<HelpCircle className="w-4 h-4" />} label="Agendamento" />
+                <NavLink href="/dashboard/ajuda" icon={<HelpCircle className="w-4 h-4 opacity-0" />} label="Ajuda" />
             </nav>
 
             {/* Assessor Card */}
@@ -70,9 +71,11 @@ export function DashboardSidebar() {
                 <div className="bg-dash-accent-light rounded-xl p-3.5 mb-3">
                     <div className="text-[10px] text-dash-accent-mid uppercase tracking-[0.06em] font-semibold mb-1">Seu assessor</div>
                     <div className="text-[13px] font-semibold text-dash-accent leading-tight">Rafael Mendes, CFP®</div>
-                    <button className="mt-2.5 w-full py-1.5 text-xs bg-dash-accent text-white rounded-lg hover:bg-dash-accent-mid transition-colors font-semibold tracking-tight">
-                        Agendar conversa
-                    </button>
+                    <Link href="/dashboard/agendamento">
+                        <button className="mt-2.5 w-full py-1.5 text-xs bg-dash-accent text-white rounded-lg hover:bg-dash-accent-mid transition-colors font-semibold tracking-tight">
+                            Agendar conversa
+                        </button>
+                    </Link>
                 </div>
             </div>
 
