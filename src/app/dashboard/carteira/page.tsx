@@ -33,7 +33,8 @@ export default function DashboardCarteiraPage() {
             // Bypass Browser and Edge caches completely using a timestamp
             const res = await fetch(`/api/user/profile?t=${Date.now()}`, {
                 cache: "no-store",
-                headers: { "Cache-Control": "no-cache, no-store, must-revalidate" }
+                headers: { "Cache-Control": "no-cache, no-store, must-revalidate" },
+                credentials: "include"
             })
             if (res.ok) {
                 const data = await res.json()
