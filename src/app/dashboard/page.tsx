@@ -93,18 +93,23 @@ export default function DashboardPage() {
                 fetch(`/api/user/profile?t=${Date.now()}`, { cache: "no-store", headers: { "Cache-Control": "no-cache, no-store, must-revalidate" } }),
                 fetch(`/api/user/financial-plan?t=${Date.now()}`, { cache: "no-store", headers: { "Cache-Control": "no-cache, no-store, must-revalidate" } })
             ])
-            const profile = profileRes.ok ? await profileRes.json() : {}
-            const plan = planRes.ok ? await planRes.json() : {}
+            const profile = profileRes.ok ? await profileRes.json() : null
+            const plan = planRes.ok ? await planRes.json() : null
+
+            if (!profile) {
+                console.error("Fetch profile failed")
+                return; // Do not overwrite state with zeros if fetch completely fails
+            }
 
             setData({
                 totalCarteira: profile.totalCarteira ?? 0,
                 saldo: profile.saldo ?? 0,
                 emergencyFund: profile.emergencyFund ?? 0,
                 portfolioType: profile.portfolioType ?? null,
-                monthlyContribution: plan.monthlyContribution ?? 0,
-                desiredLifestyleCost: plan.desiredLifestyleCost ?? 0,
-                investmentPeriod: plan.investmentPeriod ?? 20,
-                expectedReturn: plan.expectedReturn ?? 12,
+                monthlyContribution: plan?.monthlyContribution ?? 0,
+                desiredLifestyleCost: plan?.desiredLifestyleCost ?? 0,
+                investmentPeriod: plan?.investmentPeriod ?? 20,
+                expectedReturn: plan?.expectedReturn ?? 12,
                 userName: session?.user?.name?.split(" ")[0] ?? "Olá",
             })
         } catch (e) {
