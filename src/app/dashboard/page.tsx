@@ -90,8 +90,8 @@ export default function DashboardPage() {
         setLoading(true)
         try {
             const [profileRes, planRes] = await Promise.all([
-                fetch("/api/user/profile"),
-                fetch("/api/user/financial-plan")
+                fetch(`/api/user/profile?t=${Date.now()}`, { cache: "no-store", headers: { "Cache-Control": "no-cache, no-store, must-revalidate" } }),
+                fetch(`/api/user/financial-plan?t=${Date.now()}`, { cache: "no-store", headers: { "Cache-Control": "no-cache, no-store, must-revalidate" } })
             ])
             const profile = profileRes.ok ? await profileRes.json() : {}
             const plan = planRes.ok ? await planRes.json() : {}

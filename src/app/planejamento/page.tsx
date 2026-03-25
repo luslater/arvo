@@ -170,7 +170,11 @@ export default function PlanejamentoPage() {
 
         const loadData = async () => {
             try {
-                const res = await fetch("/api/user/financial-plan")
+                // Bypass cache completely using strict headers + timestamp
+                const res = await fetch(`/api/user/financial-plan?t=${Date.now()}`, {
+                    cache: "no-store",
+                    headers: { "Cache-Control": "no-cache, no-store, must-revalidate" }
+                })
                 if (res.ok) {
                     const data = await res.json()
 
@@ -541,7 +545,7 @@ export default function PlanejamentoPage() {
                                     <ArrowUpRight className="w-4 h-4 text-emerald-500" />
                                 </div>
 
-                                <div className="h-[200px] w-full">
+                                <div className="h-[350px] w-full mt-4">
                                     <ResponsiveContainer width="100%" height="100%">
                                         <AreaChart data={chartData}>
                                             <defs>
@@ -555,8 +559,25 @@ export default function PlanejamentoPage() {
                                                 </linearGradient>
                                             </defs>
                                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                                            <XAxis dataKey="year" hide />
-                                            <YAxis hide domain={["dataMin", "auto"]} />
+                                            <XAxis
+                                                dataKey="year"
+                                                stroke="#94a3b8"
+                                                fontSize={10}
+                                                tickLine={false}
+                                                axisLine={false}
+                                                tickFormatter={(value) => `Ano ${value}`}
+                                                dy={10}
+                                            />
+                                            <YAxis
+                                                stroke="#94a3b8"
+                                                fontSize={10}
+                                                tickLine={false}
+                                                axisLine={false}
+                                                tickFormatter={(value) => `R$ ${(value / 1000).toFixed(0)}k`}
+                                                domain={[0, "auto"]}
+                                                width={60}
+                                                tickCount={6}
+                                            />
                                             <Tooltip content={<ArvoTooltip />} cursor={{ stroke: "#10b981", strokeWidth: 1 }} />
                                             <Area
                                                 type="monotone"

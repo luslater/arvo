@@ -23,6 +23,25 @@
   /* Fonts */
   --font-serif: var(--font-dm-serif);
   --font-sans: var(--font-dm-sans);
+
+  /* ARVO Primary & Profiles */
+  --color-arvo-primary: #065f46;
+
+  --color-abrigo-primary: #C9B8A3;
+  --color-abrigo-secondary: #A89178;
+  --color-abrigo-accent: #8B7355;
+
+  --color-ritmo-primary: #A8C5A1;
+  --color-ritmo-secondary: #7FA876;
+  --color-ritmo-accent: #5D8C54;
+
+  --color-vanguarda-primary: #A3BFD9;
+  --color-vanguarda-secondary: #7BA3C4;
+  --color-vanguarda-accent: #5687AF;
+
+  --color-oceano-primary: #89C4D4;
+  --color-oceano-secondary: #5EADC0;
+  --color-oceano-accent: #3D96AB;
 }
 
 /* ARVO Design System - Pastel Palette */
