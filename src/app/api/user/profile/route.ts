@@ -54,7 +54,7 @@ export async function GET(req: Request) {
         }))
 
         return NextResponse.json({ ...currentProfile, assets: formattedAssets })
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error fetching user profile:", error)
         return new NextResponse("Internal Error", { status: 500 })
     }
