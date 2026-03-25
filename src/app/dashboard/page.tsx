@@ -85,6 +85,7 @@ export default function DashboardPage() {
     const [data, setData] = useState<DashboardData | null>(null)
     const [loading, setLoading] = useState(true)
     const [saving, setSaving] = useState(false)
+    const [loadError, setLoadError] = useState<string | null>(null)
 
     const loadData = async () => {
         setLoading(true)
@@ -93,11 +94,19 @@ export default function DashboardPage() {
                 fetch(`/api/user/profile?t=${Date.now()}`, { cache: "no-store", headers: { "Cache-Control": "no-cache, no-store, must-revalidate" }, credentials: "include" }),
                 fetch(`/api/user/financial-plan?t=${Date.now()}`, { cache: "no-store", headers: { "Cache-Control": "no-cache, no-store, must-revalidate" }, credentials: "include" })
             ])
-            const profile = profileRes.ok ? await profileRes.json() : null
+            if (!profileRes.ok) {
+                const text = await profileRes.text().catch(() => "Unknown error")
+                setLoadError(`Profile fetch failed: ${profileRes.status} ${profileRes.statusText} - ${text}`)
+                console.error("Fetch profile failed", profileRes.status, text)
+                return;
+            }
+
+            const profile = await profileRes.json()
             const plan = planRes.ok ? await planRes.json() : null
 
             if (!profile) {
-                console.error("Fetch profile failed")
+                setLoadError("Profile JSON parsed to null/empty")
+                console.error("Fetch profile failed: null")
                 return; // Do not overwrite state with zeros if fetch completely fails
             }
 
@@ -112,8 +121,9 @@ export default function DashboardPage() {
                 expectedReturn: plan?.expectedReturn ?? 12,
                 userName: session?.user?.name?.split(" ")[0] ?? "Olá",
             })
-        } catch (e) {
-            console.error(e)
+        } catch (e: any) {
+            console.error("Catch block triggered:", e)
+            setLoadError(`Network exception: ${e.message || String(e)}`)
         } finally {
             setLoading(false)
         }
@@ -170,6 +180,12 @@ export default function DashboardPage() {
                 <div className="text-dash-text-muted text-sm text-center max-w-sm">
                     Tivemos um problema ao buscar suas informações no servidor (talvez sua sessão tenha inspirado).
                 </div>
+                {loadError && (
+                    <div className="text-[11px] font-mono text-white bg-slate-900 p-3 rounded text-left max-w-md break-words mb-2">
+                        DIAGNÓSTICO TÉCNICO:<br />
+                        {loadError}
+                    </div>
+                )}
                 <div className="flex gap-4 mt-2">
                     <button onClick={() => window.location.reload()} className="px-4 py-2 bg-dash-accent text-white rounded-lg text-sm">Atualizar Página</button>
                     <Link href="/api/auth/signout" className="px-4 py-2 border border-dash-border text-dash-text rounded-lg text-sm hover:bg-dash-surface-active">Fazer Login Novamente</Link>
