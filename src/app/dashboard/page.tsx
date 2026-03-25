@@ -163,7 +163,22 @@ export default function DashboardPage() {
         )
     }
 
-    const d = data!
+    if (!data) {
+        return (
+            <div className="flex items-center justify-center h-64 flex-col gap-4">
+                <div className="text-dash-danger font-semibold bg-dash-danger-light px-4 py-2 rounded-xl">Falha ao carregar seu perfil.</div>
+                <div className="text-dash-text-muted text-sm text-center max-w-sm">
+                    Tivemos um problema ao buscar suas informações no servidor (talvez sua sessão tenha inspirado).
+                </div>
+                <div className="flex gap-4 mt-2">
+                    <button onClick={() => window.location.reload()} className="px-4 py-2 bg-dash-accent text-white rounded-lg text-sm">Atualizar Página</button>
+                    <Link href="/api/auth/signout" className="px-4 py-2 border border-dash-border text-dash-text rounded-lg text-sm hover:bg-dash-surface-active">Fazer Login Novamente</Link>
+                </div>
+            </div>
+        )
+    }
+
+    const d = data
 
     const projection = projectFinancialPlan({
         currentValue: d.totalCarteira,
