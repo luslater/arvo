@@ -13,6 +13,9 @@ interface ChartProps {
     patrimonioTotal: number;
     profileType: string | null;
     startDate: Date | string | null;
+    aporteMensal?: number;
+    retornoAnual?: number;
+    prazoAnos?: number;
 }
 
 // Helper to generate simulated monthly data based on an annualized return
@@ -51,7 +54,14 @@ const COLORS: Record<string, string> = {
     "OCEANO": "#EC4899",
 }
 
-export function DashboardCharts({ patrimonioTotal, profileType, startDate }: ChartProps) {
+export function DashboardCharts({
+    patrimonioTotal,
+    profileType,
+    startDate,
+    aporteMensal,
+    retornoAnual,
+    prazoAnos
+}: ChartProps) {
     const [activeLines, setActiveLines] = useState<Comparative[]>(["CDI"])
 
     const toggleLine = (line: Comparative) => {
@@ -102,14 +112,50 @@ export function DashboardCharts({ patrimonioTotal, profileType, startDate }: Cha
         return { chartData, monthsLabels }
     }, [activeLines, patrimonioTotal, profileType, startDate])
 
+    const projectionData = useMemo(() => {
+        const data = [];
+        const today = new Date();
+        const startYear = today.getFullYear();
+        let currentPatrimony = patrimonioTotal;
+        const r = (retornoAnual || 12) / 100;
+        const monthlyReturn = Math.pow(1 + r, 1 / 12) - 1;
+        const pt = (aporteMensal || 0);
+        const years = (prazoAnos && prazoAnos > 0) ? prazoAnos : 70;
+
+        data.push({
+            label: "Hoje",
+            patrimonio: currentPatrimony
+        });
+
+        // Determine step size to keep bars reasonable (< 40)
+        const step = Math.max(1, Math.floor(years / 35));
+
+        for (let y = 1; y <= years; y++) {
+            for (let m = 0; m < 12; m++) {
+                currentPatrimony = currentPatrimony * (1 + monthlyReturn) + pt;
+            }
+            if (y % step === 0 || y === years) {
+                // Ensure no duplicate years
+                const yearLabel = String(startYear + y);
+                if (data[data.length - 1].label !== yearLabel) {
+                    data.push({
+                        label: yearLabel,
+                        patrimonio: currentPatrimony
+                    });
+                }
+            }
+        }
+        return data;
+    }, [patrimonioTotal, aporteMensal, retornoAnual, prazoAnos]);
+
 
     const formatBRL = (val: number) =>
         new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 }).format(val)
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-5">
+        <div className="flex flex-col gap-6 mb-8">
             {/* Gráfico de Rentabilidade (Principal) */}
-            <div className="lg:col-span-2 bg-dash-surface border border-dash-border rounded-2xl p-6 shadow-sm">
+            <div className="bg-dash-surface border border-dash-border rounded-2xl p-6 shadow-sm">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-4">
                     <div>
                         <div className="flex items-center gap-1.5 text-[14px] font-semibold text-dash-text mb-1">
@@ -126,8 +172,8 @@ export function DashboardCharts({ patrimonioTotal, profileType, startDate }: Cha
                                 key={comp}
                                 onClick={() => toggleLine(comp)}
                                 className={`flex items-center gap-1 px-2.5 py-1 rounded-full border transition-colors ${activeLines.includes(comp)
-                                        ? "bg-dash-surface-active border-dash-border-strong text-dash-text font-medium"
-                                        : "bg-transparent border-dash-border text-dash-text-muted hover:text-dash-text"
+                                    ? "bg-dash-surface-active border-dash-border-strong text-dash-text font-medium"
+                                    : "bg-transparent border-dash-border text-dash-text-muted hover:text-dash-text"
                                     }`}
                             >
                                 <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[comp] }}></div>
@@ -173,22 +219,22 @@ export function DashboardCharts({ patrimonioTotal, profileType, startDate }: Cha
                 </div>
             </div>
 
-            {/* Gráfico Evolução de Patrimônio (Menor) */}
+            {/* Gráfico Evolução de Patrimônio (Embaixo) */}
             <div className="bg-dash-surface border border-dash-border rounded-2xl p-6 shadow-sm flex flex-col">
                 <div>
                     <div className="flex items-center gap-1.5 text-[14px] font-semibold text-dash-text mb-1">
-                        <BarChart3 className="w-4 h-4 text-dash-text-muted" /> Evolução Patrimonial
+                        <BarChart3 className="w-4 h-4 text-dash-text-muted" /> Evolução Patrimonial (Projeção)
                     </div>
                     <div className="text-[11.5px] text-dash-text-light mb-6">
-                        Crescimento do seu capital investido
+                        Crescimento projetado do seu capital até a aposentadoria ({prazoAnos || 70} anos)
                     </div>
                 </div>
 
-                <div className="flex-1 min-h-[220px]">
+                <div className="flex-1 min-h-[300px] w-full">
                     <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={chartData} margin={{ top: 10, right: 0, bottom: 0, left: -20 }}>
+                        <BarChart data={projectionData} margin={{ top: 10, right: 0, bottom: 0, left: -20 }}>
                             <CartesianGrid vertical={false} stroke="rgba(0,0,0,0.04)" />
-                            <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: '#94A3B8', fontSize: 10 }} dy={8} />
+                            <XAxis dataKey="label" axisLine={false} tickLine={false} tick={{ fill: '#94A3B8', fontSize: 10 }} dy={8} />
                             <YAxis
                                 axisLine={false}
                                 tickLine={false}
@@ -198,7 +244,7 @@ export function DashboardCharts({ patrimonioTotal, profileType, startDate }: Cha
                             <Tooltip
                                 cursor={{ fill: 'rgba(0,0,0,0.02)' }}
                                 contentStyle={{ borderRadius: 8, border: '1px solid rgba(10,25,47,0.1)', fontSize: 12 }}
-                                formatter={(v: number) => [formatBRL(v), "Patrimônio"]}
+                                formatter={(v: number) => [formatBRL(v), "Patrimônio Projetado"]}
                             />
                             <Bar dataKey="patrimonio" fill="#0A192F" radius={[4, 4, 0, 0]} maxBarSize={40} />
                         </BarChart>

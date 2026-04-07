@@ -15,6 +15,7 @@ export default withAuth(
             pathname === "/pending" ||
             pathname === "/checkout" ||
             pathname.startsWith("/demo") ||
+            pathname.startsWith("/escada") ||
             pathname.startsWith("/api") ||
             pathname.includes(".")
         ) {
@@ -47,6 +48,7 @@ export default withAuth(
                     pathname === "/pending" ||
                     pathname === "/checkout" ||
                     pathname.startsWith("/demo") ||
+                    pathname.startsWith("/escada") ||
                     pathname.startsWith("/api") ||
                     pathname.includes(".")
                 ) {

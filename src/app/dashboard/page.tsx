@@ -270,9 +270,12 @@ export default function DashboardPage() {
 
             {/* Chart */}
             <DashboardCharts
-                patrimonioTotal={d.totalCarteira}
+                patrimonioTotal={d.totalCarteira + d.saldo + d.emergencyFund}
                 profileType={d.portfolioType}
                 startDate={null}
+                aporteMensal={d.monthlyContribution}
+                retornoAnual={d.expectedReturn}
+                prazoAnos={d.investmentPeriod > 0 ? d.investmentPeriod : 70} // Default to 70 years approx to age 100
             />
 
             {/* Planejamento summary + CTA */}

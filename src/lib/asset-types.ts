@@ -26,7 +26,8 @@ export interface UserAsset {
     quantity: number
     value: number
     indexador: Indexador
-    rentabilidade: number // percentage per year
+    rentabilidade: number // final converted percentage per year
+    originalRate?: number // raw input (e.g. 110% do CDI, or +6% IPCA)
     prazo: string // ex: "2027-12-31" or "Indeterminado"
 }
 

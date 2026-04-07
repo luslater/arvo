@@ -127,6 +127,19 @@ body.light {
   color: inherit;
 }
 
+/* Escada Patrimonial — dark island override
+   The .light rules force `color: inherit` on all elements, cascading from body's dark color.
+   We override the cascade root so `inherit` picks up a light color instead. */
+[data-theme="dark"] {
+  color: #e2e8f0 !important;
+  /* slate-200 base text color */
+}
+
+[data-theme="dark"],
+[data-theme="dark"] * {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
 /* Dark theme */
 .dark {
   --arvo-white: #0F0F0F;

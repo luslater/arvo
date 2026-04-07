@@ -1,11 +1,11 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { ChevronDown, Check } from "lucide-react"
+import { ChevronDown, Check, Wallet, PiggyBank, TrendingUp, BarChart3 } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { OverviewTab } from "@/components/dashboard/overview-tab"
 import { AssetsTab } from "@/components/dashboard/assets-tab"
 import { AllocationTab } from "@/components/dashboard/allocation-tab"
+import { EscadaTab } from "@/components/dashboard/escada-tab"
 import type { UserAsset } from "@/lib/asset-types"
 import type { PortfolioType } from "@/lib/portfolio-allocations"
 import { useSession } from "next-auth/react"
@@ -135,38 +135,79 @@ export default function DashboardCarteiraPage() {
                 </div>
             </div>
 
-            <Tabs defaultValue="overview" className="space-y-6">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6 mb-8 mt-2">
+                <div className="rounded-2xl border border-dash-border bg-dash-surface p-5 shadow-sm">
+                    <div className="mb-2 flex items-center gap-2">
+                        <Wallet className="h-4 w-4 text-dash-text-muted" />
+                        <div className="text-[10px] font-semibold uppercase tracking-widest text-dash-text-light">
+                            Patrimônio Total
+                        </div>
+                    </div>
+                    <div className="text-2xl font-bold text-dash-text">
+                        {new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", minimumFractionDigits: 0 }).format(totalCarteira + saldo + reserva)}
+                    </div>
+                    <div className="mt-1 text-[11px] text-dash-text-muted">
+                        Carteira + saldo + reserva
+                    </div>
+                </div>
+
+                <div className="rounded-2xl border border-dash-border bg-dash-surface p-5 shadow-sm">
+                    <div className="mb-2 flex items-center gap-2">
+                        <PiggyBank className="h-4 w-4 text-dash-text-muted" />
+                        <div className="text-[10px] font-semibold uppercase tracking-widest text-dash-text-light">
+                            Aporte Mensal
+                        </div>
+                    </div>
+                    <div className="text-2xl font-bold text-dash-text">
+                        R$ 15.000
+                    </div>
+                    <div className="mt-1 text-[11px] text-dash-text-muted">
+                        Definido no Planejamento
+                    </div>
+                </div>
+
+                <div className="rounded-2xl border border-dash-border bg-dash-surface p-5 shadow-sm">
+                    <div className="mb-2 flex items-center gap-2">
+                        <TrendingUp className="h-4 w-4 text-dash-text-muted" />
+                        <div className="text-[10px] font-semibold uppercase tracking-widest text-dash-text-light">
+                            Retorno Est.
+                        </div>
+                    </div>
+                    <div className="text-2xl font-bold text-dash-text">
+                        14% a.a.
+                    </div>
+                    <div className="mt-1 text-[11px] text-dash-text-muted">
+                        Rentabilidade nominal
+                    </div>
+                </div>
+
+                <div className="rounded-2xl border border-dash-border bg-dash-surface p-5 shadow-sm">
+                    <div className="mb-2 flex items-center gap-2">
+                        <BarChart3 className="h-4 w-4 text-dash-text-muted" />
+                        <div className="text-[10px] font-semibold uppercase tracking-widest text-dash-text-light">
+                            Reserva de Emergência
+                        </div>
+                    </div>
+                    <div className="text-2xl font-bold text-dash-text">
+                        {new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", minimumFractionDigits: 0 }).format(reserva)}
+                    </div>
+                    <div className="mt-1 text-[11px] text-dash-text-muted">
+                        Fundo de liquidez
+                    </div>
+                </div>
+            </div>
+
+            <Tabs defaultValue="escada" className="space-y-6">
                 <TabsList className="bg-dash-surface border border-dash-border shadow-sm p-1 h-auto rounded-full inline-flex">
-                    <TabsTrigger value="overview" className="rounded-full px-6 py-2 text-sm data-[state=active]:bg-dash-accent data-[state=active]:text-white text-dash-text-muted hover:text-dash-text transition-colors">
-                        Visão Geral
+                    <TabsTrigger value="escada" className="rounded-full px-6 py-2 text-sm data-[state=active]:bg-dash-accent data-[state=active]:text-white text-dash-text-muted hover:text-dash-text transition-colors">
+                        Carteira ARVO
                     </TabsTrigger>
                     <TabsTrigger value="assets" className="rounded-full px-6 py-2 text-sm data-[state=active]:bg-dash-accent data-[state=active]:text-white text-dash-text-muted hover:text-dash-text transition-colors">
-                        Meus Ativos
-                    </TabsTrigger>
-                    <TabsTrigger value="allocation" className="rounded-full px-6 py-2 text-sm data-[state=active]:bg-dash-accent data-[state=active]:text-white text-dash-text-muted hover:text-dash-text transition-colors">
-                        Alocação & Metas
+                        Minha carteira fora Arvo
                     </TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="overview" className="space-y-6 animate-in fade-in-50 duration-300">
-                    <OverviewTab
-                        userAssets={userAssets}
-                        saldo={saldo}
-                        reserva={reserva}
-                        totalCarteira={totalCarteira}
-                        userProfile={viewingProfile}
-                        subscriptionStatus={subscriptionStatus}
-                        onTransactionComplete={loadData}
-                        realUserProfile={userProfile}
-                        onNavigateToAssets={() => {
-                            const assetsTab = document.querySelector('[value="assets"]') as HTMLElement
-                            assetsTab?.click()
-                        }}
-                        onNavigateToPlanning={() => {
-                            window.location.href = '/dashboard/planejamento'
-                        }}
-                    />
-                </TabsContent>
+
 
                 <TabsContent value="assets" className="space-y-6 animate-in fade-in-50 duration-300">
                     <AssetsTab
@@ -179,14 +220,13 @@ export default function DashboardCarteiraPage() {
                     />
                 </TabsContent>
 
-                <TabsContent value="allocation" className="space-y-6 animate-in fade-in-50 duration-300">
-                    <AllocationTab
-                        userAssets={userAssets}
-                        userProfile={(viewingProfile as PortfolioType) || "RITMO"}
-                        capital={totalCarteira}
-                        emergencyFund={reserva}
-                        subscriptionStatus={subscriptionStatus}
-                        realUserProfile={userProfile}
+
+
+                <TabsContent value="escada" className="space-y-6 animate-in fade-in-50 duration-300">
+                    <EscadaTab
+                        dashboardReserva={reserva}
+                        onUpdateReserva={setReserva}
+                        dashboardTotalPatrimonio={totalCarteira + saldo + reserva}
                     />
                 </TabsContent>
             </Tabs>

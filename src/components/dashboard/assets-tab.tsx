@@ -7,6 +7,9 @@ import { TrendingUp, DollarSign, Shield, Briefcase, X, Plus, Save, Loader2 } fro
 import { ASSET_TYPES, type AssetType, type UserAsset, type Indexador } from "@/lib/asset-types"
 import { CurrencyInput } from "@/components/ui/currency-input"
 
+const CDI_RATE = 10.5; // Exemplo ou vindo do DB
+const IPCA_RATE = 4.87; // Exemplo ou vindo do DB
+
 interface AssetsTabProps {
     userAssets: UserAsset[]
     saldo: number
@@ -51,6 +54,24 @@ export function AssetsTab({
     const handleUpdateAsset = async (index: number, field: keyof UserAsset, value: any) => {
         const updated = [...userAssets]
         updated[index] = { ...updated[index], [field]: value }
+
+        // Recalculate indexer rules
+        if (field === "indexador" || field === "originalRate" || field === "rentabilidade") {
+            const asset = updated[index]
+            const indexer = field === "indexador" ? value : asset.indexador
+            const rawRate = (field === "originalRate" || field === "rentabilidade") ? value : (asset.originalRate ?? asset.rentabilidade ?? 0)
+
+            asset.originalRate = rawRate
+
+            if (indexer === "Pós-fixado") {
+                asset.rentabilidade = (rawRate / 100) * CDI_RATE
+            } else if (indexer === "IPCA+") {
+                asset.rentabilidade = IPCA_RATE + rawRate
+            } else {
+                asset.rentabilidade = rawRate
+            }
+        }
+
         onUpdateAssets(updated)
     }
 
@@ -109,17 +130,23 @@ export function AssetsTab({
                     <CardTitle className="text-sm font-medium text-gray-600">Adicionar Ativos (Arraste ou Clique)</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-6">
                         {ASSET_TYPES.map((asset) => (
                             <div
                                 key={asset.id}
                                 draggable
                                 onDragStart={() => handleDragStart(asset.id)}
                                 onClick={() => handleAddAsset(asset.id)}
-                                className="px-3 py-1.5 text-xs font-medium bg-gray-50 hover:bg-primary/10 text-gray-700 hover:text-primary border border-gray-200 hover:border-primary rounded-full cursor-move transition-all flex items-center gap-1"
+                                className="relative cursor-move select-none rounded-xl border p-3 border-dash-border bg-dash-surface transition hover:ring-1 hover:ring-dash-border hover:bg-dash-surface-active"
                             >
-                                <Plus className="w-3 h-3" />
-                                {asset.label}
+                                <div className="mb-1 flex items-center justify-between">
+                                    <div className="flex items-center gap-1.5">
+                                        <span className="h-2 w-2 rounded-full bg-dash-text-light" />
+                                        <span className="text-[10px] uppercase tracking-widest text-dash-text-light">{asset.id}</span>
+                                    </div>
+                                    <Plus className="w-3 h-3 text-dash-text-muted opacity-50" />
+                                </div>
+                                <div className="mt-1.5 text-xs font-semibold text-dash-text">{asset.label}</div>
                             </div>
                         ))}
                     </div>
@@ -258,12 +285,14 @@ export function AssetsTab({
 
                                             {/* Rentabilidade */}
                                             <div>
-                                                <label className="text-xs text-gray-500 block mb-1">Rent. %</label>
+                                                <label className="text-xs text-gray-500 block mb-1">
+                                                    {asset.indexador === "Pós-fixado" ? "% do CDI" : asset.indexador === "IPCA+" ? "Prefixado (IPCA+ %)" : "Rent. % a.a."}
+                                                </label>
                                                 <input
                                                     type="number"
                                                     step="0.1"
-                                                    value={asset.rentabilidade || ""}
-                                                    onChange={(e) => handleUpdateAsset(index, "rentabilidade", Number(e.target.value))}
+                                                    value={asset.originalRate ?? asset.rentabilidade ?? ""}
+                                                    onChange={(e) => handleUpdateAsset(index, "originalRate", Number(e.target.value))}
                                                     placeholder="0"
                                                     className="w-full px-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                                                 />
