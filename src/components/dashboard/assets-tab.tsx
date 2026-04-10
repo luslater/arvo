@@ -1,9 +1,10 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { TrendingUp, DollarSign, Shield, Briefcase, X, Plus, Save, Loader2 } from "lucide-react"
+import { TrendingUp, DollarSign, Shield, Briefcase, X, Plus, Save, Loader2, Upload } from "lucide-react"
+import * as XLSX from "xlsx"
 import { ASSET_TYPES, type AssetType, type UserAsset, type Indexador } from "@/lib/asset-types"
 import { CurrencyInput } from "@/components/ui/currency-input"
 
@@ -29,6 +30,58 @@ export function AssetsTab({
 }: AssetsTabProps) {
     const [draggedType, setDraggedType] = useState<AssetType | null>(null)
     const [isSaving, setIsSaving] = useState(false)
+    const fileRef = useRef<HTMLInputElement>(null)
+
+    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0]
+        if (!file) return
+
+        const reader = new FileReader()
+        reader.onload = (evt) => {
+            try {
+                const bstr = evt.target?.result
+                const wb = XLSX.read(bstr, { type: "binary" })
+                const wsname = wb.SheetNames[0]
+                const ws = wb.Sheets[wsname]
+                const data = XLSX.utils.sheet_to_json(ws) as any[]
+
+                if (data.length === 0) {
+                    alert("O arquivo está vazio.")
+                    return
+                }
+
+                const newAssets: UserAsset[] = data.map((row) => {
+                    const tipoVal = String(row["tipo"] || row["Tipo"] || "outro").toLowerCase()
+                    const nome = row["ativo"] || row["Ativo"] || row["nome"] || row["Nome"] || "Ativo Desconhecido"
+                    const quant = Number(row["quantidade"] || row["Quantidade"] || 1)
+                    const val = Number(row["valor"] || row["Valor"] || 0)
+
+                    const matchedType = ASSET_TYPES.find(t => t.id === tipoVal || t.label.toLowerCase() === tipoVal)
+                    const finalType = matchedType ? matchedType.id : "outro"
+
+                    return {
+                        id: `xlsx-${Date.now()}-${Math.random()}`,
+                        type: finalType as AssetType,
+                        name: String(nome),
+                        quantity: isNaN(quant) ? 1 : quant,
+                        value: isNaN(val) ? 0 : val,
+                        indexador: "Pós-fixado",
+                        rentabilidade: 10.5,
+                        originalRate: 100,
+                        prazo: ""
+                    }
+                })
+
+                onUpdateAssets([...userAssets, ...newAssets])
+                alert(`${newAssets.length} ativos importados com sucesso!`)
+            } catch (err) {
+                console.error(err)
+                alert("Erro ao ler o arquivo Excel. Certifique-se que o formato está correto.")
+            }
+            if (fileRef.current) fileRef.current.value = ""
+        }
+        reader.readAsBinaryString(file)
+    }
 
     // Local state for editing without constant individual server updates
     const handleAddAsset = async (type: AssetType) => {
@@ -235,12 +288,20 @@ export function AssetsTab({
                     </div>
                 ) : (
                     <div className="space-y-4">
-                        <div className="flex items-center justify-between px-2">
+                        <div className="flex items-center justify-between px-2 flex-wrap gap-3">
                             <h3 className="text-sm font-semibold text-dash-text text-left">Sua Lista de Ativos</h3>
-                            <Button size="sm" onClick={handleSaveSync} disabled={isSaving} className="bg-indigo-600 hover:bg-indigo-700 text-white gap-2">
-                                {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                                Salvar Carteira
-                            </Button>
+                            <div className="flex items-center gap-2">
+                                <Button size="sm" variant="outline" onClick={() => fileRef.current?.click()} className="text-dash-text border-dash-border">
+                                    <Upload className="h-4 w-4 mr-2" />
+                                    Importar Excel
+                                </Button>
+                                <input type="file" accept=".xlsx, .xls, .csv" hidden ref={fileRef} onChange={handleFileUpload} />
+
+                                <Button size="sm" onClick={handleSaveSync} disabled={isSaving} className="bg-indigo-600 hover:bg-indigo-700 text-white gap-2">
+                                    {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                                    Salvar Carteira
+                                </Button>
+                            </div>
                         </div>
                         <div className="space-y-3">
                             {userAssets.map((asset, index) => {
