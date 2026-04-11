@@ -435,6 +435,7 @@ export interface ArvoStoreV3 {
     updateEntryValue(bucketKey: StepKey, entryId: string, value: number): void;
     cancelEditEntry(): void;
     removeEntry(bucketKey: StepKey, entryId: string): void;
+    applySuggestedAllocation(targets: Record<StepKey, number>): void;
 
     // Agendamento
     setNome(v: string): void;
@@ -576,6 +577,28 @@ export const useArvoStoreV3 = create<ArvoStoreV3>()(
                             ),
                         },
                     })),
+
+                applySuggestedAllocation: (targets) => set((s) => {
+                    const newBuckets: Record<StepKey, BucketEntry[]> = {
+                        reserva: [], abrigo: [], ritmo: [], vanguarda: [], oceano: []
+                    };
+                    for (const bk of STEP_ORDER) {
+                        const targetVal = targets[bk] || 0;
+                        if (targetVal <= 0) continue;
+                        const suggestions = SUGGESTED_ALLOCATIONS[bk] || [];
+                        suggestions.forEach((sugg, i) => {
+                            const amount = (sugg.weight / 100) * targetVal;
+                            if (amount > 0) {
+                                newBuckets[bk].push({
+                                    entryId: `auto-${bk}-${i}-${Date.now()}`,
+                                    fundId: sugg.fundId,
+                                    value: amount
+                                });
+                            }
+                        });
+                    }
+                    return { buckets: newBuckets };
+                }),
 
                 setNome: (v) => set({ nome: v }),
                 setEmail: (v) => set({ email: v }),

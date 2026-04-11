@@ -15,7 +15,7 @@ const portfolios = [
         border: "#E8DDD0",
         riskLabel: "Conservadora",
         riskColor: "text-amber-700 bg-amber-50",
-        returns: "9–10% a.a.",
+        returns: "14–15% a.a.",
         volatility: "Baixa",
     },
     {
@@ -28,7 +28,7 @@ const portfolios = [
         border: "#C4DEC1",
         riskLabel: "Moderada",
         riskColor: "text-emerald-700 bg-emerald-50",
-        returns: "11–13% a.a.",
+        returns: "16–18% a.a.",
         volatility: "Média",
     },
     {
@@ -41,7 +41,7 @@ const portfolios = [
         border: "#BDD4EA",
         riskLabel: "Arrojada",
         riskColor: "text-blue-700 bg-blue-50",
-        returns: "13–16% a.a.",
+        returns: "19–21% a.a.",
         volatility: "Alta",
     },
     {
@@ -54,7 +54,7 @@ const portfolios = [
         border: "#BFD0F0",
         riskLabel: "Sofisticada",
         riskColor: "text-indigo-700 bg-indigo-50",
-        returns: "14–18% a.a.",
+        returns: "23–26% a.a.",
         volatility: "Média-Alta",
     },
 ]

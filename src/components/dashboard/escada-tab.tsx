@@ -644,9 +644,16 @@ function MotorStep({ computed }: { computed: ReturnType<typeof useComputed> }) {
             <DashCard>
                 <div className="flex flex-wrap items-end justify-between gap-3 mb-1">
                     <div>
-                        <div className="text-xs uppercase tracking-[0.18em] text-dash-text-light">Etapa 3</div>
+                        <div className="flex items-center gap-3">
+                            <div className="text-xs uppercase tracking-[0.18em] text-dash-text-light">Etapa 3</div>
+                            <button onClick={() => {
+                                store.applySuggestedAllocation(computed.bucketTargets);
+                            }} className="rounded-full bg-dash-surface-active px-3 py-1 text-[10px] uppercase font-bold text-dash-accent transition hover:opacity-80">
+                                ⚡ Carteira Sugerida
+                            </button>
+                        </div>
                         <h3 className="mt-0.5 text-xl font-semibold text-dash-text">Motor de Alocação</h3>
-                        <p className="mt-1 text-sm text-dash-text-muted">Arraste fundos para os potes. A engrenagem fica perfeita quando todos estiverem na faixa.</p>
+                        <p className="mt-1 max-w-xl text-sm text-dash-text-muted">Arraste os fundos para os potes manualmente, ou utilize nosso modelo inteligente clicando no botão para aplicar sua Carteira Sugerida ideal.</p>
                     </div>
                     <div className="rounded-xl border border-dash-border bg-dash-bg px-4 py-2.5 text-right">
                         <div className="text-[10px] text-dash-text-light">Engrenagem</div>
