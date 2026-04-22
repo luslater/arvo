@@ -20,7 +20,8 @@ const fmt = (v: number) => BRL.format(isFinite(v) ? v : 0);
 
 export default function PortfolioDetailPage({ params }: { params: Promise<{ type: string }> }) {
     const { type } = use(params)
-    const rawType = type.toUpperCase()
+    const decodedType = decodeURIComponent(type)
+    const rawType = decodedType.toUpperCase()
     const portfolioType = (rawType === "VISAO" ? "VISÃO" : rawType) as PortfolioType
 
     // For demonstration, assume a standard R$ 100.000 to show volumes, or we just display % weights.
