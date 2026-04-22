@@ -10,17 +10,17 @@ import { useEffect, useState } from "react"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
 
 const portfolioPerformanceData = [
-    { year: '2016', CDI: 0, Abrigo: 0, Ritmo: 0, Vanguarda: 0 },
-    { year: '2017', CDI: 10, Abrigo: 11, Ritmo: 15, Vanguarda: 20 },
-    { year: '2018', CDI: 17, Abrigo: 19, Ritmo: 25, Vanguarda: 30 },
-    { year: '2019', CDI: 23, Abrigo: 26, Ritmo: 35, Vanguarda: 45 },
-    { year: '2020', CDI: 27, Abrigo: 31, Ritmo: 28, Vanguarda: 15 },
-    { year: '2021', CDI: 33, Abrigo: 38, Ritmo: 38, Vanguarda: 35 },
-    { year: '2022', CDI: 50, Abrigo: 56, Ritmo: 55, Vanguarda: 45 },
-    { year: '2023', CDI: 69, Abrigo: 77, Ritmo: 85, Vanguarda: 80 },
-    { year: '2024', CDI: 87, Abrigo: 98, Ritmo: 110, Vanguarda: 115 },
-    { year: '2025', CDI: 106, Abrigo: 119, Ritmo: 130, Vanguarda: 140 },
-    { year: '2026', CDI: 125, Abrigo: 138, Ritmo: 147, Vanguarda: 158 }
+    { year: '2016', CDI: 0, Abrigo: 0, Ritmo: 0, Visão: 0 },
+    { year: '2017', CDI: 10, Abrigo: 11, Ritmo: 15, Visão: 20 },
+    { year: '2018', CDI: 17, Abrigo: 19, Ritmo: 25, Visão: 30 },
+    { year: '2019', CDI: 23, Abrigo: 26, Ritmo: 35, Visão: 45 },
+    { year: '2020', CDI: 27, Abrigo: 31, Ritmo: 28, Visão: 15 },
+    { year: '2021', CDI: 33, Abrigo: 38, Ritmo: 38, Visão: 35 },
+    { year: '2022', CDI: 50, Abrigo: 56, Ritmo: 55, Visão: 45 },
+    { year: '2023', CDI: 69, Abrigo: 77, Ritmo: 85, Visão: 80 },
+    { year: '2024', CDI: 87, Abrigo: 98, Ritmo: 110, Visão: 115 },
+    { year: '2025', CDI: 106, Abrigo: 119, Ritmo: 130, Visão: 140 },
+    { year: '2026', CDI: 125, Abrigo: 138, Ritmo: 147, Visão: 158 }
 ]
 
 export default function Home() {
@@ -232,7 +232,7 @@ export default function Home() {
                                         <div className="flex justify-between items-center bg-indigo-50 p-5 rounded-2xl border border-indigo-100">
                                             <div className="flex items-center gap-4">
                                                 <div className="w-5 h-5 rounded-full bg-indigo-500"></div>
-                                                <span className="font-medium text-indigo-900 text-lg">Vanguarda</span>
+                                                <span className="font-medium text-indigo-900 text-lg">Visão</span>
                                             </div>
                                             <span className="font-bold text-indigo-700 text-lg">126% do CDI</span>
                                         </div>
@@ -256,7 +256,7 @@ export default function Home() {
                                             <Line type="monotone" dataKey="CDI" stroke="#94a3b8" strokeWidth={2} strokeDasharray="5 5" dot={false} activeDot={{ r: 6 }} />
                                             <Line type="monotone" dataKey="Abrigo" stroke="#10b981" strokeWidth={3} dot={false} activeDot={{ r: 6 }} />
                                             <Line type="monotone" dataKey="Ritmo" stroke="#3b82f6" strokeWidth={3} dot={false} activeDot={{ r: 6 }} />
-                                            <Line type="monotone" dataKey="Vanguarda" stroke="#6366f1" strokeWidth={3} dot={false} activeDot={{ r: 6 }} />
+                                            <Line type="monotone" dataKey="Visão" stroke="#6366f1" strokeWidth={3} dot={false} activeDot={{ r: 6 }} />
                                         </LineChart>
                                     </ResponsiveContainer>
                                 </div>
@@ -293,7 +293,7 @@ export default function Home() {
                                 <div className="relative z-20 space-y-3">
                                     <div className="inline-block px-3 py-1 bg-white/20 backdrop-blur-md !text-white text-xs font-bold uppercase tracking-widest rounded-full mb-2">Acumulação</div>
                                     <h3 className="text-3xl !text-white font-light leading-tight">Crescimento Patrimonial</h3>
-                                    <p className="!text-slate-300 font-light">As carteiras <strong className="font-semibold !text-white">Ritmo</strong> e <strong className="font-semibold !text-white">Vanguarda</strong> maximizam retorno no longo prazo respeitando seu conforto com a volatilidade.</p>
+                                    <p className="!text-slate-300 font-light">As carteiras <strong className="font-semibold !text-white">Ritmo</strong> e <strong className="font-semibold !text-white">Visão</strong> maximizam retorno no longo prazo respeitando seu conforto com a volatilidade.</p>
                                 </div>
                             </div>
 
@@ -356,7 +356,7 @@ export default function Home() {
                                 <div className="w-[300px] bg-white rounded-[2.5rem] border-[6px] border-slate-900 shadow-xl overflow-hidden translate-y-8">
                                     <div className="p-5 border-b border-slate-100 bg-slate-50 text-center">
                                         <div className="w-12 h-12 mx-auto rounded-full bg-gradient-to-br from-[#A3BFD9] to-[#5687AF] mb-3"></div>
-                                        <div className="text-xs text-slate-500 font-bold uppercase tracking-widest">Recomendação: Vanguarda</div>
+                                        <div className="text-xs text-slate-500 font-bold uppercase tracking-widest">Recomendação: Visão</div>
                                         <div className="text-2xl font-light mt-1">R$ 300.000,00</div>
                                     </div>
                                     <div className="p-6">
@@ -574,7 +574,7 @@ export default function Home() {
                                     <AccordionItem value="item-2">
                                         <AccordionTrigger className="text-left text-lg font-medium text-slate-800 py-5">Quanto custa usar a ARVO?</AccordionTrigger>
                                         <AccordionContent className="text-slate-600 font-light text-base leading-relaxed pb-6">
-                                            A plataforma ARVO possui um modelo freemium. Você pode simular a carteira e planejar a independência de graça. Para visualizar fundos específicos detalhados ou consultar a alocação de carteiras especiais como RITMO, VANGUARDA e OCEANO, oferecemos a assinatura Premium, justa, com base no volume de recursos administrados.
+                                            A plataforma ARVO possui um modelo freemium. Você pode simular a carteira e planejar a independência de graça. Para visualizar fundos específicos detalhados ou consultar a alocação de carteiras especiais como RITMO, VISÃO e OCEANO, oferecemos a assinatura Premium, justa, com base no volume de recursos administrados.
                                         </AccordionContent>
                                     </AccordionItem>
                                     <AccordionItem value="item-3">
@@ -670,7 +670,7 @@ export default function Home() {
                         <p className="mb-4">
                             Investimentos financeiros não são garantidos e acarretam riscos, incluindo a possível perda de valor principal investido.
                             O desempenho passado ou as projeções apresentadas na plataforma ARVO não são garantias de desempenho futuro.
-                            As carteiras (Abrigo, Ritmo, Vanguarda, Oceano) são sugeridas de acordo com questionário de idoneidade e suitability,
+                            As carteiras (Abrigo, Ritmo, Visão, Oceano) são sugeridas de acordo com questionário de idoneidade e suitability,
                             não configurando recomendação unânime irrefutável e isenta de riscos de mercado, liquidez e crédito inerentes ao sistema capitalista.
                         </p>
                         <p className="mb-4">

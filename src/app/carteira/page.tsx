@@ -208,7 +208,7 @@ export default function CarteiraPage() {
                                     <div className="px-3 py-2 border-b border-gray-100 mb-1">
                                         <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Mudar Visualização</p>
                                     </div>
-                                    {["ABRIGO", "RITMO", "VANGUARDA", "OCEANO"].map((prof) => (
+                                    {["ABRIGO", "RITMO", "VISÃO", "OCEANO"].map((prof) => (
                                         <button
                                             key={prof}
                                             onClick={() => {

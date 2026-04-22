@@ -108,7 +108,7 @@ export default function DashboardCarteiraPage() {
                                 <div className="px-3 py-2 border-b border-dash-border mb-1">
                                     <p className="text-xs font-semibold text-dash-text-light uppercase tracking-wider">Mudar Visualização</p>
                                 </div>
-                                {["ABRIGO", "RITMO", "VANGUARDA", "OCEANO"].map((prof) => (
+                                {["ABRIGO", "RITMO", "VISÃO", "OCEANO"].map((prof) => (
                                     <button
                                         key={prof}
                                         onClick={() => {

@@ -32,7 +32,7 @@ export function AllocationTab({
 
     const profileInfo = userProfile === "OCEANO"
         ? OCEANO_INFO
-        : getProfileDescription(userProfile as "ABRIGO" | "RITMO" | "VANGUARDA")
+        : getProfileDescription(userProfile as "ABRIGO" | "RITMO" | "VISÃO")
 
     const adherenceScore = calculateAdherenceScore(userAssets, userProfile)
 

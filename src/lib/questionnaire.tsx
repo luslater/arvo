@@ -60,13 +60,13 @@ export const questions: Question[] = [
     },
 ]
 
-export type ProfileType = "ABRIGO" | "RITMO" | "VANGUARDA"
+export type ProfileType = "ABRIGO" | "RITMO" | "VISÃO"
 
 export function calculateProfile(totalPoints: number): ProfileType {
     // Max points now: 6 * 5 = 30 points
     if (totalPoints <= 10) return "ABRIGO" // 0-10 pontos (Conservadora)
     if (totalPoints <= 20) return "RITMO" // 11-20 pontos (Moderada)
-    return "VANGUARDA" // 21-30 pontos (Arrojada)
+    return "VISÃO" // 21-30 pontos (Arrojada)
 }
 
 import { Shield, TrendingUp, Rocket } from "lucide-react"
@@ -87,12 +87,12 @@ export function getProfileDescription(profile: ProfileType) {
             icon: <TrendingUp className="w-12 h-12 text-white" />,
             color: "ritmo",
         },
-        VANGUARDA: {
-            title: "Vanguarda",
+        VISÃO: {
+            title: "Visão",
             subtitle: "Rumo ao futuro",
             description: "Você foca em alta rentabilidade no longo prazo. Tolera volatilidade e riscos maiores em busca de retornos superiores.",
             icon: <Rocket className="w-12 h-12 text-white" />,
-            color: "vanguarda",
+            color: "visao",
         },
     }
     return descriptions[profile]

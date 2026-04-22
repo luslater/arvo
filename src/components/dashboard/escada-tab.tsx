@@ -25,7 +25,6 @@ import {
 import {
     useArvoStoreV3,
     SUITABILITY_QUESTIONS,
-    FUNDS_LIBRARY,
     PROFILE_BANDS,
     STEP_ORDER,
     BUCKET_COLORS,
@@ -35,13 +34,14 @@ import {
 
 import type {
     ProfileKey,
-    StepKey,
     ExpenseKey,
-    FundCard,
     BucketEntry,
     StepStatus,
     Band,
 } from "@/app/escada/arvo-store-v3";
+
+import { FUNDS_LIBRARY, type StepKey, type FundCard, getSuggestedAllocations } from "@/config/portfolios";
+import { MONTHLY_RETURNS } from "@/config/funds-monthly";
 
 // ─── Color palette for light theme ──────────────────────────────────────────
 
@@ -64,6 +64,26 @@ function lc(color: string) { return LAYER_COLORS[color] ?? LAYER_COLORS.blue; }
 const BRL = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 });
 const fmt = (v: number) => BRL.format(isFinite(v) ? v : 0);
 const clamp = (v: number, min: number, max: number) => Math.max(min, Math.min(max, v));
+
+function getHistoricalReturns(fundId: string) {
+    const arr = MONTHLY_RETURNS.funds[fundId as keyof typeof MONTHLY_RETURNS.funds];
+    if (!arr) return { m1: 0, m12: 0, m24: 0, m36: 0 };
+    const getComp = (months: number) => {
+        if (arr.length < months) return 0;
+        let accum = 1;
+        const startIndex = arr.length - months;
+        for (let i = startIndex; i < arr.length; i++) {
+            accum *= (1 + arr[i]);
+        }
+        return (accum - 1) * 100;
+    };
+    return {
+        m1: getComp(1),
+        m12: getComp(12),
+        m24: getComp(24),
+        m36: getComp(36),
+    };
+}
 
 // ─── useComputed (derivações) ────────────────────────────────────────────────
 
@@ -104,13 +124,13 @@ function useComputed() {
             reserva: metaReserva,
             abrigo: capitalExcedente * (bands.abrigo.target / 100),
             ritmo: capitalExcedente * (bands.ritmo.target / 100),
-            vanguarda: capitalExcedente * (bands.vanguarda.target / 100),
+            visao: capitalExcedente * (bands.visao.target / 100),
             oceano: capitalExcedente * (bands.oceano.target / 100),
         } as Record<StepKey, number>;
     }, [s.perfil, metaReserva, capitalExcedente]);
 
     const bucketStatus = useMemo<Record<StepKey, StepStatus>>(() => {
-        if (!s.perfil) return { reserva: "empty", abrigo: "locked", ritmo: "locked", vanguarda: "locked", oceano: "locked" };
+        if (!s.perfil) return { reserva: "empty", abrigo: "locked", ritmo: "locked", visao: "locked", oceano: "locked" };
         const bands = PROFILE_BANDS[s.perfil];
         const result = {} as Record<StepKey, StepStatus>;
 
@@ -118,7 +138,7 @@ function useComputed() {
         result.reserva = resPct === 0 ? "empty" : resPct < 100 ? "filling" : "in_range";
         const reservaOk = resPct >= 100;
 
-        const non: Exclude<StepKey, "reserva">[] = ["abrigo", "ritmo", "vanguarda", "oceano"];
+        const non: Exclude<StepKey, "reserva">[] = ["abrigo", "ritmo", "visao", "oceano"];
         for (let i = 0; i < non.length; i++) {
             const step = non[i];
             const band = bands[step];
@@ -339,8 +359,8 @@ function DadosStep({ computed }: { computed: ReturnType<typeof useComputed> }) {
                 </div>
 
                 {/* Custo de vida */}
-                <div className="rounded-xl border border-dash-border bg-dash-bg p-4">
-                    <div className="mb-3 flex items-center justify-between gap-3">
+                <div className="col-span-1 border-b border-dash-border lg:border-b-0 lg:border-r">
+                    <div className="flex items-center gap-2 border-b border-dash-border px-4 py-3">
                         <span className="text-sm font-medium text-dash-text">Custo de vida mensal</span>
                         <div className="inline-flex rounded-lg border border-dash-border bg-dash-surface p-0.5">
                             {[true, false].map((v) => (
@@ -452,18 +472,32 @@ function FundCardDrag({ fund, allocated }: { fund: FundCard; allocated: boolean 
 function BucketRow({ entry, bucketKey }: { entry: BucketEntry; bucketKey: StepKey }) {
     const { openEditEntry, removeEntry } = useArvoStoreV3();
     const fund = entry.fundId ? FUNDS_LIBRARY.find((f) => f.id === entry.fundId) : null;
+    const hist = entry.fundId ? getHistoricalReturns(entry.fundId) : null;
     const c = lc(BUCKET_COLORS[bucketKey]);
 
     return (
-        <div className={`flex items-center justify-between gap-2 rounded-lg border ${c.border} ${c.bg} px-3 py-2`}>
-            <div className="min-w-0">
-                <div className="truncate text-xs font-medium text-dash-text">{fund ? fund.shortName : entry.customName ?? "Fundo externo"}</div>
-                <div className="text-[10px] text-dash-text-light">{fund ? fund.type : "Externo"}</div>
+        <div className={`flex items-center justify-between gap-1 rounded-lg border ${c.border} ${c.bg} px-2 py-1.5`}>
+            <div className="min-w-0 flex-1 group relative cursor-help">
+                <div className="truncate text-[11px] font-bold text-dash-text tracking-tight">{fund ? (fund.shortName || fund.name) : entry.customName ?? "Fundo externo"}</div>
+                <div className="truncate text-[9.5px] text-dash-text-light">{fund ? fund.type : "Externo"}</div>
+
+                {/* CSS Tooltip Hover Card */}
+                {fund && hist && (
+                    <div className="pointer-events-none absolute left-0 bottom-full mb-2 w-48 opacity-0 group-hover:opacity-100 transition-opacity z-[100] bg-dash-surface rounded-xl border border-dash-border shadow-xl p-3 text-xs text-dash-text overflow-hidden">
+                        <div className="font-bold border-b border-dash-border pb-1.5 mb-2 leading-tight text-[11px]">{fund.name}</div>
+                        <div className="grid grid-cols-2 gap-y-1.5 text-[10.5px]">
+                            <span className="text-dash-text-muted">1 Mês:</span><span className={`font-semibold text-right ${hist.m1 >= 0 ? "text-emerald-500" : "text-red-500"}`}>{(hist.m1 > 0 ? "+" : "")}{hist.m1.toFixed(2)}%</span>
+                            <span className="text-dash-text-muted">12 Meses:</span><span className={`font-semibold text-right ${hist.m12 >= 0 ? "text-emerald-500" : "text-red-500"}`}>{(hist.m12 > 0 ? "+" : "")}{hist.m12.toFixed(2)}%</span>
+                            <span className="text-dash-text-muted">24 Meses:</span><span className={`font-semibold text-right ${hist.m24 >= 0 ? "text-emerald-500" : "text-red-500"}`}>{(hist.m24 > 0 ? "+" : "")}{hist.m24.toFixed(2)}%</span>
+                            <span className="text-dash-text-muted">36 Meses:</span><span className={`font-semibold text-right ${hist.m36 >= 0 ? "text-emerald-500" : "text-red-500"}`}>{(hist.m36 > 0 ? "+" : "")}{hist.m36.toFixed(2)}%</span>
+                        </div>
+                    </div>
+                )}
             </div>
-            <div className="flex shrink-0 items-center gap-1.5">
-                <span className="text-xs font-semibold text-dash-text">{fmt(entry.value)}</span>
-                <button onClick={() => openEditEntry(bucketKey, entry.entryId)} className="rounded border border-dash-border px-1.5 py-0.5 text-[10px] text-dash-text-muted hover:bg-dash-surface-active transition">editar</button>
-                <button onClick={() => removeEntry(bucketKey, entry.entryId)} className="rounded border border-dash-border px-1.5 py-0.5 text-[10px] text-red-500 hover:bg-red-50 transition">✕</button>
+            <div className="flex shrink-0 items-center justify-end gap-1 w-max">
+                <div className="text-[11px] font-bold text-dash-text truncate max-w-[65px]">{fmt(entry.value)}</div>
+                <button onClick={() => openEditEntry(bucketKey, entry.entryId)} className="rounded border border-dash-border px-1 py-0.5 text-[9px] font-medium text-dash-text-muted hover:bg-dash-surface-active transition shrink-0">editar</button>
+                <button onClick={() => removeEntry(bucketKey, entry.entryId)} className="rounded border border-dash-border px-1.5 py-0.5 text-[9px] font-medium text-red-500 hover:bg-red-50 transition shrink-0">✕</button>
             </div>
         </div>
     );
@@ -547,7 +581,7 @@ function BucketDrop({ stepKey, status, computed }: { stepKey: StepKey; status: S
 }
 
 function AllocModal({ computed }: { computed: ReturnType<typeof useComputed> }) {
-    const { pendingAllocation, editingEntry, buckets, confirmAllocation, cancelPendingAllocation, updateEntryValue, cancelEditEntry, patrimonioAtual } = useArvoStoreV3();
+    const { pendingAllocation, editingEntry, buckets, confirmAllocation, cancelPendingAllocation, updateEntryValue, cancelEditEntry, patrimonioAtual, isQualificado } = useArvoStoreV3();
     const [val, setVal] = useState(0);
     const isEditing = !!editingEntry;
     const isOpen = !!pendingAllocation || isEditing;
@@ -561,6 +595,21 @@ function AllocModal({ computed }: { computed: ReturnType<typeof useComputed> }) 
     const bk = (pendingAllocation?.bucketKey ?? editingEntry?.bucketKey)!;
     const totalOthers = STEP_ORDER.flatMap((k) => buckets[k]).filter((e) => editingEntry ? e.entryId !== editingEntry.entryId : true).reduce((a, e) => a + e.value, 0);
     const maxAvailable = Math.max(0, patrimonioAtual - totalOthers);
+
+    const suggestedWeights = getSuggestedAllocations(isQualificado)[bk];
+    const suggestionForFund = fund ? suggestedWeights.find((s) => s.fundId === fund.id) : null;
+    let recommendationEl = null;
+
+    if (suggestionForFund) {
+        const bucketTargetVol = computed.bucketTargets[bk] ?? 0;
+        const recommnendedVolume = bucketTargetVol * (suggestionForFund.weight / 100);
+        recommendationEl = (
+            <div className="mt-2.5 text-[11px] text-dash-accent bg-dash-accent-light/40 px-3 py-2 rounded-lg border border-dash-accent/20">
+                <span className="opacity-80">Recomendado na Carteira ARVO:</span> <br />
+                <span className="font-bold">{suggestionForFund.weight}%</span> do alvo da gaveta ({fmt(recommnendedVolume)})
+            </div>
+        );
+    }
 
     function handleConfirm() {
         if (val <= 0) return;
@@ -595,6 +644,7 @@ function AllocModal({ computed }: { computed: ReturnType<typeof useComputed> }) 
                         <label className="mb-1 block text-xs text-dash-text-muted">Quanto você tem neste fundo?</label>
                         <DashInput value={val} onChange={setVal} />
                         <p className="mt-1 text-[11px] text-dash-text-light">Disponível: {fmt(maxAvailable)}</p>
+                        {recommendationEl}
                     </div>
                     <div className="mt-4 flex gap-2">
                         <button onClick={isEditing ? cancelEditEntry : cancelPendingAllocation}
@@ -608,10 +658,71 @@ function AllocModal({ computed }: { computed: ReturnType<typeof useComputed> }) 
     );
 }
 
+function GabaritoModal({ isOpen, onClose, computed }: { isOpen: boolean, onClose: () => void, computed: ReturnType<typeof useComputed> }) {
+    const { isQualificado } = useArvoStoreV3();
+    const suggested = getSuggestedAllocations(isQualificado);
+
+    if (!isOpen) return null;
+    return (
+        <AnimatePresence>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                className="fixed inset-0 z-[60] flex items-center justify-center bg-black/30 px-4 backdrop-blur-sm"
+                onClick={onClose}>
+                <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
+                    className="w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-2xl border border-dash-border bg-dash-surface p-6 shadow-xl"
+                    onClick={(e) => e.stopPropagation()}>
+                    <div className="flex justify-between items-center mb-6">
+                        <div>
+                            <h3 className="text-xl font-bold text-dash-text font-serif">Gabarito Recomendado</h3>
+                            <p className="text-sm text-dash-text-muted mt-0.5">Sugestão de alocação ARVO para o perfil <span className="font-semibold text-dash-accent">{isQualificado ? "Investidor Qualificado" : "Público Geral"}</span>.</p>
+                        </div>
+                        <button onClick={onClose} className="rounded-full w-8 h-8 flex items-center justify-center bg-dash-surface-active text-dash-text-light hover:text-dash-text transition">✕</button>
+                    </div>
+
+                    <div className="space-y-4">
+                        {STEP_ORDER.map((bk) => {
+                            const allocations = suggested[bk];
+                            if (!allocations || allocations.length === 0) return null;
+                            const targetVol = computed.bucketTargets[bk] ?? 0;
+                            const c = lc(BUCKET_COLORS[bk]);
+                            return (
+                                <div key={bk} className={`rounded-xl border ${c.border} ${c.bg} p-4 overflow-hidden`}>
+                                    <div className="text-xs uppercase tracking-widest font-bold mb-3 flex justify-between items-center">
+                                        <span className={`text-[10px] ${c.text}`}>{BUCKET_META[bk].title}</span>
+                                        <span className="text-dash-text-muted">Alvo da gaveta: {fmt(targetVol)}</span>
+                                    </div>
+                                    <div className="grid sm:grid-cols-2 gap-2.5">
+                                        {allocations.map(a => {
+                                            const f = FUNDS_LIBRARY.find(x => x.id === a.fundId);
+                                            const vol = targetVol * (a.weight / 100);
+                                            return (
+                                                <div key={a.fundId} className="flex justify-between items-center bg-white/60 p-2.5 rounded-lg border border-white/50 shadow-sm">
+                                                    <div className="truncate min-w-0 flex-1 pr-2">
+                                                        <div className="text-[11px] font-bold text-dash-text truncate">{f ? (f.shortName || f.name) : a.fundId}</div>
+                                                        <div className="text-[10px] text-dash-accent flex items-center gap-1.5 mt-0.5">
+                                                            <span className="font-bold">{a.weight}%</span>
+                                                            <span className="text-dash-text-light font-medium">({fmt(vol)})</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )
+                                        })}
+                                    </div>
+                                </div>
+                            )
+                        })}
+                    </div>
+                </motion.div>
+            </motion.div>
+        </AnimatePresence>
+    )
+}
+
 function MotorStep({ computed }: { computed: ReturnType<typeof useComputed> }) {
     const store = useArvoStoreV3();
     const [filterCat, setFilterCat] = useState<StepKey | "all">("all");
     const [activeDragId, setActiveDragId] = useState<string | null>(null);
+    const [showGabarito, setShowGabarito] = useState(false);
     const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }));
 
     const allocatedIds = useMemo(() => {
@@ -641,16 +752,27 @@ function MotorStep({ computed }: { computed: ReturnType<typeof useComputed> }) {
 
     return (
         <div className="space-y-4">
+            <GabaritoModal isOpen={showGabarito} onClose={() => setShowGabarito(false)} computed={computed} />
             <DashCard>
                 <div className="flex flex-wrap items-end justify-between gap-3 mb-1">
                     <div>
                         <div className="flex items-center gap-3">
                             <div className="text-xs uppercase tracking-[0.18em] text-dash-text-light">Etapa 3</div>
+                            <button onClick={() => setShowGabarito(true)} className="rounded-full bg-dash-surface-active px-3 py-1 text-[10px] uppercase font-bold text-dash-text transition hover:opacity-80 flex items-center gap-1">
+                                📖 Gabarito
+                            </button>
                             <button onClick={() => {
                                 store.applySuggestedAllocation(computed.bucketTargets);
-                            }} className="rounded-full bg-dash-surface-active px-3 py-1 text-[10px] uppercase font-bold text-dash-accent transition hover:opacity-80">
+                            }} className="rounded-full bg-dash-surface-active px-3 py-1 text-[10px] uppercase font-bold text-dash-accent transition hover:opacity-80 flex items-center gap-1">
                                 ⚡ Carteira Sugerida
                             </button>
+                            <label className="group flex cursor-pointer items-center gap-1.5" title="Investidor Qualificado (IQ)">
+                                <span className="text-[10px] font-semibold uppercase text-dash-text-light transition group-hover:text-dash-text">Investidor Qualificado</span>
+                                <div className={`relative inline-flex h-4 w-7 items-center rounded-full transition-colors ${store.isQualificado ? "bg-dash-accent" : "bg-dash-surface-active"}`}>
+                                    <input type="checkbox" className="peer sr-only" checked={store.isQualificado} onChange={(e) => store.setQualificado(e.target.checked)} />
+                                    <div className={`inline-block h-3 w-3 transform rounded-full bg-white transition ${store.isQualificado ? "translate-x-3.5" : "translate-x-0.5"}`} />
+                                </div>
+                            </label>
                         </div>
                         <h3 className="mt-0.5 text-xl font-semibold text-dash-text">Motor de Alocação</h3>
                         <p className="mt-1 max-w-xl text-sm text-dash-text-muted">Arraste os fundos para os potes manualmente, ou utilize nosso modelo inteligente clicando no botão para aplicar sua Carteira Sugerida ideal.</p>

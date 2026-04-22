@@ -64,7 +64,7 @@ export default function QuestionnairePage() {
         const profileColors = {
             ABRIGO: "from-[#C9B8A3] to-[#8B7355]",
             RITMO: "from-[#A8C5A1] to-[#5D8C54]",
-            VANGUARDA: "from-[#A3BFD9] to-[#5687AF]",
+            VISÃO: "from-[#A3BFD9] to-[#5687AF]",
             OCEANO: "from-[#89C4D4] to-[#3D96AB]",
         }
 

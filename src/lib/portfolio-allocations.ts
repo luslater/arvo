@@ -1,4 +1,4 @@
-export type PortfolioType = "ABRIGO" | "RITMO" | "VANGUARDA" | "OCEANO"
+export type PortfolioType = "ABRIGO" | "RITMO" | "VISÃO" | "OCEANO"
 
 export type FundAllocation = {
     name: string
@@ -13,7 +13,7 @@ export const PORTFOLIO_ALLOCATIONS: Record<PortfolioType, FundAllocation[]> = {
         { name: "JGP Corporate FIC FIF RF CP LP RL", category: "Pós-FIXADO", type: "Pós-Fixado (DI / Caixa)", percentage: 8.0 },
         { name: "SPX Seahawk Crédito Privado FIC FIRF", category: "Pós-FIXADO", type: "Pós-Fixado (DI / Caixa)", percentage: 8.0 },
         { name: "Kinea Inflação Curta FIRF", category: "IPCA+", type: "IPCA+ (Inflação)", percentage: 4.0 },
-        { name: "Icatu Vanguarda Inflação Curta", category: "IPCA+", type: "IPCA+ (Inflação)", percentage: 4.0 },
+        { name: "Icatu Visão Inflação Curta", category: "IPCA+", type: "IPCA+ (Inflação)", percentage: 4.0 },
         { name: "NTNB 2028", category: "IPCA+", type: "IPCA+ (Inflação)", percentage: 4.0 },
         { name: "Kinea Debêntures Incentivadas", category: "PREFIXADO", type: "Prefixados", percentage: 3.0 },
         { name: "Kinea Oportunidade FIM", category: "MULTIMERCADO", type: "Multimercados", percentage: 5.0 },
@@ -39,7 +39,7 @@ export const PORTFOLIO_ALLOCATIONS: Record<PortfolioType, FundAllocation[]> = {
         { name: "Hashdex Nasdaq Crypto", category: "CRIPTO", type: "Multimercados", percentage: 3.0 },
     ],
 
-    VANGUARDA: [
+    VISÃO: [
         { name: "Tesouro Selic / Fundo Simples", category: "Pós-FIXADO", type: "Pós-Fixado (DI / Caixa)", percentage: 4.0 },
         { name: "Capitânia Premium 45", category: "Pós-FIXADO", type: "Pós-Fixado (DI / Caixa)", percentage: 3.0 },
         { name: "JGP Corporate", category: "Pós-FIXADO", type: "Pós-Fixado (DI / Caixa)", percentage: 4.0 },

@@ -14,7 +14,7 @@ export default function CheckoutPage() {
     const benefits = [
         "Acesso completo ao Planejamento Financeiro",
         "Monitoramento de Carteiras em tempo real",
-        "Modelos exclusivos (Abrigo, Ritmo, Vanguarda)",
+        "Modelos exclusivos (Abrigo, Ritmo, Visão)",
         "Importação ilimitada de ativos via Excel",
         "Suporte prioritário e consultoria de modelos",
     ]

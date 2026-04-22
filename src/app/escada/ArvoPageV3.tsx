@@ -42,7 +42,6 @@ import {
 import {
   useArvoStoreV3,
   SUITABILITY_QUESTIONS,
-  FUNDS_LIBRARY,
   PROFILE_BANDS,
   STEP_ORDER,
   BUCKET_COLORS,
@@ -52,13 +51,13 @@ import {
 
 import type {
   ProfileKey,
-  StepKey,
   ExpenseKey,
-  FundCard,
   BucketEntry,
   StepStatus,
   Band,
 } from "./arvo-store-v3";
+
+import { FUNDS_LIBRARY, type StepKey, type FundCard } from "../../config/portfolios";
 
 // ─── Paleta de cores por bucket ───────────────────────────────────────────────
 
@@ -136,7 +135,7 @@ function useComputed() {
       reserva: metaReserva,
       abrigo: capitalExcedente * (bands.abrigo.target / 100),
       ritmo: capitalExcedente * (bands.ritmo.target / 100),
-      vanguarda: capitalExcedente * (bands.vanguarda.target / 100),
+      visao: capitalExcedente * (bands.visao.target / 100),
       oceano: capitalExcedente * (bands.oceano.target / 100),
     } as Record<StepKey, number>;
   }, [s.perfil, metaReserva, capitalExcedente]);
@@ -146,7 +145,7 @@ function useComputed() {
     if (!s.perfil) {
       return {
         reserva: "empty", abrigo: "locked", ritmo: "locked",
-        vanguarda: "locked", oceano: "locked",
+        visao: "locked", oceano: "locked",
       };
     }
 
@@ -162,7 +161,7 @@ function useComputed() {
     const reservaOk = resPct >= 100;
 
     const nonReserve: Exclude<StepKey, "reserva">[] = [
-      "abrigo", "ritmo", "vanguarda", "oceano",
+      "abrigo", "ritmo", "visao", "oceano",
     ];
 
     for (let i = 0; i < nonReserve.length; i++) {

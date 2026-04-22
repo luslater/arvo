@@ -228,15 +228,15 @@ export default function AdaptPortfolioPage() {
                     </Card>
 
                     {/* Carteira Atual */}
-                    <Card className="border-vanguarda-accent/30">
+                    <Card className="border-visao-accent/30">
                         <CardContent className="pt-6">
                             <div className="flex items-center gap-3 mb-2">
-                                <div className="w-10 h-10 rounded-full bg-vanguarda-primary/20 flex items-center justify-center">
-                                    <Briefcase className="h-5 w-5 text-vanguarda-accent" />
+                                <div className="w-10 h-10 rounded-full bg-visao-primary/20 flex items-center justify-center">
+                                    <Briefcase className="h-5 w-5 text-visao-accent" />
                                 </div>
                                 <div>
                                     <p className="text-xs text-gray-500">Carteira Atual</p>
-                                    <p className="text-lg font-semibold text-vanguarda-accent">
+                                    <p className="text-lg font-semibold text-visao-accent">
                                         {new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", minimumFractionDigits: 0 }).format(totalCarteira)}
                                     </p>
                                 </div>

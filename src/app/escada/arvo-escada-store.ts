@@ -21,7 +21,7 @@ export type StepKey =
   | "reserva"
   | "abrigo"
   | "ritmo"
-  | "vanguarda"
+  | "visao"
   | "oceano";
 
 export type ExpenseKey =
@@ -150,25 +150,25 @@ export function computeProfileFromScore(totalScore: number): ProfileKey {
 // ─── Constantes de Alocação ──────────────────────────────────────────────────
 
 export const PROFILE_WEIGHTS: Record<ProfileKey, PercentMap> = {
-  conservador: { abrigo: 70, ritmo: 20, vanguarda: 10, oceano: 0 },
-  moderado_conservador: { abrigo: 55, ritmo: 25, vanguarda: 15, oceano: 5 },
-  moderado: { abrigo: 35, ritmo: 30, vanguarda: 20, oceano: 15 },
-  arrojado: { abrigo: 20, ritmo: 25, vanguarda: 30, oceano: 25 },
+  conservador: { abrigo: 70, ritmo: 20, visao: 10, oceano: 0 },
+  moderado_conservador: { abrigo: 55, ritmo: 25, visao: 15, oceano: 5 },
+  moderado: { abrigo: 35, ritmo: 30, visao: 20, oceano: 15 },
+  arrojado: { abrigo: 20, ritmo: 25, visao: 30, oceano: 25 },
 };
 
 /** Ranges aceitáveis — o pote precisa estar entre min% e max% para ser válido. */
 export const ALLOCATION_RANGES: Record<ProfileKey, Record<Exclude<StepKey, "reserva">, { min: number; max: number }>> = {
-  conservador: { abrigo: { min: 60, max: 80 }, ritmo: { min: 10, max: 30 }, vanguarda: { min: 0, max: 15 }, oceano: { min: 0, max: 5 } },
-  moderado_conservador: { abrigo: { min: 45, max: 65 }, ritmo: { min: 15, max: 35 }, vanguarda: { min: 5, max: 25 }, oceano: { min: 0, max: 15 } },
-  moderado: { abrigo: { min: 25, max: 45 }, ritmo: { min: 20, max: 40 }, vanguarda: { min: 10, max: 30 }, oceano: { min: 5, max: 25 } },
-  arrojado: { abrigo: { min: 10, max: 30 }, ritmo: { min: 15, max: 35 }, vanguarda: { min: 20, max: 40 }, oceano: { min: 15, max: 35 } },
+  conservador: { abrigo: { min: 60, max: 80 }, ritmo: { min: 10, max: 30 }, visao: { min: 0, max: 15 }, oceano: { min: 0, max: 5 } },
+  moderado_conservador: { abrigo: { min: 45, max: 65 }, ritmo: { min: 15, max: 35 }, visao: { min: 5, max: 25 }, oceano: { min: 0, max: 15 } },
+  moderado: { abrigo: { min: 25, max: 45 }, ritmo: { min: 20, max: 40 }, visao: { min: 10, max: 30 }, oceano: { min: 5, max: 25 } },
+  arrojado: { abrigo: { min: 10, max: 30 }, ritmo: { min: 15, max: 35 }, visao: { min: 20, max: 40 }, oceano: { min: 15, max: 35 } },
 };
 
 export const STEP_ORDER: readonly StepKey[] = [
   "reserva",
   "abrigo",
   "ritmo",
-  "vanguarda",
+  "visao",
   "oceano",
 ];
 
@@ -198,11 +198,11 @@ export const FUND_CATALOG: FundDef[] = [
   { id: "credito_privado", name: "Crédito Privado", layer: "ritmo", color: "emerald", description: "Crédito corporativo selecionado" },
   { id: "mm_conservador", name: "Multimercado Conservador", layer: "ritmo", color: "emerald", description: "Gestão ativa equilibrada" },
   { id: "balanceadas", name: "Estratégias Balanceadas", layer: "ritmo", color: "emerald", description: "Mix renda fixa + variável" },
-  // Vanguarda — âmbar/laranja
-  { id: "multimercados", name: "Multimercados", layer: "vanguarda", color: "amber", description: "Gestão ativa livre" },
-  { id: "acoes_brasil", name: "Ações Brasil", layer: "vanguarda", color: "amber", description: "Bolsa brasileira" },
-  { id: "long_bias", name: "Long Bias", layer: "vanguarda", color: "amber", description: "Ações com proteção parcial" },
-  { id: "assimetricas", name: "Estratégias Assimétricas", layer: "vanguarda", color: "amber", description: "Potencial de alta com risco controlado" },
+  // Visão — âmbar/laranja
+  { id: "multimercados", name: "Multimercados", layer: "visao", color: "amber", description: "Gestão ativa livre" },
+  { id: "acoes_brasil", name: "Ações Brasil", layer: "visao", color: "amber", description: "Bolsa brasileira" },
+  { id: "long_bias", name: "Long Bias", layer: "visao", color: "amber", description: "Ações com proteção parcial" },
+  { id: "assimetricas", name: "Estratégias Assimétricas", layer: "visao", color: "amber", description: "Potencial de alta com risco controlado" },
   // Oceano — ciano
   { id: "fundos_intl", name: "Fundos Internacionais", layer: "oceano", color: "cyan", description: "Acesso a mercados globais" },
   { id: "dolar", name: "Dólar", layer: "oceano", color: "cyan", description: "Hedge cambial" },
@@ -237,7 +237,7 @@ export const STEP_LABELS: Record<StepKey, { title: string; subtitle: string; col
   reserva: { title: "Reserva", subtitle: "Proteção e liquidez", color: "blue" },
   abrigo: { title: "Abrigo", subtitle: "Base conservadora", color: "indigo" },
   ritmo: { title: "Ritmo", subtitle: "Crescimento com equilíbrio", color: "emerald" },
-  vanguarda: { title: "Vanguarda", subtitle: "Expansão e performance", color: "amber" },
+  visao: { title: "Visão", subtitle: "Expansão e performance", color: "amber" },
   oceano: { title: "Oceano", subtitle: "Diversificação global", color: "cyan" },
 };
 
@@ -256,7 +256,7 @@ const DEFAULT_EXPENSES: ExpenseMap = {
 };
 
 const DEFAULT_POT_FUNDS: Record<StepKey, PotFund[]> = {
-  reserva: [], abrigo: [], ritmo: [], vanguarda: [], oceano: [],
+  reserva: [], abrigo: [], ritmo: [], visao: [], oceano: [],
 };
 
 // ─── Interface do Store ──────────────────────────────────────────────────────

@@ -35,9 +35,9 @@
   --color-ritmo-secondary: #7FA876;
   --color-ritmo-accent: #5D8C54;
 
-  --color-vanguarda-primary: #A3BFD9;
-  --color-vanguarda-secondary: #7BA3C4;
-  --color-vanguarda-accent: #5687AF;
+  --color-visao-primary: #A3BFD9;
+  --color-visao-secondary: #7BA3C4;
+  --color-visao-accent: #5687AF;
 
   --color-oceano-primary: #89C4D4;
   --color-oceano-secondary: #5EADC0;
@@ -66,10 +66,10 @@
   --ritmo-secondary: #7FA876;
   --ritmo-accent: #5D8C54;
 
-  /* Vanguarda (Arrojada) - Tons de Azul */
-  --vanguarda-primary: #A3BFD9;
-  --vanguarda-secondary: #7BA3C4;
-  --vanguarda-accent: #5687AF;
+  /* Visão (Arrojada) - Tons de Azul */
+  --visao-primary: #A3BFD9;
+  --visao-secondary: #7BA3C4;
+  --visao-accent: #5687AF;
 
   /* Oceano (Internacional) - Tons de Azul Oceano */
   --oceano-primary: #89C4D4;
@@ -170,8 +170,8 @@ body.light {
   background-color: var(--ritmo-primary);
 }
 
-.bg-vanguarda {
-  background-color: var(--vanguarda-primary);
+.bg-visao {
+  background-color: var(--visao-primary);
 }
 
 .bg-oceano {
@@ -186,8 +186,8 @@ body.light {
   color: var(--ritmo-accent);
 }
 
-.text-vanguarda {
-  color: var(--vanguarda-accent);
+.text-visao {
+  color: var(--visao-accent);
 }
 
 .text-oceano {

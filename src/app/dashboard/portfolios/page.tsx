@@ -32,8 +32,8 @@ const portfolios = [
         volatility: "Média",
     },
     {
-        type: "VANGUARDA",
-        name: "Vanguarda",
+        type: "VISÃO",
+        name: "Visão",
         subtitle: "Carteira Arrojada",
         description: "Maior exposição à renda variável. Potencial de retornos mais elevados no longo prazo.",
         color: "#A3BFD9",
@@ -72,7 +72,7 @@ export default function DashboardPortfoliosPage() {
 
             <div className="grid grid-cols-2 gap-4 mb-5">
                 {portfolios.map((p) => (
-                    <div key={p.type} style={{ backgroundColor: p.bg, borderColor: p.border }} className="relative border rounded-2xl p-6 flex flex-col gap-3 hover:-translate-y-0.5 transition-transform cursor-pointer">
+                    <Link href={`/portfolio/${p.type.toLowerCase()}`} key={p.type} style={{ backgroundColor: p.bg, borderColor: p.border }} className="relative border rounded-2xl p-6 flex flex-col gap-3 hover:-translate-y-0.5 hover:shadow-md transition-all cursor-pointer group">
                         {userProfile === p.type && (
                             <span className="absolute top-4 right-4 text-[10px] font-bold px-2 py-0.5 rounded-full bg-dash-accent text-white">Meu perfil</span>
                         )}
@@ -102,14 +102,13 @@ export default function DashboardPortfoliosPage() {
                             </div>
                         </div>
 
-                        <Link
-                            href={`/portfolio/${p.type.toLowerCase()}`}
-                            className="flex items-center gap-1.5 text-[12px] font-semibold text-dash-accent mt-1 hover:underline"
+                        <div
+                            className="flex items-center gap-1.5 text-[12px] font-semibold text-dash-accent mt-1 group-hover:underline"
                         >
                             Ver detalhes completos
                             <ExternalLink className="w-3.5 h-3.5" />
-                        </Link>
-                    </div>
+                        </div>
+                    </Link>
                 ))}
             </div>
 

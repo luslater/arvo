@@ -63,7 +63,7 @@ export default function PremiumLandingPage() {
                         {[
                             { icon: Shield, col: "text-abrigo-accent", bg: "bg-abrigo-accent/10", title: "Abrigo", desc: "Acesso total à carteira conservadora e proteção de capital." },
                             { icon: TrendingUp, col: "text-ritmo-accent", bg: "bg-ritmo-accent/10", title: "Ritmo", desc: "Explore alocações moderadas com crescimento sustentável." },
-                            { icon: Rocket, col: "text-vanguarda-accent", bg: "bg-vanguarda-accent/10", title: "Vanguarda", desc: "Libere recomendações agressivas para multiplicação de patrimônio." },
+                            { icon: Rocket, col: "text-visao-accent", bg: "bg-visao-accent/10", title: "Visão", desc: "Libere recomendações agressivas para multiplicação de patrimônio." },
                             { icon: Globe, col: "text-oceano-accent", bg: "bg-oceano-accent/10", title: "Oceano", desc: "Acesso a estratégias globais, proteção cambial e mercado exterior." },
                         ].map((item) => (
                             <div key={item.title} className="p-8 rounded-3xl bg-gray-50 hover:bg-white hover:shadow-xl hover:shadow-gray-200/50 transition-all border border-transparent hover:border-gray-100">

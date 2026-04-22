@@ -42,7 +42,7 @@ export function OverviewTab({
     const profileInfo = userProfile === "OCEANO"
         ? OCEANO_INFO
         : userProfile
-            ? getProfileDescription(userProfile as "ABRIGO" | "RITMO" | "VANGUARDA")
+            ? getProfileDescription(userProfile as "ABRIGO" | "RITMO" | "VISÃO")
             : null
 
     // Weighted average logic
@@ -71,7 +71,7 @@ export function OverviewTab({
                         </div>
                         <div>
                             <h3 className="font-bold text-lg">Libere o Potencial Completo da sua Carteira</h3>
-                            <p className="text-emerald-100 text-sm mt-1">Visualizando outras carteiras? Assine o Premium para destrancar a alocação exata de ativos como Vanguarda e Ritmo.</p>
+                            <p className="text-emerald-100 text-sm mt-1">Visualizando outras carteiras? Assine o Premium para destrancar a alocação exata de ativos como Visão e Ritmo.</p>
                         </div>
                     </div>
                     <Button asChild variant="secondary" className="w-full md:w-auto bg-white text-emerald-700 hover:bg-emerald-50 font-bold px-8 shadow-sm">
@@ -94,7 +94,7 @@ export function OverviewTab({
                         </div>
                         <div className="text-center">
                             <p className="text-sm text-gray-500 mb-1">Carteira</p>
-                            <p className="text-2xl font-medium text-vanguarda-accent">
+                            <p className="text-2xl font-medium text-visao-accent">
                                 {new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", minimumFractionDigits: 0 }).format(totalCarteira)}
                             </p>
                         </div>
@@ -134,7 +134,7 @@ export function OverviewTab({
                         <div className="text-5xl pt-1">
                             {userProfile === "ABRIGO" && <Shield className="w-16 h-16 text-abrigo-accent" />}
                             {userProfile === "RITMO" && <TrendingUp className="w-16 h-16 text-ritmo-accent" />}
-                            {userProfile === "VANGUARDA" && <Rocket className="w-16 h-16 text-vanguarda-accent" />}
+                            {userProfile === "VISÃO" && <Rocket className="w-16 h-16 text-visao-accent" />}
                             {userProfile === "OCEANO" && <Globe className="w-16 h-16 text-oceano-accent" />}
                             {!userProfile && <AlertCircle className="w-16 h-16 text-gray-300" />}
                         </div>
@@ -167,7 +167,7 @@ export function OverviewTab({
                                             <p className="text-[13px] font-medium text-dash-text">
                                                 {userProfile === "ABRIGO" ? "10,5% a.a." :
                                                     userProfile === "RITMO" ? "12,2% a.a." :
-                                                        userProfile === "VANGUARDA" ? "14,5% a.a." :
+                                                        userProfile === "VISÃO" ? "14,5% a.a." :
                                                             userProfile === "OCEANO" ? "16,0% a.a." : "--"}
                                             </p>
                                         </div>
@@ -176,7 +176,7 @@ export function OverviewTab({
                                             <p className="text-[13px] font-medium text-dash-text">
                                                 {userProfile === "ABRIGO" ? "Baixo" :
                                                     userProfile === "RITMO" ? "Moderado" :
-                                                        userProfile === "VANGUARDA" ? "Arrojado" :
+                                                        userProfile === "VISÃO" ? "Arrojado" :
                                                             userProfile === "OCEANO" ? "Alto Global" : "--"}
                                             </p>
                                         </div>
