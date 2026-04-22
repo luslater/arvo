@@ -469,6 +469,14 @@ export const useArvoStoreV3 = create<ArvoStoreV3>()(
             }),
             {
                 name: "arvo-escada-v3",
+                merge: (persistedState: any, currentState) => {
+                    // Backwards compatibility for users with "vanguarda" in their local storage buckets
+                    if (persistedState?.buckets && persistedState.buckets["vanguarda"]) {
+                        persistedState.buckets["visao"] = persistedState.buckets["vanguarda"];
+                        delete persistedState.buckets["vanguarda"];
+                    }
+                    return { ...currentState, ...persistedState };
+                },
                 partialize: (s) => ({
                     activeSection: s.activeSection,
                     isQualificado: s.isQualificado,

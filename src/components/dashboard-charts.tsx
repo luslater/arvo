@@ -74,14 +74,14 @@ export function DashboardCharts({
         // Compute dynamic return based on store buckets
         let totalBuckets = 0;
         for (const k of STEP_ORDER) {
-            storeBuckets[k].forEach(e => totalBuckets += e.value);
+            (storeBuckets[k] || []).forEach(e => totalBuckets += e.value);
         }
 
         let myPortfolioReturnFull = fallbackReturnFull;
         if (totalBuckets > 0) {
             const weights: Record<string, number> = {};
             for (const k of STEP_ORDER) {
-                storeBuckets[k].forEach(e => {
+                (storeBuckets[k] || []).forEach(e => {
                     if (e.fundId) weights[e.fundId] = (weights[e.fundId] || 0) + (e.value / totalBuckets);
                 });
             }
