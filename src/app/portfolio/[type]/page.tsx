@@ -188,7 +188,7 @@ export default function PortfolioDetailPage({ params }: { params: Promise<{ type
                     </div>
                 </div>
 
-                <div className="grid lg:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 gap-8">
                     {/* Fund List */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
                         <h3 className="font-serif text-xl mb-1 text-gray-900">Composição Recomendada</h3>
