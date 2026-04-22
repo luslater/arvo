@@ -53,6 +53,11 @@ export async function GET(req: Request) {
             prazo: "Indeterminado"
         }))
 
+        // Hotfix: Translate legacy database "VANGUARDA" or unaccented "VISAO" to "VISÃO"
+        if (currentProfile.portfolioType === "VANGUARDA" || currentProfile.portfolioType === "VISAO") {
+            currentProfile.portfolioType = "VISÃO"
+        }
+
         return NextResponse.json({ ...currentProfile, assets: formattedAssets })
     } catch (error: any) {
         console.error("Error fetching user profile:", error)
@@ -92,7 +97,7 @@ export async function PUT(req: Request) {
             },
             create: {
                 userId: user.id,
-                portfolioType: portfolioType || "ABRIGO",
+                portfolioType: (portfolioType === "VANGUARDA" || portfolioType === "VISAO") ? "VISÃO" : (portfolioType || "ABRIGO"),
                 saldo: saldo || 0,
                 emergencyFund: emergencyFund || 0,
                 totalCarteira: totalCarteira || 0
