@@ -16,7 +16,7 @@ const CATEGORY_COLORS: Record<string, string> = {
     "Ações": "#b91c1c",         // bg-red-700
 };
 
-const FUNDS = [
+const FUNDS_GERAL = [
     { name: "Tesouro Selic", short: "Selic", cat: "RF", ret: 13.25, vol: 0.05, color: CATEGORY_COLORS["RF"] },
     { name: "ARX Fuji", short: "ARX Fuji", cat: "Créd HG", ret: 14.0, vol: 0.25, color: CATEGORY_COLORS["Créd HG"] },
     { name: "BNP Paribas Rubi", short: "BNP Rubi", cat: "Créd HG", ret: 14.2, vol: 0.18, color: CATEGORY_COLORS["Créd HG"] },
@@ -30,7 +30,7 @@ const FUNDS = [
     { name: "Real Investor", short: "Real Inv", cat: "Ações", ret: 23.0, vol: 19.0, color: CATEGORY_COLORS["Ações"] },
 ];
 
-const CORR_DATA = [
+const CORR_GERAL = [
     [1.000, 0.816, 0.885, 0.326, 0.153, 0.245, 0.021, 0.093, 0.257, 0.106, 0.098],
     [0.816, 1.000, 0.796, 0.378, 0.231, 0.279, 0.042, 0.070, 0.153, 0.052, 0.066],
     [0.885, 0.796, 1.000, 0.450, 0.443, 0.551, 0.114, 0.226, 0.374, 0.254, 0.258],
@@ -42,6 +42,40 @@ const CORR_DATA = [
     [0.257, 0.153, 0.374, 0.040, 0.140, 0.256, 0.232, 0.709, 1.000, 0.653, 0.649],
     [0.106, 0.052, 0.254, 0.081, 0.314, 0.402, 0.246, 0.856, 0.653, 1.000, 0.833],
     [0.098, 0.066, 0.258, -0.009, 0.289, 0.451, 0.199, 0.870, 0.649, 0.833, 1.000]
+];
+
+const FUNDS_IQ = [
+    { name: "Tesouro Selic", short: "Selic", cat: "RF", ret: 13.25, vol: 0.05, color: CATEGORY_COLORS["RF"] },
+    { name: "ARX Fuji", short: "ARX Fuji", cat: "Créd HG", ret: 14.0, vol: 0.25, color: CATEGORY_COLORS["Créd HG"] },
+    { name: "Valora Guardian A", short: "Valora G", cat: "Créd HG", ret: 15.0, vol: 0.5, color: CATEGORY_COLORS["Créd HG"] },
+    { name: "Augme 180", short: "Augme 180", cat: "Créd HG", ret: 16.5, vol: 1.5, color: CATEGORY_COLORS["Créd HG"] },
+    { name: "Capitânia Yield 120", short: "Cap Yield", cat: "Créd HG", ret: 15.8, vol: 0.8, color: CATEGORY_COLORS["Créd HG"] },
+    { name: "ARX Hedge Infra", short: "ARX Infra", cat: "Créd Infra", ret: 14.8, vol: 3.5, color: CATEGORY_COLORS["Créd Infra"] },
+    { name: "JGP Ecossistema", short: "JGP Eco", cat: "Multi Macro", ret: 15.0, vol: 6.5, color: CATEGORY_COLORS["Multi Macro"] },
+    { name: "Kinea Atlas", short: "Kinea Atl", cat: "Multi Macro", ret: 16.0, vol: 6.0, color: CATEGORY_COLORS["Multi Macro"] },
+    { name: "Dahlia Total Return", short: "Dahlia TR", cat: "Multi LB", ret: 18.0, vol: 10.0, color: CATEGORY_COLORS["Multi LB"] },
+    { name: "Truxt Long Bias", short: "Truxt LB", cat: "Multi LB", ret: 20.0, vol: 15.0, color: CATEGORY_COLORS["Multi LB"] },
+    { name: "SPX Falcon", short: "SPX Falcon", cat: "Ações LB", ret: 22.0, vol: 18.0, color: CATEGORY_COLORS["Ações LB"] },
+    { name: "Dynamo Cougar", short: "Dynamo", cat: "Ações", ret: 24.5, vol: 20.5, color: CATEGORY_COLORS["Ações"] },
+    { name: "Hix Capital HS", short: "Hix HS", cat: "Ações", ret: 25.0, vol: 22.0, color: CATEGORY_COLORS["Ações"] },
+    { name: "Real Investor", short: "Real Inv", cat: "Ações", ret: 23.0, vol: 19.0, color: CATEGORY_COLORS["Ações"] },
+];
+
+const CORR_IQ = [
+    [1.000, 0.816, 0.707, 0.097, 0.929, 0.153, -0.175, 0.021, 0.093, 0.136, 0.215, 0.156, 0.257, 0.098],
+    [0.816, 1.000, 0.460, 0.022, 0.759, 0.231, -0.242, 0.042, 0.070, 0.089, 0.167, 0.104, 0.153, 0.066],
+    [0.707, 0.460, 1.000, 0.368, 0.659, 0.279, 0.038, 0.030, 0.224, 0.360, 0.332, 0.307, 0.481, 0.303],
+    [0.097, 0.022, 0.368, 1.000, 0.192, 0.397, -0.127, 0.113, 0.007, 0.204, 0.133, 0.037, -0.027, 0.091],
+    [0.929, 0.759, 0.659, 0.192, 1.000, 0.103, -0.188, 0.090, 0.029, 0.077, 0.160, 0.080, 0.219, 0.019],
+    [0.153, 0.231, 0.279, 0.397, 0.103, 1.000, 0.340, 0.210, 0.219, 0.430, 0.183, 0.204, 0.140, 0.289],
+    [-0.175, -0.242, 0.038, -0.127, -0.188, 0.340, 1.000, 0.238, 0.040, 0.163, -0.101, -0.068, 0.107, 0.054],
+    [0.021, 0.042, 0.030, 0.113, 0.090, 0.210, 0.238, 1.000, 0.276, 0.399, 0.279, 0.181, 0.232, 0.199],
+    [0.093, 0.070, 0.224, 0.007, 0.029, 0.219, 0.040, 0.276, 1.000, 0.828, 0.868, 0.886, 0.709, 0.870],
+    [0.136, 0.089, 0.360, 0.204, 0.077, 0.430, 0.163, 0.399, 0.828, 1.000, 0.795, 0.800, 0.670, 0.865],
+    [0.215, 0.167, 0.332, 0.133, 0.160, 0.183, -0.101, 0.279, 0.868, 0.795, 1.000, 0.816, 0.711, 0.828],
+    [0.156, 0.104, 0.307, 0.037, 0.080, 0.204, -0.068, 0.181, 0.886, 0.800, 0.816, 1.000, 0.758, 0.838],
+    [0.257, 0.153, 0.481, -0.027, 0.219, 0.140, 0.107, 0.232, 0.709, 0.670, 0.711, 0.758, 1.000, 0.649],
+    [0.098, 0.066, 0.303, 0.091, 0.019, 0.289, 0.054, 0.199, 0.870, 0.865, 0.828, 0.838, 0.649, 1.000]
 ];
 
 const PORTFOLIOS = [
@@ -76,10 +110,12 @@ export default function MarkowitzDashboardPage() {
     const [tab, setTab] = useState<"frontier" | "correlation" | "table">("frontier");
     const [hoveredFund, setHoveredFund] = useState<number | null>(null);
     const [hoveredPort, setHoveredPort] = useState<number | null>(null);
-    const [selectedType, setSelectedType] = useState<string>("all");
+    const [selectedType, setSelectedType] = useState<"Geral" | "IQ">("Geral");
+
+    const activeFunds = selectedType === "Geral" ? FUNDS_GERAL : FUNDS_IQ;
+    const activeCorr = selectedType === "Geral" ? CORR_GERAL : CORR_IQ;
 
     const filteredPortfolios = useMemo(() => {
-        if (selectedType === "all") return PORTFOLIOS;
         return PORTFOLIOS.filter(p => p.type === selectedType);
     }, [selectedType]);
 
@@ -138,7 +174,7 @@ export default function MarkowitzDashboardPage() {
                 {tab === "frontier" && (
                     <div>
                         <div className="flex gap-2 mb-6">
-                            {["all", "Geral", "IQ"].map(t => (
+                            {(["Geral", "IQ"] as const).map(t => (
                                 <button
                                     key={t}
                                     onClick={() => setSelectedType(t)}
@@ -147,7 +183,7 @@ export default function MarkowitzDashboardPage() {
                                         : "bg-white text-dash-text-muted border-dash-border hover:bg-dash-surface-active hover:text-dash-text"
                                         }`}
                                 >
-                                    {t === "all" ? "Todas as Carteiras" : `Carteiras ${t}`}
+                                    Carteiras {t}
                                 </button>
                             ))}
                         </div>
@@ -183,7 +219,7 @@ export default function MarkowitzDashboardPage() {
                                     <text x={chartW - pad.r - 4} y={toY(13.25) - 5} textAnchor="end" fill="#059669" fontSize={9} fontWeight="600" opacity={0.8}>CDI ~13,25%</text>
 
                                     {/* Fund dots */}
-                                    {FUNDS.map((f, i) => (
+                                    {activeFunds.map((f, i) => (
                                         <g key={i} onMouseEnter={() => setHoveredFund(i)} onMouseLeave={() => setHoveredFund(null)}>
                                             <circle cx={toX(f.vol)} cy={toY(f.ret)} r={hoveredFund === i ? 6 : 4}
                                                 fill={f.color} opacity={hoveredFund === i ? 1 : 0.6} stroke="#fff" strokeWidth={1}
@@ -243,7 +279,7 @@ export default function MarkowitzDashboardPage() {
                         <div className="min-w-max p-4 bg-white">
                             <div className="flex">
                                 <div className="w-[120px] shrink-0" />
-                                {FUNDS.map((f, j) => (
+                                {activeFunds.map((f, j) => (
                                     <div key={j} className="w-[38px] shrink-0 relative mt-16 mb-2">
                                         <div className="absolute bottom-0 text-[10px] left-1/2 font-semibold text-dash-text-light origin-bottom-left -rotate-45 whitespace-nowrap">
                                             {f.short}
@@ -251,13 +287,13 @@ export default function MarkowitzDashboardPage() {
                                     </div>
                                 ))}
                             </div>
-                            {FUNDS.map((fi, i) => (
+                            {activeFunds.map((fi, i) => (
                                 <div key={i} className="flex items-center">
                                     <div className="w-[120px] text-[10px] font-semibold text-dash-text text-right pr-3 truncate shrink-0">
                                         {fi.short}
                                     </div>
-                                    {FUNDS.map((_, j) => {
-                                        const val = CORR_DATA[i][j];
+                                    {activeFunds.map((_, j) => {
+                                        const val = activeCorr[i][j];
                                         return (
                                             <div key={j} className={`w-[38px] h-[34px] flex items-center justify-center text-[9px] font-bold border-l border-t shrink-0 ${getCorrelationColor(val)}`}>
                                                 {val.toFixed(2)}
@@ -296,7 +332,7 @@ export default function MarkowitzDashboardPage() {
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-dash-border/60">
-                                    {FUNDS.sort((a, b) => a.vol - b.vol).map((f, i) => {
+                                    {activeFunds.sort((a, b) => a.vol - b.vol).map((f, i) => {
                                         const sharpe = f.vol > 0 ? ((f.ret - 13.25) / f.vol).toFixed(2) : "—";
                                         return (
                                             <tr key={i} className="hover:bg-dash-surface-active transition-colors">
