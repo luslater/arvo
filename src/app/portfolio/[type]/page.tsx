@@ -17,7 +17,6 @@ import {
 import { MONTHLY_RETURNS } from "@/config/funds-monthly"
 import { OCEANO_INFO } from "@/lib/oceano-info"
 import { getProfileDescription } from "@/lib/questionnaire"
-import { PROFILE_BANDS, STEP_ORDER } from "@/app/escada/arvo-store-v3"
 
 type PortfolioType = "ABRIGO" | "RITMO" | "VISÃO" | "OCEANO"
 
@@ -53,55 +52,27 @@ export default function PortfolioDetailPage({ params }: { params: Promise<{ type
         OCEANO: "#3D96AB",
     }
 
-    const profileKey = portfolioType === "ABRIGO" ? "conservador" :
-        portfolioType === "RITMO" ? "moderado" :
-            portfolioType === "VISÃO" ? "arrojado" : null;
-
-    const bands = profileKey ? PROFILE_BANDS[profileKey as keyof typeof PROFILE_BANDS] : null;
-
     // Use the correct allocation table based on IQ toggle
     const suggestionsByBucket = isIQ ? SUGGESTED_ALLOCATIONS_IQ : SUGGESTED_ALLOCATIONS_GERAL;
 
+    // Map portfolio type to its single bucket key
+    const bucketKey: StepKey = portfolioType === "ABRIGO" ? "abrigo" :
+        portfolioType === "RITMO" ? "ritmo" :
+            portfolioType === "VISÃO" ? "visao" : "oceano";
+
     const allocations = useMemo(() => {
-        let list: any[] = [];
+        const fundList = suggestionsByBucket[bucketKey];
+        if (!fundList) return [];
 
-        // SPECIAL CASE: OCEANO (Global) - Show its specific bucket at 100%
-        if (portfolioType === "OCEANO") {
-            const fundList = suggestionsByBucket["oceano"];
-            if (fundList) {
-                for (const item of fundList) {
-                    const fund = FUNDS_LIBRARY.find(f => f.id === item.fundId);
-                    if (!fund) continue;
-                    list.push({ fund, absolutePct: item.weight, hist: getFundPerf(fund.id) });
-                }
-            }
-            return list.sort((a, b) => b.absolutePct - a.absolutePct);
-        }
-
-        if (!bands) return list;
-
-        for (const bKey of STEP_ORDER) {
-            const fundList = suggestionsByBucket[bKey];
-            if (!fundList) continue;
-
-            const targetPct = bKey === "reserva" ? 10 : (bands[bKey as Exclude<StepKey, "reserva">]?.target ?? 0);
-            if (targetPct === 0) continue;
-
-            for (const item of fundList) {
+        return fundList
+            .map(item => {
                 const fund = FUNDS_LIBRARY.find(f => f.id === item.fundId);
-                if (!fund) continue;
-
-                const absolutePct = (targetPct * item.weight) / 100;
-
-                list.push({
-                    fund,
-                    absolutePct,
-                    hist: getFundPerf(fund.id)
-                })
-            }
-        }
-        return list.sort((a, b) => b.absolutePct - a.absolutePct);
-    }, [bands, suggestionsByBucket, portfolioType, isIQ]);
+                if (!fund) return null;
+                return { fund, absolutePct: item.weight, hist: getFundPerf(fund.id) };
+            })
+            .filter(Boolean)
+            .sort((a: any, b: any) => b.absolutePct - a.absolutePct);
+    }, [bucketKey, suggestionsByBucket, isIQ]);
 
     // Helper for fund performance
     function getFundPerf(fundId: string) {
