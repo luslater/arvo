@@ -731,7 +731,24 @@ function MotorStep({ computed }: { computed: ReturnType<typeof useComputed> }) {
         return ids;
     }, [store.buckets]);
 
-    const visibleFunds = useMemo(() => filterCat === "all" ? FUNDS_LIBRARY : FUNDS_LIBRARY.filter((f) => f.category === filterCat), [filterCat]);
+    // Only show funds that are actually part of the ARVO recommended portfolio for this profile
+    const suggested = getSuggestedAllocations(store.isQualificado);
+    const validArvoFundIds = useMemo(() => {
+        const ids = new Set<string>();
+        for (const bucket of Object.values(suggested)) {
+            if (!bucket) continue;
+            for (const item of bucket) {
+                ids.add(item.fundId);
+            }
+        }
+        return ids;
+    }, [suggested]);
+
+    const visibleFunds = useMemo(() => {
+        const activeFunds = FUNDS_LIBRARY.filter(f => validArvoFundIds.has(f.id));
+        return filterCat === "all" ? activeFunds : activeFunds.filter((f) => f.category === filterCat);
+    }, [filterCat, validArvoFundIds]);
+
     const activeFund = activeDragId ? FUNDS_LIBRARY.find((f) => `fund-${f.id}` === activeDragId) : null;
 
     function handleDragEnd(e: DragEndEvent) {
