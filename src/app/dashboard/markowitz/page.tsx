@@ -258,8 +258,10 @@ export default function MarkowitzDashboardPage() {
                             <div className="flex">
                                 <div className="w-[120px] shrink-0" />
                                 {FUNDS.map((f, j) => (
-                                    <div key={j} className="text-[9px] font-semibold text-dash-text-light w-[38px] h-[70px] flex items-end justify-center shrink-0 origin-bottom-left -rotate-45 mb-2 -ml-2 whitespace-nowrap">
-                                        {f.short}
+                                    <div key={j} className="w-[38px] shrink-0 relative mt-16 mb-2">
+                                        <div className="absolute bottom-0 text-[10px] left-1/2 font-semibold text-dash-text-light origin-bottom-left -rotate-45 whitespace-nowrap">
+                                            {f.short}
+                                        </div>
                                     </div>
                                 ))}
                             </div>
