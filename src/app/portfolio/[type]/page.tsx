@@ -1,13 +1,19 @@
 "use client"
 
-import { use, useMemo } from "react"
+import { use, useMemo, useState } from "react"
 import Link from "next/link"
+import { useSearchParams } from "next/navigation"
 import { ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts"
 
-import { FUNDS_LIBRARY, getSuggestedAllocations, type StepKey } from "@/config/portfolios"
+import {
+    FUNDS_LIBRARY,
+    SUGGESTED_ALLOCATIONS_GERAL,
+    SUGGESTED_ALLOCATIONS_IQ,
+    type StepKey,
+} from "@/config/portfolios"
 import { MONTHLY_RETURNS } from "@/config/funds-monthly"
 import { OCEANO_INFO } from "@/lib/oceano-info"
 import { getProfileDescription } from "@/lib/questionnaire"
@@ -20,13 +26,14 @@ const fmt = (v: number) => BRL.format(isFinite(v) ? v : 0);
 
 export default function PortfolioDetailPage({ params }: { params: Promise<{ type: string }> }) {
     const { type } = use(params)
+    const searchParams = useSearchParams()
     const decodedType = decodeURIComponent(type)
     const rawType = decodedType.toUpperCase()
     const portfolioType = (rawType === "VISAO" ? "VISÃO" : rawType) as PortfolioType
 
-    // For demonstration, assume a standard R$ 100.000 to show volumes, or we just display % weights.
-    // The user requested: "exibir apenas a lista de fundos que compõem a carteira recomendada (com suas % e rentabilidades)"
-    // We will list the funds and their weights.
+    // IQ toggle — defaults from URL ?iq=1, or Geral
+    const initialIQ = searchParams.get("iq") === "1"
+    const [isIQ, setIsIQ] = useState(initialIQ)
 
     const profileInfo = portfolioType === "OCEANO"
         ? OCEANO_INFO
@@ -46,15 +53,14 @@ export default function PortfolioDetailPage({ params }: { params: Promise<{ type
         OCEANO: "#3D96AB",
     }
 
-    // MAP THE ACTUAL ALLOCATIONS FROM THE DATABASE FOR THIS PROFILE
     const profileKey = portfolioType === "ABRIGO" ? "conservador" :
         portfolioType === "RITMO" ? "moderado" :
             portfolioType === "VISÃO" ? "arrojado" : null;
 
     const bands = profileKey ? PROFILE_BANDS[profileKey as keyof typeof PROFILE_BANDS] : null;
 
-    // We assume IQ=false for the public gallery showcase by default
-    const suggestionsByBucket = getSuggestedAllocations(false);
+    // Use the correct allocation table based on IQ toggle
+    const suggestionsByBucket = isIQ ? SUGGESTED_ALLOCATIONS_IQ : SUGGESTED_ALLOCATIONS_GERAL;
 
     const allocations = useMemo(() => {
         let list: any[] = [];
@@ -95,7 +101,7 @@ export default function PortfolioDetailPage({ params }: { params: Promise<{ type
             }
         }
         return list.sort((a, b) => b.absolutePct - a.absolutePct);
-    }, [bands, suggestionsByBucket, portfolioType]);
+    }, [bands, suggestionsByBucket, portfolioType, isIQ]);
 
     // Helper for fund performance
     function getFundPerf(fundId: string) {
@@ -120,11 +126,11 @@ export default function PortfolioDetailPage({ params }: { params: Promise<{ type
     const chartData = useMemo(() => {
         let currentAccum = 0;
         let cdiAccum = 0;
-        const totalAllocatedPct = allocations.reduce((sum, item) => sum + item.absolutePct, 0);
+        const totalAllocatedPct = allocations.reduce((sum: number, item: any) => sum + item.absolutePct, 0);
 
         if (totalAllocatedPct === 0) return [];
 
-        const normalizedAllocations = allocations.map(a => ({
+        const normalizedAllocations = allocations.map((a: any) => ({
             fundId: a.fund.id,
             weight: a.absolutePct / totalAllocatedPct
         }));
@@ -173,6 +179,24 @@ export default function PortfolioDetailPage({ params }: { params: Promise<{ type
                             Voltar para Portfólios
                         </Button>
                     </Link>
+
+                    {/* IQ / Geral Toggle */}
+                    <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-1 py-1">
+                        <button
+                            onClick={() => setIsIQ(false)}
+                            className={`px-3.5 py-1.5 text-[12px] font-semibold rounded-lg transition-colors ${!isIQ ? "bg-gray-900 text-white shadow-sm" : "text-gray-500 hover:text-gray-900"
+                                }`}
+                        >
+                            Geral
+                        </button>
+                        <button
+                            onClick={() => setIsIQ(true)}
+                            className={`px-3.5 py-1.5 text-[12px] font-semibold rounded-lg transition-colors ${isIQ ? "bg-gray-900 text-white shadow-sm" : "text-gray-500 hover:text-gray-900"
+                                }`}
+                        >
+                            Qualificado
+                        </button>
+                    </div>
                 </div>
 
                 {/* Portfolio Header */}
@@ -186,17 +210,25 @@ export default function PortfolioDetailPage({ params }: { params: Promise<{ type
                         <p className="text-gray-600  mt-2 max-w-2xl mx-auto">
                             {profileInfo.description}
                         </p>
+                        {isIQ && (
+                            <span className="inline-block mt-3 px-3 py-1 text-[11px] font-bold bg-amber-50 text-amber-800 border border-amber-200 rounded-full">
+                                Investidor Qualificado
+                            </span>
+                        )}
                     </div>
                 </div>
 
                 <div className="grid grid-cols-1 gap-8">
                     {/* Fund List */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-                        <h3 className="font-serif text-xl mb-1 text-gray-900">Composição Recomendada</h3>
+                        <div className="flex items-center justify-between mb-1">
+                            <h3 className="font-serif text-xl text-gray-900">Composição Recomendada</h3>
+                            <span className="text-[11px] text-gray-400 font-medium">{allocations.length} fundos • {isIQ ? "Qualificado" : "Geral"}</span>
+                        </div>
                         <p className="text-[13px] text-gray-500 mb-5">Ativos selecionados pela inteligência ARVO para o seu perfil.</p>
 
                         <div className="space-y-2">
-                            {allocations.map((item, index) => (
+                            {allocations.map((item: any, index: number) => (
                                 <div key={index} className="flex items-center justify-between p-3.5 bg-gray-50 rounded-xl border border-gray-100 hover:border-gray-200 transition-colors">
                                     <div className="flex-1 min-w-0 pr-4">
                                         <p className="font-semibold text-[13px] text-gray-900 truncate">{item.fund.shortName || item.fund.name}</p>
@@ -221,7 +253,7 @@ export default function PortfolioDetailPage({ params }: { params: Promise<{ type
                     {/* Chart */}
                     <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm flex flex-col">
                         <h3 className="font-serif text-xl mb-1 text-gray-900">Performance Oficial Histórica</h3>
-                        <p className="text-[13px] text-gray-500 mb-6">Rentabilidade calculada a partir dos dados reais dos constituintes, considerando os exatos pesos da carteira modelo rebalanceada.</p>
+                        <p className="text-[13px] text-gray-500 mb-6">Rentabilidade calculada a partir dos dados reais dos constituintes, considerando os exatos pesos da carteira modelo {isIQ ? "qualificada" : "geral"} rebalanceada.</p>
 
                         <div className="flex-1 min-h-[300px]">
                             <ResponsiveContainer width="100%" height="100%">
