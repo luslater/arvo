@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { TrendingUp, Info } from "lucide-react";
+import { MARKOWITZ_DATA } from "@/config/markowitz-data";
 
 // ARVO's color mapping for categories
 const CATEGORY_COLORS: Record<string, string> = {
@@ -16,85 +17,57 @@ const CATEGORY_COLORS: Record<string, string> = {
     "Ações": "#b91c1c",         // bg-red-700
 };
 
-const FUNDS_GERAL = [
-    { name: "Tesouro Selic", short: "Selic", cat: "RF", ret: 13.25, vol: 0.05, color: CATEGORY_COLORS["RF"] },
-    { name: "ARX Fuji", short: "ARX Fuji", cat: "Créd HG", ret: 14.0, vol: 0.25, color: CATEGORY_COLORS["Créd HG"] },
-    { name: "BNP Paribas Rubi", short: "BNP Rubi", cat: "Créd HG", ret: 14.2, vol: 0.18, color: CATEGORY_COLORS["Créd HG"] },
-    { name: "Ibiuna Credit", short: "Ibiuna Cr", cat: "Créd Macro", ret: 15.5, vol: 6.2, color: CATEGORY_COLORS["Créd Macro"] },
-    { name: "ARX Hedge Infra", short: "ARX Infra", cat: "Créd Infra", ret: 14.8, vol: 3.5, color: CATEGORY_COLORS["Créd Infra"] },
-    { name: "Sparta Deb Incentivadas", short: "Sparta Deb", cat: "Créd Infra", ret: 13.0, vol: 4.0, color: CATEGORY_COLORS["Créd Infra"] },
-    { name: "Kinea Atlas", short: "Kinea Atl", cat: "Multi Macro", ret: 16.0, vol: 6.0, color: CATEGORY_COLORS["Multi Macro"] },
-    { name: "Dahlia Total Return", short: "Dahlia TR", cat: "Multi LB", ret: 18.0, vol: 10.0, color: CATEGORY_COLORS["Multi LB"] },
-    { name: "Hix Capital HS", short: "Hix HS", cat: "Ações", ret: 25.0, vol: 22.0, color: CATEGORY_COLORS["Ações"] },
-    { name: "Forpus Ações", short: "Forpus", cat: "Ações", ret: 24.0, vol: 21.0, color: CATEGORY_COLORS["Ações"] },
-    { name: "Real Investor", short: "Real Inv", cat: "Ações", ret: 23.0, vol: 19.0, color: CATEGORY_COLORS["Ações"] },
-];
+const fundCategories: Record<string, any> = {
+    "Tesouro Selic": { short: "Selic", cat: "RF" },
+    "ARX Fuji": { short: "ARX Fuji", cat: "Créd HG" },
+    "BNP Rubi": { short: "BNP Rubi", cat: "Créd HG" },
+    "Valora Guardian A": { short: "Valora G", cat: "Créd HG" },
+    "Augme 180": { short: "Augme 180", cat: "Créd HG" },
+    "Capitânia Yield 120": { short: "Cap Yield", cat: "Créd HG" },
+    "Ibiuna Credit": { short: "Ibiuna Cr", cat: "Créd Macro" },
+    "ARX Hedge Infra": { short: "ARX Infra", cat: "Créd Infra" },
+    "Sparta Deb Inc": { short: "Sparta Deb", cat: "Créd Infra" },
+    "Kinea Atlas": { short: "Kinea Atl", cat: "Multi Macro" },
+    "Dahlia Total Return": { short: "Dahlia TR", cat: "Multi LB" },
+    "Truxt Long Bias": { short: "Truxt LB", cat: "Multi LB" },
+    "SPX Falcon": { short: "SPX Falcon", cat: "Ações LB" },
+    "Dynamo Cougar": { short: "Dynamo", cat: "Ações" },
+    "Hix Capital HS": { short: "Hix HS", cat: "Ações" },
+    "Forpus Ações": { short: "Forpus", cat: "Ações" },
+    "Real Investor": { short: "Real Inv", cat: "Ações" },
+    "JGP Ecossistema": { short: "JGP Eco", cat: "Multi Macro" },
+};
 
-const CORR_GERAL = [
-    [1.000, 0.816, 0.885, 0.326, 0.153, 0.245, 0.021, 0.093, 0.257, 0.106, 0.098],
-    [0.816, 1.000, 0.796, 0.378, 0.231, 0.279, 0.042, 0.070, 0.153, 0.052, 0.066],
-    [0.885, 0.796, 1.000, 0.450, 0.443, 0.551, 0.114, 0.226, 0.374, 0.254, 0.258],
-    [0.326, 0.378, 0.450, 1.000, 0.479, 0.437, 0.283, -0.017, 0.040, 0.081, -0.009],
-    [0.153, 0.231, 0.443, 0.479, 1.000, 0.901, 0.210, 0.219, 0.140, 0.314, 0.289],
-    [0.245, 0.279, 0.551, 0.437, 0.901, 1.000, 0.132, 0.359, 0.256, 0.402, 0.451],
-    [0.021, 0.042, 0.114, 0.283, 0.210, 0.132, 1.000, 0.276, 0.232, 0.246, 0.199],
-    [0.093, 0.070, 0.226, -0.017, 0.219, 0.359, 0.276, 1.000, 0.709, 0.856, 0.870],
-    [0.257, 0.153, 0.374, 0.040, 0.140, 0.256, 0.232, 0.709, 1.000, 0.653, 0.649],
-    [0.106, 0.052, 0.254, 0.081, 0.314, 0.402, 0.246, 0.856, 0.653, 1.000, 0.833],
-    [0.098, 0.066, 0.258, -0.009, 0.289, 0.451, 0.199, 0.870, 0.649, 0.833, 1.000]
-];
+function buildFunds(type: "geral" | "iq") {
+    const d = MARKOWITZ_DATA[type];
+    return d.funds.map((name: string, i: number) => {
+        const info = fundCategories[name] || { short: name, cat: "RF" };
+        return {
+            name,
+            short: info.short,
+            cat: info.cat,
+            ret: d.annReturn[i] * 100,
+            vol: d.annVol[i] * 100,
+            color: CATEGORY_COLORS[info.cat] || CATEGORY_COLORS["RF"]
+        };
+    });
+}
 
-const FUNDS_IQ = [
-    { name: "Tesouro Selic", short: "Selic", cat: "RF", ret: 13.25, vol: 0.05, color: CATEGORY_COLORS["RF"] },
-    { name: "ARX Fuji", short: "ARX Fuji", cat: "Créd HG", ret: 14.0, vol: 0.25, color: CATEGORY_COLORS["Créd HG"] },
-    { name: "Valora Guardian A", short: "Valora G", cat: "Créd HG", ret: 15.0, vol: 0.5, color: CATEGORY_COLORS["Créd HG"] },
-    { name: "Augme 180", short: "Augme 180", cat: "Créd HG", ret: 16.5, vol: 1.5, color: CATEGORY_COLORS["Créd HG"] },
-    { name: "Capitânia Yield 120", short: "Cap Yield", cat: "Créd HG", ret: 15.8, vol: 0.8, color: CATEGORY_COLORS["Créd HG"] },
-    { name: "ARX Hedge Infra", short: "ARX Infra", cat: "Créd Infra", ret: 14.8, vol: 3.5, color: CATEGORY_COLORS["Créd Infra"] },
-    { name: "JGP Ecossistema", short: "JGP Eco", cat: "Multi Macro", ret: 15.0, vol: 6.5, color: CATEGORY_COLORS["Multi Macro"] },
-    { name: "Kinea Atlas", short: "Kinea Atl", cat: "Multi Macro", ret: 16.0, vol: 6.0, color: CATEGORY_COLORS["Multi Macro"] },
-    { name: "Dahlia Total Return", short: "Dahlia TR", cat: "Multi LB", ret: 18.0, vol: 10.0, color: CATEGORY_COLORS["Multi LB"] },
-    { name: "Truxt Long Bias", short: "Truxt LB", cat: "Multi LB", ret: 20.0, vol: 15.0, color: CATEGORY_COLORS["Multi LB"] },
-    { name: "SPX Falcon", short: "SPX Falcon", cat: "Ações LB", ret: 22.0, vol: 18.0, color: CATEGORY_COLORS["Ações LB"] },
-    { name: "Dynamo Cougar", short: "Dynamo", cat: "Ações", ret: 24.5, vol: 20.5, color: CATEGORY_COLORS["Ações"] },
-    { name: "Hix Capital HS", short: "Hix HS", cat: "Ações", ret: 25.0, vol: 22.0, color: CATEGORY_COLORS["Ações"] },
-    { name: "Real Investor", short: "Real Inv", cat: "Ações", ret: 23.0, vol: 19.0, color: CATEGORY_COLORS["Ações"] },
-];
-
-const CORR_IQ = [
-    [1.000, 0.816, 0.707, 0.097, 0.929, 0.153, -0.175, 0.021, 0.093, 0.136, 0.215, 0.156, 0.257, 0.098],
-    [0.816, 1.000, 0.460, 0.022, 0.759, 0.231, -0.242, 0.042, 0.070, 0.089, 0.167, 0.104, 0.153, 0.066],
-    [0.707, 0.460, 1.000, 0.368, 0.659, 0.279, 0.038, 0.030, 0.224, 0.360, 0.332, 0.307, 0.481, 0.303],
-    [0.097, 0.022, 0.368, 1.000, 0.192, 0.397, -0.127, 0.113, 0.007, 0.204, 0.133, 0.037, -0.027, 0.091],
-    [0.929, 0.759, 0.659, 0.192, 1.000, 0.103, -0.188, 0.090, 0.029, 0.077, 0.160, 0.080, 0.219, 0.019],
-    [0.153, 0.231, 0.279, 0.397, 0.103, 1.000, 0.340, 0.210, 0.219, 0.430, 0.183, 0.204, 0.140, 0.289],
-    [-0.175, -0.242, 0.038, -0.127, -0.188, 0.340, 1.000, 0.238, 0.040, 0.163, -0.101, -0.068, 0.107, 0.054],
-    [0.021, 0.042, 0.030, 0.113, 0.090, 0.210, 0.238, 1.000, 0.276, 0.399, 0.279, 0.181, 0.232, 0.199],
-    [0.093, 0.070, 0.224, 0.007, 0.029, 0.219, 0.040, 0.276, 1.000, 0.828, 0.868, 0.886, 0.709, 0.870],
-    [0.136, 0.089, 0.360, 0.204, 0.077, 0.430, 0.163, 0.399, 0.828, 1.000, 0.795, 0.800, 0.670, 0.865],
-    [0.215, 0.167, 0.332, 0.133, 0.160, 0.183, -0.101, 0.279, 0.868, 0.795, 1.000, 0.816, 0.711, 0.828],
-    [0.156, 0.104, 0.307, 0.037, 0.080, 0.204, -0.068, 0.181, 0.886, 0.800, 0.816, 1.000, 0.758, 0.838],
-    [0.257, 0.153, 0.481, -0.027, 0.219, 0.140, 0.107, 0.232, 0.709, 0.670, 0.711, 0.758, 1.000, 0.649],
-    [0.098, 0.066, 0.303, 0.091, 0.019, 0.289, 0.054, 0.199, 0.870, 0.865, 0.828, 0.838, 0.649, 1.000]
-];
+const FUNDS_GERAL = buildFunds("geral");
+const FUNDS_IQ = buildFunds("iq");
+const CORR_GERAL = MARKOWITZ_DATA.geral.corr;
+const CORR_IQ = MARKOWITZ_DATA.iq.corr;
 
 const PORTFOLIOS = [
-    { name: "Abrigo (Geral)", vol: 0.48, ret: 13.30, type: "Geral", color: "#16a34a" },
-    { name: "Ritmo (Geral)", vol: 2.68, ret: 15.40, type: "Geral", color: "#84cc16" },
-    { name: "Visão (Geral)", vol: 5.93, ret: 17.98, type: "Geral", color: "#f97316" },
-    { name: "Oceano (Geral)", vol: 6.81, ret: 18.43, type: "Geral", color: "#ef4444" },
-    { name: "Abrigo (IQ)", vol: 0.31, ret: 13.35, type: "IQ", color: "#2563eb" },
-    { name: "Ritmo (IQ)", vol: 1.66, ret: 12.96, type: "IQ", color: "#22d3ee" },
-    { name: "Visão (IQ)", vol: 3.32, ret: 14.97, type: "IQ", color: "#eab308" },
-    { name: "Oceano (IQ)", vol: 4.65, ret: 16.09, type: "IQ", color: "#dc2626" },
+    { name: "Abrigo (Geral)", vol: MARKOWITZ_DATA.geral.presets.Abrigo.vol * 100, ret: MARKOWITZ_DATA.geral.presets.Abrigo.ret * 100, type: "Geral", color: "#16a34a" },
+    { name: "Ritmo (Geral)", vol: MARKOWITZ_DATA.geral.presets.Ritmo.vol * 100, ret: MARKOWITZ_DATA.geral.presets.Ritmo.ret * 100, type: "Geral", color: "#84cc16" },
+    { name: "Visão (Geral)", vol: MARKOWITZ_DATA.geral.presets["Visão"].vol * 100, ret: MARKOWITZ_DATA.geral.presets["Visão"].ret * 100, type: "Geral", color: "#f97316" },
+    { name: "Oceano (Geral)", vol: MARKOWITZ_DATA.geral.presets.Oceano.vol * 100, ret: MARKOWITZ_DATA.geral.presets.Oceano.ret * 100, type: "Geral", color: "#ef4444" },
+    { name: "Abrigo (IQ)", vol: MARKOWITZ_DATA.iq.presets.Abrigo.vol * 100, ret: MARKOWITZ_DATA.iq.presets.Abrigo.ret * 100, type: "IQ", color: "#2563eb" },
+    { name: "Ritmo (IQ)", vol: MARKOWITZ_DATA.iq.presets.Ritmo.vol * 100, ret: MARKOWITZ_DATA.iq.presets.Ritmo.ret * 100, type: "IQ", color: "#22d3ee" },
+    { name: "Visão (IQ)", vol: MARKOWITZ_DATA.iq.presets["Visão"].vol * 100, ret: MARKOWITZ_DATA.iq.presets["Visão"].ret * 100, type: "IQ", color: "#eab308" },
+    { name: "Oceano (IQ)", vol: MARKOWITZ_DATA.iq.presets.Oceano.vol * 100, ret: MARKOWITZ_DATA.iq.presets.Oceano.ret * 100, type: "IQ", color: "#dc2626" },
 ];
-
-const FRONTIER = Array.from({ length: 40 }, (_, i) => {
-    const t = i / 39;
-    const vol = 0.1 + t * 20;
-    const ret = 13.2 + Math.sqrt(vol) * 4.5 - vol * 0.02;
-    return { vol, ret: Math.min(ret, 35) };
-});
 
 function getCorrelationColor(val: number) {
     if (val >= 0.7) return "bg-red-700 text-white border-red-800";
@@ -114,25 +87,43 @@ export default function MarkowitzDashboardPage() {
 
     const activeFunds = selectedType === "Geral" ? FUNDS_GERAL : FUNDS_IQ;
     const activeCorr = selectedType === "Geral" ? CORR_GERAL : CORR_IQ;
+    const activeFrontier = selectedType === "Geral" ? MARKOWITZ_DATA.geral.frontier : MARKOWITZ_DATA.iq.frontier;
+    const activeMonteCarlo = selectedType === "Geral" ? MARKOWITZ_DATA.geral.monteCarlo : MARKOWITZ_DATA.iq.monteCarlo;
 
     const filteredPortfolios = useMemo(() => {
         return PORTFOLIOS.filter(p => p.type === selectedType);
     }, [selectedType]);
+
+    // Compute dynamic min/max scaling
+    const allVols = [
+        ...activeMonteCarlo.vols.map((v: number) => v * 100),
+        ...filteredPortfolios.map(p => p.vol),
+        ...activeFunds.map(f => f.vol)
+    ];
+    const allRets = [
+        ...activeMonteCarlo.rets.map((r: number) => r * 100),
+        ...filteredPortfolios.map(p => p.ret),
+        ...activeFunds.map(f => f.ret)
+    ];
+    const xMaxData = Math.max(...allVols);
+    const yMaxData = Math.max(...allRets);
+    const yMinData = Math.min(...allRets);
+
+    const xMax = Math.ceil(xMaxData / 5) * 5 + 1;
+    const yMin = Math.max(0, Math.floor(yMinData / 5) * 5 - 2);
+    const yMax = Math.ceil(yMaxData / 5) * 5 + 1;
 
     const chartW = 700;
     const chartH = 420;
     const pad = { t: 30, r: 30, b: 50, l: 65 };
     const plotW = chartW - pad.l - pad.r;
     const plotH = chartH - pad.t - pad.b;
-    const xMax = 24;
-    const yMin = 8;
-    const yMax = 36;
 
     const toX = (v: number) => pad.l + (v / xMax) * plotW;
     const toY = (r: number) => pad.t + ((yMax - r) / (yMax - yMin)) * plotH;
 
-    const frontierPath = FRONTIER.map((p, i) =>
-        `${i === 0 ? "M" : "L"}${toX(p.vol).toFixed(1)},${toY(p.ret).toFixed(1)}`
+    const frontierPath = activeFrontier.rets.map((r: number, i: number) =>
+        `${i === 0 ? "M" : "L"}${toX(activeFrontier.vols[i] * 100).toFixed(1)},${toY(r * 100).toFixed(1)}`
     ).join(" ");
 
     const cellSize = 38;
@@ -209,14 +200,28 @@ export default function MarkowitzDashboardPage() {
                                     <text x={chartW / 2} y={chartH - 5} textAnchor="middle" fill="#64748B" fontSize={11} fontWeight={600} letterSpacing="0.05em">VOLATILIDADE ANUALIZADA</text>
                                     <text x={14} y={chartH / 2} textAnchor="middle" fill="#64748B" fontSize={11} fontWeight={600} letterSpacing="0.05em" transform={`rotate(-90, 14, ${chartH / 2})`}>RETORNO ESPERADO</text>
 
-                                    {/* Frontier area */}
-                                    <path d={frontierPath + ` L${toX(FRONTIER[FRONTIER.length - 1].vol)},${toY(yMin)} L${toX(FRONTIER[0].vol)},${toY(yMin)} Z`}
+                                    {/* Frontier area fill */}
+                                    <path d={frontierPath + ` L${toX(activeFrontier.vols[activeFrontier.vols.length - 1] * 100)},${toY(yMin)} L${toX(activeFrontier.vols[0] * 100)},${toY(yMin)} Z`}
                                         fill="#3b82f6" opacity={0.06} />
+
+                                    {/* Monte Carlo scatter points */}
+                                    {activeMonteCarlo.vols.map((v: number, i: number) => (
+                                        <circle
+                                            key={`mc-${i}`}
+                                            cx={toX(v * 100)}
+                                            cy={toY(activeMonteCarlo.rets[i] * 100)}
+                                            r={1.5}
+                                            fill="#cbd5e1"
+                                            opacity={0.3}
+                                        />
+                                    ))}
+
+                                    {/* Frontier line */}
                                     <path d={frontierPath} fill="none" stroke="#2563EB" strokeWidth={2.5} />
 
                                     {/* CDI line */}
-                                    <line x1={pad.l} y1={toY(13.25)} x2={chartW - pad.r} y2={toY(13.25)} stroke="#10B981" strokeWidth={1.5} strokeDasharray="6,4" opacity={0.6} />
-                                    <text x={chartW - pad.r - 4} y={toY(13.25) - 5} textAnchor="end" fill="#059669" fontSize={9} fontWeight="600" opacity={0.8}>CDI ~13,25%</text>
+                                    <line x1={pad.l} y1={toY(activeFunds[0]?.ret || 13.25)} x2={chartW - pad.r} y2={toY(activeFunds[0]?.ret || 13.25)} stroke="#10B981" strokeWidth={1.5} strokeDasharray="6,4" opacity={0.6} />
+                                    <text x={chartW - pad.r - 4} y={toY(activeFunds[0]?.ret || 13.25) - 5} textAnchor="end" fill="#059669" fontSize={9} fontWeight="600" opacity={0.8}>CDI</text>
 
                                     {/* Fund dots */}
                                     {activeFunds.map((f, i) => (
