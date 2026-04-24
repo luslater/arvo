@@ -242,16 +242,20 @@ export default function MarkowitzDashboardPage() {
                                     {/* Portfolio dots */}
                                     {filteredPortfolios.map((p, i) => {
                                         const isHov = hoveredPort === i;
+                                        // Remove internal generic suffix for cleaner tooltip
+                                        const cleanName = p.name.replace(" (Geral)", "").replace(" (IQ)", "");
                                         return (
                                             <g key={`p${i}`} onMouseEnter={() => setHoveredPort(i)} onMouseLeave={() => setHoveredPort(null)} style={{ cursor: "pointer" }}>
                                                 <circle cx={toX(p.vol)} cy={toY(p.ret)} r={isHov ? 10 : 7}
                                                     fill={p.color} stroke="#fff" strokeWidth={isHov ? 2.5 : 1.5}
                                                     style={{ transition: "all 0.15s" }} />
-                                                <text x={toX(p.vol) + 12} y={toY(p.ret) + 4} fill="#334155" fontSize={9} fontWeight={700}>{p.name}</text>
                                                 {isHov && (
                                                     <g>
-                                                        <rect x={toX(p.vol) - 75} y={toY(p.ret) - 50} width={150} height={40} rx={8} fill="#ffffff" stroke={p.color} strokeWidth={2} style={{ filter: 'drop-shadow(0 4px 6px -1px rgb(0 0 0 / 0.1))' }} />
-                                                        <text x={toX(p.vol)} y={toY(p.ret) - 32} textAnchor="middle" fill="#0F172A" fontSize={11} fontWeight={700}>
+                                                        <rect x={toX(p.vol) - 75} y={toY(p.ret) - 55} width={150} height={44} rx={8} fill="#ffffff" stroke={p.color} strokeWidth={2} style={{ filter: 'drop-shadow(0 4px 6px -1px rgb(0 0 0 / 0.1))' }} />
+                                                        <text x={toX(p.vol)} y={toY(p.ret) - 37} textAnchor="middle" fill="#0F172A" fontSize={11} fontWeight={700}>
+                                                            {cleanName}
+                                                        </text>
+                                                        <text x={toX(p.vol)} y={toY(p.ret) - 21} textAnchor="middle" fill="#64748B" fontSize={10} fontWeight={500}>
                                                             Vol: {p.vol.toFixed(2)}% | Ret: {p.ret.toFixed(2)}%
                                                         </text>
                                                     </g>
@@ -263,7 +267,22 @@ export default function MarkowitzDashboardPage() {
                             </div>
                         </div>
 
-                        <div className="flex gap-4 mt-2">
+                        <div className="flex flex-col md:flex-row gap-4 mt-2">
+                            <div className="bg-[#F8FAFC] border border-dash-border/60 rounded-xl p-4 flex-1">
+                                <div className="text-[10px] font-bold text-dash-text-light mb-3 uppercase tracking-widest">Legenda Carteiras</div>
+                                <div className="flex flex-wrap gap-x-5 gap-y-2">
+                                    {filteredPortfolios.map(p => {
+                                        const cleanName = p.name.replace(" (Geral)", "").replace(" (IQ)", "");
+                                        return (
+                                            <div key={p.name} className="flex items-center gap-2">
+                                                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: p.color }} />
+                                                <span className="text-xs font-semibold text-dash-text">{cleanName}</span>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+
                             <div className="bg-[#F8FAFC] border border-dash-border/60 rounded-xl p-4 flex-1">
                                 <div className="text-[10px] font-bold text-dash-text-light mb-3 uppercase tracking-widest">Legenda Fundos</div>
                                 <div className="flex flex-wrap gap-x-4 gap-y-2">
