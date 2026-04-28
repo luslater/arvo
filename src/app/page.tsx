@@ -1,11 +1,11 @@
-
 import Head from "next/head";
-import Link from "next/link"; 
+import Link from "next/link";
 
 export default function LandingPage() {
-    return (
-        <div className="landing-page light" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-            <style dangerouslySetInnerHTML={{ __html: `
+  return (
+    <div className="landing-page light" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <style dangerouslySetInnerHTML={{
+        __html: `
                 
   .landing-page {
     --bg: #0b0f14;
@@ -415,9 +415,9 @@ export default function LandingPage() {
   .faq-item.open .faq-btn h4 { color: var(--accent); }
   .faq-btn .pm { width: 32px; height: 32px; border-radius: 999px; border: 1px solid var(--rule-strong); display: grid; place-items: center; flex: 0 0 auto; transition: background .2s, color .2s, transform .3s, border-color .2s; font-size: 14px; color: var(--ink-3); }
   .faq-item.open .faq-btn .pm { background: var(--accent); color: #1a1308; transform: rotate(45deg); border-color: var(--accent); }
-  .faq-.landing-page { max-height: 0; overflow: hidden; transition: max-height .4s ease; color: var(--ink-2); font-size: 15.5px; line-height: 1.65; }
+  .faq-body { max-height: 0; overflow: hidden; transition: max-height .4s ease; color: var(--ink-2); font-size: 15.5px; line-height: 1.65; }
   .faq-body-inner { padding: 0 0 30px; max-width: 72ch; }
-  .faq-item.open .faq-.landing-page { max-height: 400px; }
+  .faq-item.open .faq-body { max-height: 400px; }
 
   /* ---------- BIG CTA ---------- */
   .big-cta { padding: 140px 0 180px; text-align: center; position: relative; overflow: hidden; }
@@ -463,8 +463,9 @@ export default function LandingPage() {
                     margin: 0; padding: 0;
                 }
             ` }} />
-            
-            <div dangerouslySetInnerHTML={{ __html: `
+
+      <div dangerouslySetInnerHTML={{
+        __html: `
 
 <!-- NAV -->
 <header class="nav">
@@ -472,7 +473,155 @@ export default function LandingPage() {
     <a href="/login" class="logo">
       <span class="logo-mark">
         <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <path d="M0.0,243.3 L18.4,248.8 L36.8,248.5 L55.3,241.0 L73.7,230.7 L92.1,213.3 L110.5,204.9 L128.9,208.3 L147.4,208.6 L165.8,212.0 L184.2,191.4 L202.6,178.4 L221.1,180.1 L239.5,173.2 L257.9,169.0 L276.3,177.3 L294.7,176.5 L313.2,173.4 L331.6,167.5 L350.0,157.9 L368.4,160.2 L386.8,160.5 L405.3,163.5 L423.7,168.0 L442.1,154.1 L460.5,156.3 L478.9,149.1 L497.4,129.8 L515.8,115.8 L534.2,107.5 L552.6,112.3 L571.1,94.2 L589.5,86.2 L607.9,79.6 L626.3,65.0 L644.7,62.5 L663.2,47.2 L681.6,40.0 L700.0,49.5  L700,280 L0,280 Z"
+          <path d="M16 3L3 29h5.5l2-4h11l2 4H29L16 3z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M12 21h8l-4-8-4 8z" fill="var(--accent)"/>
+        </svg>
+      </span>
+      <span>ARVO</span>
+    </a>
+    <nav class="nav-links">
+      <a href="#carteiras">Carteiras</a>
+      <a href="#metodo">Método</a>
+      <a href="#planejamento">Planejamento</a>
+      <a href="#preco">Assinatura</a>
+      <a href="#faq">Dúvidas</a>
+    </nav>
+    <div class="nav-cta">
+      <a href="/login" class="btn btn-ghost">Log in</a>
+      <a href="/register" class="btn btn-primary">Começar agora <span class="arr">→</span></a>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow rise"><span class="dot"></span>Orientação financeira independente · Sem produto empurrado</div>
+      <h1 class="rise rise-2">
+        E se você<br>
+        soubesse <b>exatamente</b><br>
+        onde, quanto e<br>
+        <b>até quando</b><br>
+        guardar?
+      </h1>
+      <p class="hero-sub rise rise-3">
+        A maioria das pessoas guarda dinheiro <b>no escuro</b> — sem saber se é o
+        suficiente, sem plano, e ainda confiando em quem ganha comissão pra empurrar
+        produto. A ARVO acaba com isso. Em 5 minutos você vê para onde está indo — e
+        descobre o caminho mais curto pra chegar lá.
+      </p>
+      <ul class="hero-bullets rise rise-3">
+        <li><span class="chk"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5L8.5 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Você descobre, com números, em quantos anos pode parar de trabalhar</li>
+        <li><span class="chk"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5L8.5 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Recebe carteira pronta para o seu perfil — sem palpite, sem achismo</li>
+        <li><span class="chk"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5L8.5 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Para de pagar caro pelas decisões erradas que vinha tomando</li>
+      </ul>
+      <div class="hero-cta rise rise-4">
+        <a href="/register" class="btn btn-accent">Quero meu diagnóstico gratuito <span class="arr">→</span></a>
+        <a href="#metodo" class="btn btn-ghost">Como funciona</a>
+      </div>
+      <div style="margin-top: 24px; font-size: 12.5px; color: var(--ink-3); font-family: 'JetBrains Mono', monospace; letter-spacing: .04em;">
+        ✓ Sem cartão · ✓ 100% online · ✓ Resultado na hora
+      </div>
+    </div>
+
+    <aside class="hero-panel rise rise-4">
+      <div class="hp-top">
+        <span>Carteiras ARVO · Resultado</span>
+        <span class="live"><i></i>Em acompanhamento</span>
+      </div>
+      <div class="hp-value">
+        <div class="amount tab"><span class="pct">4 perfis</span></div>
+      </div>
+      <div class="hp-cap">Da reserva ao perfil arrojado — uma carteira para cada momento de vida</div>
+
+      <div class="hp-chart">
+        <svg viewBox="0 0 500 84" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="hpg" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0" stop-color="var(--accent)" stop-opacity=".28"/>
+              <stop offset="1" stop-color="var(--accent)" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path d="M0,66 C50,62 80,60 120,52 C160,44 190,48 230,36 C270,24 310,30 350,20 C390,10 430,16 500,6"
+                fill="none" stroke="var(--accent)" stroke-width="2" class="draw-me"/>
+          <path d="M0,66 C50,62 80,60 120,52 C160,44 190,48 230,36 C270,24 310,30 350,20 C390,10 430,16 500,6 L500,84 L0,84 Z"
+                fill="url(#hpg)"/>
+          <circle cx="500" cy="6" r="3" fill="var(--accent)"/>
+        </svg>
+      </div>
+
+      <div class="hp-rows">
+        <div class="hp-row">
+          <span class="name"><i style="background: rgba(201,169,97,.35)"></i>Abrigo · Reserva</span>
+          <span class="bar"><em style="width: 35%; background: rgba(201,169,97,.55)"></em></span>
+          <span class="val tab">Conservador</span>
+        </div>
+        <div class="hp-row">
+          <span class="name"><i style="background: rgba(201,169,97,.7)"></i>Ritmo</span>
+          <span class="bar"><em style="width: 55%; background: rgba(201,169,97,.8)"></em></span>
+          <span class="val tab">Moderado</span>
+        </div>
+        <div class="hp-row">
+          <span class="name"><i style="background: var(--accent)"></i>Visão</span>
+          <span class="bar"><em style="width: 78%"></em></span>
+          <span class="val tab">Equilibrado</span>
+        </div>
+        <div class="hp-row">
+          <span class="name"><i style="background: rgba(201,169,97,.9)"></i>Oceano</span>
+          <span class="bar"><em style="width: 96%"></em></span>
+          <span class="val tab">Arrojado</span>
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker" aria-hidden="true"><div class="ticker-inner" id="ticker"><span><b>ARVO</b><span>Plataforma independente</span></span><span><b>Fee-only</b><span>zero comissão</span></span><span><b>CDI</b><span>100% CDI</span></span><span><b>IPCA 12m</b><span>Acompanhamento contínuo</span></span><span><b>ARVO</b><span>Método primeiro</span></span><span><b>Carteiras</b><span>Abrigo · Ritmo · Visão · Oceano</span></span><span><b>Planejamento</b><span>como ponto de partida</span></span><span><b>ARVO</b><span>Sem produto empurrado</span></span><span><b>ARVO</b><span>Clareza por método</span></span><span><b>ARVO</b><span>Plataforma independente</span></span><span><b>Fee-only</b><span>zero comissão</span></span><span><b>CDI</b><span>100% CDI</span></span><span><b>IPCA 12m</b><span>Acompanhamento contínuo</span></span><span><b>ARVO</b><span>Método primeiro</span></span><span><b>Carteiras</b><span>Abrigo · Ritmo · Visão · Oceano</span></span><span><b>Planejamento</b><span>como ponto de partida</span></span><span><b>ARVO</b><span>Sem produto empurrado</span></span><span><b>ARVO</b><span>Clareza por método</span></span></div></div>
+
+<!-- PERFORMANCE -->
+<section class="section" id="performance">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow"><span class="dot"></span>§01 · Resultado</div>
+        <h2>Carteiras com <b>resultado</b> que você acompanha.</h2>
+      </div>
+      <p class="lede">
+        Em vez de promessa, gráfico real. Cada carteira ARVO é monitorada e o
+        cliente vê o resultado mês a mês — sem maquiagem, sem letra miúda,
+        sem prancheta de assessor.
+      </p>
+    </div>
+
+    <div class="perf-block">
+      <div class="chart">
+        <div class="chart-head">
+          <div class="title">Carteira ARVO vs. CDI</div>
+          <div class="range">
+            <button>1M</button><button>6M</button><button>1A</button><button class="on">Total</button>
+          </div>
+        </div>
+        <svg viewBox="0 0 700 280" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="perfG" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0" stop-color="var(--accent)" stop-opacity=".18"/>
+              <stop offset="1" stop-color="var(--accent)" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <g stroke="var(--rule)" stroke-width="1">
+            <line x1="0" y1="40" x2="700" y2="40"/>
+            <line x1="0" y1="110" x2="700" y2="110"/>
+            <line x1="0" y1="180" x2="700" y2="180"/>
+            <line x1="0" y1="250" x2="700" y2="250"/>
+          </g>
+          <path d="M0,220 C80,212 140,205 200,196 C260,186 320,178 380,168 C440,158 500,148 560,138 C620,128 660,120 700,112"
+                fill="none" stroke="var(--ink-4)" stroke-width="1.5" stroke-dasharray="4 5"/>
+          <path class="draw-me"
+                d="M0.0,44.2 L18.4,42.8 L36.8,38.6 L55.3,42.4 L73.7,35.0 L92.1,33.5 L110.5,31.7 L128.9,35.0 L147.4,35.5 L165.8,38.6 L184.2,21.9 L202.6,9.2 L221.1,10.6 L239.5,4.7 L257.9,1.4 L276.3,8.7 L294.7,8.3 L313.2,6.0 L331.6,1.4 L350.0,-6.3 L368.4,-4.3 L386.8,-4.2 L405.3,-2.3 L423.7,1.0 L442.1,-10.8 L460.5,-9.5 L478.9,-15.5 L497.4,-31.6 L515.8,-43.3 L534.2,-50.2 L552.6,-46.0 L571.1,-61.1 L589.5,-67.7 L607.9,-73.4 L626.3,-85.4 L644.7,-87.5 L663.2,-100.1 L681.6,-106.1 L700.0,-98.6 "
+                fill="none" stroke="var(--ink)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M0.0,44.2 L18.4,42.8 L36.8,38.6 L55.3,42.4 L73.7,35.0 L92.1,33.5 L110.5,31.7 L128.9,35.0 L147.4,35.5 L165.8,38.6 L184.2,21.9 L202.6,9.2 L221.1,10.6 L239.5,4.7 L257.9,1.4 L276.3,8.7 L294.7,8.3 L313.2,6.0 L331.6,1.4 L350.0,-6.3 L368.4,-4.3 L386.8,-4.2 L405.3,-2.3 L423.7,1.0 L442.1,-10.8 L460.5,-9.5 L478.9,-15.5 L497.4,-31.6 L515.8,-43.3 L534.2,-50.2 L552.6,-46.0 L571.1,-61.1 L589.5,-67.7 L607.9,-73.4 L626.3,-85.4 L644.7,-87.5 L663.2,-100.1 L681.6,-106.1 L700.0,-98.6  L700,280 L0,280 Z"
                 fill="url(#perfG)"/>
           <circle cx="700" cy="40" r="5" fill="var(--accent)"/>
           <circle cx="700" cy="40" r="12" fill="var(--accent)" opacity=".2"/>
@@ -768,7 +917,7 @@ export default function LandingPage() {
           <div style="color: var(--ink-3); font-size: 13.5px; margin-top: 4px; max-width: 56ch;">Se em uma semana você sentir que a ARVO não é para você, devolvemos 100% do valor. Sem perguntas, sem burocracia. O risco é nosso — não seu.</div>
         </div>
       </div>
-      <a href="/login" class="btn btn-ghost">Quero começar agora <span class="arr">→</span></a>
+      <a href="/register" class="btn btn-ghost">Quero começar agora <span class="arr">→</span></a>
     </div>
   </div>
 </section>
@@ -999,132 +1148,19 @@ export default function LandingPage() {
   </div>
 </footer>
 
-<!-- TWEAKS -->
-<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
-<script type="text/babel" src="tweaks-panel.jsx"></script>
-
+<!-- FAQ toggle script -->
 <script>
-  // Ticker
-  (function(){
-    const items = [
-      ['ARVO', 'Plataforma independente', ''],
-      ['Fee-only', 'zero comissão', ''],
-      ['CDI', '100% CDI', ''],
-      ['IPCA 12m', '[XX%]', ''],
-      ['USD/BRL', 'R\$ [XX]', ''],
-      ['ARVO', 'Método primeiro', ''],
-      ['Carteiras', 'Abrigo · Ritmo · Visão · Oceano', ''],
-      ['Planejamento', 'como ponto de partida', ''],
-      ['ARVO', 'Sem produto empurrado', ''],
-      ['ARVO', 'Clareza por método', ''],
-    ];
-    const row = items.map(([k,v,c]) =>
-      \`<span><b>\${k}</b><span class="\${c}">\${v}</span></span>\`
-    ).join('');
-    document.getElementById('ticker').innerHTML = row + row;
-  })();
-
-  // FAQ
-  document.querySelectorAll('.faq-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const item = btn.closest('.faq-item');
-      const open = item.classList.contains('open');
-      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
-      if (!open) item.classList.add('open');
+  document.querySelectorAll('.faq-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var item = btn.closest('.faq-item');
+      var isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(function(i) { i.classList.remove('open'); });
+      if (!isOpen) item.classList.add('open');
     });
   });
 </script>
 
-<script type="text/babel">
-  const { useEffect } = React;
-
-  const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
-    "light": true,
-    "accent": "#4a7dbf",
-    "variant": "Fintech (claro, verde)"
-  }/*EDITMODE-END*/;
-
-  const ACCENTS = {
-    "Dourado ARVO":    "#c9a961",
-    "Âmbar":           "#d4a017",
-    "Verde ARVO":      "#00c46a",
-    "Verde floresta":  "#2d6a4f",
-    "Azul profundo":   "#4a7dbf",
-    "Cobre":           "#c2410c",
-  };
-
-  const VARIANTS = {
-    "Private banking (escuro, dourado)": { accent: "#c9a961", light: false },
-    "Fintech (claro, verde)":            { accent: "#00c46a", light: true  },
-    "Editorial (claro, dourado)":        { accent: "#a5884a", light: true  },
-  };
-
-  function darken(hex, f=0.76) {
-    const h = hex.replace('#','');
-    let r=parseInt(h.substr(0,2),16), g=parseInt(h.substr(2,2),16), b=parseInt(h.substr(4,2),16);
-    r=Math.round(r*f); g=Math.round(g*f); b=Math.round(b*f);
-    return '#'+[r,g,b].map(x=>x.toString(16).padStart(2,'0')).join('');
-  }
-
-  function applyTweaks(t) {
-    document.documentElement.classList.toggle('light', !!t.light);
-    document.documentElement.style.setProperty('--accent', t.accent);
-    document.documentElement.style.setProperty('--accent-deep', darken(t.accent));
-  }
-
-  function App() {
-    const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
-
-    useEffect(() => { applyTweaks(t); }, [t]);
-
-    const pickVariant = (v) => {
-      const preset = VARIANTS[v];
-      setTweak('variant', v);
-      setTweak('light', preset.light);
-      setTweak('accent', preset.accent);
-    };
-
-    return (
-      <TweaksPanel title="Tweaks · ARVO">
-        <TweakSection label="Variação" />
-        <TweakRadio
-          label="Preset"
-          value={t.variant}
-          options={Object.keys(VARIANTS)}
-          onChange={pickVariant}
-        />
-
-        <TweakSection label="Tema" />
-        <TweakToggle
-          label="Modo claro"
-          value={t.light}
-          onChange={(v) => setTweak('light', v)}
-        />
-
-        <TweakSection label="Accent" />
-        <TweakRadio
-          label="Cor"
-          value={Object.keys(ACCENTS).find(k => ACCENTS[k] === t.accent) || 'custom'}
-          options={Object.keys(ACCENTS)}
-          onChange={(v) => setTweak('accent', ACCENTS[v])}
-        />
-        <TweakColor
-          label="Custom"
-          value={t.accent}
-          onChange={(v) => setTweak('accent', v)}
-        />
-      </TweaksPanel>
-    );
-  }
-
-  const mount = document.createElement('div');
-  document.body.appendChild(mount);
-  ReactDOM.createRoot(mount).render(<App />);
-</script>
-
 ` }} />
-        </div>
-    );
+    </div>
+  );
 }

@@ -113,8 +113,8 @@ export default function MarkowitzDashboardPage() {
     const yMin = Math.max(0, Math.floor(yMinData / 5) * 5 - 2);
     const yMax = Math.ceil(yMaxData / 5) * 5 + 1;
 
-    const chartW = 700;
-    const chartH = 420;
+    const chartW = 900;
+    const chartH = 540;
     const pad = { t: 30, r: 30, b: 50, l: 65 };
     const plotW = chartW - pad.l - pad.r;
     const plotH = chartH - pad.t - pad.b;
