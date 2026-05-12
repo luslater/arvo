@@ -5,7 +5,7 @@ import Image from "next/image"
 import { usePathname } from "next/navigation"
 import {
     LayoutDashboard, Wallet, BookOpen, HelpCircle,
-    Target, CreditCard, User, BarChart3, LogOut, ChevronDown, Calculator, TrendingUp
+    Target, CreditCard, User, BarChart3, LogOut, ChevronDown, Calculator, TrendingUp, Lock, Check
 } from "lucide-react"
 import { useSession, signOut } from "next-auth/react"
 import { useState } from "react"
@@ -15,11 +15,28 @@ interface NavItem {
     icon: React.ReactNode
     label: string
     exact?: boolean
+    locked?: boolean
+    onLockedClick?: () => void
 }
 
-function NavLink({ href, icon, label, exact }: NavItem) {
+function NavLink({ href, icon, label, exact, locked, onLockedClick }: NavItem) {
     const pathname = usePathname()
     const isActive = exact ? pathname === href : pathname.startsWith(href)
+
+    if (locked) {
+        return (
+            <button
+                onClick={onLockedClick}
+                className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-[13px] transition-colors text-dash-text-muted hover:bg-dash-surface-active hover:text-dash-text font-normal"
+            >
+                <div className="flex items-center gap-2.5">
+                    <span className="opacity-60">{icon}</span>
+                    {label}
+                </div>
+                <Lock className="w-3.5 h-3.5 opacity-40" />
+            </button>
+        )
+    }
 
     return (
         <Link
@@ -38,9 +55,11 @@ function NavLink({ href, icon, label, exact }: NavItem) {
 export function DashboardSidebar() {
     const { data: session } = useSession()
     const [showUserMenu, setShowUserMenu] = useState(false)
+    const [showUpgradeModal, setShowUpgradeModal] = useState(false)
 
     return (
-        <aside className="w-[232px] bg-dash-surface border-r border-dash-border flex flex-col shrink-0 fixed top-0 left-0 h-screen font-sans">
+        <>
+        <aside className="w-[232px] bg-dash-surface border-r border-dash-border flex flex-col shrink-0 fixed top-0 left-0 h-screen font-sans z-40">
             {/* Logo */}
             <div className="px-6 py-5 border-b border-dash-border">
                 <Link href="/dashboard">
@@ -55,16 +74,16 @@ export function DashboardSidebar() {
                 <NavLink href="/dashboard" icon={<LayoutDashboard className="w-4 h-4" />} label="Visão Geral" exact />
                 <NavLink href="/dashboard/carteira" icon={<Wallet className="w-4 h-4" />} label="Minha Carteira" />
                 <NavLink href="/dashboard/planejamento" icon={<Target className="w-4 h-4" />} label="Planejamento" />
-                <NavLink href="/dashboard/portfolios" icon={<BarChart3 className="w-4 h-4" />} label="Portfólios ARVO" />
+                <NavLink href="/dashboard/portfolios" icon={<BarChart3 className="w-4 h-4" />} label="Portfólios ARVO" locked onLockedClick={() => setShowUpgradeModal(true)} />
                 <NavLink href="/dashboard/calculadoras" icon={<Calculator className="w-4 h-4" />} label="Calculadoras" />
 
                 <span className="text-[10px] font-semibold text-dash-text-light uppercase tracking-widest px-3 py-2 mt-4">Aprendizado</span>
                 <NavLink href="/dashboard/educacao" icon={<BookOpen className="w-4 h-4" />} label="Educação" />
-                <NavLink href="/dashboard/markowitz" icon={<TrendingUp className="w-4 h-4" />} label="Análise Markowitz" />
+                <NavLink href="/dashboard/markowitz" icon={<TrendingUp className="w-4 h-4" />} label="Análise Markowitz" locked onLockedClick={() => setShowUpgradeModal(true)} />
 
                 <span className="text-[10px] font-semibold text-dash-text-light uppercase tracking-widest px-3 py-2 mt-4">Conta & Contato</span>
                 <NavLink href="/dashboard/assinatura" icon={<CreditCard className="w-4 h-4" />} label="Assinatura" />
-                <NavLink href="/dashboard/agendamento" icon={<HelpCircle className="w-4 h-4" />} label="Agendamento" />
+                <NavLink href="/dashboard/agendamento" icon={<HelpCircle className="w-4 h-4" />} label="Agendamento" locked onLockedClick={() => setShowUpgradeModal(true)} />
                 <NavLink href="/dashboard/ajuda" icon={<HelpCircle className="w-4 h-4 opacity-0" />} label="Ajuda" />
             </nav>
 
@@ -118,5 +137,38 @@ export function DashboardSidebar() {
                 )}
             </div>
         </aside>
+
+        {showUpgradeModal && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                <div className="absolute inset-0 bg-dash-border/40 backdrop-blur-sm" onClick={() => setShowUpgradeModal(false)} />
+                <div className="relative w-full max-w-md bg-dash-surface border border-dash-border rounded-2xl shadow-xl overflow-hidden animate-in fade-in zoom-in-95">
+                    <div className="p-6">
+                        <div className="w-12 h-12 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center mb-4">
+                            <Lock className="w-6 h-6" />
+                        </div>
+                        <h3 className="text-xl font-bold text-dash-text mb-2">Faça o Upgrade para acessar</h3>
+                        <p className="text-dash-text-muted text-sm mb-6">
+                            Esta funcionalidade é exclusiva para assinantes do plano ARVO PRO. Libere acesso completo à plataforma.
+                        </p>
+                        <ul className="space-y-3 mb-8">
+                            {['Carteiras recomendadas ARVO', 'Agendamento de reuniões 1:1', 'Análise de carteira inteligente'].map(benefit => (
+                                <li key={benefit} className="flex items-center gap-2 text-sm text-dash-text-light">
+                                    <Check className="w-4 h-4 text-emerald-500" /> {benefit}
+                                </li>
+                            ))}
+                        </ul>
+                        <div className="flex items-center gap-3">
+                            <button onClick={() => setShowUpgradeModal(false)} className="flex-1 py-2.5 text-sm font-semibold text-dash-text-light hover:text-dash-text transition-colors">
+                                Agora não
+                            </button>
+                            <Link href="/dashboard/assinatura" onClick={() => setShowUpgradeModal(false)} className="flex-1 text-center py-2.5 text-sm font-semibold bg-dash-accent text-white rounded-xl hover:bg-dash-accent/90 transition-colors shadow-md">
+                                Ver planos
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )}
+        </>
     )
 }

@@ -434,7 +434,7 @@ export function CalculadoraJurosCompostos() {
                 <p className="text-xs text-dash-text-light uppercase tracking-wide">
                   Montante final
                 </p>
-                <p className="text-lg md:text-xl font-bold mt-1 text-dash-text truncate" title={formatBRL(resultados.montanteFinal)}>
+                <p className="text-base sm:text-lg font-bold mt-1 text-dash-text" title={formatBRL(resultados.montanteFinal)}>
                   {formatBRL(resultados.montanteFinal)}
                 </p>
               </div>
@@ -442,7 +442,7 @@ export function CalculadoraJurosCompostos() {
                 <p className="text-xs text-dash-text-light uppercase tracking-wide">
                   Total investido
                 </p>
-                <p className="text-lg md:text-xl font-bold mt-1 text-dash-text truncate" title={formatBRL(resultados.totalInvestido)}>
+                <p className="text-base sm:text-lg font-bold mt-1 text-dash-text" title={formatBRL(resultados.totalInvestido)}>
                   {formatBRL(resultados.totalInvestido)}
                 </p>
               </div>
@@ -450,7 +450,7 @@ export function CalculadoraJurosCompostos() {
                 <p className="text-xs text-dash-text-light uppercase tracking-wide">
                   Total em juros
                 </p>
-                <p className="text-lg md:text-xl font-bold mt-1 text-dash-text truncate" title={formatBRL(resultados.totalJuros)}>
+                <p className="text-base sm:text-lg font-bold mt-1 text-dash-text" title={formatBRL(resultados.totalJuros)}>
                   {formatBRL(resultados.totalJuros)}
                 </p>
               </div>
@@ -458,8 +458,8 @@ export function CalculadoraJurosCompostos() {
                 <p className="text-xs text-dash-text-light uppercase tracking-wide">
                   Juros / Total
                 </p>
-                <p className="text-lg md:text-xl font-bold mt-1 text-dash-text truncate">
-                  {resultados.percentualJuros}%
+                <p className="text-base sm:text-lg font-bold mt-1 text-dash-text">
+                  {(resultados.percentualJuros || 0).toLocaleString('pt-BR', { maximumFractionDigits: 2 })}%
                 </p>
               </div>
             </div>
