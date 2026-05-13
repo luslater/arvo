@@ -71,12 +71,12 @@ const mapping = {
 };
 
 function processExcel() {
-    const filePath = "/Users/lucasdematos/Desktop/Dados 3 anos fundos.xlsx";
+    const filePath = "/Users/lucasdematos/Desktop/Atualizar dados fundos.xlsx";
     if (!fs.existsSync(filePath)) {
         console.error("File not found:", filePath);
         process.exit(1);
     }
-    const workbook = xlsx.readFile(filePath);
+    const workbook = xlsx.readFile(filePath, { cellDates: true });
     const data = xlsx.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], { header: 1 });
 
     const headers = data[1] || [];
@@ -88,9 +88,14 @@ function processExcel() {
 
     for (let r = 2; r < numRows; r++) {
         if (data[r]) {
-            const dateVal = data[r][1]; // '01/2023'
-            if (dateVal && String(dateVal).includes('/')) {
-                monthsLabels.push(String(dateVal));
+            let dateVal = data[r][1];
+            if (dateVal instanceof Date) {
+                const month = String(dateVal.getMonth() + 1).padStart(2, '0');
+                const year = dateVal.getFullYear();
+                dateVal = `${month}/${year}`;
+            }
+            if (dateVal && typeof dateVal === 'string' && dateVal.includes('/')) {
+                monthsLabels.push(dateVal);
                 validRowIndices.push(r);
             }
         }
