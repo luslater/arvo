@@ -474,10 +474,7 @@ export default function LandingPage() {
   <div class="wrap nav-inner">
     <a href="/login" class="logo">
       <span class="logo-mark">
-        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <path d="M16 3L3 29h5.5l2-4h11l2 4H29L16 3z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-          <path d="M12 21h8l-4-8-4 8z" fill="var(--accent)"/>
-        </svg>
+        <img src="/arvo-simbolo.png" alt="ARVO" style="width: 24px; height: 24px; object-fit: contain;" />
       </span>
       <span>ARVO</span>
     </a>
@@ -954,10 +951,7 @@ export default function LandingPage() {
       <div>
         <div class="foot-logo">
           <span style="display:inline-grid;place-items:center;width:28px;height:28px;">
-            <svg viewBox="0 0 32 32" fill="none">
-              <path d="M16 3L3 29h5.5l2-4h11l2 4H29L16 3z" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/>
-              <path d="M12 21h8l-4-8-4 8z" fill="var(--accent)"/>
-            </svg>
+            <img src="/arvo-simbolo.png" alt="ARVO" style="width: 28px; height: 28px; object-fit: contain;" />
           </span>
           ARVO
         </div>

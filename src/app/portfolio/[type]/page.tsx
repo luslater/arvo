@@ -14,6 +14,7 @@ import {
     SUGGESTED_ALLOCATIONS_IQ,
     type StepKey,
 } from "@/config/portfolios"
+import { OFFICIAL_DATA_40M, HISTORICAL_LABELS_40M } from "@/config/chart-history"
 import { MONTHLY_RETURNS } from "@/config/funds-monthly"
 import { OCEANO_INFO } from "@/lib/oceano-info"
 import { getProfileDescription } from "@/lib/questionnaire"
@@ -95,47 +96,24 @@ export default function PortfolioDetailPage({ params }: { params: Promise<{ type
 
     // COMPUTE DYNAMIC CHART
     const chartData = useMemo(() => {
-        let currentAccum = 0;
-        let cdiAccum = 0;
-        const totalAllocatedPct = allocations.reduce((sum: number, item: any) => sum + item.absolutePct, 0);
-
-        if (totalAllocatedPct === 0) return [];
-
-        const normalizedAllocations = allocations.map((a: any) => ({
-            fundId: a.fund.id,
-            weight: a.absolutePct / totalAllocatedPct
-        }));
+        const labels = HISTORICAL_LABELS_40M;
+        const portfolioData = OFFICIAL_DATA_40M[portfolioType as keyof typeof OFFICIAL_DATA_40M] || OFFICIAL_DATA_40M["RITMO"];
+        const cdiData = OFFICIAL_DATA_40M["CDI"];
 
         const result = [];
-
-        const monthsLabels = MONTHLY_RETURNS.monthsLabels;
-
         // We evaluate only the last 36 months to make the chart readable
         const sliceLength = 36;
-        const startIndex = monthsLabels.length - sliceLength;
+        const startIndex = Math.max(0, labels.length - sliceLength);
 
-        for (let m = startIndex; m < monthsLabels.length; m++) {
-            let monthBlendDecimal = 0;
-            for (const alloc of normalizedAllocations) {
-                let r = MONTHLY_RETURNS.funds[alloc.fundId as keyof typeof MONTHLY_RETURNS.funds]?.[m];
-                if (typeof r !== "number") r = MONTHLY_RETURNS.macros.cdi[m] || 0;
-                monthBlendDecimal += alloc.weight * r;
-            }
-
-            currentAccum = ((1 + currentAccum / 100) * (1 + monthBlendDecimal) - 1) * 100;
-
-            // CDI Baseline
-            const cdiVal = MONTHLY_RETURNS.macros.cdi[m] || 0;
-            cdiAccum = ((1 + cdiAccum / 100) * (1 + cdiVal) - 1) * 100;
-
+        for (let i = startIndex; i < labels.length; i++) {
             result.push({
-                month: monthsLabels[m],
-                "Carteira ARVO": currentAccum,
-                "CDI": cdiAccum,
+                month: labels[i],
+                "Carteira ARVO": portfolioData[i],
+                "CDI": cdiData[i],
             });
         }
         return result;
-    }, [allocations]);
+    }, [portfolioType]);
 
     return (
         <div className="min-h-screen bg-white p-6">

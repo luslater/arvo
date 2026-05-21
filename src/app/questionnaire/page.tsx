@@ -97,11 +97,11 @@ export default function QuestionnairePage() {
 
                         <div className="pt-6">
                             <Button
-                                onClick={() => router.push("/carteira")}
+                                onClick={() => router.push("/dashboard")}
                                 size="lg"
                                 className="bg-gray-100 text-gray-900 hover:bg-gray-900 hover:text-white rounded-md px-8"
                             >
-                                Ir para Minha Carteira
+                                Ir para o Dashboard
                                 <ArrowRight className="ml-2 h-4 w-4" />
                             </Button>
                         </div>
@@ -120,7 +120,7 @@ export default function QuestionnairePage() {
 
             {/* Back to Dashboard Button */}
             <div className="fixed top-4 left-4">
-                <Link href="/carteira">
+                <Link href="/dashboard">
                     <Button variant="ghost" size="sm">
                         <Home className="h-4 w-4 mr-2" />
                         Voltar para Dashboard

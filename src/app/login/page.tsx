@@ -85,7 +85,7 @@ function LoginForm() {
             <Card className="w-full max-w-md border-gray-200 /10">
                 <CardHeader className="text-center">
                     <div className="flex justify-center mb-4">
-                        <Image src="/arvo-logo.png" alt="ARVO" width={100} height={50} className="" />
+                        <Image src="/meu-arvo-logo.png" alt="ARVO" width={100} height={50} className="" />
                     </div>
                     <CardTitle className="text-2xl font-light">Entrar</CardTitle>
                     <CardDescription className="text-center">

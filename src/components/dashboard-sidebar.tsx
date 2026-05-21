@@ -5,7 +5,7 @@ import Image from "next/image"
 import { usePathname } from "next/navigation"
 import {
     LayoutDashboard, Wallet, BookOpen, HelpCircle,
-    Target, CreditCard, User, BarChart3, LogOut, ChevronDown, Calculator, TrendingUp, Lock, Check
+    Target, CreditCard, User, BarChart3, LogOut, ChevronDown, Calculator, TrendingUp, Lock, Check, Menu, X
 } from "lucide-react"
 import { useSession, signOut } from "next-auth/react"
 import { useState } from "react"
@@ -17,9 +17,10 @@ interface NavItem {
     exact?: boolean
     locked?: boolean
     onLockedClick?: () => void
+    onClick?: () => void
 }
 
-function NavLink({ href, icon, label, exact, locked, onLockedClick }: NavItem) {
+function NavLink({ href, icon, label, exact, locked, onLockedClick, onClick }: NavItem) {
     const pathname = usePathname()
     const isActive = exact ? pathname === href : pathname.startsWith(href)
 
@@ -41,6 +42,7 @@ function NavLink({ href, icon, label, exact, locked, onLockedClick }: NavItem) {
     return (
         <Link
             href={href}
+            onClick={onClick}
             className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-[13px] transition-colors ${isActive
                 ? 'bg-dash-accent-light text-dash-accent font-semibold'
                 : 'text-dash-text-muted hover:bg-dash-surface-active hover:text-dash-text font-normal'
@@ -56,14 +58,32 @@ export function DashboardSidebar() {
     const { data: session } = useSession()
     const [showUserMenu, setShowUserMenu] = useState(false)
     const [showUpgradeModal, setShowUpgradeModal] = useState(false)
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+
+    const closeMobileMenu = () => setIsMobileMenuOpen(false)
 
     return (
         <>
-        <aside className="w-[232px] bg-dash-surface border-r border-dash-border flex flex-col shrink-0 fixed top-0 left-0 h-screen font-sans z-40">
+        {/* Mobile Header */}
+        <div className="md:hidden fixed top-0 left-0 w-full h-16 bg-dash-surface border-b border-dash-border flex items-center justify-between px-4 z-30">
+            <Link href="/dashboard" onClick={closeMobileMenu}>
+                <Image src="/meu-arvo-logo.png" alt="meuARVO" width={100} height={28} className="object-contain" />
+            </Link>
+            <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-2 text-dash-text hover:bg-dash-surface-active rounded-lg">
+                {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+        </div>
+
+        {/* Mobile Backdrop */}
+        {isMobileMenuOpen && (
+            <div className="md:hidden fixed inset-0 bg-dash-border/60 backdrop-blur-sm z-40" onClick={closeMobileMenu} />
+        )}
+
+        <aside className={`w-[232px] bg-dash-surface border-r border-dash-border flex flex-col shrink-0 fixed top-0 left-0 h-screen font-sans z-50 transition-transform duration-300 ease-in-out ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
             {/* Logo */}
             <div className="px-6 py-5 border-b border-dash-border">
                 <Link href="/dashboard">
-                    <Image src="/arvo-logo.png" alt="ARVO" width={72} height={28} className="object-contain" />
+                    <Image src="/meu-arvo-logo.png" alt="meuARVO" width={110} height={32} className="object-contain" />
                 </Link>
             </div>
 
@@ -71,27 +91,27 @@ export function DashboardSidebar() {
             <nav className="flex-1 overflow-y-auto p-4 flex flex-col gap-0.5">
                 <span className="text-[10px] font-semibold text-dash-text-light uppercase tracking-widest px-3 py-2 mt-1">Principal</span>
 
-                <NavLink href="/dashboard" icon={<LayoutDashboard className="w-4 h-4" />} label="Visão Geral" exact />
-                <NavLink href="/dashboard/carteira" icon={<Wallet className="w-4 h-4" />} label="Minha Carteira" />
-                <NavLink href="/dashboard/planejamento" icon={<Target className="w-4 h-4" />} label="Planejamento" />
-                <NavLink href="/dashboard/portfolios" icon={<BarChart3 className="w-4 h-4" />} label="Portfólios ARVO" locked onLockedClick={() => setShowUpgradeModal(true)} />
-                <NavLink href="/dashboard/calculadoras" icon={<Calculator className="w-4 h-4" />} label="Calculadoras" />
+                <NavLink href="/dashboard" icon={<LayoutDashboard className="w-4 h-4" />} label="Visão Geral" exact onClick={closeMobileMenu} />
+                <NavLink href="/dashboard/carteira" icon={<Wallet className="w-4 h-4" />} label="Minha Carteira" onClick={closeMobileMenu} />
+                <NavLink href="/dashboard/planejamento" icon={<Target className="w-4 h-4" />} label="Planejamento" onClick={closeMobileMenu} />
+                <NavLink href="/dashboard/portfolios" icon={<BarChart3 className="w-4 h-4" />} label="Portfólios ARVO" onClick={closeMobileMenu} />
+                <NavLink href="/dashboard/calculadoras" icon={<Calculator className="w-4 h-4" />} label="Calculadoras" onClick={closeMobileMenu} />
 
                 <span className="text-[10px] font-semibold text-dash-text-light uppercase tracking-widest px-3 py-2 mt-4">Aprendizado</span>
-                <NavLink href="/dashboard/educacao" icon={<BookOpen className="w-4 h-4" />} label="Educação" />
-                <NavLink href="/dashboard/markowitz" icon={<TrendingUp className="w-4 h-4" />} label="Análise Markowitz" locked onLockedClick={() => setShowUpgradeModal(true)} />
+                <NavLink href="/dashboard/educacao" icon={<BookOpen className="w-4 h-4" />} label="Educação" onClick={closeMobileMenu} />
+                <NavLink href="/dashboard/markowitz" icon={<TrendingUp className="w-4 h-4" />} label="Análise Markowitz" onClick={closeMobileMenu} />
 
                 <span className="text-[10px] font-semibold text-dash-text-light uppercase tracking-widest px-3 py-2 mt-4">Conta & Contato</span>
-                <NavLink href="/dashboard/assinatura" icon={<CreditCard className="w-4 h-4" />} label="Assinatura" />
-                <NavLink href="/dashboard/agendamento" icon={<HelpCircle className="w-4 h-4" />} label="Agendamento" locked onLockedClick={() => setShowUpgradeModal(true)} />
-                <NavLink href="/dashboard/ajuda" icon={<HelpCircle className="w-4 h-4 opacity-0" />} label="Ajuda" />
+                <NavLink href="/dashboard/assinatura" icon={<CreditCard className="w-4 h-4" />} label="Assinatura" onClick={closeMobileMenu} />
+                <NavLink href="/dashboard/agendamento" icon={<HelpCircle className="w-4 h-4" />} label="Agendamento" onClick={closeMobileMenu} />
+                <NavLink href="/dashboard/ajuda" icon={<HelpCircle className="w-4 h-4 opacity-0" />} label="Ajuda" onClick={closeMobileMenu} />
             </nav>
 
             {/* Assessor Card */}
             <div className="px-4 pb-2">
                 <div className="bg-dash-accent-light rounded-xl p-3.5 mb-3">
-                    <div className="text-[10px] text-dash-accent-mid uppercase tracking-[0.06em] font-semibold mb-1">Seu assessor</div>
-                    <div className="text-[13px] font-semibold text-dash-accent leading-tight">Rafael Mendes, CFP®</div>
+                    <div className="text-[13px] font-semibold text-dash-accent leading-tight">Equipe ARVO</div>
+                    <div className="text-[11px] text-dash-accent-mid mt-0.5">Lucas Matos, CFP®</div>
                     <Link href="/dashboard/agendamento">
                         <button className="mt-2.5 w-full py-1.5 text-xs bg-dash-accent text-white rounded-lg hover:bg-dash-accent-mid transition-colors font-semibold tracking-tight">
                             Agendar conversa
@@ -106,8 +126,8 @@ export function DashboardSidebar() {
                     onClick={() => setShowUserMenu(!showUserMenu)}
                     className="w-full flex items-center gap-2.5 px-2 py-2 rounded-lg hover:bg-dash-surface-active transition-colors text-left"
                 >
-                    <div className="w-7 h-7 rounded-full bg-dash-accent flex items-center justify-center shrink-0">
-                        <User className="w-3.5 h-3.5 text-white" />
+                    <div className="w-8 h-8 rounded-full bg-dash-accent flex items-center justify-center shrink-0 overflow-hidden">
+                        <img src="/arvo-simbolo-blue.png" alt="ARVO" className="w-full h-full object-cover" />
                     </div>
                     <div className="flex-1 min-w-0">
                         <div className="text-[12px] font-semibold text-dash-text truncate">

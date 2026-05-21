@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react"
 import { Pencil, Check, X, TrendingUp, Wallet, PiggyBank, BarChart3 } from "lucide-react"
 import { DashboardCharts } from "@/components/dashboard-charts"
 import { projectFinancialPlan } from "@/lib/financial-planning"
-import { OnboardingWizard } from "@/components/onboarding-wizard"
+
 import Link from "next/link"
 
 const formatBRL = (val: number) =>
@@ -86,7 +86,7 @@ export default function DashboardPage() {
     const [data, setData] = useState<DashboardData | null>(null)
     const [loading, setLoading] = useState(true)
     const [saving, setSaving] = useState(false)
-    const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState<boolean | null>(null)
+
 
     const loadData = async () => {
         setLoading(true)
@@ -127,12 +127,6 @@ export default function DashboardPage() {
     }
 
     useEffect(() => {
-        const flag = localStorage.getItem("arvo_has_completed_onboarding")
-        if (flag === "true") {
-            setHasCompletedOnboarding(true)
-        } else {
-            setHasCompletedOnboarding(false)
-        }
         if (session?.user) loadData()
     }, [session])
 
@@ -204,16 +198,7 @@ export default function DashboardPage() {
 
     // The chart data is now managed internally by DashboardCharts
 
-    if (hasCompletedOnboarding === false) {
-        return (
-            <div className="fixed inset-0 z-50 bg-dash-bg">
-                <OnboardingWizard onComplete={() => {
-                    localStorage.setItem("arvo_has_completed_onboarding", "true")
-                    setHasCompletedOnboarding(true)
-                }} />
-            </div>
-        )
-    }
+
 
     return (
         <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">

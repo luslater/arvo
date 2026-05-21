@@ -95,7 +95,7 @@ function RegisterForm() {
             <Card className="w-full max-w-md border-gray-200 shadow-sm rounded-2xl">
                 <CardHeader className="space-y-1 text-center pb-2">
                     <div className="flex justify-center mb-4">
-                        <Image src="/arvo-logo.png" alt="ARVO" width={80} height={40} />
+                        <Image src="/meu-arvo-logo.png" alt="ARVO" width={80} height={40} />
                     </div>
                     <CardTitle className="text-2xl font-semibold text-[#0A192F]">Criar Conta</CardTitle>
                     <CardDescription className="text-gray-500 text-sm">

@@ -114,7 +114,7 @@ export default function DashboardAssinaturaPage() {
                             "Acesso a todas as 4 carteiras ARVO",
                             "Planejamento financeiro personalizado",
                             "Acompanhamento em tempo real",
-                            "Vídeos exclusivos do seu assessor",
+                            "Vídeos exclusivos da equipe",
                             "Suporte prioritário",
                             "Relatórios trimestrais de performance",
                         ].map((feature) => (

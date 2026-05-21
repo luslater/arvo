@@ -7,7 +7,7 @@ export default function EducacaoPage() {
         <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
             <div className="mb-7">
                 <div className="font-serif text-[28px] text-dash-text tracking-tight mb-1">Sua jornada de aprendizado.</div>
-                <div className="text-[13px] text-dash-text-muted">Trilhas curadas para o seu perfil · 2 vídeos particulares do seu assessor disponíveis.</div>
+                <div className="text-[13px] text-dash-text-muted">Trilhas curadas para o seu perfil · 2 vídeos particulares da equipe disponíveis.</div>
             </div>
 
             <div className="grid grid-cols-3 gap-3.5 mb-6">
@@ -97,11 +97,11 @@ export default function EducacaoPage() {
                 </div>
             </div>
 
-            {/* Vídeos particulares do assessor */}
+            {/* Vídeos particulares da equipe */}
             <div className="bg-dash-surface border border-dash-border rounded-2xl p-6 shadow-sm">
                 <div className="flex items-center justify-between mb-4">
-                    <div className="text-sm font-medium text-dash-text">Vídeos do seu assessor</div>
-                    <div className="text-xs text-dash-text-light">Rafael Mendes, CFP® · Exclusivos para você</div>
+                    <div className="text-sm font-medium text-dash-text">Vídeos da Equipe ARVO</div>
+                    <div className="text-xs text-dash-text-light">Equipe ARVO (Resp: Lucas Matos, CFP®) · Exclusivos para você</div>
                 </div>
 
                 <div className="flex flex-col gap-2.5">
