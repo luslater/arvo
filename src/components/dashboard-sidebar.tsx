@@ -5,7 +5,7 @@ import Image from "next/image"
 import { usePathname } from "next/navigation"
 import {
     LayoutDashboard, Wallet, BookOpen, HelpCircle,
-    Target, CreditCard, User, BarChart3, LogOut, ChevronDown, Calculator, TrendingUp, Lock, Check, Menu, X
+    Target, CreditCard, User, BarChart3, LogOut, ChevronDown, Calculator, TrendingUp, Lock, Check, Menu, X, Compass, Map
 } from "lucide-react"
 import { useSession, signOut } from "next-auth/react"
 import { useState } from "react"
@@ -93,8 +93,10 @@ export function DashboardSidebar() {
 
                 <NavLink href="/dashboard" icon={<LayoutDashboard className="w-4 h-4" />} label="Visão Geral" exact onClick={closeMobileMenu} />
                 <NavLink href="/dashboard/carteira" icon={<Wallet className="w-4 h-4" />} label="Minha Carteira" onClick={closeMobileMenu} />
-                <NavLink href="/dashboard/planejamento" icon={<Target className="w-4 h-4" />} label="Planejamento" onClick={closeMobileMenu} />
+                <NavLink href="/dashboard/planejamento" icon={<Calculator className="w-4 h-4" />} label="Calculadora Pl." onClick={closeMobileMenu} />
+                <NavLink href="/dashboard/jornada" icon={<Map className="w-4 h-4" />} label="Jornada" onClick={closeMobileMenu} />
                 <NavLink href="/dashboard/portfolios" icon={<BarChart3 className="w-4 h-4" />} label="Portfólios ARVO" onClick={closeMobileMenu} />
+                <NavLink href="/dashboard/bussola" icon={<Compass className="w-4 h-4" />} label="Bússola de Risco" onClick={closeMobileMenu} />
                 <NavLink href="/dashboard/calculadoras" icon={<Calculator className="w-4 h-4" />} label="Calculadoras" onClick={closeMobileMenu} />
 
                 <span className="text-[10px] font-semibold text-dash-text-light uppercase tracking-widest px-3 py-2 mt-4">Aprendizado</span>

@@ -68,7 +68,7 @@ function ArvoTooltip({ active, payload }: { active?: boolean; payload?: TooltipP
 // ─── Slider Control ────────────────────────────────────────────────────────────
 function ArvoSliderControl({
     label, value, min, max, step = 1, onChange,
-    unit = "", isCurrency = false, icon
+    unit = "", isCurrency = false, icon, subtext
 }: {
     label: string
     value: number
@@ -79,6 +79,7 @@ function ArvoSliderControl({
     unit?: string
     isCurrency?: boolean
     icon: React.ReactNode
+    subtext?: React.ReactNode
 }) {
     const [inputValue, setInputValue] = useState(
         isCurrency ? formatNumber(value) : String(value)
@@ -143,6 +144,11 @@ function ArvoSliderControl({
                 <span>{isCurrency ? formatBRL(min) : `${min}${unit}`}</span>
                 <span>{isCurrency ? formatBRL(max) : `${max}${unit}`}</span>
             </div>
+            {subtext && (
+                <div className="mt-2">
+                    {subtext}
+                </div>
+            )}
         </div>
     )
 }
@@ -331,6 +337,14 @@ export default function PlanejamentoDashboardPage() {
                             onChange={setNominalReturn}
                             unit="%"
                             icon={<TrendingUp className="w-4 h-4" />}
+                            subtext={
+                                <div className="p-2.5 rounded-lg bg-emerald-50/50 border border-emerald-100 flex items-center justify-between">
+                                    <span className="text-[11px] font-semibold text-emerald-700 uppercase tracking-wide">Taxa Mensal Equivalente</span>
+                                    <span className="text-xs font-bold text-emerald-800">
+                                        {((Math.pow(1 + nominalReturn / 100, 1 / 12) - 1) * 100).toFixed(2).replace(".", ",")}% a.m.
+                                    </span>
+                                </div>
+                            }
                         />
                     </div>
 

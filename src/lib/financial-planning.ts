@@ -23,6 +23,7 @@ export interface ProjectionResult {
     monthlyData: MonthlyProjection[]
     recommendation: string
     requiredMonthlyContribution: number // Aporte ideal para fechar o gap
+    futureLifestyleCostNominal: number
 }
 
 export interface MonthlyProjection {
@@ -31,6 +32,8 @@ export interface MonthlyProjection {
     valueNominal: number
     valueReal: number
     contributions: number
+    contributionsNominal: number
+    contributionsReal: number
     interestEarnedNominal: number
     interestEarnedReal: number
 }
@@ -53,6 +56,7 @@ export function calculateFutureValue(
     monthlyRate: number,
     months: number
 ): number {
+    if (monthlyRate === 0) return presentValue + (monthlyPayment * months);
     const r = monthlyRate / 100
     const pvFuture = presentValue * Math.pow(1 + r, months)
     const pmtFuture = monthlyPayment * ((Math.pow(1 + r, months) - 1) / r)
@@ -88,7 +92,8 @@ export function generateMonthlyProjections(
     const projections: MonthlyProjection[] = []
     let currentValueNominal = plan.currentValue
     let currentValueReal = plan.currentValue
-    let totalContributions = 0
+    let totalContributionsNominal = 0
+    let totalContributionsReal = 0
 
     for (let month = 0; month <= totalMonths; month++) {
         const year = Math.floor(month / 12)
@@ -98,23 +103,24 @@ export function generateMonthlyProjections(
             year,
             valueNominal: currentValueNominal,
             valueReal: currentValueReal,
-            contributions: totalContributions,
-            interestEarnedNominal: currentValueNominal - plan.currentValue - totalContributions,
-            interestEarnedReal: currentValueReal - plan.currentValue - totalContributions
+            contributions: totalContributionsNominal, // backward compat
+            contributionsNominal: totalContributionsNominal,
+            contributionsReal: totalContributionsReal,
+            interestEarnedNominal: currentValueNominal - plan.currentValue - totalContributionsNominal,
+            interestEarnedReal: currentValueReal - plan.currentValue - totalContributionsReal
         })
 
         // Apply monthly interest
-        const interestEarnedNominal = currentValueNominal * (monthlyRateNominal / 100)
-        currentValueNominal += interestEarnedNominal
+        currentValueNominal += currentValueNominal * (monthlyRateNominal / 100)
+        currentValueReal += currentValueReal * (monthlyRateReal / 100)
 
-        const interestEarnedReal = currentValueReal * (monthlyRateReal / 100)
-        currentValueReal += interestEarnedReal
-
-        // Add monthly contribution (except on last month)
+        // Add monthly contribution
         if (month < totalMonths) {
             currentValueNominal += plan.monthlyContribution
+            totalContributionsNominal += plan.monthlyContribution
+            
             currentValueReal += plan.monthlyContribution
-            totalContributions += plan.monthlyContribution
+            totalContributionsReal += plan.monthlyContribution
         }
     }
 
@@ -153,11 +159,11 @@ export function generateRecommendation(score: number, gap: number): string {
  * Main function: Project portfolio growth and calculate alignment
  */
 export function projectFinancialPlan(plan: FinancialPlan): ProjectionResult {
+    const totalMonths = plan.investmentPeriod * 12
+
     // Nominal Calculation
     const nominalRate = plan.nominalReturn
     const monthlyRateNominal = (Math.pow(1 + nominalRate / 100, 1 / 12) - 1) * 100
-    const totalMonths = plan.investmentPeriod * 12
-
     const projectedValueNominal = calculateFutureValue(
         plan.currentValue,
         plan.monthlyContribution,
@@ -177,45 +183,48 @@ export function projectFinancialPlan(plan: FinancialPlan): ProjectionResult {
     )
 
     // Required Capital
-    // Nominal: Inflated lifestyle cost
+    const requiredCapitalReal = calculateRequiredCapital(plan.desiredLifestyleCost)
+    
     const futureLifestyleCostNominal = plan.desiredLifestyleCost * Math.pow(1 + plan.inflationRate / 100, plan.investmentPeriod)
     const requiredCapitalNominal = calculateRequiredCapital(futureLifestyleCostNominal)
 
-    // Real: Constant lifestyle cost (today's money)
-    const requiredCapitalReal = calculateRequiredCapital(plan.desiredLifestyleCost)
-
-    // We use Nominal for the main alignment score as it's the default view
-    const alignmentScore = calculateAlignmentScore(projectedValueNominal, requiredCapitalNominal)
+    // Alignment
+    const alignmentScore = calculateAlignmentScore(projectedValueReal, requiredCapitalReal)
     const gap = projectedValueNominal - requiredCapitalNominal
 
-    // Generate monthly projections (Both)
+    // Generate monthly projections
     const monthlyData = generateMonthlyProjections(plan)
 
-    // Calculate the required monthly PMT to hit the goal exactly
+    // Calculate required monthly contribution (in today's Real money)
     let requiredMonthlyContribution = plan.monthlyContribution;
-    if (requiredCapitalNominal > 0 && monthlyRateNominal > 0 && totalMonths > 0) {
-        const r = monthlyRateNominal / 100;
-        const n = totalMonths;
-        const pv = plan.currentValue;
-        const fv = requiredCapitalNominal;
+    if (requiredCapitalReal > 0 && totalMonths > 0) {
+        if (monthlyRateReal === 0) {
+            requiredMonthlyContribution = (requiredCapitalReal - plan.currentValue) / totalMonths;
+        } else {
+            const r = monthlyRateReal / 100;
+            const n = totalMonths;
+            const pv = plan.currentValue;
+            const fv = requiredCapitalReal;
 
-        const idealPmt = (fv - pv * Math.pow(1 + r, n)) * (r / (Math.pow(1 + r, n) - 1));
-        requiredMonthlyContribution = idealPmt > 0 ? idealPmt : 0;
+            const idealPmt = (fv - pv * Math.pow(1 + r, n)) * (r / (Math.pow(1 + r, n) - 1));
+            requiredMonthlyContribution = idealPmt > 0 ? idealPmt : 0;
+        }
     }
 
     // Generate recommendation
     const recommendation = generateRecommendation(alignmentScore, gap)
 
     return {
-        projectedValue: projectedValueNominal, // Default to nominal for backward compatibility
-        requiredCapital: requiredCapitalNominal, // Default to nominal
-        projectedValueReal, // New field
-        requiredCapitalReal, // New field
+        projectedValue: projectedValueNominal,
+        requiredCapital: requiredCapitalNominal,
+        projectedValueReal,
+        requiredCapitalReal,
         alignmentScore,
         gap,
         monthlyData,
         recommendation,
-        requiredMonthlyContribution
+        requiredMonthlyContribution,
+        futureLifestyleCostNominal
     }
 }
 

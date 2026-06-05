@@ -47,9 +47,12 @@ function gerarEvolucaoMensal(pv: number, pmt: number, taxaMensal: number, meses:
   });
 
   for (let m = 1; m <= meses; m++) {
-    const jurosMes = saldo * taxaMensal;
-    saldo = saldo + jurosMes + pmt;
+    // Aporte no INÍCIO do mês (rendendo juros no mesmo mês)
+    saldo += pmt;
     totalInvestido += pmt;
+    
+    const jurosMes = saldo * taxaMensal;
+    saldo += jurosMes;
     totalJuros += jurosMes;
 
     dados.push({
@@ -182,7 +185,14 @@ export function CalculadoraJurosCompostos() {
       }));
 
     // Contribuição dos juros compostos vs simples
-    const jurosSimples = valorInicial * (taxaAnual / 100) * periodoAnos;
+    const taxaAnualSimples = taxaAnual / 100;
+    const taxaMensalSimples = taxaAnualSimples / 12;
+    // Juros simples sobre valor inicial
+    const jsInicial = valorInicial * taxaAnualSimples * periodoAnos;
+    // Juros simples sobre aportes (n*(n+1)/2 para aportes no início do mês)
+    const jsAportes = aporteMensal * taxaMensalSimples * (meses * (meses + 1) / 2);
+    const jurosSimples = jsInicial + jsAportes;
+
     const fvComAportes = final_.saldo;
     const totalAportado = final_.totalInvestido;
     const jurosCompostos = fvComAportes - totalAportado;
@@ -316,10 +326,15 @@ export function CalculadoraJurosCompostos() {
                     min={0}
                     step={0.5}
                   />
-                  <p className="text-xs text-dash-text-muted mt-1">
-                    ≈ {(taxa * 100).toFixed(4)}% ao mês
-                    {mostrarReal ? " (real)" : " (nominal)"}
-                  </p>
+                  <div className="mt-2 bg-dash-surface-active/50 border border-dash-border rounded-md p-2">
+                    <p className="text-sm font-semibold text-dash-accent flex items-center justify-between">
+                      <span>Taxa mensal equivalente:</span>
+                      <span>{(taxa * 100).toFixed(2)}% a.m.</span>
+                    </p>
+                    <p className="text-[10px] text-dash-text-muted mt-0.5 leading-tight">
+                      * Calculada usando juros compostos sobre a taxa anual {mostrarReal ? "real" : "nominal"}.
+                    </p>
+                  </div>
                 </div>
 
                 <div>
