@@ -93,6 +93,7 @@ export function DashboardSidebar() {
 
                 <NavLink href="/dashboard" icon={<LayoutDashboard className="w-4 h-4" />} label="Visão Geral" exact onClick={closeMobileMenu} />
                 <NavLink href="/dashboard/carteira" icon={<Wallet className="w-4 h-4" />} label="Minha Carteira" onClick={closeMobileMenu} />
+                <NavLink href="/dashboard/carteira-2" icon={<Wallet className="w-4 h-4" />} label="Minha Carteira 2" onClick={closeMobileMenu} />
                 <NavLink href="/dashboard/planejamento" icon={<Calculator className="w-4 h-4" />} label="Calculadora Pl." onClick={closeMobileMenu} />
                 <NavLink href="/dashboard/jornada" icon={<Map className="w-4 h-4" />} label="Jornada" onClick={closeMobileMenu} />
                 <NavLink href="/dashboard/portfolios" icon={<BarChart3 className="w-4 h-4" />} label="Portfólios ARVO" onClick={closeMobileMenu} />

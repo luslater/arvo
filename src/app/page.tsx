@@ -474,7 +474,7 @@ export default function LandingPage() {
   <div class="wrap nav-inner">
     <a href="/login" class="logo">
       <span class="logo-mark">
-        <img src="/arvo-simbolo.png" alt="ARVO" style="width: 24px; height: 24px; object-fit: contain;" />
+        <img src="/arvo-simbolo-blue.png" alt="ARVO" style="width: 24px; height: 24px; object-fit: contain;" />
       </span>
       <span>ARVO</span>
     </a>
@@ -951,7 +951,7 @@ export default function LandingPage() {
       <div>
         <div class="foot-logo">
           <span style="display:inline-grid;place-items:center;width:28px;height:28px;">
-            <img src="/arvo-simbolo.png" alt="ARVO" style="width: 28px; height: 28px; object-fit: contain;" />
+            <img src="/arvo-simbolo-blue.png" alt="ARVO" style="width: 28px; height: 28px; object-fit: contain;" />
           </span>
           ARVO
         </div>

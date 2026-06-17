@@ -1,9 +1,10 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Check, Lock, ArrowRight, ArrowRightCircle, Target, Wallet, ShieldCheck, HeartPulse, Building2, Landmark } from "lucide-react"
+import { Check, Lock, ArrowRight, ArrowRightCircle, Target, Wallet, ShieldCheck, HeartPulse, Building2, Landmark, Loader2 } from "lucide-react"
 import PlanoArvoDashboard from "@/components/plano-arvo-dashboard"
+import { saveJornadaProgress, getJornadaProgress } from "./actions"
 
 // Types
 type FieldDef = {
@@ -179,6 +180,25 @@ export default function PlanejamentoJornadaPage() {
     const [current, setCurrent] = useState(0)
     const [formData, setFormData] = useState<Record<string, string>>({})
     const [showDashboard, setShowDashboard] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
+
+    useEffect(() => {
+        async function loadProgress() {
+            const res = await getJornadaProgress()
+            if (res.success && res.data) {
+                // Ignore parsing errors and load what we have
+                try {
+                    const savedData = res.data as Record<string, string>
+                    setFormData(savedData)
+                    if (res.isCompleted) {
+                        setShowDashboard(true)
+                    }
+                } catch (e) {}
+            }
+            setIsLoading(false)
+        }
+        loadProgress()
+    }, [])
 
     const handleInputChange = (name: string, value: string) => {
         setFormData(prev => ({ ...prev, [name]: value }))
@@ -191,14 +211,24 @@ export default function PlanejamentoJornadaPage() {
         return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(num)
     }
 
-    const goNext = () => {
+    const goNext = async () => {
         if (current < PLAN_DATA.length - 1) {
             setCurrent((prev) => prev + 1)
             window.scrollTo({ top: 0, behavior: 'smooth' })
+            await saveJornadaProgress(formData, false)
         } else {
             setShowDashboard(true)
             window.scrollTo({ top: 0, behavior: 'smooth' })
+            await saveJornadaProgress(formData, true)
         }
+    }
+
+    if (isLoading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-[#f6f4ef]">
+                <Loader2 className="w-8 h-8 text-[#123044] animate-spin" />
+            </div>
+        )
     }
 
     if (showDashboard) {

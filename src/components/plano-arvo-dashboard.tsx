@@ -337,8 +337,8 @@ export default function PlanoArvoDashboard({ onBack }: { onBack?: () => void }) 
               {/* Score Gauge */}
               <div className="flex flex-col items-center justify-center p-6 bg-[#fbfaf8] border border-[#f0ece1] rounded-[24px]">
                 <ScoreGauge score={userData.globalScore} size={240} />
-                <div className="mt-6 bg-[#123044] text-white rounded-full px-6 py-2 shadow-md">
-                  <span className="text-sm font-extrabold tracking-wide uppercase">Nível: {userData.level}</span>
+                <div className="mt-6 bg-[#123044] !text-white rounded-full px-6 py-2 shadow-md">
+                  <span className="text-sm font-extrabold tracking-wide uppercase !text-white">Nível: {userData.level}</span>
                 </div>
                 <p className="text-xs font-semibold text-[#667085] mt-4 text-center">Você está melhor que 62% dos usuários.</p>
               </div>
