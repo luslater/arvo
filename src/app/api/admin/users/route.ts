@@ -46,12 +46,16 @@ export async function GET(req: Request) {
                 } catch (e) {}
             }
 
-            // Calculate total AUM from carteira2Data or assets
-            let totalAum = 0;
-            if (carteira2Data && carteira2Data.assets && Array.isArray(carteira2Data.assets)) {
-                totalAum = carteira2Data.assets.reduce((sum: number, a: any) => sum + (parseFloat(a.value) || 0), 0);
-            } else if (u.assets && u.assets.length > 0) {
-                totalAum = u.assets.reduce((sum: number, a: any) => sum + (parseFloat(a.value) || 0), 0);
+            // Calculate total AUM primarily from profile.totalCarteira
+            let totalAum = u.profile?.totalCarteira || 0;
+            
+            // If totalCarteira is 0, try to calculate from assets
+            if (totalAum === 0) {
+                if (carteira2Data && carteira2Data.assets && Array.isArray(carteira2Data.assets)) {
+                    totalAum = carteira2Data.assets.reduce((sum: number, a: any) => sum + (parseFloat(a.value) || 0), 0);
+                } else if (u.assets && u.assets.length > 0) {
+                    totalAum = u.assets.reduce((sum: number, a: any) => sum + (parseFloat(a.value) || 0), 0);
+                }
             }
 
             return {
