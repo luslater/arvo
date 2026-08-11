@@ -89,9 +89,13 @@ export default function MinhaCarteiraPage() {
   const loadData = async () => {
       setLoading(true)
       try {
+          const params = new URLSearchParams(window.location.search)
+          const adminUserId = params.get("adminViewUser")
+          const qs = adminUserId ? `&adminViewUser=${adminUserId}` : ""
+
           const [profileRes, planRes] = await Promise.all([
-              fetch(`/api/user/profile?t=${Date.now()}`, { cache: "no-store", headers: { "Cache-Control": "no-cache, no-store, must-revalidate" }, credentials: "include" }),
-              fetch(`/api/user/financial-plan?t=${Date.now()}`, { cache: "no-store", headers: { "Cache-Control": "no-cache, no-store, must-revalidate" }, credentials: "include" })
+              fetch(`/api/user/profile?t=${Date.now()}${qs}`, { cache: "no-store", headers: { "Cache-Control": "no-cache, no-store, must-revalidate" }, credentials: "include" }),
+              fetch(`/api/user/financial-plan?t=${Date.now()}${qs}`, { cache: "no-store", headers: { "Cache-Control": "no-cache, no-store, must-revalidate" }, credentials: "include" })
           ])
           if (!profileRes.ok) return;
           const profile = await profileRes.json()
@@ -119,7 +123,11 @@ export default function MinhaCarteiraPage() {
   }, [session])
 
   const saveProfile = async (updates: Partial<{ totalCarteira: number; saldo: number; emergencyFund: number }>) => {
-      await fetch("/api/user/profile", {
+      const params = new URLSearchParams(window.location.search)
+      const adminUserId = params.get("adminViewUser")
+      const qs = adminUserId ? `?adminViewUser=${adminUserId}` : ""
+      
+      await fetch(`/api/user/profile${qs}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(updates)
@@ -129,7 +137,11 @@ export default function MinhaCarteiraPage() {
 
   const savePlan = async (updates: Partial<{ monthlyContribution: number; desiredLifestyleCost: number; investmentPeriod: number; expectedReturn: number }>) => {
       const current = data!
-      await fetch("/api/user/financial-plan", {
+      const params = new URLSearchParams(window.location.search)
+      const adminUserId = params.get("adminViewUser")
+      const qs = adminUserId ? `?adminViewUser=${adminUserId}` : ""
+
+      await fetch(`/api/user/financial-plan${qs}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({

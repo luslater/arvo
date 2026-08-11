@@ -14,8 +14,22 @@ export async function GET(req: Request) {
             return new NextResponse("Unauthorized", { status: 401 })
         }
 
+        const url = new URL(req.url)
+        const adminViewUser = url.searchParams.get("adminViewUser")
+
+        let targetEmail = session.user.email
+        if (adminViewUser) {
+            const currentUser = await prisma.user.findUnique({ where: { email: session.user.email } })
+            if (currentUser?.role === "ADMIN") {
+                const targetUser = await prisma.user.findUnique({ where: { id: adminViewUser } })
+                if (targetUser?.email) {
+                    targetEmail = targetUser.email
+                }
+            }
+        }
+
         const user = await prisma.user.findUnique({
-            where: { email: session.user.email },
+            where: { email: targetEmail },
             include: {
                 profile: true,
                 assets: true,
@@ -93,8 +107,22 @@ export async function PUT(req: Request) {
         
         const { portfolioType, saldo, emergencyFund, totalCarteira, carteira2Data } = validationResult.data
 
+        const url = new URL(req.url)
+        const adminViewUser = url.searchParams.get("adminViewUser")
+
+        let targetEmail = session.user.email
+        if (adminViewUser) {
+            const currentUser = await prisma.user.findUnique({ where: { email: session.user.email } })
+            if (currentUser?.role === "ADMIN") {
+                const targetUser = await prisma.user.findUnique({ where: { id: adminViewUser } })
+                if (targetUser?.email) {
+                    targetEmail = targetUser.email
+                }
+            }
+        }
+
         const user = await prisma.user.findUnique({
-            where: { email: session.user.email },
+            where: { email: targetEmail },
             include: { profile: true }
         })
 

@@ -10,8 +10,19 @@ export async function GET(req: Request) {
     }
 
     try {
+        const url = new URL(req.url)
+        const adminViewUser = url.searchParams.get("adminViewUser")
+
+        let targetUserId = session.user.id
+        if (adminViewUser) {
+            const currentUser = await prisma.user.findUnique({ where: { id: session.user.id } })
+            if (currentUser?.role === "ADMIN") {
+                targetUserId = adminViewUser
+            }
+        }
+
         const user = await prisma.user.findUnique({
-            where: { id: session.user.id },
+            where: { id: targetUserId },
             include: {
                 financialPlan: true,
                 profile: true
@@ -53,9 +64,20 @@ export async function PUT(req: Request) {
             return NextResponse.json({ error: "Invalid input" }, { status: 400 })
         }
 
+        const url = new URL(req.url)
+        const adminViewUser = url.searchParams.get("adminViewUser")
+
+        let targetUserId = session.user.id
+        if (adminViewUser) {
+            const currentUser = await prisma.user.findUnique({ where: { id: session.user.id } })
+            if (currentUser?.role === "ADMIN") {
+                targetUserId = adminViewUser
+            }
+        }
+
         const plan = await prisma.financialPlan.upsert({
             where: {
-                userId: session.user.id
+                userId: targetUserId
             },
             update: {
                 desiredLifestyleCost,
@@ -65,7 +87,7 @@ export async function PUT(req: Request) {
                 ...(currentCapital !== undefined && { currentCapital } as any)
             },
             create: {
-                userId: session.user.id,
+                userId: targetUserId,
                 desiredLifestyleCost,
                 monthlyContribution,
                 investmentPeriod,

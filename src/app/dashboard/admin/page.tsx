@@ -172,7 +172,7 @@ export default function AdminDashboard() {
                                         )}
                                         {u.status === "APPROVED" && (
                                             <a 
-                                                href={`/dashboard/admin/user/${u.id}`} 
+                                                href={`/dashboard/carteira?adminViewUser=${u.id}`} 
                                                 className="px-3 py-1.5 text-xs font-bold bg-[#123044] text-white rounded hover:bg-[#0a1b26] transition flex items-center justify-center"
                                             >
                                                 Analisar
