@@ -4,21 +4,50 @@ import { useState, useMemo } from "react"
 import { motion } from "framer-motion"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import { Slider } from "@/components/ui/slider"
-import { PORTFOLIO_LINES, ASSET_METRICS } from "@/data/portfoliosData"
+import { ASSET_METRICS, RECOMMENDED_PORTFOLIOS, TIER_ORDER, TIER_LABEL, ITYPE_ORDER, ITYPE_LABEL } from "@/data/portfoliosData"
 import { HISTORICAL_DATA } from "@/data/historicalData"
 import { getRiskInterval, interpolatePortfolio, applyMinimumThreshold } from "@/lib/bussola/interpolation"
 
 const MIN_WEIGHT_THRESHOLD = 3
 
 export default function BussolaPage() {
-    const [complexity, setComplexity] = useState("Light") // "Normal" | "Light"
-    const [investorType, setInvestorType] = useState("Geral") // "Geral" | "Qualificado"
+    const [tier, setTier] = useState(TIER_ORDER[0] || "30k")
+    const [itype, setItype] = useState(ITYPE_ORDER[0] || "Geral 360")
     const [riskPosition, setRiskPosition] = useState(50) // 0 to 100
 
-    const line = `${investorType === "Qualificado" ? "IQ" : "Geral"} ${complexity}`
-
     // Calcs
-    const basePortfolios = PORTFOLIO_LINES[line] || PORTFOLIO_LINES["Geral Light"]
+    const getMockLevel = (perfilName: string) => {
+        const p = RECOMMENDED_PORTFOLIOS.find(p => p.itype === itype && p.tier === tier && p.perfil === perfilName)
+        if (p) {
+            return {
+                name: p.perfil,
+                headline: "Carteira " + p.perfil,
+                assets: Object.entries(p.weights).map(([assetName, weight]) => {
+                    const fund = HISTORICAL_DATA.funds.find((f: any) => f.name === assetName)
+                    let assetClass = fund?.classe || "Outros"
+                    if (assetClass === "Zaga") assetClass = "Renda Fixa / Caixa"
+                    else if (assetClass === "Meio") assetClass = "Multimercado / Inflação"
+                    else if (assetClass === "Ataque") assetClass = "Ações / Internacional"
+                    
+                    return {
+                        class: assetClass,
+                        manager: fund?.gestor || "ARVO",
+                        asset: assetName,
+                        weight: weight * 100,
+                        eligibility: "Geral"
+                    }
+                })
+            }
+        }
+        return { name: perfilName, headline: "", assets: [] }
+    }
+
+    const basePortfolios = [
+        { ...getMockLevel("Abrigo"), position: 0 },
+        { ...getMockLevel("Ritmo"), position: 33 },
+        { ...getMockLevel("Visão"), position: 66 },
+        { ...getMockLevel("Oceano"), position: 100 }
+    ]
     const { from, to, factorFrom, factorTo } = getRiskInterval(riskPosition, basePortfolios)
     const isOfficial = factorFrom === 1 || factorTo === 1
     const currentName = isOfficial ? (factorFrom === 1 ? from.name : to.name) : "Transição"
@@ -199,20 +228,22 @@ export default function BussolaPage() {
                                 <label className="text-xs font-bold text-[#667085]">Tipo de investidor</label>
                                 <select 
                                     className="w-full border border-[#e4e0d7] rounded-xl px-3 py-2 bg-white text-[#123044] font-semibold outline-none text-sm"
-                                    value={investorType} onChange={e => setInvestorType(e.target.value)}
+                                    value={itype} onChange={e => setItype(e.target.value)}
                                 >
-                                    <option>Geral</option>
-                                    <option>Qualificado</option>
+                                    {ITYPE_ORDER.map(t => (
+                                        <option key={t} value={t}>{ITYPE_LABEL[t] || t}</option>
+                                    ))}
                                 </select>
                             </div>
                             <div className="space-y-2">
                                 <label className="text-xs font-bold text-[#667085]">Tamanho da carteira</label>
                                 <select 
                                     className="w-full border border-[#e4e0d7] rounded-xl px-3 py-2 bg-white text-[#123044] font-semibold outline-none text-sm"
-                                    value={complexity} onChange={e => setComplexity(e.target.value)}
+                                    value={tier} onChange={e => setTier(e.target.value)}
                                 >
-                                    <option value="Light">Light (até R$ 10k)</option>
-                                    <option value="Normal">Normal (acima de R$ 10k)</option>
+                                    {TIER_ORDER.map(t => (
+                                        <option key={t} value={t}>{TIER_LABEL[t] || t}</option>
+                                    ))}
                                 </select>
                             </div>
                             <div className="col-span-2 space-y-4 pt-2">
