@@ -4,8 +4,8 @@ import { useState, useMemo } from "react"
 import { motion } from "framer-motion"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import { Slider } from "@/components/ui/slider"
-import { PORTFOLIO_LINES, ASSET_METRICS } from "@/data/mockPortfolios"
-import { FUND_RETURNS } from "@/data/fundReturns"
+import { PORTFOLIO_LINES, ASSET_METRICS } from "@/data/portfoliosData"
+import { HISTORICAL_DATA } from "@/data/historicalData"
 import { getRiskInterval, interpolatePortfolio, applyMinimumThreshold } from "@/lib/bussola/interpolation"
 
 const MIN_WEIGHT_THRESHOLD = 3
@@ -72,25 +72,28 @@ export default function BussolaPage() {
     }
     const currentColor = getSliderColor(riskPosition)
 
-    const FUND_NAME_MAP: Record<string, string> = {
-        "Valora Guardian A (IQ)": "Valora Guardian A",
-        "Capitânia Yield 120 (IQ)": "Capitania Yield 120",
-        "90 FIF (IQ)": "Capitania Radar 90",
-        "Atlas": "Kinea Atlas",
-        "JGP Ecossistema (IQ)": "JGP Ecossistema",
-        "SPX Falcon (IQ)": "SPX Falcon",
-        "Next Long Bias (IQ)": "Truxt Long Bias",
-        "Long Bias": "Encore Long Bias",
-        "Corpus Ações FIC FIF": "Forpus Acoes FIC FIF Acoes RL",
-        "Fundo de Ações RL": "Real Investor FIC FIF Acoes RL",
-        "Fundo de Ações RL / confirmar": "Real Investor FIC FIF Acoes RL",
-        "Captação Frequente (IQ)": "Hix Capital FIC FIA",
-        "Kinea Debêntures Incentivadas": "Kinea Deb Incentivadas",
-    }
-
     const getFundReturns = (assetName: string) => {
-        const mappedName = FUND_NAME_MAP[assetName] || assetName;
-        return FUND_RETURNS[mappedName] || [];
+        const findFund = (name: string) => HISTORICAL_DATA.funds.find((f: any) => f.name === name)?.values;
+        
+        let res = findFund(assetName);
+        if (res) return res;
+        
+        const cleanName = assetName.split('(')[0].trim();
+        res = findFund(cleanName);
+        if (res) return res;
+
+        if (assetName.includes("Sparta/Kinea")) return findFund("Sparta Deb Inc FIC Incentivados") || findFund("Kinea Deb Incentivadas") || [];
+        if (cleanName.includes("Capitânia")) return findFund(cleanName.replace("Capitânia", "Capitania")) || [];
+        if (cleanName.includes("Dahlia")) return findFund("Dahlia Total Return") || [];
+        if (cleanName.includes("Truxt")) return findFund("Truxt Long Bias") || [];
+        if (cleanName.includes("Hix")) return findFund("Hix Capital HS FIA") || findFund("Hix Capital FIC FIA") || [];
+        if (cleanName.includes("Forpus")) return findFund("Forpus Acoes FIC FIF Acoes RL") || findFund("Forpus Ações FIC FIF Ações RL") || [];
+        if (cleanName.includes("Real Investor")) return findFund("Real Investor FIC FIF Acoes RL") || findFund("Real Investor FIC FIF Ações RL") || [];
+        
+        const possibleFund = HISTORICAL_DATA.funds.find((f: any) => assetName.includes(f.name) || cleanName.includes(f.name));
+        if (possibleFund) return possibleFund.values;
+
+        return [];
     }
 
     const { chartData, realAnual, realMes, pctCdi } = useMemo(() => {
@@ -98,7 +101,7 @@ export default function BussolaPage() {
         let portfolioValue = 10000
         let cdiValue = 10000
 
-        const historyLength = FUND_RETURNS["CDI"] ? FUND_RETURNS["CDI"].length : 36;
+        const historyLength = HISTORICAL_DATA.cdi ? HISTORICAL_DATA.cdi.length : 36;
         const months = Math.min(36, historyLength);
 
         const today = new Date()
@@ -130,7 +133,7 @@ export default function BussolaPage() {
                 actualMonthReturn = actualMonthReturn * (100 / totalWeightWithData);
             }
 
-            const cdiReturn = FUND_RETURNS["CDI"] && FUND_RETURNS["CDI"][i] !== undefined ? FUND_RETURNS["CDI"][i] : 0.009;
+            const cdiReturn = HISTORICAL_DATA.cdi && HISTORICAL_DATA.cdi[i] !== undefined ? HISTORICAL_DATA.cdi[i] : 0.009;
             
             portfolioValue = portfolioValue * (1 + actualMonthReturn)
             cdiValue = cdiValue * (1 + cdiReturn)

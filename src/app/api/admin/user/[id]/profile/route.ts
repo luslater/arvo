@@ -3,30 +3,27 @@ import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import { prisma } from "@/lib/prisma"
 
-export const dynamic = "force-dynamic"
-export const revalidate = 0
+async function isAdmin(session: any) {
+    if (!session?.user?.email) return false;
+    const currentUser = await prisma.user.findUnique({ where: { email: session.user.email } });
+    return currentUser?.role === "ADMIN";
+}
 
-export async function GET(req: Request) {
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
+        const { id } = await params;
         const session = await getServerSession(authOptions)
-
-        if (!session?.user?.email) {
-            return new NextResponse("Unauthorized", { status: 401 })
+        if (!(await isAdmin(session))) {
+            return new NextResponse("Forbidden - Requires Admin", { status: 403 })
         }
 
         const user = await prisma.user.findUnique({
-            where: { email: session.user.email },
-            include: {
-                profile: true,
-                assets: true,
-            }
+            where: { id },
+            include: { profile: true, assets: true }
         })
 
-        if (!user) {
-            return new NextResponse("User not found", { status: 404 })
-        }
+        if (!user) return new NextResponse("User not found", { status: 404 })
 
-        // If user doesn't have a profile yet, initialize one
         let currentProfile = user.profile
         if (!currentProfile) {
             currentProfile = await prisma.profile.create({
@@ -40,10 +37,9 @@ export async function GET(req: Request) {
             })
         }
 
-        // Map backend Asset to frontend UserAsset shape
         const formattedAssets = user.assets.map(asset => ({
             id: asset.id,
-            type: asset.ticker, // map DB ticker to UI type
+            type: asset.ticker,
             name: asset.name,
             value: asset.value,
             quantity: asset.quantity,
@@ -53,65 +49,38 @@ export async function GET(req: Request) {
             prazo: "Indeterminado"
         }))
 
-        // Hotfix: Translate legacy database "VANGUARDA" or unaccented "VISAO" to "VISÃO"
-        if (currentProfile.portfolioType === "VANGUARDA" || currentProfile.portfolioType === "VISAO") {
-            currentProfile.portfolioType = "VISÃO"
-        }
-
-        return NextResponse.json({ ...currentProfile, assets: formattedAssets })
+        return NextResponse.json({ ...currentProfile, assets: formattedAssets, userEmail: user.email, userName: user.name })
     } catch (error: any) {
-        console.error("Error fetching user profile:", error)
+        console.error("Error fetching user profile for admin:", error)
         return new NextResponse("Internal Error", { status: 500 })
     }
 }
 
-import { z } from "zod";
-
-const profileSchema = z.object({
-  portfolioType: z.enum(["ABRIGO", "RITMO", "VANGUARDA", "VISAO", "VISÃO", "OCEANO"]).optional(),
-  saldo: z.number().min(0).optional(),
-  emergencyFund: z.number().min(0).optional(),
-  totalCarteira: z.number().min(0).optional(),
-  carteira2Data: z.any().optional(), // Pode ser tipado mais estritamente depois
-});
-
-export async function PUT(req: Request) {
+export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
+        const { id } = await params;
         const session = await getServerSession(authOptions)
-
-        if (!session?.user?.email) {
-            return new NextResponse("Unauthorized", { status: 401 })
+        if (!(await isAdmin(session))) {
+            return new NextResponse("Forbidden - Requires Admin", { status: 403 })
         }
 
         const body = await req.json()
-        
-        // Validação estrita de entrada usando Zod
-        const validationResult = profileSchema.safeParse(body)
-        if (!validationResult.success) {
-            return new NextResponse("Bad Request: Payload inválido", { status: 400 })
-        }
-        
-        const { portfolioType, saldo, emergencyFund, totalCarteira, carteira2Data } = validationResult.data
+        const { portfolioType, saldo, emergencyFund, totalCarteira, carteira2Data } = body
 
         const user = await prisma.user.findUnique({
-            where: { email: session.user.email },
+            where: { id },
             include: { profile: true }
         })
 
-        if (!user) {
-            return new NextResponse("User not found", { status: 404 })
-        }
-        
+        if (!user) return new NextResponse("User not found", { status: 404 })
+
         let newJornadaData = user.profile?.jornadaData ? (typeof user.profile.jornadaData === 'string' ? JSON.parse(user.profile.jornadaData) : user.profile.jornadaData) : {};
         if (carteira2Data) {
             newJornadaData = { ...newJornadaData, carteira2Data };
         }
 
-        // Upsert Profile
         const profile = await prisma.profile.upsert({
-            where: {
-                userId: user.id
-            },
+            where: { userId: user.id },
             update: {
                 ...(portfolioType !== undefined && { portfolioType }),
                 ...(saldo !== undefined && { saldo }),
@@ -131,7 +100,7 @@ export async function PUT(req: Request) {
 
         return NextResponse.json(profile)
     } catch (error) {
-        console.error("Error updating user profile:", error)
+        console.error("Error updating user profile for admin:", error)
         return new NextResponse("Internal Error", { status: 500 })
     }
 }

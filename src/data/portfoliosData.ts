@@ -17,7 +17,7 @@ export interface MockLevel {
     assets: MockAsset[];
 }
 
-const GERAL_NORMAL: MockLevel[] = [
+export const GERAL_NORMAL: MockLevel[] = [
     {
         "name": "Abrigo",
         "position": 0,
@@ -292,103 +292,105 @@ const GERAL_NORMAL: MockLevel[] = [
                 "manager": "Real",
                 "weight": 10,
                 "eligibility": "Geral"
-            },
+            }
+        ]
+    }
+];
+
+export const GERAL_LIGHT: MockLevel[] = [
+    {
+        "name": "Abrigo Light",
+        "position": 0,
+        "headline": "Preservação antes de crescimento.",
+        "description": "Versão simplificada para proteger e organizar o patrimônio.",
+        "assets": [
             {
-                "asset": "Tesouro Selic / Fundo Simples (Todas)",
+                "asset": "Tesouro Selic / Fundo Simples",
                 "class": "Caixa / Selic",
                 "manager": "Tesouro",
                 "weight": 70,
                 "eligibility": "Geral"
             },
             {
-                "asset": "ARX Fuji (XP, BTG, Safra)",
+                "asset": "ARX Fuji",
                 "class": "Renda fixa",
                 "manager": "ARX",
                 "weight": 10,
                 "eligibility": "Geral"
             },
             {
-                "asset": "BNP Paribas Rubi (XP, BTG, Safra)",
+                "asset": "BNP Paribas Rubi",
                 "class": "Renda fixa",
                 "manager": "BNP",
                 "weight": 10,
                 "eligibility": "Geral"
             },
             {
-                "asset": "Ibiuna Credit (XP, BTG, Safra, Inter)",
+                "asset": "Ibiuna Credit",
                 "class": "Renda fixa",
                 "manager": "Ibiuna",
                 "weight": 10,
                 "eligibility": "Geral"
-            },
+            }
+        ]
+    },
+    {
+        "name": "Ritmo Light",
+        "position": 33,
+        "headline": "Mais retorno potencial, ainda com controle.",
+        "description": "Equilíbrio com estrutura mais enxuta.",
+        "assets": [
             {
-                "asset": "ARX Hedge Infra (XP, BTG, Safra, Inter)",
-                "class": "Infra / IPCA+",
-                "manager": "ARX",
-                "weight": 0,
-                "eligibility": "Geral"
-            },
-            {
-                "asset": "Tesouro Selic / Fundo Simples (Todas)",
+                "asset": "Tesouro Selic / Fundo Simples",
                 "class": "Caixa / Selic",
                 "manager": "Tesouro",
                 "weight": 50,
                 "eligibility": "Geral"
             },
             {
-                "asset": "ARX Fuji (XP, BTG, Safra)",
+                "asset": "ARX Fuji",
                 "class": "Renda fixa",
                 "manager": "ARX",
                 "weight": 10,
                 "eligibility": "Geral"
             },
             {
-                "asset": "BNP Paribas Rubi (XP, BTG, Safra)",
+                "asset": "BNP Paribas Rubi",
                 "class": "Renda fixa",
                 "manager": "BNP",
                 "weight": 10,
                 "eligibility": "Geral"
             },
             {
-                "asset": "Ibiuna Credit (XP, BTG, Safra, Inter)",
+                "asset": "Ibiuna Credit",
                 "class": "Renda fixa",
                 "manager": "Ibiuna",
                 "weight": 10,
                 "eligibility": "Geral"
             },
             {
-                "asset": "ARX Hedge Infra (XP, BTG, Safra, Inter)",
-                "class": "Infra / IPCA+",
-                "manager": "ARX",
-                "weight": 0,
-                "eligibility": "Geral"
-            },
-            {
-                "asset": "Kinea Atlas (Itaú/Íon, XP, BTG, Inter, Santander, Warren)",
+                "asset": "Atlas",
                 "class": "Multimercado",
-                "manager": "Kinea",
+                "manager": "Atlas",
                 "weight": 5,
                 "eligibility": "Geral"
             },
             {
-                "asset": "Dahlia Total Return (XP, BTG, Genial, Inter)",
+                "asset": "Dahlia Total Return",
                 "class": "Long bias",
                 "manager": "Dahlia",
                 "weight": 5,
                 "eligibility": "Geral"
             },
             {
-                "asset": "Hix Capital HS FIA (XP, BTG)",
+                "asset": "Hix Capital HS FIA",
                 "class": "Ações Brasil",
                 "manager": "Hix",
                 "weight": 10,
                 "eligibility": "Geral"
             }
         ]
-    }
-];
-
-const GERAL_LIGHT: MockLevel[] = [
+    },
     {
         "name": "Visão Light",
         "position": 66,
@@ -396,80 +398,66 @@ const GERAL_LIGHT: MockLevel[] = [
         "description": "Exposição ao crescimento através de ativos focados.",
         "assets": [
             {
-                "asset": "Tesouro Selic / Fundo Simples (Todas)",
+                "asset": "Tesouro Selic / Fundo Simples",
                 "class": "Caixa / Selic",
                 "manager": "Tesouro",
                 "weight": 25,
                 "eligibility": "Geral"
             },
             {
-                "asset": "ARX Fuji (XP, BTG, Safra)",
+                "asset": "ARX Fuji",
                 "class": "Renda fixa",
                 "manager": "ARX",
                 "weight": 10,
                 "eligibility": "Geral"
             },
             {
-                "asset": "Sparta/Kinea Deb Incentivadas (XP, BTG, Itaú/Íon, Safra)",
+                "asset": "Kinea Debêntures Incentivadas",
                 "class": "Renda fixa",
-                "manager": "Sparta/Kinea",
+                "manager": "Kinea",
                 "weight": 10,
                 "eligibility": "Geral"
             },
             {
-                "asset": "BNP Paribas Rubi (XP, BTG, Safra)",
+                "asset": "BNP Paribas Rubi",
                 "class": "Renda fixa",
                 "manager": "BNP",
                 "weight": 10,
                 "eligibility": "Geral"
             },
             {
-                "asset": "Ibiuna Credit (XP, BTG, Safra, Inter)",
+                "asset": "Ibiuna Credit",
                 "class": "Renda fixa",
                 "manager": "Ibiuna",
                 "weight": 10,
                 "eligibility": "Geral"
             },
             {
-                "asset": "ARX Hedge Infra (XP, BTG, Safra, Inter)",
-                "class": "Infra / IPCA+",
-                "manager": "ARX",
-                "weight": 0,
-                "eligibility": "Geral"
-            },
-            {
-                "asset": "Kinea Atlas (Itaú/Íon, XP, BTG, Inter, Santander, Warren)",
+                "asset": "Atlas",
                 "class": "Multimercado",
-                "manager": "Kinea",
+                "manager": "Atlas",
                 "weight": 8,
                 "eligibility": "Geral"
             },
             {
-                "asset": "Dahlia Total Return (XP, BTG, Genial, Inter)",
+                "asset": "Dahlia Total Return",
                 "class": "Long bias",
                 "manager": "Dahlia",
                 "weight": 7,
                 "eligibility": "Geral"
             },
             {
-                "asset": "Hix Capital HS FIA (XP, BTG)",
+                "asset": "Hix Capital HS FIA",
                 "class": "Ações Brasil",
                 "manager": "Hix",
                 "weight": 10,
                 "eligibility": "Geral"
             },
             {
-                "asset": "Forpus Ações FIC FIF Ações RL (XP, BTG, Genial)",
+                "asset": "Fundo de Ações RL / confirmar nome",
                 "class": "Ações Brasil",
-                "manager": "Forpus",
+                "manager": "Fundo",
                 "weight": 10,
-                "eligibility": "Geral"
-            },
-            {
-                "asset": "Real Investor FIC FIF Ações RL (XP, BTG, Icatu — tem versões para investidor geral e qualificado)",
-                "class": "Ações Brasil",
-                "manager": "Real",
-                "weight": 0,
                 "eligibility": "Geral"
             }
         ]
@@ -481,87 +469,73 @@ const GERAL_LIGHT: MockLevel[] = [
         "description": "Versão concentrada para máximo crescimento dentro da metodologia.",
         "assets": [
             {
-                "asset": "Tesouro Selic / Fundo Simples (Todas)",
+                "asset": "Tesouro Selic / Fundo Simples",
                 "class": "Caixa / Selic",
                 "manager": "Tesouro",
                 "weight": 15,
                 "eligibility": "Geral"
             },
             {
-                "asset": "ARX Fuji (XP, BTG, Safra)",
+                "asset": "ARX Fuji",
                 "class": "Renda fixa",
                 "manager": "ARX",
                 "weight": 10,
                 "eligibility": "Geral"
             },
             {
-                "asset": "Sparta/Kinea Deb Incentivadas (XP, BTG, Itaú/Íon, Safra)",
+                "asset": "Kinea Debêntures Incentivadas",
                 "class": "Renda fixa",
-                "manager": "Sparta/Kinea",
+                "manager": "Kinea",
                 "weight": 10,
                 "eligibility": "Geral"
             },
             {
-                "asset": "BNP Paribas Rubi (XP, BTG, Safra)",
+                "asset": "BNP Paribas Rubi",
                 "class": "Renda fixa",
                 "manager": "BNP",
                 "weight": 10,
                 "eligibility": "Geral"
             },
             {
-                "asset": "Ibiuna Credit (XP, BTG, Safra, Inter)",
+                "asset": "Ibiuna Credit",
                 "class": "Renda fixa",
                 "manager": "Ibiuna",
                 "weight": 10,
                 "eligibility": "Geral"
             },
             {
-                "asset": "ARX Hedge Infra (XP, BTG, Safra, Inter)",
-                "class": "Infra / IPCA+",
-                "manager": "ARX",
-                "weight": 0,
-                "eligibility": "Geral"
-            },
-            {
-                "asset": "Kinea Atlas (Itaú/Íon, XP, BTG, Inter, Santander, Warren)",
+                "asset": "Atlas",
                 "class": "Multimercado",
-                "manager": "Kinea",
+                "manager": "Atlas",
                 "weight": 10,
                 "eligibility": "Geral"
             },
             {
-                "asset": "Dahlia Total Return (XP, BTG, Genial, Inter)",
+                "asset": "Dahlia Total Return",
                 "class": "Long bias",
                 "manager": "Dahlia",
                 "weight": 10,
                 "eligibility": "Geral"
             },
             {
-                "asset": "Hix Capital HS FIA (XP, BTG)",
+                "asset": "Hix Capital HS FIA",
                 "class": "Ações Brasil",
                 "manager": "Hix",
                 "weight": 15,
                 "eligibility": "Geral"
             },
             {
-                "asset": "Forpus Ações FIC FIF Ações RL (XP, BTG, Genial)",
+                "asset": "Fundo de Ações RL / confirmar nome",
                 "class": "Ações Brasil",
-                "manager": "Forpus",
+                "manager": "Fundo",
                 "weight": 10,
-                "eligibility": "Geral"
-            },
-            {
-                "asset": "Real Investor FIC FIF Ações RL (XP, BTG, Icatu — tem versões para investidor geral e qualificado)",
-                "class": "Ações Brasil",
-                "manager": "Real",
-                "weight": 0,
                 "eligibility": "Geral"
             }
         ]
     }
 ];
 
-const IQ_NORMAL: MockLevel[] = [
+export const IQ_NORMAL: MockLevel[] = [
     {
         "name": "Abrigo IQ",
         "position": 0,
@@ -897,7 +871,7 @@ const IQ_NORMAL: MockLevel[] = [
     }
 ];
 
-const IQ_LIGHT: MockLevel[] = [
+export const IQ_LIGHT: MockLevel[] = [
     {
         "name": "Abrigo Light IQ",
         "position": 0,
@@ -905,44 +879,30 @@ const IQ_LIGHT: MockLevel[] = [
         "description": "A base da proteção com os melhores fundos do mercado.",
         "assets": [
             {
-                "asset": "Tesouro Selic / Fundo Simples (Todas)",
+                "asset": "Tesouro Selic / Fundo Simples",
                 "class": "Caixa / Selic",
                 "manager": "Tesouro",
                 "weight": 70,
                 "eligibility": "IQ"
             },
             {
-                "asset": "ARX Fuji (XP, BTG, Safra)",
+                "asset": "ARX Fuji",
                 "class": "Renda fixa",
                 "manager": "ARX",
                 "weight": 10,
                 "eligibility": "IQ"
             },
             {
-                "asset": "Valora Guardian A (XP, BTG, Órama) (IQ)",
+                "asset": "Valora Guardian A",
                 "class": "Renda fixa",
                 "manager": "Valora",
                 "weight": 10,
                 "eligibility": "IQ"
             },
             {
-                "asset": "Capitânia Yield 120 (XP, BTG, Safra) (IQ)",
-                "class": "Renda fixa",
-                "manager": "Capitânia",
-                "weight": 0,
-                "eligibility": "IQ"
-            },
-            {
-                "asset": "ARX Hedge Infra (XP, BTG, Safra, Inter)",
+                "asset": "ARX Hedge Infra",
                 "class": "Infra / IPCA+",
                 "manager": "ARX",
-                "weight": 0,
-                "eligibility": "IQ"
-            },
-            {
-                "asset": "JGP Ecossistema (XP, BTG, Safra, Genial) (IQ)",
-                "class": "Multimercado",
-                "manager": "JGP",
                 "weight": 10,
                 "eligibility": "IQ"
             }
@@ -955,77 +915,49 @@ const IQ_LIGHT: MockLevel[] = [
         "description": "Exposição essencial ao risco mantendo a qualidade IQ.",
         "assets": [
             {
-                "asset": "Tesouro Selic / Fundo Simples (Todas)",
+                "asset": "Tesouro Selic / Fundo Simples",
                 "class": "Caixa / Selic",
                 "manager": "Tesouro",
                 "weight": 50,
                 "eligibility": "IQ"
             },
             {
-                "asset": "ARX Fuji (XP, BTG, Safra)",
+                "asset": "ARX Fuji",
                 "class": "Renda fixa",
                 "manager": "ARX",
                 "weight": 10,
                 "eligibility": "IQ"
             },
             {
-                "asset": "Valora Guardian A (XP, BTG, Órama) (IQ)",
+                "asset": "Valora Guardian A",
                 "class": "Renda fixa",
                 "manager": "Valora",
                 "weight": 10,
                 "eligibility": "IQ"
             },
             {
-                "asset": "Capitânia Yield 120 (XP, BTG, Safra) (IQ)",
-                "class": "Renda fixa",
-                "manager": "Capitânia",
-                "weight": 0,
-                "eligibility": "IQ"
-            },
-            {
-                "asset": "ARX Hedge Infra (XP, BTG, Safra, Inter)",
+                "asset": "ARX Hedge Infra",
                 "class": "Infra / IPCA+",
                 "manager": "ARX",
-                "weight": 0,
-                "eligibility": "IQ"
-            },
-            {
-                "asset": "JGP Ecossistema (XP, BTG, Safra, Genial) (IQ)",
-                "class": "Multimercado",
-                "manager": "JGP",
                 "weight": 10,
                 "eligibility": "IQ"
             },
             {
-                "asset": "Kinea Atlas (Itaú/Íon, XP, BTG, Inter, Santander, Warren)",
+                "asset": "Atlas",
                 "class": "Multimercado",
-                "manager": "Kinea",
+                "manager": "Atlas",
                 "weight": 5,
                 "eligibility": "IQ"
             },
             {
-                "asset": "Dahlia Total Return (XP, BTG, Genial, Inter)",
+                "asset": "Dahlia Total Return",
                 "class": "Long bias",
                 "manager": "Dahlia",
                 "weight": 5,
                 "eligibility": "IQ"
             },
             {
-                "asset": "Truxt Long Bias (XP, BTG, Vitreo, Guide, Safra) (IQ)",
-                "class": "Long bias",
-                "manager": "Truxt",
-                "weight": 0,
-                "eligibility": "IQ"
-            },
-            {
-                "asset": "SPX Falcon (XP, BTG, Safra, Itaú, Inter) (IQ)",
-                "class": "Multimercado",
-                "manager": "SPX",
-                "weight": 0,
-                "eligibility": "IQ"
-            },
-            {
-                "asset": "Hix Capital HS FIA (XP, BTG)",
+                "asset": "Hix Capital HS FIA",
                 "class": "Ações Brasil",
                 "manager": "Hix",
                 "weight": 10,
@@ -1040,101 +972,66 @@ const IQ_LIGHT: MockLevel[] = [
         "description": "Crescimento patrimonial concentrado nos fundos líderes.",
         "assets": [
             {
-                "asset": "Tesouro Selic / Fundo Simples (Todas)",
+                "asset": "Tesouro Selic / Fundo Simples",
                 "class": "Caixa / Selic",
                 "manager": "Tesouro",
                 "weight": 25,
                 "eligibility": "IQ"
             },
             {
-                "asset": "ARX Fuji (XP, BTG, Safra)",
+                "asset": "ARX Fuji",
                 "class": "Renda fixa",
                 "manager": "ARX",
                 "weight": 10,
                 "eligibility": "IQ"
             },
             {
-                "asset": "Valora Guardian A (XP, BTG, Órama) (IQ)",
+                "asset": "Valora Guardian A",
                 "class": "Renda fixa",
                 "manager": "Valora",
                 "weight": 10,
                 "eligibility": "IQ"
             },
             {
-                "asset": "Augme 180 FIF (XP, BTG, Genial, Warren, Órama, Inter, Safra) (IQ)",
-                "class": "Renda fixa",
-                "manager": "Augme",
-                "weight": 0,
-                "eligibility": "IQ"
-            },
-            {
-                "asset": "Capitânia Yield 120 (XP, BTG, Safra) (IQ)",
-                "class": "Renda fixa",
-                "manager": "Capitânia",
-                "weight": 0,
-                "eligibility": "IQ"
-            },
-            {
-                "asset": "ARX Hedge Infra (XP, BTG, Safra, Inter)",
+                "asset": "ARX Hedge Infra",
                 "class": "Infra / IPCA+",
                 "manager": "ARX",
-                "weight": 0,
-                "eligibility": "IQ"
-            },
-            {
-                "asset": "JGP Ecossistema (XP, BTG, Safra, Genial) (IQ)",
-                "class": "Multimercado",
-                "manager": "JGP",
                 "weight": 10,
                 "eligibility": "IQ"
             },
             {
-                "asset": "Kinea Atlas (Itaú/Íon, XP, BTG, Inter, Santander, Warren)",
+                "asset": "Kinea Oportunidade FIF",
                 "class": "Multimercado",
                 "manager": "Kinea",
                 "weight": 10,
                 "eligibility": "IQ"
             },
             {
-                "asset": "Dahlia Total Return (XP, BTG, Genial, Inter)",
+                "asset": "Atlas",
+                "class": "Multimercado",
+                "manager": "Atlas",
+                "weight": 10,
+                "eligibility": "IQ"
+            },
+            {
+                "asset": "Dahlia Total Return",
                 "class": "Long bias",
                 "manager": "Dahlia",
                 "weight": 10,
                 "eligibility": "IQ"
             },
             {
-                "asset": "Truxt Long Bias (XP, BTG, Vitreo, Guide, Safra) (IQ)",
+                "asset": "Long Bias",
                 "class": "Long bias",
-                "manager": "Truxt",
+                "manager": "Long",
                 "weight": 5,
                 "eligibility": "IQ"
             },
             {
-                "asset": "Dynamo Cougar (XP, BTG, Vitreo, Guide — captação frequentemente encerrada) (IQ)",
-                "class": "Ações Brasil",
-                "manager": "Dynamo",
-                "weight": 10,
-                "eligibility": "IQ"
-            },
-            {
-                "asset": "Hix Capital HS FIA (XP, BTG)",
+                "asset": "Hix Capital HS FIA",
                 "class": "Ações Brasil",
                 "manager": "Hix",
                 "weight": 10,
-                "eligibility": "IQ"
-            },
-            {
-                "asset": "Real Investor FIC FIF Ações RL (XP, BTG, Icatu — tem versões para investidor geral e qualificado)",
-                "class": "Ações Brasil",
-                "manager": "Real",
-                "weight": 0,
-                "eligibility": "IQ"
-            },
-            {
-                "asset": "SPX Falcon (XP, BTG, Safra, Itaú, Inter) (IQ)",
-                "class": "Multimercado",
-                "manager": "SPX",
-                "weight": 0,
                 "eligibility": "IQ"
             }
         ]
@@ -1146,114 +1043,72 @@ const IQ_LIGHT: MockLevel[] = [
         "description": "A essência da carteira agressiva para Investidores Qualificados.",
         "assets": [
             {
-                "asset": "Tesouro Selic / Fundo Simples (Todas)",
+                "asset": "Tesouro Selic / Fundo Simples",
                 "class": "Caixa / Selic",
                 "manager": "Tesouro",
                 "weight": 12,
                 "eligibility": "IQ"
             },
             {
-                "asset": "ARX Fuji (XP, BTG, Safra)",
+                "asset": "ARX Fuji",
                 "class": "Renda fixa",
                 "manager": "ARX",
                 "weight": 10,
                 "eligibility": "IQ"
             },
             {
-                "asset": "Valora Guardian A (XP, BTG, Órama) (IQ)",
+                "asset": "Valora Guardian A",
                 "class": "Renda fixa",
                 "manager": "Valora",
                 "weight": 10,
                 "eligibility": "IQ"
             },
             {
-                "asset": "Augme 180 FIF (XP, BTG, Genial, Warren, Órama, Inter, Safra) (IQ)",
-                "class": "Renda fixa",
-                "manager": "Augme",
-                "weight": 0,
-                "eligibility": "IQ"
-            },
-            {
-                "asset": "Capitânia Yield 120 (XP, BTG, Safra) (IQ)",
-                "class": "Renda fixa",
-                "manager": "Capitânia",
-                "weight": 0,
-                "eligibility": "IQ"
-            },
-            {
-                "asset": "ARX Hedge Infra (XP, BTG, Safra, Inter)",
+                "asset": "ARX Hedge Infra",
                 "class": "Infra / IPCA+",
                 "manager": "ARX",
-                "weight": 0,
-                "eligibility": "IQ"
-            },
-            {
-                "asset": "JGP Ecossistema (XP, BTG, Safra, Genial) (IQ)",
-                "class": "Multimercado",
-                "manager": "JGP",
                 "weight": 10,
                 "eligibility": "IQ"
             },
             {
-                "asset": "Kinea Oportunidade FIF (Bradesco, Santander, Itaú/Íon, XP) (IQ)",
+                "asset": "Kinea Oportunidade FIF",
                 "class": "Multimercado",
                 "manager": "Kinea",
                 "weight": 10,
                 "eligibility": "IQ"
             },
             {
-                "asset": "Kinea Atlas (Itaú/Íon, XP, BTG, Inter, Santander, Warren)",
+                "asset": "Atlas",
                 "class": "Multimercado",
-                "manager": "Kinea",
+                "manager": "Atlas",
                 "weight": 10,
                 "eligibility": "IQ"
             },
             {
-                "asset": "Dahlia Total Return (XP, BTG, Genial, Inter)",
+                "asset": "Dahlia Total Return",
                 "class": "Long bias",
                 "manager": "Dahlia",
                 "weight": 10,
                 "eligibility": "IQ"
             },
             {
-                "asset": "Truxt Long Bias (XP, BTG, Vitreo, Guide, Safra) (IQ)",
+                "asset": "Long Bias",
                 "class": "Long bias",
-                "manager": "Truxt",
+                "manager": "Long",
                 "weight": 8,
                 "eligibility": "IQ"
             },
             {
-                "asset": "Dynamo Cougar (XP, BTG, Vitreo, Guide — captação frequentemente encerrada) (IQ)",
-                "class": "Ações Brasil",
-                "manager": "Dynamo",
-                "weight": 0,
-                "eligibility": "IQ"
-            },
-            {
-                "asset": "Hix Capital HS FIA (XP, BTG)",
+                "asset": "Hix Capital HS FIA",
                 "class": "Ações Brasil",
                 "manager": "Hix",
                 "weight": 10,
                 "eligibility": "IQ"
             },
             {
-                "asset": "Real Investor FIC FIF Ações RL (XP, BTG, Icatu — tem versões para investidor geral e qualificado)",
+                "asset": "Fundo de Ações RL / confirmar nome",
                 "class": "Ações Brasil",
-                "manager": "Real",
-                "weight": 0,
-                "eligibility": "IQ"
-            },
-            {
-                "asset": "SPX Falcon (XP, BTG, Safra, Itaú, Inter) (IQ)",
-                "class": "Multimercado",
-                "manager": "SPX",
-                "weight": 0,
-                "eligibility": "IQ"
-            },
-            {
-                "asset": "Forpus Ações FIC FIF Ações RL (XP, BTG, Genial)",
-                "class": "Ações Brasil",
-                "manager": "Forpus",
+                "manager": "Fundo",
                 "weight": 10,
                 "eligibility": "IQ"
             }
@@ -1514,3 +1369,23 @@ export const ASSET_METRICS: Record<string, { expectedReturn: number, volatility:
         "volatility": 5
     }
 };
+
+
+// --- CARTEIRAS RECOMENDADAS (Simulador) ---
+export const TIER_ORDER = ["30k","100k"];
+export const TIER_LABEL: Record<string, string> = {"30k":"R$30 mil","100k":"R$100 mil"};
+export const TIER_DEFAULT_VALUE: Record<string, number> = {"30k":30000,"100k":100000};
+export const ITYPE_ORDER = ["Geral MH","Geral 360","IQ 360","IQ MH"];
+export const ITYPE_LABEL: Record<string, string> = Object.fromEntries(["Geral MH","Geral 360","IQ 360","IQ MH"].map(x => [x, x]));
+export const PERFIL_ORDER = ["Reserva","90% Conservador","Abrigo","Abrigo-Ritmo","Ritmo","Ritmo-Visão","Visão","Visão-Oceano","Oceano"];
+
+export interface RecommendedPortfolio {
+  id: string;
+  tier: string;
+  tier_label: string;
+  itype: string;
+  perfil: string;
+  weights: Record<string, number>;
+}
+
+export const RECOMMENDED_PORTFOLIOS: RecommendedPortfolio[] = [{"id":"30k | Geral MH - Reserva","tier":"30k","tier_label":"R$30 mil","itype":"Geral MH","perfil":"Reserva","weights":{"Tesouro Selic / Fundo Simples":1}},{"id":"30k | Geral MH - 90% Conservador","tier":"30k","tier_label":"R$30 mil","itype":"Geral MH","perfil":"90% Conservador","weights":{"Tesouro Selic / Fundo Simples":0.9,"ARX Fuji":0.1}},{"id":"30k | Geral MH - Abrigo","tier":"30k","tier_label":"R$30 mil","itype":"Geral MH","perfil":"Abrigo","weights":{"Tesouro Selic / Fundo Simples":0.8,"ARX Fuji":0.05,"JGP Corporate":0.05,"BNP Paribas Rubi":0.05,"Ibiuna Credit":0.05}},{"id":"30k | Geral MH - Abrigo-Ritmo","tier":"30k","tier_label":"R$30 mil","itype":"Geral MH","perfil":"Abrigo-Ritmo","weights":{"Tesouro Selic / Fundo Simples":0.7,"ARX Fuji":0.1,"Sparta Deb Inc FIC Incentivados":0.1,"BNP Paribas Rubi":0.1}},{"id":"30k | Geral 360 - Ritmo","tier":"30k","tier_label":"R$30 mil","itype":"Geral 360","perfil":"Ritmo","weights":{"Tesouro Selic / Fundo Simples":0.6,"ARX Fuji":0.04,"Sparta Deb Inc FIC Incentivados":0.09,"BNP Paribas Rubi":0.03,"Augme 30 CIC":0.03,"Trend Pre Fixado":0.03,"Kapitalo Kappa":0.05,"Kinea Atlas":0.03,"IVVB11":0.03,"Wellington Ventura Advisory":0.04,"DIVO11":0.03}},{"id":"30k | Geral MH - Ritmo-Visão","tier":"30k","tier_label":"R$30 mil","itype":"Geral MH","perfil":"Ritmo-Visão","weights":{"Tesouro Selic / Fundo Simples":0.5,"ARX Fuji":0.05,"BNP Paribas Rubi":0.06,"ARX Hedge Infra":0.1,"Kinea Atlas":0.1,"Hix Capital HS FIA":0.1,"IVVB11":0.1}},{"id":"30k | Geral 360 - Visão","tier":"30k","tier_label":"R$30 mil","itype":"Geral 360","perfil":"Visão","weights":{"Tesouro Selic / Fundo Simples":0.4,"ARX Fuji":0.07,"Sparta Deb Inc FIC Incentivados":0.08,"BNP Paribas Rubi":0.03,"Kinea Deb Incentivadas":0.03,"Trend Pre Fixado":0.03,"Kapitalo Kappa":0.1,"Kinea Atlas":0.04,"Hix Capital HS FIA":0.05,"IVVB11":0.05,"NASD11":0.04,"Wellington Ventura Advisory":0.05,"DIVO11":0.03}},{"id":"30k | Geral 360 - Visão-Oceano","tier":"30k","tier_label":"R$30 mil","itype":"Geral 360","perfil":"Visão-Oceano","weights":{"Tesouro Selic / Fundo Simples":0.3,"ARX Fuji":0.04,"Sparta Deb Inc FIC Incentivados":0.1,"Kapitalo Kappa":0.1,"Hix Capital HS FIA":0.1,"IVVB11":0.1,"NASD11":0.06,"Wellington Ventura Advisory":0.1,"DIVO11":0.1}},{"id":"30k | Geral 360 - Oceano","tier":"30k","tier_label":"R$30 mil","itype":"Geral 360","perfil":"Oceano","weights":{"Tesouro Selic / Fundo Simples":0.2,"ARX Fuji":0.04,"Sparta Deb Inc FIC Incentivados":0.04,"BNP Paribas Rubi":0.04,"Kinea Deb Incentivadas":0.03,"Trend Pre Fixado":0.03,"Kapitalo Kappa":0.09,"Kinea Atlas":0.03,"Dahlia Total Return":0.03,"Hix Capital HS FIA":0.1,"IVVB11":0.1,"NASD11":0.08,"Wellington Ventura Advisory":0.1,"DIVO11":0.09}},{"id":"100k | Geral 360 - Reserva","tier":"100k","tier_label":"R$100 mil","itype":"Geral 360","perfil":"Reserva","weights":{"Tesouro Selic / Fundo Simples":1}},{"id":"100k | Geral MH - 90% Conservador","tier":"100k","tier_label":"R$100 mil","itype":"Geral MH","perfil":"90% Conservador","weights":{"Tesouro Selic / Fundo Simples":0.9,"ARX Fuji":0.1}},{"id":"100k | Geral 360 - Abrigo","tier":"100k","tier_label":"R$100 mil","itype":"Geral 360","perfil":"Abrigo","weights":{"Tesouro Selic / Fundo Simples":0.8,"ARX Fuji":0.03,"JGP Corporate":0.03,"BNP Paribas Rubi":0.08,"Augme 30 CIC":0.03,"Ibiuna Credit":0.03}},{"id":"100k | Geral 360 - Abrigo-Ritmo","tier":"100k","tier_label":"R$100 mil","itype":"Geral 360","perfil":"Abrigo-Ritmo","weights":{"Tesouro Selic / Fundo Simples":0.7,"ARX Fuji":0.05,"JGP Corporate":0.05,"BNP Paribas Rubi":0.06,"Augme 30 CIC":0.04,"Ibiuna Credit":0.05,"ARX Hedge Infra":0.05}},{"id":"100k | Geral 360 - Ritmo","tier":"100k","tier_label":"R$100 mil","itype":"Geral 360","perfil":"Ritmo","weights":{"Tesouro Selic / Fundo Simples":0.6,"ARX Fuji":0.04,"Sparta Deb Inc FIC Incentivados":0.04,"BNP Paribas Rubi":0.04,"Ibiuna Credit":0.03,"ARX Hedge Infra":0.07,"Kapitalo Kappa":0.03,"Kinea Atlas":0.04,"IVVB11":0.05,"Wellington Ventura Advisory":0.02,"DIVO11":0.02,"Hix Capital HS FIA":0.02}},{"id":"100k | Geral 360 - Ritmo-Visão","tier":"100k","tier_label":"R$100 mil","itype":"Geral 360","perfil":"Ritmo-Visão","weights":{"Tesouro Selic / Fundo Simples":0.5,"ARX Fuji":0.05,"Sparta Deb Inc FIC Incentivados":0.04,"BNP Paribas Rubi":0.04,"Ibiuna Credit":0.04,"ARX Hedge Infra":0.07,"Kapitalo Kappa":0.03,"Kinea Atlas":0.03,"IVVB11":0.06,"Wellington Ventura Advisory":0.05,"DIVO11":0.04,"Hix Capital HS FIA":0.05}},{"id":"100k | Geral 360 - Visão","tier":"100k","tier_label":"R$100 mil","itype":"Geral 360","perfil":"Visão","weights":{"Tesouro Selic / Fundo Simples":0.4,"ARX Fuji":0.05,"Sparta Deb Inc FIC Incentivados":0.05,"BNP Paribas Rubi":0.05,"Ibiuna Credit":0.04,"ARX Hedge Infra":0.08,"Kapitalo Kappa":0.04,"Kinea Atlas":0.04,"Hix Capital HS FIA":0.05,"IVVB11":0.04,"NASD11":0.04,"Wellington Ventura Advisory":0.07,"DIVO11":0.05}},{"id":"100k | Geral 360 - Visão-Oceano","tier":"100k","tier_label":"R$100 mil","itype":"Geral 360","perfil":"Visão-Oceano","weights":{"Tesouro Selic / Fundo Simples":0.3,"ARX Fuji":0.05,"Sparta Deb Inc FIC Incentivados":0.05,"BNP Paribas Rubi":0.04,"Ibiuna Credit":0.04,"ARX Hedge Infra":0.08,"Kapitalo Kappa":0.02,"Kinea Atlas":0.04,"Hix Capital HS FIA":0.08,"IVVB11":0.07,"NASD11":0.07,"Wellington Ventura Advisory":0.08,"DIVO11":0.08}},{"id":"100k | Geral 360 - Oceano","tier":"100k","tier_label":"R$100 mil","itype":"Geral 360","perfil":"Oceano","weights":{"Tesouro Selic / Fundo Simples":0.2,"ARX Fuji":0.04,"Sparta Deb Inc FIC Incentivados":0.04,"BNP Paribas Rubi":0.05,"Ibiuna Credit":0.04,"ARX Hedge Infra":0.06,"Kapitalo Kappa":0.04,"Kinea Atlas":0.04,"Hix Capital HS FIA":0.1,"IVVB11":0.1,"NASD11":0.09,"Wellington Ventura Advisory":0.1,"DIVO11":0.1}},{"id":"100k | IQ 360 - Reserva","tier":"100k","tier_label":"R$100 mil","itype":"IQ 360","perfil":"Reserva","weights":{"Tesouro Selic / Fundo Simples":1}},{"id":"100k | IQ 360 - 90% Conservador","tier":"100k","tier_label":"R$100 mil","itype":"IQ 360","perfil":"90% Conservador","weights":{"Tesouro Selic / Fundo Simples":0.9,"VALORA GUARDIAN ADVISORY FIDC – RL":0.1}},{"id":"100k | IQ 360 - Abrigo","tier":"100k","tier_label":"R$100 mil","itype":"IQ 360","perfil":"Abrigo","weights":{"Tesouro Selic / Fundo Simples":0.8,"ARX Fuji":0.03,"VALORA GUARDIAN ADVISORY FIDC – RL":0.08,"Kinea Oportunidade FIM":0.03,"Augme 30 CIC":0.03,"Ibiuna Credit":0.03}},{"id":"100k | IQ 360 - Abrigo-Ritmo","tier":"100k","tier_label":"R$100 mil","itype":"IQ 360","perfil":"Abrigo-Ritmo","weights":{"Tesouro Selic / Fundo Simples":0.7,"ARX Fuji":0.1,"VALORA GUARDIAN ADVISORY FIDC – RL":0.1,"Ibiuna Credit":0.1}},{"id":"100k | IQ 360 - Ritmo","tier":"100k","tier_label":"R$100 mil","itype":"IQ 360","perfil":"Ritmo","weights":{"Tesouro Selic / Fundo Simples":0.6,"ARX Fuji":0.03,"VALORA GUARDIAN ADVISORY FIDC – RL":0.04,"Sparta Deb Inc FIC Incentivados":0.03,"Ibiuna Credit":0.03,"ARX Hedge Infra":0.06,"Trend Pre Fixado":0.03,"Kinea Atlas":0.03,"Kinea Oportunidade FIF":0.05,"IVVB11":0.03,"Wellington Ventura Advisory":0.04,"DIVO11":0.03}},{"id":"100k | IQ 360 - Ritmo-Visão","tier":"100k","tier_label":"R$100 mil","itype":"IQ 360","perfil":"Ritmo-Visão","weights":{"Tesouro Selic / Fundo Simples":0.5,"VALORA GUARDIAN ADVISORY FIDC – RL":0.1,"Sparta Deb Inc FIC Incentivados":0.1,"ARX Hedge Infra":0.1,"Kinea Oportunidade FIF":0.1,"Wellington Ventura Advisory":0.1}},{"id":"100k | IQ 360 - Visão","tier":"100k","tier_label":"R$100 mil","itype":"IQ 360","perfil":"Visão","weights":{"Tesouro Selic / Fundo Simples":0.4,"VALORA GUARDIAN ADVISORY FIDC – RL":0.04,"Sparta Deb Inc FIC Incentivados":0.03,"BNP Paribas Rubi":0.03,"Ibiuna Credit":0.03,"ARX Hedge Infra":0.08,"Trend Pre Fixado":0.03,"Kinea Atlas":0.04,"Kinea Oportunidade FIF":0.1,"Truxt Long Bias":0.05,"IVVB11":0.03,"NASD11":0.04,"Wellington Ventura Advisory":0.07,"DIVO11":0.03}},{"id":"100k | IQ 360 - Visão-Oceano","tier":"100k","tier_label":"R$100 mil","itype":"IQ 360","perfil":"Visão-Oceano","weights":{"Tesouro Selic / Fundo Simples":0.3,"ARX Fuji":0.04,"VALORA GUARDIAN ADVISORY FIDC – RL":0.1,"ARX Hedge Infra":0.1,"Kinea Oportunidade FIF":0.1,"Truxt Long Bias":0.1,"IVVB11":0.1,"NASD11":0.06,"Wellington Ventura Advisory":0.1}},{"id":"100k | IQ 360 - Oceano","tier":"100k","tier_label":"R$100 mil","itype":"IQ 360","perfil":"Oceano","weights":{"Tesouro Selic / Fundo Simples":0.2,"VALORA GUARDIAN ADVISORY FIDC – RL":0.05,"Sparta Deb Inc FIC Incentivados":0.03,"Ibiuna Credit":0.03,"ARX Hedge Infra":0.04,"Trend Pre Fixado":0.03,"Kinea Atlas":0.03,"Kinea Oportunidade FIF":0.09,"Truxt Long Bias":0.1,"Hix Capital HS FIA":0.09,"IVVB11":0.1,"NASD11":0.08,"Wellington Ventura Advisory":0.1,"DIVO11":0.03}},{"id":"100k | IQ MH - Reserva","tier":"100k","tier_label":"R$100 mil","itype":"IQ MH","perfil":"Reserva","weights":{"Tesouro Selic / Fundo Simples":1}},{"id":"100k | IQ MH - 90% Conservador","tier":"100k","tier_label":"R$100 mil","itype":"IQ MH","perfil":"90% Conservador","weights":{"Tesouro Selic / Fundo Simples":0.9,"ARX Fuji":0.1}},{"id":"100k | IQ MH - Abrigo","tier":"100k","tier_label":"R$100 mil","itype":"IQ MH","perfil":"Abrigo","weights":{"Tesouro Selic / Fundo Simples":0.8,"ARX Fuji":0.05,"VALORA GUARDIAN ADVISORY FIDC – RL":0.05,"Kinea Oportunidade FIM":0.05,"BNP Paribas Rubi":0.05}},{"id":"100k | IQ MH - Abrigo-Ritmo","tier":"100k","tier_label":"R$100 mil","itype":"IQ MH","perfil":"Abrigo-Ritmo","weights":{"Tesouro Selic / Fundo Simples":0.7,"Capitania Yield 120":0.1,"JGP Ecossistema":0.1,"IVVB11":0.1}},{"id":"100k | IQ MH - Ritmo","tier":"100k","tier_label":"R$100 mil","itype":"IQ MH","perfil":"Ritmo","weights":{"Tesouro Selic / Fundo Simples":0.6,"Capitania Yield 120":0.1,"ARX Hedge Infra":0.05,"JGP Ecossistema":0.1,"Kinea Oportunidade FIF":0.05,"Hix Capital HS FIA":0.03,"IVVB11":0.07}},{"id":"100k | IQ MH - Ritmo-Visão","tier":"100k","tier_label":"R$100 mil","itype":"IQ MH","perfil":"Ritmo-Visão","weights":{"Tesouro Selic / Fundo Simples":0.5,"Capitania Yield 120":0.1,"JGP Ecossistema":0.1,"Kinea Oportunidade FIF":0.1,"Hix Capital HS FIA":0.1,"IVVB11":0.1}},{"id":"100k | IQ MH - Visão","tier":"100k","tier_label":"R$100 mil","itype":"IQ MH","perfil":"Visão","weights":{"Tesouro Selic / Fundo Simples":0.4,"Capitania Yield 120":0.1,"JGP Ecossistema":0.1,"Kinea Oportunidade FIF":0.1,"Truxt Long Bias":0.05,"Hix Capital HS FIA":0.1,"IVVB11":0.08,"NASD11":0.04,"WRLD11":0.03}},{"id":"100k | IQ MH - Visão-Oceano","tier":"100k","tier_label":"R$100 mil","itype":"IQ MH","perfil":"Visão-Oceano","weights":{"Tesouro Selic / Fundo Simples":0.3,"ARX Fuji":0.04,"JGP Ecossistema":0.1,"Kinea Oportunidade FIF":0.1,"Truxt Long Bias":0.1,"Hix Capital HS FIA":0.1,"IVVB11":0.1,"NASD11":0.06,"WRLD11":0.1}},{"id":"100k | IQ MH - Oceano","tier":"100k","tier_label":"R$100 mil","itype":"IQ MH","perfil":"Oceano","weights":{"Tesouro Selic / Fundo Simples":0.2,"ARX Hedge Infra":0.03,"JGP Ecossistema":0.1,"Kinea Oportunidade FIF":0.1,"Truxt Long Bias":0.1,"Hix Capital HS FIA":0.1,"IVVB11":0.1,"NASD11":0.08,"WRLD11":0.1,"DIVO11":0.09}}];

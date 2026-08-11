@@ -1,61 +1,77 @@
 import { NextResponse } from "next/server"
-import { getServerSession } from "next-auth"
+import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import { prisma } from "@/lib/prisma"
-import { sendRegistrationApprovedEmail, sendRegistrationRejectedEmail } from "@/lib/email"
 
-// GET: list all users (admin only)
-export async function GET() {
-    const session = await getServerSession(authOptions)
-    if (!session?.user?.id) return NextResponse.json({ error: "Não autorizado" }, { status: 401 })
+export const dynamic = "force-dynamic"
+export const revalidate = 0
 
-    const adminUser = await prisma.user.findUnique({
-        where: { id: session.user.id },
-        select: { role: true }
-    })
-    if (adminUser?.role !== "ADMIN") return NextResponse.json({ error: "Acesso negado" }, { status: 403 })
+export async function GET(req: Request) {
+    try {
+        const session = await getServerSession(authOptions)
 
-    const users = await prisma.user.findMany({
-        // @ts-ignore
-        select: { id: true, name: true, email: true, cpf: true, phone: true, accountStatus: true, createdAt: true, subscriptionStatus: true },
-        orderBy: { createdAt: "desc" }
-    })
+        if (!session?.user?.email) {
+            return new NextResponse("Unauthorized", { status: 401 })
+        }
 
-    return NextResponse.json(users)
-}
+        const currentUser = await prisma.user.findUnique({
+            where: { email: session.user.email }
+        })
 
-// PATCH: approve or reject a user (admin only)
-export async function PATCH(req: Request) {
-    const session = await getServerSession(authOptions)
-    if (!session?.user?.id) return NextResponse.json({ error: "Não autorizado" }, { status: 401 })
+        // Require ADMIN role
+        if (!currentUser || currentUser.role !== "ADMIN") {
+            return new NextResponse("Forbidden - Requires Admin", { status: 403 })
+        }
 
-    const adminUser = await prisma.user.findUnique({
-        where: { id: session.user.id },
-        select: { role: true }
-    })
-    if (adminUser?.role !== "ADMIN") return NextResponse.json({ error: "Acesso negado" }, { status: 403 })
+        const users = await prisma.user.findMany({
+            include: {
+                profile: true,
+                assets: true,
+                financialPlan: true
+            },
+            orderBy: {
+                createdAt: 'desc'
+            }
+        })
 
-    const { userId, action } = await req.json() // action: "APPROVE" | "REJECT"
-    if (!userId || !["APPROVE", "REJECT"].includes(action)) {
-        return NextResponse.json({ error: "Dados inválidos" }, { status: 400 })
+        // Parse and calculate AUM for each user
+        const formattedUsers = users.map(u => {
+            let carteira2Data = null;
+            if (u.profile?.jornadaData) {
+                try {
+                    const parsed = typeof u.profile.jornadaData === 'string' ? JSON.parse(u.profile.jornadaData) : u.profile.jornadaData;
+                    if (parsed && parsed.carteira2Data) {
+                        carteira2Data = parsed.carteira2Data;
+                    }
+                } catch (e) {}
+            }
+
+            // Calculate total AUM from carteira2Data or assets
+            let totalAum = 0;
+            if (carteira2Data && carteira2Data.assets && Array.isArray(carteira2Data.assets)) {
+                totalAum = carteira2Data.assets.reduce((sum: number, a: any) => sum + (parseFloat(a.value) || 0), 0);
+            } else if (u.assets && u.assets.length > 0) {
+                totalAum = u.assets.reduce((sum: number, a: any) => sum + (parseFloat(a.value) || 0), 0);
+            }
+
+            return {
+                id: u.id,
+                name: u.name,
+                email: u.email,
+                role: u.role,
+                status: u.accountStatus,
+                subscription: u.subscriptionStatus,
+                createdAt: u.createdAt,
+                profileType: carteira2Data?.profileName || u.profile?.portfolioType || "N/A",
+                aum: totalAum,
+                assetsCount: carteira2Data?.assets?.length || u.assets?.length || 0,
+                hasFinancialPlan: !!u.financialPlan
+            }
+        })
+
+        return NextResponse.json(formattedUsers)
+    } catch (error: any) {
+        console.error("Error fetching admin users:", error)
+        return new NextResponse("Internal Error", { status: 500 })
     }
-
-    const newStatus = action === "APPROVE" ? "APPROVED" : "REJECTED"
-    const updatedUser = await prisma.user.update({
-        where: { id: userId },
-        data: {
-            // @ts-ignore
-            accountStatus: newStatus
-        },
-        select: { name: true, email: true }
-    })
-
-    // Send status email to the user — fire and forget
-    if (updatedUser.email) {
-        const emailFn = action === "APPROVE" ? sendRegistrationApprovedEmail : sendRegistrationRejectedEmail
-        emailFn({ name: updatedUser.name, email: updatedUser.email })
-            .catch(err => console.error("Status email failed:", err))
-    }
-
-    return NextResponse.json({ success: true, status: newStatus })
 }

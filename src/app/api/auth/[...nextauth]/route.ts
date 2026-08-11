@@ -4,6 +4,12 @@ import CredentialsProvider from "next-auth/providers/credentials"
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import { prisma } from "@/lib/prisma"
 import bcrypt from "bcrypt"
+import { LRUCache } from "lru-cache"
+
+const rateLimitCache = new LRUCache<string, number>({
+    max: 500, // max 500 users being tracked for rate limit at once
+    ttl: 15 * 60 * 1000, // 15 minutes
+})
 
 export const authOptions: NextAuthOptions = {
     adapter: PrismaAdapter(prisma),
@@ -24,7 +30,8 @@ export const authOptions: NextAuthOptions = {
             name: "credentials",
             credentials: {
                 identifier: { label: "Email, CPF ou CNPJ", type: "text" },
-                password: { label: "Password", type: "password" }
+                password: { label: "Password", type: "password" },
+                mfaToken: { label: "Código MFA (se ativado)", type: "text" }
             },
             async authorize(credentials) {
                 if (!credentials?.identifier || !credentials?.password) {
@@ -32,6 +39,12 @@ export const authOptions: NextAuthOptions = {
                 }
 
                 const identifier = credentials.identifier
+
+                // Rate limiting check
+                const currentAttempts = rateLimitCache.get(identifier) || 0
+                if (currentAttempts >= 5) {
+                    throw new Error("Muitas tentativas falhas. Conta temporariamente bloqueada por 15 minutos.")
+                }
 
                 const user = await prisma.user.findFirst({
                     where: {
@@ -43,6 +56,7 @@ export const authOptions: NextAuthOptions = {
                 })
 
                 if (!user || !user.password) {
+                    rateLimitCache.set(identifier, currentAttempts + 1)
                     return null
                 }
 
@@ -52,8 +66,32 @@ export const authOptions: NextAuthOptions = {
                 )
 
                 if (!isPasswordValid) {
+                    rateLimitCache.set(identifier, currentAttempts + 1)
                     return null
                 }
+
+                // MFA Validation
+                if (user.mfaEnabled && user.mfaSecret) {
+                    if (!credentials.mfaToken) {
+                        throw new Error("MFA_REQUIRED")
+                    }
+                    
+                    const speakeasy = require("speakeasy")
+                    const mfaVerified = speakeasy.totp.verify({
+                        secret: user.mfaSecret,
+                        encoding: 'base32',
+                        token: credentials.mfaToken,
+                        window: 1 // Permite uma pequena margem de erro no relógio
+                    })
+                    
+                    if (!mfaVerified) {
+                        rateLimitCache.set(identifier, currentAttempts + 1)
+                        throw new Error("Código MFA inválido")
+                    }
+                }
+
+                // Reset rate limit on successful login
+                rateLimitCache.delete(identifier)
 
                 return {
                     id: user.id,

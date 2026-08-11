@@ -1,0 +1,623 @@
+{
+  "TIER_ORDER": [
+    "30k",
+    "100k"
+  ],
+  "TIER_LABEL": {
+    "30k": "R$30 mil",
+    "100k": "R$100 mil"
+  },
+  "TIER_DEFAULT_VALUE": {
+    "30k": 30000,
+    "100k": 100000
+  },
+  "ITYPE_ORDER": [
+    "Geral MH",
+    "Geral 360",
+    "IQ 360",
+    "IQ MH"
+  ],
+  "PERFIL_ORDER": [
+    "Reserva",
+    "90% Conservador",
+    "Abrigo",
+    "Abrigo-Ritmo",
+    "Ritmo",
+    "Ritmo-Visão",
+    "Visão",
+    "Visão-Oceano",
+    "Oceano"
+  ],
+  "recommendedPortfolios": [
+    {
+      "id": "30k | Geral MH - Reserva",
+      "tier": "30k",
+      "tier_label": "R$30 mil",
+      "itype": "Geral MH",
+      "perfil": "Reserva",
+      "weights": {
+        "Tesouro Selic / Fundo Simples": 1
+      }
+    },
+    {
+      "id": "30k | Geral MH - 90% Conservador",
+      "tier": "30k",
+      "tier_label": "R$30 mil",
+      "itype": "Geral MH",
+      "perfil": "90% Conservador",
+      "weights": {
+        "Tesouro Selic / Fundo Simples": 0.9,
+        "ARX Fuji": 0.1
+      }
+    },
+    {
+      "id": "30k | Geral MH - Abrigo",
+      "tier": "30k",
+      "tier_label": "R$30 mil",
+      "itype": "Geral MH",
+      "perfil": "Abrigo",
+      "weights": {
+        "Tesouro Selic / Fundo Simples": 0.8,
+        "ARX Fuji": 0.05,
+        "JGP Corporate": 0.05,
+        "BNP Paribas Rubi": 0.05,
+        "Ibiuna Credit": 0.05
+      }
+    },
+    {
+      "id": "30k | Geral MH - Abrigo-Ritmo",
+      "tier": "30k",
+      "tier_label": "R$30 mil",
+      "itype": "Geral MH",
+      "perfil": "Abrigo-Ritmo",
+      "weights": {
+        "Tesouro Selic / Fundo Simples": 0.7,
+        "ARX Fuji": 0.1,
+        "Sparta Deb Inc FIC Incentivados": 0.1,
+        "BNP Paribas Rubi": 0.1
+      }
+    },
+    {
+      "id": "30k | Geral 360 - Ritmo",
+      "tier": "30k",
+      "tier_label": "R$30 mil",
+      "itype": "Geral 360",
+      "perfil": "Ritmo",
+      "weights": {
+        "Tesouro Selic / Fundo Simples": 0.6,
+        "ARX Fuji": 0.04,
+        "Sparta Deb Inc FIC Incentivados": 0.09,
+        "BNP Paribas Rubi": 0.03,
+        "Augme 30 CIC": 0.03,
+        "Trend Pre Fixado": 0.03,
+        "Kapitalo Kappa": 0.05,
+        "Kinea Atlas": 0.03,
+        "IVVB11": 0.03,
+        "Wellington Ventura Advisory": 0.04,
+        "DIVO11": 0.03
+      }
+    },
+    {
+      "id": "30k | Geral MH - Ritmo-Visão",
+      "tier": "30k",
+      "tier_label": "R$30 mil",
+      "itype": "Geral MH",
+      "perfil": "Ritmo-Visão",
+      "weights": {
+        "Tesouro Selic / Fundo Simples": 0.5,
+        "ARX Fuji": 0.05,
+        "BNP Paribas Rubi": 0.06,
+        "ARX Hedge Infra": 0.1,
+        "Kinea Atlas": 0.1,
+        "Hix Capital HS FIA": 0.1,
+        "IVVB11": 0.1
+      }
+    },
+    {
+      "id": "30k | Geral 360 - Visão",
+      "tier": "30k",
+      "tier_label": "R$30 mil",
+      "itype": "Geral 360",
+      "perfil": "Visão",
+      "weights": {
+        "Tesouro Selic / Fundo Simples": 0.4,
+        "ARX Fuji": 0.07,
+        "Sparta Deb Inc FIC Incentivados": 0.08,
+        "BNP Paribas Rubi": 0.03,
+        "Kinea Deb Incentivadas": 0.03,
+        "Trend Pre Fixado": 0.03,
+        "Kapitalo Kappa": 0.1,
+        "Kinea Atlas": 0.04,
+        "Hix Capital HS FIA": 0.05,
+        "IVVB11": 0.05,
+        "NASD11": 0.04,
+        "Wellington Ventura Advisory": 0.05,
+        "DIVO11": 0.03
+      }
+    },
+    {
+      "id": "30k | Geral 360 - Visão-Oceano",
+      "tier": "30k",
+      "tier_label": "R$30 mil",
+      "itype": "Geral 360",
+      "perfil": "Visão-Oceano",
+      "weights": {
+        "Tesouro Selic / Fundo Simples": 0.3,
+        "ARX Fuji": 0.04,
+        "Sparta Deb Inc FIC Incentivados": 0.1,
+        "Kapitalo Kappa": 0.1,
+        "Hix Capital HS FIA": 0.1,
+        "IVVB11": 0.1,
+        "NASD11": 0.06,
+        "Wellington Ventura Advisory": 0.1,
+        "DIVO11": 0.1
+      }
+    },
+    {
+      "id": "30k | Geral 360 - Oceano",
+      "tier": "30k",
+      "tier_label": "R$30 mil",
+      "itype": "Geral 360",
+      "perfil": "Oceano",
+      "weights": {
+        "Tesouro Selic / Fundo Simples": 0.2,
+        "ARX Fuji": 0.04,
+        "Sparta Deb Inc FIC Incentivados": 0.04,
+        "BNP Paribas Rubi": 0.04,
+        "Kinea Deb Incentivadas": 0.03,
+        "Trend Pre Fixado": 0.03,
+        "Kapitalo Kappa": 0.09,
+        "Kinea Atlas": 0.03,
+        "Dahlia Total Return": 0.03,
+        "Hix Capital HS FIA": 0.1,
+        "IVVB11": 0.1,
+        "NASD11": 0.08,
+        "Wellington Ventura Advisory": 0.1,
+        "DIVO11": 0.09
+      }
+    },
+    {
+      "id": "100k | Geral 360 - Reserva",
+      "tier": "100k",
+      "tier_label": "R$100 mil",
+      "itype": "Geral 360",
+      "perfil": "Reserva",
+      "weights": {
+        "Tesouro Selic / Fundo Simples": 1
+      }
+    },
+    {
+      "id": "100k | Geral MH - 90% Conservador",
+      "tier": "100k",
+      "tier_label": "R$100 mil",
+      "itype": "Geral MH",
+      "perfil": "90% Conservador",
+      "weights": {
+        "Tesouro Selic / Fundo Simples": 0.9,
+        "ARX Fuji": 0.1
+      }
+    },
+    {
+      "id": "100k | Geral 360 - Abrigo",
+      "tier": "100k",
+      "tier_label": "R$100 mil",
+      "itype": "Geral 360",
+      "perfil": "Abrigo",
+      "weights": {
+        "Tesouro Selic / Fundo Simples": 0.8,
+        "ARX Fuji": 0.03,
+        "JGP Corporate": 0.03,
+        "BNP Paribas Rubi": 0.08,
+        "Augme 30 CIC": 0.03,
+        "Ibiuna Credit": 0.03
+      }
+    },
+    {
+      "id": "100k | Geral 360 - Abrigo-Ritmo",
+      "tier": "100k",
+      "tier_label": "R$100 mil",
+      "itype": "Geral 360",
+      "perfil": "Abrigo-Ritmo",
+      "weights": {
+        "Tesouro Selic / Fundo Simples": 0.7,
+        "ARX Fuji": 0.05,
+        "JGP Corporate": 0.05,
+        "BNP Paribas Rubi": 0.06,
+        "Augme 30 CIC": 0.04,
+        "Ibiuna Credit": 0.05,
+        "ARX Hedge Infra": 0.05
+      }
+    },
+    {
+      "id": "100k | Geral 360 - Ritmo",
+      "tier": "100k",
+      "tier_label": "R$100 mil",
+      "itype": "Geral 360",
+      "perfil": "Ritmo",
+      "weights": {
+        "Tesouro Selic / Fundo Simples": 0.6,
+        "ARX Fuji": 0.04,
+        "Sparta Deb Inc FIC Incentivados": 0.04,
+        "BNP Paribas Rubi": 0.04,
+        "Ibiuna Credit": 0.03,
+        "ARX Hedge Infra": 0.07,
+        "Kapitalo Kappa": 0.03,
+        "Kinea Atlas": 0.04,
+        "IVVB11": 0.05,
+        "Wellington Ventura Advisory": 0.02,
+        "DIVO11": 0.02,
+        "Hix Capital HS FIA": 0.02
+      }
+    },
+    {
+      "id": "100k | Geral 360 - Ritmo-Visão",
+      "tier": "100k",
+      "tier_label": "R$100 mil",
+      "itype": "Geral 360",
+      "perfil": "Ritmo-Visão",
+      "weights": {
+        "Tesouro Selic / Fundo Simples": 0.5,
+        "ARX Fuji": 0.05,
+        "Sparta Deb Inc FIC Incentivados": 0.04,
+        "BNP Paribas Rubi": 0.04,
+        "Ibiuna Credit": 0.04,
+        "ARX Hedge Infra": 0.07,
+        "Kapitalo Kappa": 0.03,
+        "Kinea Atlas": 0.03,
+        "IVVB11": 0.06,
+        "Wellington Ventura Advisory": 0.05,
+        "DIVO11": 0.04,
+        "Hix Capital HS FIA": 0.05
+      }
+    },
+    {
+      "id": "100k | Geral 360 - Visão",
+      "tier": "100k",
+      "tier_label": "R$100 mil",
+      "itype": "Geral 360",
+      "perfil": "Visão",
+      "weights": {
+        "Tesouro Selic / Fundo Simples": 0.4,
+        "ARX Fuji": 0.05,
+        "Sparta Deb Inc FIC Incentivados": 0.05,
+        "BNP Paribas Rubi": 0.05,
+        "Ibiuna Credit": 0.04,
+        "ARX Hedge Infra": 0.08,
+        "Kapitalo Kappa": 0.04,
+        "Kinea Atlas": 0.04,
+        "Hix Capital HS FIA": 0.05,
+        "IVVB11": 0.04,
+        "NASD11": 0.04,
+        "Wellington Ventura Advisory": 0.07,
+        "DIVO11": 0.05
+      }
+    },
+    {
+      "id": "100k | Geral 360 - Visão-Oceano",
+      "tier": "100k",
+      "tier_label": "R$100 mil",
+      "itype": "Geral 360",
+      "perfil": "Visão-Oceano",
+      "weights": {
+        "Tesouro Selic / Fundo Simples": 0.3,
+        "ARX Fuji": 0.05,
+        "Sparta Deb Inc FIC Incentivados": 0.05,
+        "BNP Paribas Rubi": 0.04,
+        "Ibiuna Credit": 0.04,
+        "ARX Hedge Infra": 0.08,
+        "Kapitalo Kappa": 0.02,
+        "Kinea Atlas": 0.04,
+        "Hix Capital HS FIA": 0.08,
+        "IVVB11": 0.07,
+        "NASD11": 0.07,
+        "Wellington Ventura Advisory": 0.08,
+        "DIVO11": 0.08
+      }
+    },
+    {
+      "id": "100k | Geral 360 - Oceano",
+      "tier": "100k",
+      "tier_label": "R$100 mil",
+      "itype": "Geral 360",
+      "perfil": "Oceano",
+      "weights": {
+        "Tesouro Selic / Fundo Simples": 0.2,
+        "ARX Fuji": 0.04,
+        "Sparta Deb Inc FIC Incentivados": 0.04,
+        "BNP Paribas Rubi": 0.05,
+        "Ibiuna Credit": 0.04,
+        "ARX Hedge Infra": 0.06,
+        "Kapitalo Kappa": 0.04,
+        "Kinea Atlas": 0.04,
+        "Hix Capital HS FIA": 0.1,
+        "IVVB11": 0.1,
+        "NASD11": 0.09,
+        "Wellington Ventura Advisory": 0.1,
+        "DIVO11": 0.1
+      }
+    },
+    {
+      "id": "100k | IQ 360 - Reserva",
+      "tier": "100k",
+      "tier_label": "R$100 mil",
+      "itype": "IQ 360",
+      "perfil": "Reserva",
+      "weights": {
+        "Tesouro Selic / Fundo Simples": 1
+      }
+    },
+    {
+      "id": "100k | IQ 360 - 90% Conservador",
+      "tier": "100k",
+      "tier_label": "R$100 mil",
+      "itype": "IQ 360",
+      "perfil": "90% Conservador",
+      "weights": {
+        "Tesouro Selic / Fundo Simples": 0.9,
+        "VALORA GUARDIAN ADVISORY FIDC – RL": 0.1
+      }
+    },
+    {
+      "id": "100k | IQ 360 - Abrigo",
+      "tier": "100k",
+      "tier_label": "R$100 mil",
+      "itype": "IQ 360",
+      "perfil": "Abrigo",
+      "weights": {
+        "Tesouro Selic / Fundo Simples": 0.8,
+        "ARX Fuji": 0.03,
+        "VALORA GUARDIAN ADVISORY FIDC – RL": 0.08,
+        "Kinea Oportunidade FIM": 0.03,
+        "Augme 30 CIC": 0.03,
+        "Ibiuna Credit": 0.03
+      }
+    },
+    {
+      "id": "100k | IQ 360 - Abrigo-Ritmo",
+      "tier": "100k",
+      "tier_label": "R$100 mil",
+      "itype": "IQ 360",
+      "perfil": "Abrigo-Ritmo",
+      "weights": {
+        "Tesouro Selic / Fundo Simples": 0.7,
+        "ARX Fuji": 0.1,
+        "VALORA GUARDIAN ADVISORY FIDC – RL": 0.1,
+        "Ibiuna Credit": 0.1
+      }
+    },
+    {
+      "id": "100k | IQ 360 - Ritmo",
+      "tier": "100k",
+      "tier_label": "R$100 mil",
+      "itype": "IQ 360",
+      "perfil": "Ritmo",
+      "weights": {
+        "Tesouro Selic / Fundo Simples": 0.6,
+        "ARX Fuji": 0.03,
+        "VALORA GUARDIAN ADVISORY FIDC – RL": 0.04,
+        "Sparta Deb Inc FIC Incentivados": 0.03,
+        "Ibiuna Credit": 0.03,
+        "ARX Hedge Infra": 0.06,
+        "Trend Pre Fixado": 0.03,
+        "Kinea Atlas": 0.03,
+        "Kinea Oportunidade FIF": 0.05,
+        "IVVB11": 0.03,
+        "Wellington Ventura Advisory": 0.04,
+        "DIVO11": 0.03
+      }
+    },
+    {
+      "id": "100k | IQ 360 - Ritmo-Visão",
+      "tier": "100k",
+      "tier_label": "R$100 mil",
+      "itype": "IQ 360",
+      "perfil": "Ritmo-Visão",
+      "weights": {
+        "Tesouro Selic / Fundo Simples": 0.5,
+        "VALORA GUARDIAN ADVISORY FIDC – RL": 0.1,
+        "Sparta Deb Inc FIC Incentivados": 0.1,
+        "ARX Hedge Infra": 0.1,
+        "Kinea Oportunidade FIF": 0.1,
+        "Wellington Ventura Advisory": 0.1
+      }
+    },
+    {
+      "id": "100k | IQ 360 - Visão",
+      "tier": "100k",
+      "tier_label": "R$100 mil",
+      "itype": "IQ 360",
+      "perfil": "Visão",
+      "weights": {
+        "Tesouro Selic / Fundo Simples": 0.4,
+        "VALORA GUARDIAN ADVISORY FIDC – RL": 0.04,
+        "Sparta Deb Inc FIC Incentivados": 0.03,
+        "BNP Paribas Rubi": 0.03,
+        "Ibiuna Credit": 0.03,
+        "ARX Hedge Infra": 0.08,
+        "Trend Pre Fixado": 0.03,
+        "Kinea Atlas": 0.04,
+        "Kinea Oportunidade FIF": 0.1,
+        "Truxt Long Bias": 0.05,
+        "IVVB11": 0.03,
+        "NASD11": 0.04,
+        "Wellington Ventura Advisory": 0.07,
+        "DIVO11": 0.03
+      }
+    },
+    {
+      "id": "100k | IQ 360 - Visão-Oceano",
+      "tier": "100k",
+      "tier_label": "R$100 mil",
+      "itype": "IQ 360",
+      "perfil": "Visão-Oceano",
+      "weights": {
+        "Tesouro Selic / Fundo Simples": 0.3,
+        "ARX Fuji": 0.04,
+        "VALORA GUARDIAN ADVISORY FIDC – RL": 0.1,
+        "ARX Hedge Infra": 0.1,
+        "Kinea Oportunidade FIF": 0.1,
+        "Truxt Long Bias": 0.1,
+        "IVVB11": 0.1,
+        "NASD11": 0.06,
+        "Wellington Ventura Advisory": 0.1
+      }
+    },
+    {
+      "id": "100k | IQ 360 - Oceano",
+      "tier": "100k",
+      "tier_label": "R$100 mil",
+      "itype": "IQ 360",
+      "perfil": "Oceano",
+      "weights": {
+        "Tesouro Selic / Fundo Simples": 0.2,
+        "VALORA GUARDIAN ADVISORY FIDC – RL": 0.05,
+        "Sparta Deb Inc FIC Incentivados": 0.03,
+        "Ibiuna Credit": 0.03,
+        "ARX Hedge Infra": 0.04,
+        "Trend Pre Fixado": 0.03,
+        "Kinea Atlas": 0.03,
+        "Kinea Oportunidade FIF": 0.09,
+        "Truxt Long Bias": 0.1,
+        "Hix Capital HS FIA": 0.09,
+        "IVVB11": 0.1,
+        "NASD11": 0.08,
+        "Wellington Ventura Advisory": 0.1,
+        "DIVO11": 0.03
+      }
+    },
+    {
+      "id": "100k | IQ MH - Reserva",
+      "tier": "100k",
+      "tier_label": "R$100 mil",
+      "itype": "IQ MH",
+      "perfil": "Reserva",
+      "weights": {
+        "Tesouro Selic / Fundo Simples": 1
+      }
+    },
+    {
+      "id": "100k | IQ MH - 90% Conservador",
+      "tier": "100k",
+      "tier_label": "R$100 mil",
+      "itype": "IQ MH",
+      "perfil": "90% Conservador",
+      "weights": {
+        "Tesouro Selic / Fundo Simples": 0.9,
+        "ARX Fuji": 0.1
+      }
+    },
+    {
+      "id": "100k | IQ MH - Abrigo",
+      "tier": "100k",
+      "tier_label": "R$100 mil",
+      "itype": "IQ MH",
+      "perfil": "Abrigo",
+      "weights": {
+        "Tesouro Selic / Fundo Simples": 0.8,
+        "ARX Fuji": 0.05,
+        "VALORA GUARDIAN ADVISORY FIDC – RL": 0.05,
+        "Kinea Oportunidade FIM": 0.05,
+        "BNP Paribas Rubi": 0.05
+      }
+    },
+    {
+      "id": "100k | IQ MH - Abrigo-Ritmo",
+      "tier": "100k",
+      "tier_label": "R$100 mil",
+      "itype": "IQ MH",
+      "perfil": "Abrigo-Ritmo",
+      "weights": {
+        "Tesouro Selic / Fundo Simples": 0.7,
+        "Capitania Yield 120": 0.1,
+        "JGP Ecossistema": 0.1,
+        "IVVB11": 0.1
+      }
+    },
+    {
+      "id": "100k | IQ MH - Ritmo",
+      "tier": "100k",
+      "tier_label": "R$100 mil",
+      "itype": "IQ MH",
+      "perfil": "Ritmo",
+      "weights": {
+        "Tesouro Selic / Fundo Simples": 0.6,
+        "Capitania Yield 120": 0.1,
+        "ARX Hedge Infra": 0.05,
+        "JGP Ecossistema": 0.1,
+        "Kinea Oportunidade FIF": 0.05,
+        "Hix Capital HS FIA": 0.03,
+        "IVVB11": 0.07
+      }
+    },
+    {
+      "id": "100k | IQ MH - Ritmo-Visão",
+      "tier": "100k",
+      "tier_label": "R$100 mil",
+      "itype": "IQ MH",
+      "perfil": "Ritmo-Visão",
+      "weights": {
+        "Tesouro Selic / Fundo Simples": 0.5,
+        "Capitania Yield 120": 0.1,
+        "JGP Ecossistema": 0.1,
+        "Kinea Oportunidade FIF": 0.1,
+        "Hix Capital HS FIA": 0.1,
+        "IVVB11": 0.1
+      }
+    },
+    {
+      "id": "100k | IQ MH - Visão",
+      "tier": "100k",
+      "tier_label": "R$100 mil",
+      "itype": "IQ MH",
+      "perfil": "Visão",
+      "weights": {
+        "Tesouro Selic / Fundo Simples": 0.4,
+        "Capitania Yield 120": 0.1,
+        "JGP Ecossistema": 0.1,
+        "Kinea Oportunidade FIF": 0.1,
+        "Truxt Long Bias": 0.05,
+        "Hix Capital HS FIA": 0.1,
+        "IVVB11": 0.08,
+        "NASD11": 0.04,
+        "WRLD11": 0.03
+      }
+    },
+    {
+      "id": "100k | IQ MH - Visão-Oceano",
+      "tier": "100k",
+      "tier_label": "R$100 mil",
+      "itype": "IQ MH",
+      "perfil": "Visão-Oceano",
+      "weights": {
+        "Tesouro Selic / Fundo Simples": 0.3,
+        "ARX Fuji": 0.04,
+        "JGP Ecossistema": 0.1,
+        "Kinea Oportunidade FIF": 0.1,
+        "Truxt Long Bias": 0.1,
+        "Hix Capital HS FIA": 0.1,
+        "IVVB11": 0.1,
+        "NASD11": 0.06,
+        "WRLD11": 0.1
+      }
+    },
+    {
+      "id": "100k | IQ MH - Oceano",
+      "tier": "100k",
+      "tier_label": "R$100 mil",
+      "itype": "IQ MH",
+      "perfil": "Oceano",
+      "weights": {
+        "Tesouro Selic / Fundo Simples": 0.2,
+        "ARX Hedge Infra": 0.03,
+        "JGP Ecossistema": 0.1,
+        "Kinea Oportunidade FIF": 0.1,
+        "Truxt Long Bias": 0.1,
+        "Hix Capital HS FIA": 0.1,
+        "IVVB11": 0.1,
+        "NASD11": 0.08,
+        "WRLD11": 0.1,
+        "DIVO11": 0.09
+      }
+    }
+  ]
+}

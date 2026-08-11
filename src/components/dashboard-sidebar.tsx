@@ -5,7 +5,7 @@ import Image from "next/image"
 import { usePathname } from "next/navigation"
 import {
     LayoutDashboard, Wallet, BookOpen, HelpCircle,
-    Target, CreditCard, User, BarChart3, LogOut, ChevronDown, Calculator, TrendingUp, Lock, Check, Menu, X, Compass, Map
+    Target, CreditCard, User, BarChart3, LogOut, ChevronDown, Calculator, TrendingUp, Lock, Check, Menu, X, Compass, Map, ShieldCheck, Scale
 } from "lucide-react"
 import { useSession, signOut } from "next-auth/react"
 import { useState } from "react"
@@ -91,13 +91,12 @@ export function DashboardSidebar() {
             <nav className="flex-1 overflow-y-auto p-4 flex flex-col gap-0.5">
                 <span className="text-[10px] font-semibold text-dash-text-light uppercase tracking-widest px-3 py-2 mt-1">Principal</span>
 
-                <NavLink href="/dashboard" icon={<LayoutDashboard className="w-4 h-4" />} label="Visão Geral" exact onClick={closeMobileMenu} />
-                <NavLink href="/dashboard/carteira" icon={<Wallet className="w-4 h-4" />} label="Minha Carteira" onClick={closeMobileMenu} />
-                <NavLink href="/dashboard/carteira-2" icon={<Wallet className="w-4 h-4" />} label="Minha Carteira 2" onClick={closeMobileMenu} />
+                <NavLink href="/dashboard/carteira" icon={<Wallet className="w-4 h-4" />} label="Minha Carteira" exact onClick={closeMobileMenu} />
                 <NavLink href="/dashboard/planejamento" icon={<Calculator className="w-4 h-4" />} label="Calculadora Pl." onClick={closeMobileMenu} />
                 <NavLink href="/dashboard/jornada" icon={<Map className="w-4 h-4" />} label="Jornada" onClick={closeMobileMenu} />
                 <NavLink href="/dashboard/portfolios" icon={<BarChart3 className="w-4 h-4" />} label="Portfólios ARVO" onClick={closeMobileMenu} />
                 <NavLink href="/dashboard/bussola" icon={<Compass className="w-4 h-4" />} label="Bússola de Risco" onClick={closeMobileMenu} />
+                <NavLink href="/dashboard/comparador" icon={<Scale className="w-4 h-4" />} label="Comparador de Ativos" onClick={closeMobileMenu} />
                 <NavLink href="/dashboard/calculadoras" icon={<Calculator className="w-4 h-4" />} label="Calculadoras" onClick={closeMobileMenu} />
 
                 <span className="text-[10px] font-semibold text-dash-text-light uppercase tracking-widest px-3 py-2 mt-4">Aprendizado</span>
@@ -108,6 +107,10 @@ export function DashboardSidebar() {
                 <NavLink href="/dashboard/assinatura" icon={<CreditCard className="w-4 h-4" />} label="Assinatura" onClick={closeMobileMenu} />
                 <NavLink href="/dashboard/agendamento" icon={<HelpCircle className="w-4 h-4" />} label="Agendamento" onClick={closeMobileMenu} />
                 <NavLink href="/dashboard/ajuda" icon={<HelpCircle className="w-4 h-4 opacity-0" />} label="Ajuda" onClick={closeMobileMenu} />
+
+                {session?.user?.email?.includes('lucas') && (
+                    <NavLink href="/dashboard/admin" icon={<ShieldCheck className="w-4 h-4" />} label="Painel do Gestor" onClick={closeMobileMenu} />
+                )}
             </nav>
 
             {/* Assessor Card */}
