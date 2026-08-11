@@ -115,9 +115,14 @@ function LoginForm() {
                             />
                         </div>
                         <div className="space-y-2">
-                            <label htmlFor="password" className="text-sm font-medium">
-                                Senha
-                            </label>
+                            <div className="flex justify-between items-center">
+                                <label htmlFor="password" className="text-sm font-medium">
+                                    Senha
+                                </label>
+                                <a href="/recuperar-senha" className="text-sm text-blue-600 hover:underline">
+                                    Esqueceu sua senha?
+                                </a>
+                            </div>
                             <input
                                 id="password"
                                 type="password"
