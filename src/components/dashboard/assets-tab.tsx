@@ -60,7 +60,7 @@ export function AssetsTab({
                     const finalType = matchedType ? matchedType.id : "outro"
 
                     return {
-                        id: `xlsx-${Date.now()}-${Math.random()}`,
+                        id: `xlsx-${Date.now()}-${crypto.randomUUID()}`,
                         type: finalType as AssetType,
                         name: String(nome),
                         quantity: isNaN(quant) ? 1 : quant,

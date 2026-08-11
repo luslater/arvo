@@ -56,11 +56,11 @@ export async function POST(req: Request) {
             } catch (err) {
                 console.error('Erro ao enviar email via Resend:', err)
                 // Fallback para console
-                console.log(`\n\n[RESET LINK FALLBACK]: ${resetUrl}\n\n`)
+                console.log("[RESET LINK FALLBACK]: %s", resetUrl)
             }
         } else {
             // Fallback development (ou se não tem chave)
-            console.log(`\n\n[RESET LINK FALLBACK (Sem Resend configurado)]: \n${resetUrl}\n\n`)
+            console.log("[RESET LINK FALLBACK (Sem Resend configurado)]: %s", resetUrl)
         }
 
         return NextResponse.json({ 
@@ -68,7 +68,7 @@ export async function POST(req: Request) {
         })
 
     } catch (err) {
-        console.error(err)
+        console.error("Internal Server Error:", err)
         return NextResponse.json({ error: 'Erro interno do servidor' }, { status: 500 })
     }
 }

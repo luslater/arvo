@@ -10,7 +10,7 @@ export function createTransaction(
     recommendedAllocations: TransactionAllocation[]
 ): Transaction {
     const transaction: Transaction = {
-        id: `txn_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        id: `txn_${Date.now()}_${crypto.randomUUID().split('-')[0]}`,
         type,
         amount,
         status: "PENDING",

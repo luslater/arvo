@@ -44,7 +44,7 @@ export async function POST(req: Request) {
         return NextResponse.json({ message: 'Senha alterada com sucesso' })
 
     } catch (err) {
-        console.error(err)
+        console.error("Internal Server Error:", err)
         return NextResponse.json({ error: 'Erro interno do servidor' }, { status: 500 })
     }
 }
