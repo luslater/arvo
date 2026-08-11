@@ -94,7 +94,6 @@ export function DashboardSidebar() {
                 <NavLink href="/dashboard/carteira" icon={<Wallet className="w-4 h-4" />} label="Minha Carteira" exact onClick={closeMobileMenu} />
                 <NavLink href="/dashboard/planejamento" icon={<Calculator className="w-4 h-4" />} label="Calculadora Pl." onClick={closeMobileMenu} />
                 <NavLink href="/dashboard/jornada" icon={<Map className="w-4 h-4" />} label="Jornada" onClick={closeMobileMenu} />
-                <NavLink href="/dashboard/portfolios" icon={<BarChart3 className="w-4 h-4" />} label="Portfólios ARVO" onClick={closeMobileMenu} />
                 <NavLink href="/dashboard/bussola" icon={<Compass className="w-4 h-4" />} label="Bússola de Risco" onClick={closeMobileMenu} />
                 <NavLink href="/dashboard/comparador" icon={<Scale className="w-4 h-4" />} label="Comparador de Ativos" onClick={closeMobileMenu} />
                 <NavLink href="/dashboard/calculadoras" icon={<Calculator className="w-4 h-4" />} label="Calculadoras" onClick={closeMobileMenu} />
