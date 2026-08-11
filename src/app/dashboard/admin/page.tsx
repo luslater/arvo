@@ -9,7 +9,7 @@ export default function AdminDashboard() {
   const [error, setError] = useState(null)
   const [search, setSearch] = useState("")
 
-  useEffect(() => {
+  const fetchUsers = () => {
     fetch("/api/admin/users")
       .then(res => {
         if (!res.ok) throw new Error("Acesso restrito a gestores.")
@@ -23,7 +23,26 @@ export default function AdminDashboard() {
         setError(err.message)
         setLoading(false)
       })
+  }
+
+  useEffect(() => {
+    fetchUsers()
   }, [])
+
+  const handleUpdateStatus = async (id: string, newStatus: string) => {
+    if (!confirm(`Deseja alterar o status do cliente para ${newStatus}?`)) return;
+    try {
+      const res = await fetch(`/api/admin/users/${id}/status`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: newStatus })
+      })
+      if (!res.ok) throw new Error("Erro ao atualizar status")
+      fetchUsers()
+    } catch (e: any) {
+      alert(e.message)
+    }
+  }
 
   const fmtCurrency = (val: number) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(val)
 
@@ -101,62 +120,71 @@ export default function AdminDashboard() {
 
         {/* CLIENTS TABLE */}
         <div className="bg-white border border-[#e4e0d7] rounded-2xl shadow-sm overflow-hidden">
-            <div className="overflow-x-auto">
-                <table className="w-full text-left text-sm whitespace-nowrap">
+            <div className="overflow-x-auto w-full">
+                <table className="w-full text-left text-sm">
                     <thead>
-                        <tr className="bg-[#faf8f2] border-b border-[#e4e0d7]">
-                            <th className="px-6 py-4 text-xs font-bold text-[#667085] uppercase tracking-wider">Cliente</th>
-                            <th className="px-6 py-4 text-xs font-bold text-[#667085] uppercase tracking-wider">Perfil Atual</th>
-                            <th className="px-6 py-4 text-xs font-bold text-[#667085] uppercase tracking-wider text-right">Patrimônio Declarado</th>
-                            <th className="px-6 py-4 text-xs font-bold text-[#667085] uppercase tracking-wider text-center">Ativos</th>
-                            <th className="px-6 py-4 text-xs font-bold text-[#667085] uppercase tracking-wider">Cadastro</th>
-                            <th className="px-6 py-4 text-xs font-bold text-[#667085] uppercase tracking-wider">Status</th>
-                            <th className="px-6 py-4 text-xs font-bold text-[#667085] uppercase tracking-wider text-right">Ações</th>
+                        <tr className="bg-[#faf8f2] border-b border-[#e4e0d7] whitespace-nowrap">
+                            <th className="px-4 py-4 text-[11px] font-bold text-[#667085] uppercase tracking-wider">Cliente</th>
+                            <th className="px-4 py-4 text-[11px] font-bold text-[#667085] uppercase tracking-wider">Status da Conta</th>
+                            <th className="px-4 py-4 text-[11px] font-bold text-[#667085] uppercase tracking-wider text-right">Patrimônio</th>
+                            <th className="px-4 py-4 text-[11px] font-bold text-[#667085] uppercase tracking-wider text-center">Data</th>
+                            <th className="px-4 py-4 text-[11px] font-bold text-[#667085] uppercase tracking-wider text-right">Ações</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-[#f0ece1]">
                         {filteredUsers.map((u: any) => (
                             <tr key={u.id} className="hover:bg-gray-50 transition-colors">
-                                <td className="px-6 py-4">
-                                    <div className="font-bold text-[#123044]">{u.name || 'Sem nome'}</div>
-                                    <div className="text-xs text-[#667085] mt-0.5">{u.email}</div>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#eef3f5] text-[#24485b]">
-                                        {u.profileType}
+                                <td className="px-4 py-4 min-w-[200px]">
+                                    <div className="font-bold text-[#123044] text-sm break-words">{u.name || 'Sem nome'}</div>
+                                    <div className="text-xs text-[#667085] mt-0.5 break-all">{u.email}</div>
+                                    <span className="inline-flex items-center px-2 py-0.5 mt-2 rounded text-[10px] font-bold bg-[#eef3f5] text-[#24485b]">
+                                        {u.profileType || 'N/A'}
                                     </span>
                                 </td>
-                                <td className="px-6 py-4 text-right font-extrabold text-[#123044]">
-                                    {fmtCurrency(u.aum)}
-                                </td>
-                                <td className="px-6 py-4 text-center font-bold text-[#667085]">
-                                    {u.assetsCount}
-                                </td>
-                                <td className="px-6 py-4 text-[#667085] text-xs">
-                                    {new Date(u.createdAt).toLocaleDateString('pt-BR')}
-                                </td>
-                                <td className="px-6 py-4">
-                                    {u.subscription === "PREMIUM" ? (
-                                        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-700 uppercase">Premium</span>
-                                    ) : u.role === "ADMIN" ? (
-                                        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-purple-100 text-purple-700 uppercase">Admin</span>
+                                <td className="px-4 py-4 whitespace-nowrap">
+                                    {u.status === "PENDING" ? (
+                                        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-700 uppercase border border-amber-200">Em Análise</span>
+                                    ) : u.status === "REJECTED" ? (
+                                        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-red-100 text-red-700 uppercase border border-red-200">Rejeitado</span>
                                     ) : (
-                                        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-gray-100 text-gray-700 uppercase">Free</span>
+                                        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-700 uppercase border border-green-200">Aprovado</span>
                                     )}
                                 </td>
-                                <td className="px-6 py-4 text-right">
-                                    <a 
-                                        href={`/dashboard/carteira-2?adminViewUser=${u.id}`} 
-                                        className="inline-flex items-center justify-center px-3 py-1.5 text-xs font-bold bg-white border border-[#e4e0d7] text-[#123044] rounded-lg hover:bg-gray-50 hover:text-[#4fa080] transition-colors"
-                                    >
-                                        Abrir Carteira
-                                    </a>
+                                <td className="px-4 py-4 text-right font-extrabold text-[#123044] whitespace-nowrap">
+                                    {fmtCurrency(u.aum)}
+                                    <div className="text-[10px] text-[#667085] font-normal mt-1">{u.assetsCount} ativos</div>
+                                </td>
+                                <td className="px-4 py-4 text-center text-[#667085] text-xs whitespace-nowrap">
+                                    {new Date(u.createdAt).toLocaleDateString('pt-BR')}
+                                </td>
+                                <td className="px-4 py-4 text-right whitespace-nowrap">
+                                    <div className="flex flex-col sm:flex-row items-end justify-end gap-2">
+                                        {u.status === "PENDING" && (
+                                            <>
+                                                <button onClick={() => handleUpdateStatus(u.id, "APPROVED")} className="px-3 py-1.5 text-xs font-bold bg-green-600 text-white rounded hover:bg-green-700 transition">Aprovar</button>
+                                                <button onClick={() => handleUpdateStatus(u.id, "REJECTED")} className="px-3 py-1.5 text-xs font-bold bg-white border border-red-200 text-red-600 rounded hover:bg-red-50 transition">Rejeitar</button>
+                                            </>
+                                        )}
+                                        {u.status !== "PENDING" && (
+                                            <>
+                                                <button onClick={() => handleUpdateStatus(u.id, "PENDING")} className="px-3 py-1.5 text-[10px] font-bold bg-white border border-gray-200 text-gray-500 rounded hover:bg-gray-50 transition">Revogar</button>
+                                            </>
+                                        )}
+                                        {u.status === "APPROVED" && (
+                                            <a 
+                                                href={`/dashboard/admin/user/${u.id}`} 
+                                                className="px-3 py-1.5 text-xs font-bold bg-[#123044] text-white rounded hover:bg-[#0a1b26] transition flex items-center justify-center"
+                                            >
+                                                Analisar
+                                            </a>
+                                        )}
+                                    </div>
                                 </td>
                             </tr>
                         ))}
                         {filteredUsers.length === 0 && (
                             <tr>
-                                <td colSpan={7} className="px-6 py-8 text-center text-gray-500">Nenhum cliente encontrado.</td>
+                                <td colSpan={5} className="px-4 py-8 text-center text-gray-500">Nenhum cliente encontrado.</td>
                             </tr>
                         )}
                     </tbody>
