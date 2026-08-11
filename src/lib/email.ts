@@ -1,7 +1,7 @@
 import { Resend } from "resend"
 
 const FROM_EMAIL = "ARVO <noreply@meuarvo.com.br>"
-const ADMIN_EMAIL = process.env.ADMIN_NOTIFICATION_EMAIL || "contato@meuarvo.com.br"
+const ADMIN_EMAILS = ["lucasdmatos@gmail.com", "contato@meuarvo.com.br"]
 const BASE_URL = process.env.NEXTAUTH_URL || "https://www.meuarvo.com.br"
 
 // ─── Utilitário interno ────────────────────────────────────────────────────────
@@ -73,7 +73,7 @@ export async function sendNewUserNotification({
 
   await resend.emails.send({
     from: FROM_EMAIL,
-    to: ADMIN_EMAIL,
+    to: ADMIN_EMAILS,
     subject: `🔔 Novo cadastro ARVO — ${name || email}`,
     html: emailShell("Painel Administrativo", "Painel Administrativo", "#0A192F", body),
   })

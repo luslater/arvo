@@ -38,7 +38,7 @@ export async function POST(req: Request) {
         if (resend) {
             try {
                 await resend.emails.send({
-                    from: 'ARVO <no-reply@arvo.com.br>', // Altere para um domínio validado no Resend
+                    from: 'ARVO <noreply@meuarvo.com.br>',
                     to: user.email,
                     subject: 'ARVO - Recuperação de Senha',
                     html: `
@@ -64,7 +64,7 @@ export async function POST(req: Request) {
         }
 
         return NextResponse.json({ 
-            message: 'Se o email ou documento existir em nossa base, você receberá um link para resetar a senha. (Consulte o terminal para o link caso a chave de email não esteja configurada).' 
+            message: 'Se o email ou documento existir em nossa base, você receberá um link para resetar a senha.' 
         })
 
     } catch (err) {
