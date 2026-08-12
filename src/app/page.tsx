@@ -20,9 +20,9 @@ export default function LandingPage() {
     --rule: rgba(236,231,219,.10);
     --rule-strong: rgba(236,231,219,.22);
     --card: #141a22;
-    --accent: #c9a961;      /* gold */
-    --accent-2: #00c46a;    /* ARVO green (secondary) */
-    --accent-deep: #a5884a;
+    --accent: #80A8AD;      /* brand-teal claro */
+    --accent-2: #4FA080;    /* ARVO green (secondary) */
+    --accent-deep: #2B6E76; /* brand-teal */
   }
   .landing-page.light {
     --bg: #f4f1ea;
@@ -568,15 +568,15 @@ export default function LandingPage() {
           <circle cx="84" cy="84" r="64" fill="none" stroke="rgba(236,231,219,.06)" stroke-width="22"/>
           <circle cx="84" cy="84" r="64" fill="none" stroke="var(--accent)" stroke-width="22"
                   stroke-dasharray="205 402" stroke-dashoffset="0" transform="rotate(-90 84 84)"/>
-          <circle cx="84" cy="84" r="64" fill="none" stroke="#a98f55" stroke-width="22"
+          <circle cx="84" cy="84" r="64" fill="none" stroke="#4FA080" stroke-width="22"
                   stroke-dasharray="105 402" stroke-dashoffset="-205" transform="rotate(-90 84 84)"/>
-          <circle cx="84" cy="84" r="64" fill="none" stroke="#413a2b" stroke-width="22"
+          <circle cx="84" cy="84" r="64" fill="none" stroke="#2B6E76" stroke-width="22"
                   stroke-dasharray="92 402" stroke-dashoffset="-310" transform="rotate(-90 84 84)"/>
         </svg>
         <div class="leg">
           <div class="row"><span class="l"><i style="background: var(--accent)"></i>Renda Fixa</span><span class="r tab">51%</span></div>
-          <div class="row"><span class="l"><i style="background: #a98f55"></i>Ações</span><span class="r tab">26%</span></div>
-          <div class="row"><span class="l"><i style="background: #413a2b"></i>Multimercado</span><span class="r tab">23%</span></div>
+          <div class="row"><span class="l"><i style="background: #4FA080"></i>Ações</span><span class="r tab">26%</span></div>
+          <div class="row"><span class="l"><i style="background: #2B6E76"></i>Multimercado</span><span class="r tab">23%</span></div>
         </div>
       </div>
     </aside>
