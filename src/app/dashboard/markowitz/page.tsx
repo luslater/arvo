@@ -84,6 +84,7 @@ export default function MarkowitzDashboardPage() {
     const [hoveredFund, setHoveredFund] = useState<number | null>(null);
     const [hoveredPort, setHoveredPort] = useState<number | null>(null);
     const [selectedType, setSelectedType] = useState<"Geral" | "IQ">("Geral");
+    const [advancedMode, setAdvancedMode] = useState(false);
 
     const activeFunds = selectedType === "Geral" ? FUNDS_GERAL : FUNDS_IQ;
     const activeCorr = selectedType === "Geral" ? CORR_GERAL : CORR_IQ;
@@ -151,27 +152,45 @@ export default function MarkowitzDashboardPage() {
                 </p>
             </div>
 
-            <div className="bg-dash-surface border border-dash-border p-1.5 rounded-[14px] flex flex-wrap gap-2 w-full md:w-max shadow-sm">
-                {[
-                    { id: "frontier", label: "Fronteira Eficiente" },
-                    { id: "correlation", label: "Matriz de Correlação" },
-                    { id: "table", label: "Tabela de Fundos" },
-                ].map(t => (
-                    <button
-                        key={t.id}
-                        onClick={() => setTab(t.id as any)}
-                        className={`flex-1 md:flex-none px-6 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 ${tab === t.id
-                            ? "bg-dash-accent text-white shadow-md scale-[1.02]"
-                            : "text-dash-text-muted hover:text-dash-text hover:bg-dash-surface-active"
-                            }`}
+            {!advancedMode ? (
+                <div className="bg-dash-surface rounded-[24px] p-8 md:p-12 text-center border border-dash-border shadow-sm max-w-3xl mx-auto mt-8">
+                    <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <TrendingUp className="w-8 h-8" />
+                    </div>
+                    <h2 className="text-xl font-bold text-dash-text mb-3">Modo Avançado (Quant)</h2>
+                    <p className="text-sm text-dash-text-muted mb-8 leading-relaxed max-w-xl mx-auto">
+                        Esta seção contém ferramentas de modelagem quantitativa avançada (Fronteira Eficiente, Matriz de Correlação e Índice de Sharpe). Ela é destinada a consultores, planejadores financeiros ou investidores experientes.
+                    </p>
+                    <button 
+                        onClick={() => setAdvancedMode(true)}
+                        className="bg-dash-text text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-dash-text/90 transition-colors shadow-md"
                     >
-                        {t.label}
+                        Habilitar Modo Avançado
                     </button>
-                ))}
-            </div>
+                </div>
+            ) : (
+                <>
+                    <div className="bg-dash-surface border border-dash-border p-1.5 rounded-[14px] flex flex-wrap gap-2 w-full md:w-max shadow-sm">
+                        {[
+                            { id: "frontier", label: "Fronteira Eficiente" },
+                            { id: "correlation", label: "Matriz de Correlação" },
+                            { id: "table", label: "Tabela de Fundos" },
+                        ].map(t => (
+                            <button
+                                key={t.id}
+                                onClick={() => setTab(t.id as any)}
+                                className={`flex-1 md:flex-none px-6 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 ${tab === t.id
+                                    ? "bg-dash-accent text-white shadow-md scale-[1.02]"
+                                    : "text-dash-text-muted hover:text-dash-text hover:bg-dash-surface-active"
+                                    }`}
+                            >
+                                {t.label}
+                            </button>
+                        ))}
+                    </div>
 
-            <div className="bg-dash-surface rounded-[24px] p-6 lg:p-8 overflow-hidden shadow-sm border border-dash-border">
-                {tab === "frontier" && (
+                    <div className="bg-dash-surface rounded-[24px] p-6 lg:p-8 overflow-hidden shadow-sm border border-dash-border">
+                        {tab === "frontier" && (
                     <div>
                         <div className="flex gap-2 mb-6">
                             {(["Geral", "IQ"] as const).map(t => (
@@ -419,7 +438,9 @@ export default function MarkowitzDashboardPage() {
                         </div>
                     </div>
                 )}
-            </div>
+                </div>
+                </>
+            )}
         </div>
     );
 }

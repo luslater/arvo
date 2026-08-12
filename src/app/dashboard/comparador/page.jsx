@@ -554,26 +554,26 @@ export function ComparadorContent() {
                   <ReferenceLine y={initial} stroke="#cbd5e1" strokeDasharray="4 4" />
                   
                   {/* Lines */}
-                  <Line type="monotone" dataKey="flp" name="Fundo LP (Come-cotas)" stroke="#C2551B" strokeWidth={3} dot={false} isAnimationActive={false} />
-                  <Line type="monotone" dataKey="cdb" name="Regressiva (sem CC)" stroke="#2B5FAA" strokeWidth={3} dot={false} isAnimationActive={false} />
-                  <Line type="monotone" dataKey="vgbl" name="VGBL (10%)" stroke="#0E7C66" strokeWidth={3} dot={false} isAnimationActive={false} />
+                  <Line type="monotone" dataKey="flp" name="Fundo LP (Come-cotas)" stroke="#123044" strokeWidth={3} dot={false} isAnimationActive={false} />
+                  <Line type="monotone" dataKey="cdb" name="Regressiva (sem CC)" stroke="#2b6e76" strokeWidth={3} dot={false} isAnimationActive={false} />
+                  <Line type="monotone" dataKey="vgbl" name="VGBL (10%)" stroke="#4fa080" strokeWidth={3} dot={false} isAnimationActive={false} />
                 </ComposedChart>
               </ResponsiveContainer>
             </div>
 
             {/* Stats */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-              <div className="bg-[#fcfbf9] rounded-xl p-4 border border-[#e4e0d7] border-l-4" style={{ borderLeftColor: "#C2551B" }}>
+              <div className="bg-[#fcfbf9] rounded-xl p-4 border border-[#e4e0d7] border-l-4" style={{ borderLeftColor: "#123044" }}>
                 <div className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Custo do Come-Cotas</div>
                 <div className="font-mono text-lg font-bold text-[#123044] mb-1">{fmtBRL(deferData.cdbLast.net - deferData.flpLast.net)}</div>
                 <div className="text-xs text-gray-500">{fmtPct(eqRate(deferData.cdbLast.net, initial, months) - eqRate(deferData.flpLast.net, initial, months))} a.a. perdidos no período</div>
               </div>
-              <div className="bg-[#fcfbf9] rounded-xl p-4 border border-[#e4e0d7] border-l-4" style={{ borderLeftColor: "#0E7C66" }}>
+              <div className="bg-[#fcfbf9] rounded-xl p-4 border border-[#e4e0d7] border-l-4" style={{ borderLeftColor: "#2b6e76" }}>
                 <div className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Diferença VGBL vs CDB</div>
                 <div className="font-mono text-lg font-bold text-[#123044] mb-1">{(deferData.vgblLast.net - deferData.cdbLast.net >= 0 ? "+" : "-")}{fmtBRL(Math.abs(deferData.vgblLast.net - deferData.cdbLast.net))}</div>
                 <div className="text-xs text-gray-500">{(deferData.vgblLast.net - deferData.cdbLast.net >= 0) ? "VGBL vence CDB com alíquota regressiva exclusiva." : "CDB vence VGBL (alíquota maior ou custo da previdência)."}</div>
               </div>
-              <div className="bg-[#fcfbf9] rounded-xl p-4 border border-[#e4e0d7] border-l-4" style={{ borderLeftColor: "#1B2733" }}>
+              <div className="bg-[#fcfbf9] rounded-xl p-4 border border-[#e4e0d7] border-l-4" style={{ borderLeftColor: "#4fa080" }}>
                 <div className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">VGBL vs Fundo LP</div>
                 <div className="font-mono text-lg font-bold text-[#123044] mb-1">{(deferData.vgblLast.net - deferData.flpLast.net >= 0 ? "+" : "-")}{fmtBRL(Math.abs(deferData.vgblLast.net - deferData.flpLast.net))}</div>
                 <div className="text-xs text-gray-500">{(deferData.vgblLast.net - deferData.flpLast.net >= 0) ? "O diferimento compensa a desvantagem." : "Fundo de Longo Prazo ainda ganha."}</div>

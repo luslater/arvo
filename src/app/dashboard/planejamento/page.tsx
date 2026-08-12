@@ -242,15 +242,18 @@ export default function PlanejamentoDashboardPage() {
 
     const alignmentInfo = projection ? getAlignmentLabel(projection.alignmentScore) : null
 
-    // Renda mensal passiva usando regra dos 4%
+    // Meta ajustada pela inflação se estivermos na visão nominal
+    const targetIncome = viewMode === "NOMINAL" 
+        ? desiredLifestyleCost * Math.pow(1 + INFLATION_RATE / 100, investmentPeriod)
+        : desiredLifestyleCost;
+
+    // Renda mensal passiva projetada
     const monthlyPassiveIncome = projection
         ? (viewMode === "NOMINAL" ? projection.projectedValue : projection.projectedValueReal) * 0.04 / 12
         : 0
 
-    const goalProgress = Math.min(
-        100,
-        (monthlyPassiveIncome / Math.max(desiredLifestyleCost, 1)) * 100
-    )
+    // Progresso real sempre reflete o alignmentScore oficial (que é calculado em base real no backend)
+    const goalProgress = projection ? Math.min(100, projection.alignmentScore) : 0
 
     const handleSave = async () => {
         try {
@@ -492,10 +495,10 @@ export default function PlanejamentoDashboardPage() {
                                     </div>
                                     <div className="text-right space-y-1">
                                         <p className="text-[10px] uppercase font-bold" style={{ color: "#64748b" }}>
-                                            Meta
+                                            Meta {viewMode === "NOMINAL" && "(Futura)"}
                                         </p>
                                         <p className="text-2xl font-light" style={{ color: "#cbd5e1" }}>
-                                            {formatBRL(desiredLifestyleCost)}
+                                            {formatBRL(targetIncome)}
                                         </p>
                                     </div>
                                 </div>

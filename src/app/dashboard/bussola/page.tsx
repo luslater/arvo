@@ -76,8 +76,14 @@ export default function BussolaPage() {
     // Calculando métricas de rendimento e volatilidade com base nas carteiras oficiais base
     const calcMetrics = (assets: any[]) => {
         let ret = 0, vol = 0, weightTotal = 0;
+        const metricKeys = Object.keys(ASSET_METRICS);
         assets.forEach(a => {
-            const metrics = ASSET_METRICS[a.asset || a.assetName]
+            const name = a.asset || a.assetName;
+            let metrics = ASSET_METRICS[name];
+            if (!metrics) {
+                const key = metricKeys.find(k => k.includes(name) || name.includes(k.split(' (')[0]));
+                if (key) metrics = ASSET_METRICS[key];
+            }
             if (metrics) {
                 const w = a.applicableWeight !== undefined ? a.applicableWeight : (a.weight || 0);
                 ret += metrics.expectedReturn * w / 100;

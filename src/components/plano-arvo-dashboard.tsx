@@ -17,12 +17,12 @@ const userData = {
 }
 
 const pillarData = [
-  { id: 1, name: "Organização Financeira", score: 74, icon: Wallet, color: "#4fa080", badge: "Organizador Financeiro", status: "completed" },
-  { id: 2, name: "Proteção e Segurança", score: 61, icon: Shield, color: "#3B82F6", badge: "Guardião", status: "completed" },
-  { id: 3, name: "Construção de Patrimônio", score: 72, icon: TrendingUp, color: "#8B5CF6", badge: "Construtor de Patrimônio", status: "completed" },
-  { id: 4, name: "Futuro e Aposentadoria", score: 65, icon: Sun, color: "#F59E0B", badge: "Arquiteto do Futuro", status: "completed" },
-  { id: 5, name: "Inteligência Tributária", score: 58, icon: Scale, color: "#EF4444", badge: "Estrategista Tributário", status: "completed" },
-  { id: 6, name: "Legado e Sucessão", score: 52, icon: TreePine, color: "#06B6D4", badge: "Arquiteto do Legado", status: "completed" },
+  { id: 1, name: "Organização Financeira", score: 74, icon: Wallet, color: "#123044", badge: "Organizador Financeiro", status: "completed" },
+  { id: 2, name: "Proteção e Segurança", score: 61, icon: Shield, color: "#2b6e76", badge: "Guardião", status: "completed" },
+  { id: 3, name: "Construção de Patrimônio", score: 72, icon: TrendingUp, color: "#4fa080", badge: "Construtor de Patrimônio", status: "completed" },
+  { id: 4, name: "Futuro e Aposentadoria", score: 65, icon: Sun, color: "#123044", badge: "Arquiteto do Futuro", status: "completed" },
+  { id: 5, name: "Inteligência Tributária", score: 58, icon: Scale, color: "#2b6e76", badge: "Estrategista Tributário", status: "completed" },
+  { id: 6, name: "Legado e Sucessão", score: 52, icon: TreePine, color: "#4fa080", badge: "Arquiteto do Legado", status: "completed" },
 ]
 
 const financialSummary = {
@@ -50,21 +50,21 @@ const financialSummary = {
 }
 
 const allocationCurrent = [
-  { name: "RF Pós-fixada", value: 45, color: "#4fa080" },
-  { name: "RF IPCA+", value: 15, color: "#34D399" },
-  { name: "FIIs", value: 12, color: "#3B82F6" },
-  { name: "Ações BR", value: 18, color: "#8B5CF6" },
-  { name: "Internacional", value: 5, color: "#F59E0B" },
-  { name: "Cripto", value: 5, color: "#EF4444" },
+  { name: "RF Pós-fixada", value: 45, color: "#123044" },
+  { name: "RF IPCA+", value: 15, color: "#2b6e76" },
+  { name: "FIIs", value: 12, color: "#4fa080" },
+  { name: "Ações BR", value: 18, color: "#9bcbb4" },
+  { name: "Internacional", value: 5, color: "#0A192F" },
+  { name: "Cripto", value: 5, color: "#667085" },
 ]
 
 const allocationSuggested = [
-  { name: "RF Pós-fixada", value: 30, color: "#4fa080" },
-  { name: "RF IPCA+", value: 18, color: "#34D399" },
-  { name: "RF Pré", value: 7, color: "#6EE7B7" },
-  { name: "FIIs", value: 18, color: "#3B82F6" },
-  { name: "Ações BR", value: 17, color: "#8B5CF6" },
-  { name: "Internacional", value: 10, color: "#F59E0B" },
+  { name: "RF Pós-fixada", value: 30, color: "#123044" },
+  { name: "RF IPCA+", value: 18, color: "#2b6e76" },
+  { name: "RF Pré", value: 7, color: "#6b9487" },
+  { name: "FIIs", value: 18, color: "#4fa080" },
+  { name: "Ações BR", value: 17, color: "#9bcbb4" },
+  { name: "Internacional", value: 10, color: "#0A192F" },
 ]
 
 const patrimonioProjection = [
@@ -102,9 +102,9 @@ const topActions = [
 ]
 
 const objectives = [
-  { name: "Viagem Europa", value: 25000, current: 8500, deadline: "Dez 2027", pct: 34, color: "#3B82F6" },
-  { name: "Entrada Apartamento", value: 180000, current: 95000, deadline: "Jun 2030", pct: 52.8, color: "#8B5CF6" },
-  { name: "Independência Financeira", value: 2400000, current: 185000, deadline: "Jun 2054", pct: 7.7, color: "#F59E0B" },
+  { name: "Viagem Europa", value: 25000, current: 8500, deadline: "Dez 2027", pct: 34, color: "#2b6e76" },
+  { name: "Entrada Apartamento", value: 180000, current: 95000, deadline: "Jun 2030", pct: 52.8, color: "#4fa080" },
+  { name: "Independência Financeira", value: 2400000, current: 185000, deadline: "Jun 2054", pct: 7.7, color: "#123044" },
 ]
 
 // ============================================================
@@ -139,10 +139,10 @@ function ScoreGauge({ score, size = 200 }: { score: number, size?: number }) {
   const cy = size / 2 + 10
 
   const getColor = (s: number) => {
-    if (s >= 80) return "#4fa080"
-    if (s >= 60) return "#3B82F6"
-    if (s >= 40) return "#F59E0B"
-    return "#EF4444"
+    if (s >= 80) return "#123044"
+    if (s >= 60) return "#2b6e76"
+    if (s >= 40) return "#4fa080"
+    return "#9bcbb4"
   }
 
   return (
@@ -150,10 +150,10 @@ function ScoreGauge({ score, size = 200 }: { score: number, size?: number }) {
       <svg width={size} height={size / 2 + 30} viewBox={`0 0 ${size} ${size / 2 + 30}`}>
         <defs>
           <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#EF4444" />
-            <stop offset="33%" stopColor="#F59E0B" />
-            <stop offset="66%" stopColor="#3B82F6" />
-            <stop offset="100%" stopColor="#4fa080" />
+            <stop offset="0%" stopColor="#9bcbb4" />
+            <stop offset="33%" stopColor="#4fa080" />
+            <stop offset="66%" stopColor="#2b6e76" />
+            <stop offset="100%" stopColor="#123044" />
           </linearGradient>
         </defs>
         <path d={`M ${cx - radius} ${cy} A ${radius} ${radius} 0 0 1 ${cx + radius} ${cy}`} fill="none" stroke="#e4e0d7" strokeWidth="16" strokeLinecap="round" />
@@ -385,9 +385,9 @@ export default function PlanoArvoDashboard({ onBack }: { onBack?: () => void }) 
             <section className="mb-8">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
                 <MetricCard icon={DollarSign} label="Renda Mensal" value={formatBRL(financialSummary.rendaTotal)} color="#4fa080" />
-                <MetricCard icon={Wallet} label="Saldo Livre" value={formatBRL(financialSummary.saldoLivre)} subtitle={`${(100 - financialSummary.comprometimento)}% da renda`} color="#3B82F6" trend={5} />
-                <MetricCard icon={PiggyBank} label="Reserva de Emergência" value={`${financialSummary.reservaPct.toFixed(0)}%`} subtitle={`${formatBRL(financialSummary.reservaAtual)} de ${formatBRL(financialSummary.reservaMeta)}`} color="#F59E0B" trend={12} />
-                <MetricCard icon={TrendingUp} label="Capacidade de Investimento" value={formatBRL(financialSummary.capacidadeInvestimento) + "/mês"} color="#8B5CF6" trend={8} />
+                <MetricCard icon={Wallet} label="Saldo Livre" value={formatBRL(financialSummary.saldoLivre)} subtitle={`${(100 - financialSummary.comprometimento)}% da renda`} color="#2b6e76" trend={5} />
+                <MetricCard icon={PiggyBank} label="Reserva de Emergência" value={`${financialSummary.reservaPct.toFixed(0)}%`} subtitle={`${formatBRL(financialSummary.reservaAtual)} de ${formatBRL(financialSummary.reservaMeta)}`} color="#4fa080" trend={12} />
+                <MetricCard icon={TrendingUp} label="Capacidade de Investimento" value={formatBRL(financialSummary.capacidadeInvestimento) + "/mês"} color="#123044" trend={8} />
               </div>
             </section>
 
@@ -453,9 +453,9 @@ export default function PlanoArvoDashboard({ onBack }: { onBack?: () => void }) 
             
             <section className="mb-8">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-                <MetricCard icon={BarChart3} label="Patrimônio Atual" value={formatBRL(financialSummary.patrimonioInvestido)} color="#8B5CF6" trend={14} />
-                <MetricCard icon={Target} label="Meta Aposentadoria" value={formatBRL(financialSummary.patrimonioNecessarioAposentadoria)} subtitle={`Em ${financialSummary.anosRestantes} anos`} color="#F59E0B" />
-                <MetricCard icon={Zap} label="Gap Aposentadoria" value={formatBRL(financialSummary.gapAposentadoria)} subtitle="Diferença para a meta" color="#EF4444" />
+                <MetricCard icon={BarChart3} label="Patrimônio Atual" value={formatBRL(financialSummary.patrimonioInvestido)} color="#123044" trend={14} />
+                <MetricCard icon={Target} label="Meta Aposentadoria" value={formatBRL(financialSummary.patrimonioNecessarioAposentadoria)} subtitle={`Em ${financialSummary.anosRestantes} anos`} color="#4fa080" />
+                <MetricCard icon={Zap} label="Gap Aposentadoria" value={formatBRL(financialSummary.gapAposentadoria)} subtitle="Diferença para a meta" color="#0A192F" />
                 <MetricCard icon={Star} label="Economia Fiscal" value={formatBRL(financialSummary.economiaFiscalPotencial) + "/ano"} subtitle="Via limite do PGBL" color="#4fa080" />
               </div>
             </section>
