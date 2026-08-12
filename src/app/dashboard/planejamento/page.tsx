@@ -292,7 +292,7 @@ export default function PlanejamentoDashboardPage() {
                     className="text-5xl md:text-6xl font-extralight tracking-tighter leading-none"
                 >
                     Seu futuro, <br />
-                    <span className="font-semibold italic text-emerald-600">em tempo real.</span>
+                    <span className="font-semibold text-emerald-600">em tempo real.</span>
                 </motion.h1>
             </header>
 

@@ -123,7 +123,7 @@ export default function EducacaoPage() {
                             <div className="text-[13px] font-medium mb-0.5">Sua carteira em março: análise e próximos passos</div>
                             <div className="text-[11px] text-dash-text-light">Enviado em 12/03/2026 · 8 min</div>
                         </div>
-                        <div className="flex-shrink-0"><span className="bg-dash-accent text-white text-[10px] px-2 py-0.5 rounded-full font-medium">Novo</span></div>
+                        <div className="flex-shrink-0"><span className="bg-emerald-100 text-emerald-700 text-[10px] px-2 py-0.5 rounded-full font-medium border border-emerald-200">Novo</span></div>
                     </div>
 
                     <div className="flex items-center gap-3.5 p-3.5 rounded-xl border border-dash-border cursor-pointer hover:bg-dash-surface-active transition-colors group">
@@ -132,7 +132,7 @@ export default function EducacaoPage() {
                             <div className="text-[13px] font-medium mb-0.5">Por que seu aporte de R$ 900/mês está no caminho certo</div>
                             <div className="text-[11px] text-dash-text-light">Enviado em 18/02/2026 · 5 min</div>
                         </div>
-                        <div className="flex-shrink-0"><span className="bg-dash-accent text-white text-[10px] px-2 py-0.5 rounded-full font-medium">Novo</span></div>
+                        <div className="flex-shrink-0"><span className="bg-emerald-100 text-emerald-700 text-[10px] px-2 py-0.5 rounded-full font-medium border border-emerald-200">Novo</span></div>
                     </div>
 
                     <div className="flex items-center gap-3.5 p-3.5 rounded-xl border border-dash-border cursor-pointer hover:bg-dash-surface-active transition-colors group">
@@ -141,7 +141,7 @@ export default function EducacaoPage() {
                             <div className="text-[13px] font-medium mb-0.5 text-dash-text-muted">Revisão de objetivos: entrada do apartamento em 2027</div>
                             <div className="text-[11px] text-dash-text-light">Enviado em 05/01/2026 · 11 min</div>
                         </div>
-                        <div className="flex-shrink-0"><span className="bg-dash-surface-active text-dash-text-light text-[10px] px-2 py-0.5 rounded-full font-medium">Assistido</span></div>
+                        <div className="flex-shrink-0"><span className="bg-slate-100 text-slate-500 text-[10px] px-2 py-0.5 rounded-full font-medium border border-slate-200">Assistido</span></div>
                     </div>
                 </div>
             </div>

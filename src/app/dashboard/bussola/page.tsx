@@ -73,25 +73,29 @@ export default function BussolaPage() {
     const formatPct = (val: number) => `${Math.round(val)}%`
     const formatDecimalPct = (val: number) => `${val.toFixed(1)}%`
 
-    // Calculando métricas de rendimento e volatilidade com base no dicionário ASSET_METRICS
-    let projectedReturn = 0
-    let projectedVolatility = 0
-    let validMetricWeight = 0
-
-    activeAssets.forEach(a => {
-        const metrics = ASSET_METRICS[a.assetName]
-        if (metrics) {
-            projectedReturn += (metrics.expectedReturn * a.applicableWeight) / 100
-            projectedVolatility += (metrics.volatility * a.applicableWeight) / 100
-            validMetricWeight += a.applicableWeight
-        }
-    })
-
-    // Caso a carteira não some 100% (arredondamentos) ou falte métricas, normalizamos
-    if (validMetricWeight > 0) {
-        projectedReturn = projectedReturn * (100 / validMetricWeight)
-        projectedVolatility = projectedVolatility * (100 / validMetricWeight)
+    // Calculando métricas de rendimento e volatilidade com base nas carteiras oficiais base
+    const calcMetrics = (assets: any[]) => {
+        let ret = 0, vol = 0, weightTotal = 0;
+        assets.forEach(a => {
+            const metrics = ASSET_METRICS[a.asset || a.assetName]
+            if (metrics) {
+                const w = a.applicableWeight !== undefined ? a.applicableWeight : (a.weight || 0);
+                ret += metrics.expectedReturn * w / 100;
+                vol += metrics.volatility * w / 100;
+                weightTotal += w;
+            }
+        });
+        return {
+            ret: weightTotal > 0 ? ret * (100 / weightTotal) : 0,
+            vol: weightTotal > 0 ? vol * (100 / weightTotal) : 0
+        };
     }
+
+    const { ret: retFrom, vol: volFrom } = calcMetrics(from.assets)
+    const { ret: retTo, vol: volTo } = calcMetrics(to.assets)
+
+    const projectedReturn = retFrom * factorFrom + retTo * factorTo;
+    const projectedVolatility = volFrom * factorFrom + volTo * factorTo;
 
     const getSliderColor = (val: number) => {
         if (val < 33) return "#9bcbb4"
@@ -393,7 +397,7 @@ export default function BussolaPage() {
                         <div className="space-y-4">
                             {sortedClasses.map(([cls, val]) => (
                                 <div key={cls} className="flex items-center gap-3 text-sm">
-                                    <div className="w-28 font-bold text-[#344054] truncate" title={cls}>{cls}</div>
+                                    <div className="w-36 flex-shrink-0 font-bold text-[#344054] truncate" title={cls}>{cls}</div>
                                     <div className="flex-1 h-2.5 bg-[#eee9df] rounded-full overflow-hidden">
                                         <div 
                                             className="h-full rounded-full bg-gradient-to-r from-[#24556d] to-[#2d8a69] transition-all duration-300" 
