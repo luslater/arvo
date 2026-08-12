@@ -143,7 +143,7 @@ export function calculateAlignmentScore(
  */
 export function generateRecommendation(score: number, gap: number): string {
     if (score >= 100) {
-        return `Parabéns! Seu planejamento está alinhado. Você terá uma sobra de ${new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(Math.max(0, gap))} (a valores de hoje).`
+        return `Parabéns! Seu planejamento está alinhado. Você terá uma margem de segurança de ${new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(Math.max(0, gap))} (a valores de hoje).`
     } else if (score >= 80) {
         return `Quase lá! Você está ${score}% alinhado. Considere aumentar o aporte mensal ou o prazo para cobrir a diferença de ${new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(Math.abs(gap))} (a valores de hoje).`
     } else if (score >= 60) {
