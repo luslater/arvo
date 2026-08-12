@@ -99,8 +99,6 @@ export function DashboardSidebar() {
 
                 <span className="text-[10px] font-semibold text-dash-text-light uppercase tracking-widest px-3 py-2 mt-4">Aprendizado</span>
                 <NavLink href="/dashboard/educacao" icon={<BookOpen className="w-4 h-4" />} label="Educação" onClick={closeMobileMenu} />
-                <NavLink href="/dashboard/markowitz" icon={<TrendingUp className="w-4 h-4" />} label="Análise Markowitz" onClick={closeMobileMenu} />
-
                 <span className="text-[10px] font-semibold text-dash-text-light uppercase tracking-widest px-3 py-2 mt-4">Conta & Contato</span>
                 <NavLink href="/dashboard/assinatura" icon={<CreditCard className="w-4 h-4" />} label="Assinatura" onClick={closeMobileMenu} />
                 <NavLink href="/dashboard/agendamento" icon={<HelpCircle className="w-4 h-4" />} label="Agendamento" onClick={closeMobileMenu} />
