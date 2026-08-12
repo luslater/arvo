@@ -1,6 +1,6 @@
 "use client"
 
-import { Play } from "lucide-react"
+import { Play, PiggyBank, BarChart3, TrendingUp, Globe2, Home, FileText, Lock } from "lucide-react"
 
 export default function EducacaoPage() {
     return (
@@ -12,7 +12,9 @@ export default function EducacaoPage() {
 
             <div className="grid grid-cols-3 gap-3.5 mb-6">
                 <div className="bg-dash-surface border border-dash-border rounded-2xl overflow-hidden cursor-pointer hover:border-dash-border-strong hover:-translate-y-0.5 transition-all shadow-sm">
-                    <div className="h-[100px] flex items-center justify-center text-[36px] bg-dash-accent-light">🏗️</div>
+                    <div className="h-[100px] flex items-center justify-center bg-dash-accent-light text-dash-accent">
+                        <PiggyBank className="w-8 h-8" />
+                    </div>
                     <div className="p-4">
                         <div className="text-[10px] font-medium uppercase tracking-[0.06em] text-dash-text-light mb-1">Fundação</div>
                         <div className="text-[13px] font-medium mb-3 leading-snug">Como montar sua reserva de emergência</div>
@@ -26,7 +28,9 @@ export default function EducacaoPage() {
                 </div>
 
                 <div className="bg-dash-surface border border-dash-border rounded-2xl overflow-hidden cursor-pointer hover:border-dash-border-strong hover:-translate-y-0.5 transition-all shadow-sm">
-                    <div className="h-[100px] flex items-center justify-center text-[36px] bg-dash-blue-light">📊</div>
+                    <div className="h-[100px] flex items-center justify-center bg-dash-blue-light text-dash-blue">
+                        <BarChart3 className="w-8 h-8" />
+                    </div>
                     <div className="p-4">
                         <div className="text-[10px] font-medium uppercase tracking-[0.06em] text-dash-text-light mb-1">Em andamento</div>
                         <div className="text-[13px] font-medium mb-3 leading-snug">Renda fixa sem mistério: Tesouro, CDB e LCI</div>
@@ -41,7 +45,9 @@ export default function EducacaoPage() {
                 </div>
 
                 <div className="bg-dash-surface border border-dash-border rounded-2xl overflow-hidden cursor-pointer hover:border-dash-border-strong hover:-translate-y-0.5 transition-all shadow-sm">
-                    <div className="h-[100px] flex items-center justify-center text-[36px] bg-dash-amber-light">📈</div>
+                    <div className="h-[100px] flex items-center justify-center bg-dash-amber-light text-dash-amber">
+                        <TrendingUp className="w-8 h-8" />
+                    </div>
                     <div className="p-4">
                         <div className="text-[10px] font-medium uppercase tracking-[0.06em] text-dash-text-light mb-1">Próxima recomendada</div>
                         <div className="text-[13px] font-medium mb-3 leading-snug">Renda variável: ações e ETFs para iniciantes</div>
@@ -55,21 +61,25 @@ export default function EducacaoPage() {
                 </div>
 
                 <div className="bg-dash-surface border border-dash-border rounded-2xl overflow-hidden cursor-pointer hover:border-dash-border-strong hover:-translate-y-0.5 transition-all shadow-sm">
-                    <div className="h-[100px] flex items-center justify-center text-[36px] bg-[#F3EAF9]">🌍</div>
+                    <div className="h-[100px] flex items-center justify-center bg-[#F3EAF9] text-[#8B5CF6]">
+                        <Globe2 className="w-8 h-8" />
+                    </div>
                     <div className="p-4">
                         <div className="text-[10px] font-medium uppercase tracking-[0.06em] text-dash-text-light mb-1">Avançado · Bloqueado</div>
                         <div className="text-[13px] font-medium mb-3 leading-snug text-dash-text-muted">Diversificação global: S&P 500 e dolarização</div>
                         <div className="flex items-center justify-between">
                             <div className="text-[11px] text-dash-text-light">9 aulas · 55 min</div>
                             <div className="flex items-center gap-1.5">
-                                <div className="text-[11px] text-dash-text-light">🔒</div>
+                                <div className="text-[11px] text-dash-text-light"><Lock className="w-3.5 h-3.5" /></div>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div className="bg-dash-surface border border-dash-border rounded-2xl overflow-hidden cursor-pointer hover:border-dash-border-strong hover:-translate-y-0.5 transition-all shadow-sm">
-                    <div className="h-[100px] flex items-center justify-center text-[36px] bg-dash-danger-light">🏠</div>
+                    <div className="h-[100px] flex items-center justify-center bg-dash-danger-light text-dash-danger">
+                        <Home className="w-8 h-8" />
+                    </div>
                     <div className="p-4">
                         <div className="text-[10px] font-medium uppercase tracking-[0.06em] text-dash-text-light mb-1">Seu objetivo</div>
                         <div className="text-[13px] font-medium mb-3 leading-snug">FIIs: como investir em imóveis sem comprar um</div>
@@ -83,7 +93,9 @@ export default function EducacaoPage() {
                 </div>
 
                 <div className="bg-dash-surface border border-dash-border rounded-2xl overflow-hidden cursor-pointer hover:border-dash-border-strong hover:-translate-y-0.5 transition-all shadow-sm">
-                    <div className="h-[100px] flex items-center justify-center text-[36px] bg-dash-surface-active">🧾</div>
+                    <div className="h-[100px] flex items-center justify-center bg-dash-surface-active text-dash-text">
+                        <FileText className="w-8 h-8" />
+                    </div>
                     <div className="p-4">
                         <div className="text-[10px] font-medium uppercase tracking-[0.06em] text-dash-text-light mb-1">Planejamento</div>
                         <div className="text-[13px] font-medium mb-3 leading-snug">IR e declaração: o que todo investidor precisa saber</div>
