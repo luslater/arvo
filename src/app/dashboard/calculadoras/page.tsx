@@ -3,10 +3,11 @@
 import { useState } from "react";
 import { CalculadoraJurosCompostos } from "@/components/calculators/juros-compostos";
 import { CalculadoraFinanciamento } from "@/components/calculators/financiamento";
+import { ComparadorContent } from "../comparador/page";
 import { Calculator } from "lucide-react";
 
 export default function CalculadorasHubPage() {
-    const [activeTab, setActiveTab] = useState<"compostos" | "financiamento">("compostos");
+    const [activeTab, setActiveTab] = useState<"compostos" | "financiamento" | "comparador">("comparador");
 
     return (
         <div className="flex flex-col gap-6 w-full max-w-7xl mx-auto pb-12 pt-6">
@@ -41,12 +42,26 @@ export default function CalculadorasHubPage() {
                 >
                     Comprar vs Alugar
                 </button>
+                <button
+                    onClick={() => setActiveTab("comparador")}
+                    className={`flex-1 md:flex-none px-6 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 ${activeTab === "comparador"
+                        ? "bg-dash-accent text-white shadow-md scale-[1.02]"
+                        : "text-dash-text-muted hover:text-dash-text hover:bg-dash-surface-active"
+                        }`}
+                >
+                    Comparador de Ativos
+                </button>
             </div>
 
             {/* Container principal das calculadoras */}
-            <div className="mt-4 bg-dash-surface rounded-[24px] p-6 lg:p-8 overflow-hidden shadow-sm border border-dash-border">
+            <div className={`mt-4 ${activeTab === 'comparador' ? '' : 'bg-dash-surface rounded-[24px] p-6 lg:p-8 overflow-hidden shadow-sm border border-dash-border'}`}>
                 {activeTab === "compostos" && <CalculadoraJurosCompostos />}
                 {activeTab === "financiamento" && <CalculadoraFinanciamento />}
+                {activeTab === "comparador" && (
+                    <div className="bg-white rounded-3xl overflow-hidden mt-0 -mx-4 sm:mx-0">
+                        <ComparadorContent />
+                    </div>
+                )}
             </div>
         </div>
     );

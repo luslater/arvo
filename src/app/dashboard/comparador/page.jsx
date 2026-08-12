@@ -258,7 +258,7 @@ function eqRate(net, I, M) {
   return M > 0 ? (Math.pow(net / I, 12 / M) - 1) * 100 : 0;
 }
 
-function ComparadorContent() {
+export function ComparadorContent() {
   const [initial, setInitial] = useState(100000);
   const [months, setMonths] = useState(36);
   const [cdi, setCdi] = useState(13.0);
