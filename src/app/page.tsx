@@ -20,9 +20,9 @@ export default function LandingPage() {
     --rule: rgba(236,231,219,.10);
     --rule-strong: rgba(236,231,219,.22);
     --card: #141a22;
-    --accent: #80A8AD;      /* brand-teal claro */
+    --accent: #2B6E76;      /* brand-teal */
     --accent-2: #4FA080;    /* ARVO green (secondary) */
-    --accent-deep: #2B6E76; /* brand-teal */
+    --accent-deep: #1b4f8a; /* darker blue */
   }
   .landing-page.light {
     --bg: #f4f1ea;

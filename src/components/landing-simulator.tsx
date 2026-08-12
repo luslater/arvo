@@ -63,7 +63,7 @@ function SliderInput({ label, value, onChange, min, max, step, prefix = "R$", su
         }} />
         <div style={{
           position: "absolute", left: 0, width: `${pct}%`, height: 6, borderRadius: 3,
-          background: "linear-gradient(90deg, #C5A55A, #B8943F)",
+          background: "linear-gradient(90deg, #4FA080, #2B6E76)",
           transition: "width 0.05s ease-out"
         }} />
         <input
@@ -83,8 +83,8 @@ function SliderInput({ label, value, onChange, min, max, step, prefix = "R$", su
           position: "absolute",
           left: `calc(${pct}% - 8px)`,
           width: 16, height: 16, borderRadius: "50%",
-          background: "#C5A55A",
-          boxShadow: "0 2px 8px rgba(197,165,90,0.4)",
+          background: "#4FA080",
+          boxShadow: "0 2px 8px rgba(79,160,128,0.4)",
           transition: "left 0.05s ease-out",
           pointerEvents: "none",
         }} />
@@ -127,8 +127,8 @@ function MiniChart({ pontos, metaPatrimonio, anoIndependencia, maxAnos = 30 }: a
     <svg viewBox={`0 0 ${W} ${H + 20}`} style={{ width: "100%", display: "block" }}>
       <defs>
         <linearGradient id="arvo-grad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#C5A55A" stopOpacity="0.25" />
-          <stop offset="100%" stopColor="#C5A55A" stopOpacity="0.02" />
+          <stop offset="0%" stopColor="#4FA080" stopOpacity="0.25" />
+          <stop offset="100%" stopColor="#4FA080" stopOpacity="0.02" />
         </linearGradient>
       </defs>
 
@@ -136,15 +136,15 @@ function MiniChart({ pontos, metaPatrimonio, anoIndependencia, maxAnos = 30 }: a
       <path d={pathArea} fill="url(#arvo-grad)" />
 
       {/* Linha principal */}
-      <path d={pathLine} fill="none" stroke="#C5A55A" strokeWidth="2.5" strokeLinecap="round" />
+      <path d={pathLine} fill="none" stroke="#4FA080" strokeWidth="2.5" strokeLinecap="round" />
 
       {/* Linha da meta */}
       {metaVisible && (
         <>
           <line x1={0} y1={metaY} x2={W} y2={metaY}
-            stroke="#C5A55A" strokeWidth="1" strokeDasharray="6,4" opacity="0.5" />
+            stroke="#4FA080" strokeWidth="1" strokeDasharray="6,4" opacity="0.5" />
           <text x={W - 4} y={metaY - 6}
-            fontSize="9" fill="#C5A55A" textAnchor="end" opacity="0.7">
+            fontSize="9" fill="#4FA080" textAnchor="end" opacity="0.7">
             meta
           </text>
         </>
@@ -156,7 +156,7 @@ function MiniChart({ pontos, metaPatrimonio, anoIndependencia, maxAnos = 30 }: a
           <circle
             cx={toX(anoIndependencia)}
             cy={toY(dados[anoIndependencia]?.saldo || 0)}
-            r="5" fill="#C5A55A" stroke="white" strokeWidth="2"
+            r="5" fill="#4FA080" stroke="white" strokeWidth="2"
           />
         </>
       )}
@@ -276,12 +276,12 @@ export default function ArvoSimulador() {
           }}>
             {/* Resultado 1: Quando */}
             <div style={{
-              background: "#1A1A1A", borderRadius: 12, padding: "12px 16px",
+              background: "#0A192F", borderRadius: 12, padding: "12px 16px",
               color: "white"
             }}>
               <span style={{
                 fontSize: 10, letterSpacing: 1.5, textTransform: "uppercase",
-                color: "#C5A55A", display: "block", marginBottom: 8
+                color: "#4FA080", display: "block", marginBottom: 8
               }}>
                 Independência financeira
               </span>
@@ -312,11 +312,11 @@ export default function ArvoSimulador() {
             }}>
               <span style={{
                 fontSize: 10, letterSpacing: 1.5, textTransform: "uppercase",
-                color: "#C5A55A", display: "block", marginBottom: 8
+                color: "#4FA080", display: "block", marginBottom: 8
               }}>
                 Renda passiva em 20 anos
               </span>
-              <span style={{ fontSize: 32, fontWeight: 300, letterSpacing: -1, color: "#1A1A1A", display: "block" }}>
+              <span style={{ fontSize: 32, fontWeight: 300, letterSpacing: -1, color: "#0A192F", display: "block" }}>
                 {fmtCurrency(Math.round(proj.rendaMensal20))}
               </span>
               <span style={{ fontSize: 12, color: "#bbb" }}>
@@ -340,7 +340,7 @@ export default function ArvoSimulador() {
           {/* CTA dentro do card */}
           <a href="/register" style={{
             width: "100%",
-            background: "#1A1A1A", color: "#F5F0E8",
+            background: "#0A192F", color: "#F5F0E8",
             border: "none", borderRadius: 100,
             padding: "10px 0", fontSize: 13, fontWeight: 600, cursor: "pointer",
             display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
