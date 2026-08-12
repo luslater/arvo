@@ -74,21 +74,19 @@ export default function LandingPage() {
 
   /* Buttons */
   .btn {
-    display: inline-flex; align-items: center; gap: 10px;
-    padding: 14px 22px; border-radius: 999px;
-    font-weight: 500; font-size: 13.5px; letter-spacing: -.005em;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 14px 22px; border-radius: 12px;
+    font-weight: 500; font-size: 14px; letter-spacing: -.01em;
     transition: transform .2s, background .2s, color .2s, border-color .2s;
   }
   .btn-primary { background: var(--ink); color: var(--bg); }
-  .btn-primary:hover { background: var(--accent); color: #1a1308; }
+  .btn-primary:hover { background: var(--ink-2); }
   .btn-accent { background: var(--accent); color: #1a1308; }
   .btn-accent:hover { filter: brightness(1.08); }
   .btn-ghost { color: var(--ink); border: 1px solid var(--rule-strong); }
   .btn-ghost:hover { background: var(--ink); color: var(--bg); border-color: var(--ink); }
   .plan .btn-ghost, .compare .col.arvo .btn-ghost { color: #fff; border-color: rgba(255,255,255,.32); }
   .plan .btn-ghost:hover, .compare .col.arvo .btn-ghost:hover { background: #fff; color: #1a1308; border-color: #fff; }
-  .btn .arr { transition: transform .2s; }
-  .btn:hover .arr { transform: translateX(3px); }
 
   /* ---------- NAV ---------- */
   .nav {
@@ -155,8 +153,8 @@ export default function LandingPage() {
   .hero-panel {
     background: linear-gradient(180deg, var(--card), var(--bg-2));
     border: 1px solid var(--rule);
-    border-radius: 20px; padding: 28px; position: relative;
-    box-shadow: 0 24px 60px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.04);
+    border-radius: 14px; padding: 28px; position: relative;
+    box-shadow: 0 16px 40px rgba(0,0,0,.15), inset 0 1px 0 rgba(255,255,255,.04);
   }
   .hp-top {
     display: flex; align-items: center; justify-content: space-between;
@@ -227,16 +225,16 @@ export default function LandingPage() {
 
   .chart {
     background: var(--card); border: 1px solid var(--rule);
-    border-radius: 20px; padding: 28px 28px 22px; position: relative;
+    border-radius: 14px; padding: 28px 28px 22px; position: relative;
   }
   .chart-head { display: flex; justify-content: space-between; align-items: flex-start; }
-  .chart-head .title { font-size: 11px; color: var(--ink-3); font-family: 'JetBrains Mono', monospace; letter-spacing: .14em; text-transform: uppercase; }
-  .chart-head .range { display: flex; gap: 2px; background: var(--bg-2); border-radius: 999px; padding: 3px; border: 1px solid var(--rule); }
+  .chart-head .title { font-size: 13px; color: var(--ink); font-weight: 500; }
+  .chart-head .range { display: flex; gap: 4px; background: var(--bg-2); border-radius: 8px; padding: 4px; border: 1px solid var(--rule); }
   .chart-head .range button {
-    font-size: 11px; padding: 5px 12px; border-radius: 999px;
-    color: var(--ink-3); font-family: 'JetBrains Mono', monospace; letter-spacing: .08em;
+    font-size: 12px; padding: 4px 10px; border-radius: 6px;
+    color: var(--ink-3); font-weight: 500;
   }
-  .chart-head .range .on { background: var(--ink); color: var(--bg); }
+  .chart-head .range .on { background: var(--ink); color: var(--bg); box-shadow: 0 1px 3px rgba(0,0,0,.1); }
   .chart svg { width: 100%; height: 280px; display: block; margin-top: 10px; }
   .chart-legend {
     display: flex; flex-wrap: wrap; gap: 18px; margin-top: 14px; padding-top: 16px; border-top: 1px solid var(--rule);
@@ -259,7 +257,7 @@ export default function LandingPage() {
   @media (max-width: 620px) { .portfolios { grid-template-columns: 1fr; } }
   .pf {
     background: var(--card); border: 1px solid var(--rule);
-    border-radius: 20px; padding: 28px 24px; position: relative;
+    border-radius: 14px; padding: 28px 24px; position: relative;
     transition: transform .35s cubic-bezier(.2,.7,.2,1), border-color .35s, background .35s, color .35s;
     display: flex; flex-direction: column;
     min-height: 340px;
@@ -314,7 +312,7 @@ export default function LandingPage() {
   .split ul li .n { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: .1em; width: 24px; }
 
   /* Allocation card */
-  .alloc-card { background: linear-gradient(180deg, var(--card), var(--bg-3)); border: 1px solid var(--rule); border-radius: 24px; padding: 40px; position: relative; box-shadow: 0 24px 60px rgba(0,0,0,.22); }
+  .alloc-card { background: linear-gradient(180deg, var(--card), var(--bg-3)); border: 1px solid var(--rule); border-radius: 14px; padding: 40px; position: relative; box-shadow: 0 16px 40px rgba(0,0,0,.15); }
   .alloc-card .label { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); }
   .alloc-card .amount { font-family: 'Sora', sans-serif; font-weight: 300; font-size: 56px; line-height: 1; letter-spacing: -.03em; margin: 10px 0 32px; }
   .alloc-card .donut { display: flex; align-items: center; gap: 32px; }
@@ -330,7 +328,7 @@ export default function LandingPage() {
   @media (max-width: 980px) { .pricing { grid-template-columns: 1fr; } }
   .plan {
     background: linear-gradient(180deg, #1a1306, #14100a);
-    border: 1px solid rgba(201,169,97,.32); border-radius: 24px;
+    border: 1px solid rgba(201,169,97,.32); border-radius: 14px;
     padding: 44px; display: flex; flex-direction: column; gap: 26px;
     position: relative; overflow: hidden;
     color: #fff;
@@ -386,7 +384,7 @@ export default function LandingPage() {
   .founder { display: grid; grid-template-columns: .85fr 1.15fr; gap: 72px; align-items: center; }
   @media (max-width: 900px) { .founder { grid-template-columns: 1fr; } }
   .founder-photo {
-    aspect-ratio: 4/5; background: var(--bg-3); border-radius: 20px; overflow: hidden; position: relative;
+    aspect-ratio: 4/5; background: var(--bg-3); border-radius: 14px; overflow: hidden; position: relative;
     border: 1px solid var(--rule);
   }
   .founder-photo .ph {
@@ -416,8 +414,8 @@ export default function LandingPage() {
   .faq-btn { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 30px 0; text-align: left; gap: 24px; }
   .faq-btn h4 { font-family: 'Sora', sans-serif; font-weight: 400; font-size: clamp(20px, 2.2vw, 28px); line-height: 1.15; margin: 0; letter-spacing: -.015em; color: var(--ink); }
   .faq-item.open .faq-btn h4 { color: var(--accent); }
-  .faq-btn .pm { width: 32px; height: 32px; border-radius: 999px; border: 1px solid var(--rule-strong); display: grid; place-items: center; flex: 0 0 auto; transition: background .2s, color .2s, transform .3s, border-color .2s; font-size: 14px; color: var(--ink-3); }
-  .faq-item.open .faq-btn .pm { background: var(--accent); color: #1a1308; transform: rotate(45deg); border-color: var(--accent); }
+  .faq-btn .pm { width: 24px; height: 24px; display: grid; place-items: center; flex: 0 0 auto; transition: transform .3s; color: var(--ink-3); }
+  .faq-item.open .faq-btn .pm { color: var(--accent); transform: rotate(180deg); }
   .faq-body { max-height: 0; overflow: hidden; transition: max-height .4s ease; color: var(--ink-2); font-size: 15.5px; line-height: 1.65; }
   .faq-body-inner { padding: 0 0 30px; max-width: 72ch; }
   .faq-item.open .faq-body { max-height: 400px; }
@@ -497,21 +495,21 @@ export default function LandingPage() {
       <section className="hero">
         <div className="wrap hero-grid">
           <div>
-            <div className="eyebrow rise"><span className="dot"></span>Orientação financeira independente · Sem comissão por produto indicado</div>
+            <div className="eyebrow rise">Orientação financeira independente | Sem comissão por produto</div>
             <h1 className="rise rise-2" style={{ fontSize: "clamp(32px, 4vw, 56px)", lineHeight: "1.05" }}>
               Você sabe quanto guardar,<br/>onde investir e<br/><b>quando pode parar?</b>
             </h1>
             <p className="hero-sub rise rise-3" style={{ fontSize: "16px", color: "var(--ink)", fontWeight: 500, marginTop: "16px" }}>
-              A maioria não sabe. A ARVO responde — e te acompanha até lá.
+              A maioria não sabe. A ARVO responde e te acompanha até lá.
             </p>
             
             <ul className="hero-bullets rise rise-3">
-              <li><span className="chk"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5L8.5 2" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg></span> Saiba em quantos anos pode conquistar sua independência financeira — com números, não palpite</li>
+              <li><span className="chk"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5L8.5 2" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg></span> Saiba em quantos anos pode conquistar sua independência financeira com números precisos</li>
               <li><span className="chk"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5L8.5 2" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg></span> Receba uma carteira pronta para o seu perfil, acompanhada mês a mês</li>
-              <li><span className="chk"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5L8.5 2" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg></span> Descubra se o que você guarda hoje é suficiente — ou o que precisa mudar</li>
+              <li><span className="chk"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5L8.5 2" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg></span> Descubra se o que você guarda hoje é suficiente ou o que precisa mudar</li>
             </ul>
             <div className="hero-cta rise rise-4">
-              <a href="/register" className="btn btn-accent">Fazer meu diagnóstico gratuito <span className="arr">→</span></a>
+              <a href="/register" className="btn btn-accent">Fazer meu diagnóstico gratuito</a>
               <a href="#como-funciona" className="btn btn-ghost">Ver como funciona ↓</a>
             </div>
             <div style={{ marginTop: "16px", fontSize: "11.5px", color: "var(--ink-3)", fontFamily: "'JetBrains Mono', monospace", letterSpacing: ".04em" }}>
@@ -550,22 +548,21 @@ export default function LandingPage() {
 <section class="section" id="planejamento">
   <div class="wrap split">
     <div>
-      <div class="eyebrow" style="margin-bottom: 16px;"><span class="dot"></span>§01 · O problema & a resposta</div>
-      <h2 style="font-family: 'Sora', sans-serif; font-weight: 300; font-size: clamp(32px, 4vw, 56px); line-height: 1.02; margin: 0 0 24px; letter-spacing: -.028em;">Guardar dinheiro é disciplina.<br>Saber o que fazer com ele é <b>método</b>.</h2>
+      <h2 style="font-family: 'Sora', sans-serif; font-weight: 300; font-size: clamp(32px, 4vw, 56px); line-height: 1.02; margin: 0 0 24px; letter-spacing: -.028em;">Guardar dinheiro é disciplina.<br>Saber o que fazer com ele é método.</h2>
       <p style="font-size: 16px; color: var(--ink-2); line-height: 1.6; max-width: 48ch;">
         Você faz sua parte: trabalha, poupa, coloca na caixinha ou no fundo que o banco indicou. Mas convive com perguntas que nunca foram respondidas. Sem resposta, qualquer decisão é chute. O planejamento ARVO responde com clareza:
       </p>
       <ul style="margin: 32px 0 0; padding: 0; list-style: none; border-top: 1px solid var(--rule);">
-        <li style="padding: 18px 0; border-bottom: 1px solid var(--rule); display: flex; align-items: center; gap: 18px; font-size: 16px;"><span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: .1em; width: 24px;">01</span> Quanto precisa acumular para ter liberdade financeira</li>
-        <li style="padding: 18px 0; border-bottom: 1px solid var(--rule); display: flex; align-items: center; gap: 18px; font-size: 16px;"><span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: .1em; width: 24px;">02</span> Quanto precisa guardar por mês para chegar lá</li>
-        <li style="padding: 18px 0; border-bottom: 1px solid var(--rule); display: flex; align-items: center; gap: 18px; font-size: 16px;"><span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: .1em; width: 24px;">03</span> Quando pode tirar o pé — com data, não esperança</li>
-        <li style="padding: 18px 0; border-bottom: 1px solid var(--rule); display: flex; align-items: center; gap: 18px; font-size: 16px;"><span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: .1em; width: 24px;">04</span> Quais ajustes fazer quando a vida muda</li>
+        <li style="padding: 18px 0; border-bottom: 1px solid var(--rule); display: flex; align-items: center; gap: 18px; font-size: 16px;">Quanto precisa acumular para ter liberdade financeira</li>
+        <li style="padding: 18px 0; border-bottom: 1px solid var(--rule); display: flex; align-items: center; gap: 18px; font-size: 16px;">Quanto precisa guardar por mês para chegar lá</li>
+        <li style="padding: 18px 0; border-bottom: 1px solid var(--rule); display: flex; align-items: center; gap: 18px; font-size: 16px;">Quando pode tirar o pé com data, não apenas esperança</li>
+        <li style="padding: 18px 0; border-bottom: 1px solid var(--rule); display: flex; align-items: center; gap: 18px; font-size: 16px;">Quais ajustes fazer quando a vida muda</li>
       </ul>
     </div>
 
     <aside class="alloc-card">
-      <div class="label">Exemplo · perfil Visão</div>
-      <div class="amount tab">Carteira <span style="color:var(--accent)">equilibrada</span></div>
+      <div class="label">Perfil Visão</div>
+      <div class="amount tab">Carteira equilibrada</div>
       <div class="donut">
                 <svg width="168" height="168" viewBox="0 0 168 168">
           <circle cx="84" cy="84" r="64" fill="none" stroke="rgba(236,231,219,.06)" stroke-width="22"/>
@@ -592,8 +589,7 @@ export default function LandingPage() {
   <div class="wrap">
     <div class="section-head" style="text-align: center;">
       <div style="margin: 0 auto;">
-        <div class="eyebrow"><span class="dot"></span>§02 · Como funciona</div>
-        <h2 style="font-size: clamp(32px, 4.2vw, 56px);">Três passos. Um processo <b>contínuo</b>.</h2>
+        <h2 style="font-size: clamp(32px, 4.2vw, 56px);">Três passos. Um processo contínuo.</h2>
       </div>
     </div>
   </div>
@@ -604,7 +600,6 @@ export default function LandingPage() {
         <h4>Diagnóstico sem venda de produto</h4>
         <p>Não vendemos fundo nem ganhamos rebate. Em 5 minutos você descobre seu perfil e onde estão as lacunas, 100% alinhado ao seu interesse.</p>
         <div class="foot-meta">
-          <span class="pips"><i class="on"></i><i></i><i></i></span>
           Sem custo
         </div>
       </div>
@@ -613,7 +608,6 @@ export default function LandingPage() {
         <h4>Estratégia antes da carteira</h4>
         <p>Toda decisão parte de um planejamento. Primeiro entendemos o que você precisa. Depois montamos a carteira. Nunca o contrário.</p>
         <div class="foot-meta">
-          <span class="pips"><i class="on"></i><i class="on"></i><i></i></span>
           Plano estruturado
         </div>
       </div>
@@ -622,7 +616,6 @@ export default function LandingPage() {
         <h4>Rebalanceamento e reuniões</h4>
         <p>A ARVO não entrega um plano e desaparece. Relatórios, rebalanceamento, reuniões 1:1 e suporte contínuo enquanto você for assinante.</p>
         <div class="foot-meta">
-          <span class="pips"><i class="on"></i><i class="on"></i><i class="on"></i></span>
           Contínuo
         </div>
       </div>
@@ -635,8 +628,7 @@ export default function LandingPage() {
   <div class="wrap">
     <div class="section-head">
       <div>
-        <div class="eyebrow"><span class="dot"></span>§03 · Carteiras</div>
-        <h2 style="font-size: clamp(32px, 4.2vw, 56px);">Quatro carteiras. <b>Resultado aberto</b>. Atualização contínua.</h2>
+        <h2 style="font-size: clamp(32px, 4.2vw, 56px);">Quatro carteiras. Resultado aberto. Atualização contínua.</h2>
       </div>
       <div class="lede">
         <p style="margin-top:0; margin-bottom:12px;">Cada carteira ARVO é monitorada mês a mês. Você acompanha a performance comparada ao CDI, sem maquiagem. O resultado está ali, transparente.</p>
@@ -646,46 +638,46 @@ export default function LandingPage() {
 
     <div class="portfolios" style="margin-bottom: 64px;">
       <article class="pf">
-        <div class="pf-top"><span>01 · Reserva</span><span>Conservadora</span></div>
+        <div class="pf-top"><span>Reserva</span><span>Conservadora</span></div>
         <h3>Abrigo</h3>
         <p class="pf-tag">Selic, liquidez diária. Dinheiro que você pode precisar amanhã.</p>
         <div class="pf-foot">
           <div class="pf-perf">Liquidez<small>imediata</small></div>
           <div class="pf-bar"><i style="width: 35%"></i></div>
-          <div class="pf-foot-meta"><span>Selic · RF</span><span>σ baixo</span></div>
+          <div class="pf-foot-meta"><span>Selic · RF</span><span style="display:flex;align-items:center;gap:4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>Baixa vol.</span></div>
         </div>
       </article>
 
       <article class="pf">
-        <div class="pf-top"><span>02 · Conservadora+</span><span>Conservadora / Moderada</span></div>
+        <div class="pf-top"><span>Conservadora</span><span>Conservadora / Moderada</span></div>
         <h3>Ritmo</h3>
         <p class="pf-tag">80% Selic, 20% diversificação. Para quem quer sair do básico sem susto.</p>
         <div class="pf-foot">
           <div class="pf-perf">Diversifica<small>renda fixa</small></div>
           <div class="pf-bar"><i style="width: 55%"></i></div>
-          <div class="pf-foot-meta"><span>RF · IPCA · Pré</span><span>σ baixo+</span></div>
+          <div class="pf-foot-meta"><span>RF · IPCA · Pré</span><span style="display:flex;align-items:center;gap:4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>Baixa+ vol.</span></div>
         </div>
       </article>
 
       <article class="pf">
-        <div class="pf-top"><span>03 · Moderado</span><span>Equilibrada</span></div>
+        <div class="pf-top"><span>Equilibrada</span><span>Equilibrada</span></div>
         <h3>Visão</h3>
         <p class="pf-tag">Renda fixa + variável controlada. Crescer com os pés no chão.</p>
         <div class="pf-foot">
           <div class="pf-perf">Crescimento<small>controlado</small></div>
           <div class="pf-bar"><i style="width: 78%"></i></div>
-          <div class="pf-foot-meta"><span>Inflação · Ações · Multi</span><span>σ moderado</span></div>
+          <div class="pf-foot-meta"><span>Inflação · Ações · Multi</span><span style="display:flex;align-items:center;gap:4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>Mod. vol.</span></div>
         </div>
       </article>
 
       <article class="pf">
-        <div class="pf-top"><span>04 · Arrojado</span><span>Arrojada</span></div>
+        <div class="pf-top"><span>Arrojada</span><span>Arrojada</span></div>
         <h3>Oceano</h3>
         <p class="pf-tag">Ações, multimercado, longo prazo. Para quem entende que volatilidade é preço, não risco.</p>
         <div class="pf-foot">
           <div class="pf-perf">Arrojado<small>longo prazo</small></div>
           <div class="pf-bar"><i style="width: 96%"></i></div>
-          <div class="pf-foot-meta"><span>Ações · Multimercados</span><span>σ alto</span></div>
+          <div class="pf-foot-meta"><span>Ações · Multimercados</span><span style="display:flex;align-items:center;gap:4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>Alta vol.</span></div>
         </div>
       </article>
     </div>
@@ -701,28 +693,26 @@ export default function LandingPage() {
 <section class="section" id="prova">
   <div class="wrap">
     <div class="section-head" style="grid-template-columns: 1fr; text-align: center;">
-      <div class="eyebrow" style="margin-bottom: 16px;"><span class="dot"></span>§04 · Na prática</div>
-      <h2>O que muda quando você tem <b>método</b>.</h2>
+      <h2>O que muda quando você tem método.</h2>
     </div>
 
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; max-width: 900px; margin: 0 auto;">
-      <div style="background: var(--card); border: 1px solid var(--rule); border-radius: 20px; padding: 40px;">
+      <div style="background: var(--card); border: 1px solid var(--rule); border-radius: 14px; padding: 40px;">
         <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .14em; color: var(--ink-3); text-transform: uppercase; margin-bottom: 24px;">Antes</div>
         <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 16px; font-size: 15px; color: var(--ink-2);">
-          <li><span style="color: var(--ink-4); margin-right: 8px;">✕</span> Dinheiro em CDB do banco e caixinha</li>
-          <li><span style="color: var(--ink-4); margin-right: 8px;">✕</span> Sem saber se estava no caminho certo</li>
-          <li><span style="color: var(--ink-4); margin-right: 8px;">✕</span> Sem meta ou planejamento estruturado</li>
-          <li><span style="color: var(--ink-4); margin-right: 8px;">✕</span> Sem prazo definido para parar</li>
+          <li><span style="color: var(--ink-4); margin-right: 8px;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></span> Dinheiro em CDB do banco e caixinha</li>
+          <li><span style="color: var(--ink-4); margin-right: 8px;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></span> Sem saber se estava no caminho certo</li>
+          <li><span style="color: var(--ink-4); margin-right: 8px;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></span> Sem meta ou planejamento estruturado</li>
+          <li><span style="color: var(--ink-4); margin-right: 8px;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></span> Sem prazo definido para parar</li>
         </ul>
       </div>
-      <div style="background: var(--bg); border: 1px solid var(--accent); border-radius: 20px; padding: 40px; position: relative;">
-        <div style="position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--accent); border-radius: 20px 20px 0 0;"></div>
+      <div style="background: var(--bg); border: 1px solid var(--accent); border-radius: 14px; padding: 40px;">
         <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .14em; color: var(--accent); text-transform: uppercase; margin-bottom: 24px;">Depois com ARVO</div>
         <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 16px; font-size: 15px; color: var(--ink);">
-          <li><span style="color: var(--accent); margin-right: 8px;">✓</span> Carteira Visão (Moderada) estruturada</li>
-          <li><span style="color: var(--accent); margin-right: 8px;">✓</span> Foco na rentabilidade global da carteira</li>
-          <li><span style="color: var(--accent); margin-right: 8px;">✓</span> Meta mensal de investimento definida</li>
-          <li><span style="color: var(--accent); margin-right: 8px;">✓</span> Plano de independência em 19 anos</li>
+          <li><span style="color: var(--accent); margin-right: 8px;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span> Carteira Visão (Moderada) estruturada</li>
+          <li><span style="color: var(--accent); margin-right: 8px;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span> Foco na rentabilidade global da carteira</li>
+          <li><span style="color: var(--accent); margin-right: 8px;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span> Meta mensal de investimento definida</li>
+          <li><span style="color: var(--accent); margin-right: 8px;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span> Plano de independência em 19 anos</li>
         </ul>
       </div>
     </div>
@@ -736,8 +726,7 @@ export default function LandingPage() {
   <div class="wrap">
       <div class="section-head">
       <div>
-        <div class="eyebrow"><span class="dot"></span>§05 · Assinatura</div>
-        <h2 style="font-size: clamp(32px, 4.2vw, 56px);">Um custo que se paga na primeira <b>decisão errada</b> que você evita.</h2>
+        <h2 style="font-size: clamp(32px, 4.2vw, 56px);">Um custo que se paga na primeira decisão errada que você evita.</h2>
       </div>
       <p class="lede">
         A ARVO não cobra comissões obscuras. Nossa única fonte de receita é a assinatura do plano anual. Assim, garantimos alinhamento total de interesses.
@@ -747,7 +736,6 @@ export default function LandingPage() {
     <div class="pricing" style="grid-template-columns: 1fr; max-width: 800px; margin: 0 auto;">
       <div class="plan" style="align-items: center; text-align: center;">
         <div>
-          <div class="eyebrow" style="margin-bottom: 14px;"><span class="dot"></span>Plano único</div>
           <h3>Acesso completo ARVO</h3>
         </div>
 
@@ -772,10 +760,10 @@ export default function LandingPage() {
         </ul>
 
         <div style="display:flex; gap: 12px; margin-top: 16px; position: relative; flex-wrap: wrap; justify-content: center; width: 100%;">
-          <a href="/register" class="btn btn-accent" style="font-size: 16px; padding: 18px 32px;">Fazer meu diagnóstico gratuito <span class="arr">→</span></a>
+          <a href="/register" class="btn btn-accent" style="font-size: 16px; padding: 18px 32px;">Fazer meu diagnóstico gratuito</a>
         </div>
         <div style="font-size: 13px; color: rgba(255,255,255,.65); margin-top: 24px; display: flex; align-items: center; gap: 8px; justify-content: center;">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1l1.8 3.65 4.05.6-2.93 2.86.7 4.05L7 10.25 3.38 12.16l.7-4.05L1.15 5.25l4.05-.6L7 1z" stroke="var(--accent)" stroke-width="1.2" fill="var(--accent)"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
           <span>Garantia incondicional de 7 dias. Você tem uma semana para testar antes do compromisso de 12 meses iniciar.</span>
         </div>
       </div>
@@ -788,44 +776,43 @@ export default function LandingPage() {
   <div class="wrap">
     <div class="section-head">
       <div>
-        <div class="eyebrow"><span class="dot"></span>§06 · Dúvidas</div>
         <h2>Antes de decidir.</h2>
       </div>
     </div>
 
     <div class="faq-list">
       <div class="faq-item open">
-        <button class="faq-btn"><h4>Preciso tirar meu dinheiro do meu banco?</h4><span class="pm">+</span></button>
+        <button class="faq-btn"><h4>Preciso tirar meu dinheiro do meu banco?</h4><span class="pm"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span></button>
         <div class="faq-body"><div class="faq-body-inner">
-          Não. Você mantém seus investimentos onde preferir — BTG, XP, Rico, seu banco. A ARVO orienta a estratégia. A custódia é sua.
+          Não. Você mantém seus investimentos onde preferir: BTG, XP, Rico ou o seu banco atual. A ARVO orienta a estratégia. A custódia é sua.
         </div></div>
       </div>
       <div class="faq-item">
-        <button class="faq-btn"><h4>R\$ 59,90 é pouco. O que tem de pegadinha?</h4><span class="pm">+</span></button>
+        <button class="faq-btn"><h4>R\$ 59,90 é pouco. O que tem de pegadinha?</h4><span class="pm"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span></button>
         <div class="faq-body"><div class="faq-body-inner">
           Nenhuma. Não existe upsell, produto mais caro, nem taxa escondida. O preço é baixo porque o modelo é escalável — não porque a entrega é fraca.
         </div></div>
       </div>
       <div class="faq-item">
-        <button class="faq-btn"><h4>Vocês vão investir por mim?</h4><span class="pm">+</span></button>
+        <button class="faq-btn"><h4>Vocês vão investir por mim?</h4><span class="pm"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span></button>
         <div class="faq-body"><div class="faq-body-inner">
           Não. A ARVO orienta e estrutura. Você executa na sua corretora. Seus ativos, sua custódia, seu controle.
         </div></div>
       </div>
       <div class="faq-item">
-        <button class="faq-btn"><h4>Posso testar antes?</h4><span class="pm">+</span></button>
+        <button class="faq-btn"><h4>Posso testar antes?</h4><span class="pm"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span></button>
         <div class="faq-body"><div class="faq-body-inner">
           Sim. O diagnóstico é gratuito, sem cartão, e você vê resultado antes de pagar qualquer coisa.
         </div></div>
       </div>
       <div class="faq-item">
-        <button class="faq-btn"><h4>Como funciona o cancelamento?</h4><span class="pm">+</span></button>
+        <button class="faq-btn"><h4>Como funciona o cancelamento?</h4><span class="pm"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span></button>
         <div class="faq-body"><div class="faq-body-inner">
           A assinatura é anual para garantir que o método tenha tempo de funcionar. Se em 7 dias perceber que não é para você, devolvemos 100%. Depois disso, o compromisso é de 12 meses — como qualquer processo sério.
         </div></div>
       </div>
       <div class="faq-item">
-        <button class="faq-btn"><h4>Para quem NÃO é a ARVO?</h4><span class="pm">+</span></button>
+        <button class="faq-btn"><h4>Para quem NÃO é a ARVO?</h4><span class="pm"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span></button>
         <div class="faq-body"><div class="faq-body-inner">
           Para quem busca day trade, dica quente de ação ou promessa de rentabilidade. A ARVO é para quem quer direção, não emoção.
         </div></div>

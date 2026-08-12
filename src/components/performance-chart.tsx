@@ -220,12 +220,12 @@ export function PerformanceChart() {
           <path d={paths.OCEANO} fill="none" stroke="var(--accent)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ transition: "d 0.4s ease" }} />
         </svg>
         <div className="chart-legend" style={{ flexWrap: "wrap", gap: "12px 24px", justifyContent: "flex-start", marginLeft: "60px" }}>
-          <span><i style={{ background: "rgba(201,169,97,.4)" }}></i> Abrigo <small style={{ opacity: .6, fontSize: "11px", marginLeft: "4px" }}>({fmtPct(portRets.Abrigo / cdiRet)} do CDI · {fmtPct(portMonth.Abrigo)} am)</small></span>
-          <span><i style={{ background: "rgba(201,169,97,.7)" }}></i> Ritmo <small style={{ opacity: .6, fontSize: "11px", marginLeft: "4px" }}>({fmtPct(portRets.Ritmo / cdiRet)} do CDI · {fmtPct(portMonth.Ritmo)} am)</small></span>
-          <span><i style={{ background: "var(--ink)" }}></i> Visão <small style={{ opacity: .6, fontSize: "11px", marginLeft: "4px" }}>({fmtPct(portRets.Visão / cdiRet)} do CDI · {fmtPct(portMonth.Visão)} am)</small></span>
-          <span><i style={{ background: "var(--accent)" }}></i> Oceano <small style={{ opacity: .6, fontSize: "11px", marginLeft: "4px" }}>({fmtPct(portRets.Oceano / cdiRet)} do CDI · {fmtPct(portMonth.Oceano)} am)</small></span>
+          <span><i style={{ background: "rgba(201,169,97,.4)" }}></i> Abrigo <small style={{ opacity: .6, fontSize: "11px", marginLeft: "4px" }}>({fmtPct(portRets.Abrigo / cdiRet)} do CDI | {fmtPct(portMonth.Abrigo)} am)</small></span>
+          <span><i style={{ background: "rgba(201,169,97,.7)" }}></i> Ritmo <small style={{ opacity: .6, fontSize: "11px", marginLeft: "4px" }}>({fmtPct(portRets.Ritmo / cdiRet)} do CDI | {fmtPct(portMonth.Ritmo)} am)</small></span>
+          <span><i style={{ background: "var(--ink)" }}></i> Visão <small style={{ opacity: .6, fontSize: "11px", marginLeft: "4px" }}>({fmtPct(portRets.Visão / cdiRet)} do CDI | {fmtPct(portMonth.Visão)} am)</small></span>
+          <span><i style={{ background: "var(--accent)" }}></i> Oceano <small style={{ opacity: .6, fontSize: "11px", marginLeft: "4px" }}>({fmtPct(portRets.Oceano / cdiRet)} do CDI | {fmtPct(portMonth.Oceano)} am)</small></span>
           <span><i style={{ background: "var(--ink-4)", border: "1px dashed currentColor" }}></i> CDI <small style={{ opacity: .6, fontSize: "11px", marginLeft: "4px" }}>({fmtPct(cdiMonth)} am)</small></span>
-          <span style={{ marginLeft: "auto", color: "var(--ink-3)", fontSize: "11px" }}>{formatDate(HISTORICAL_DATA.months[0])} — Atual · Acumulado</span>
+          <span style={{ marginLeft: "auto", color: "var(--ink-3)", fontSize: "11px" }}>{formatDate(HISTORICAL_DATA.months[0])} a Atual | Acumulado</span>
         </div>
       </div>
     </div>
