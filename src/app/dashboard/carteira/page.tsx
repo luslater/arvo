@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Script from 'next/script';
 import { useSession } from "next-auth/react"
-import { Pencil, Check, X, TrendingUp, Wallet, PiggyBank, BarChart3 } from "lucide-react"
+import { Pencil, Check, X, TrendingUp, Wallet, PiggyBank, BarChart3, Trophy, Download, Target, AlertTriangle, Info } from "lucide-react"
 import { HISTORICAL_DATA } from "@/data/historicalData"
 import { RECOMMENDED_PORTFOLIOS, TIER_ORDER, TIER_LABEL, TIER_DEFAULT_VALUE, ITYPE_ORDER, ITYPE_LABEL, PERFIL_ORDER } from "@/data/portfoliosData"
 
@@ -541,7 +541,7 @@ export default function MinhaCarteiraPage() {
               '<span class="ba-arrow">→</span>' +
               '<span class="ba-val ' + (better ? 'pos' : 'neg') + '">' + fmt(vd) + '</span></div>';
           }
-          box.innerHTML = '<div class="ba-title">📊 Antes: ' + antes.name + '  →  Depois: ' + depois.name + '</div>' +
+          box.innerHTML = '<div class="ba-title">Antes: ' + antes.name + '  →  Depois: ' + depois.name + '</div>' +
             row('Quanto rendeu', mA.cumRet, mD.cumRet, pct) +
             row('Comparado ao CDI', mA.multCDI, mD.multCDI, fmtX) +
             row('Oscilação (risco)', mA.vol, mD.vol, pct) +
@@ -985,7 +985,7 @@ export default function MinhaCarteiraPage() {
           return;
         }
         const ranked = withData.map(p => ({p, m: computeMetrics(p)})).sort((a,b) => b.m.cumRet - a.m.cumRet);
-        const medals = ['🥇','🥈','🥉'];
+        const medals = ['1º','2º','3º'];
         ranked.forEach((r, idx) => {
           const item = document.createElement('div');
           item.className = 'lb-item';
@@ -1240,7 +1240,7 @@ export default function MinhaCarteiraPage() {
           if (hasSilentAmount){
             const warn = document.createElement('div');
             warn.className = 'import-review-warn';
-            warn.textContent = '⚠ Você informou R$ ' + formatBRL(row.amount) + ' para este item, mas não conseguimos combinar automaticamente com os percentuais dos outros ativos — ajuste o % ao lado manualmente, senão ele fica de fora da carteira.';
+            warn.textContent = 'Você informou R$ ' + formatBRL(row.amount) + ' para este item, mas não conseguimos combinar automaticamente com os percentuais dos outros ativos — ajuste o % ao lado manualmente, senão ele fica de fora da carteira.';
             itemWrap.appendChild(warn);
           }
           box.appendChild(itemWrap);
@@ -1813,7 +1813,9 @@ export default function MinhaCarteiraPage() {
           </div>
 
           <div class="mc-panel">
-            <h2>🏆 Qual carteira está na frente</h2>
+            <h2 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Trophy className="w-5 h-5 text-dash-accent" /> Qual carteira está na frente
+            </h2>
             <p class="sub">Atualiza automaticamente conforme você ajusta as carteiras abaixo.</p>
             <div class="leaderboard" id="leaderboard"></div>
           </div>
@@ -1826,10 +1828,14 @@ export default function MinhaCarteiraPage() {
               </div>
               <button type="button" class="reset-link" id="resetAllBtn" title="Apaga tudo e recomeça com carteiras vazias">↺ Recomeçar do zero</button>
             </div>
-            <p class="autosave-note">✓ Seu progresso fica salvo automaticamente neste navegador.</p>
+            <p class="autosave-note" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <Check className="w-4 h-4 text-dash-accent" /> Seu progresso fica salvo automaticamente neste navegador.
+            </p>
 
             <details class="action-toggle">
-              <summary>📥 Importar carteira do cliente (o "antes")</summary>
+              <summary style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Download className="w-4 h-4 text-dash-text-muted" /> Importar carteira do cliente (o "antes")
+              </summary>
               <div class="action-toggle-body">
                 <div class="import-builder-row">
                   <input type="file" id="importFileInput" accept=".csv,.txt,.xlsx,.xls,.pdf">
@@ -1845,7 +1851,9 @@ export default function MinhaCarteiraPage() {
             </details>
 
             <details class="action-toggle">
-              <summary>🎯 Montar uma carteira recomendada automaticamente</summary>
+              <summary style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Target className="w-4 h-4 text-dash-text-muted" /> Montar uma carteira recomendada automaticamente
+              </summary>
               <div class="action-toggle-body">
                 <div class="rec-builder-row">
                   <select id="recTier"></select>
@@ -1864,12 +1872,23 @@ export default function MinhaCarteiraPage() {
 
           <div class="mc-panel">
             <details class="notes-toggle">
-              <summary>ℹ️ Sobre os dados usados aqui</summary>
+              <summary style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Info className="w-4 h-4 text-dash-text-muted" /> Sobre os dados usados aqui
+              </summary>
               <div class="notes">
                 <div class="note-item"><b>Fonte:</b> retornos mensais reais da sua planilha oficial (abas "Fundos Selecionados" e "Dados Mês a mês") — 30 ativos, de janeiro de 2023 a maio de 2026 (41 meses). Padronizei todos os fundos nesse mesmo período de 41 meses para poder comparar qualquer combinação de forma justa (os 7 fundos que só entraram para viabilizar as carteiras recomendadas oficiais têm dado real só até mai/2026, um mês a menos do que os 23 originais tinham antes).</div>
-                <div class="note-item">🎯 <b>Botão "Montar carteira recomendada":</b> monta, com um clique, qualquer uma das suas 36 carteiras oficiais (4 faixas de patrimônio × Geral/IQ/Equilibrada × 3 perfis de risco), usando os mesmos pesos da planilha "Carteiras Recomendadas". Cria uma carteira nova — não mexe nas que você já montou.</div>
-                <div class="note-item">⚠️ <b>O CDBI11 foi deixado de fora</b> deste simulador: percebi que sua série de retornos na planilha é idêntica, mês a mês, à do Tesouro Selic — sinal de que é um dado copiado/placeholder, não um retorno real. Vale corrigir isso na fonte antes de reincluí-lo em qualquer análise.</div>
-                <div class="note-item">⚠️ <b>IVVB11, NASD11 e WRLD11</b> ainda não têm gestora nem classificação de risco (Zaga/Meio/Ataque) cadastradas — por isso aparecem com essa informação em branco. Vale completar esse cadastro.</div>
+                <div class="note-item" style={{ display: 'flex', alignItems: 'start', gap: '6px' }}>
+                  <Target className="w-4 h-4 text-dash-text mt-0.5 flex-shrink-0" /> 
+                  <div><b>Botão "Montar carteira recomendada":</b> monta, com um clique, qualquer uma das suas 36 carteiras oficiais (4 faixas de patrimônio × Geral/IQ/Equilibrada × 3 perfis de risco), usando os mesmos pesos da planilha "Carteiras Recomendadas". Cria uma carteira nova — não mexe nas que você já montou.</div>
+                </div>
+                <div class="note-item" style={{ display: 'flex', alignItems: 'start', gap: '6px' }}>
+                  <AlertTriangle className="w-4 h-4 text-dash-amber mt-0.5 flex-shrink-0" />
+                  <div><b>O CDBI11 foi deixado de fora</b> deste simulador: percebi que sua série de retornos na planilha é idêntica, mês a mês, à do Tesouro Selic — sinal de que é um dado copiado/placeholder, não um retorno real. Vale corrigir isso na fonte antes de reincluí-lo em qualquer análise.</div>
+                </div>
+                <div class="note-item" style={{ display: 'flex', alignItems: 'start', gap: '6px' }}>
+                  <AlertTriangle className="w-4 h-4 text-dash-amber mt-0.5 flex-shrink-0" />
+                  <div><b>IVVB11, NASD11 e WRLD11</b> ainda não têm gestora nem classificação de risco (Zaga/Meio/Ataque) cadastradas — por isso aparecem com essa informação em branco. Vale completar esse cadastro.</div>
+                </div>
                 <div class="note-item"><b>Percentual não alocado</b> vira caixa parado (rendimento zero), não CDI. Se a soma passar de 100%, o simulador simplesmente pondera os fundos do jeito que você configurou, sem travar — é o modo livre que você pediu (isso vale para as carteiras que você monta manualmente; as recomendadas já vêm fechadas em 100%).</div>
                 <div class="note-item"><b>Sem limites de concentração</b> nas carteiras montadas manualmente: ao contrário das carteiras recomendadas (que já respeitam os tetos de 10% por fundo / 15% por gestora da planilha oficial), aqui não há trava — os números de concentração em "ver mais números" são só informativos.</div>
                 <div class="note-item">Os 41 meses de histórico (~3,4 anos) ainda são um período curto, especialmente para os fundos de ações (Ataque) — vale cautela antes de tirar conclusões definitivas só pelo ranking.</div>
