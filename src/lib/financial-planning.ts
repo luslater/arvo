@@ -143,11 +143,11 @@ export function calculateAlignmentScore(
  */
 export function generateRecommendation(score: number, gap: number): string {
     if (score >= 100) {
-        return `Parabéns! Seu planejamento está alinhado. Você terá um surplus de ${new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(gap)}.`
+        return `Parabéns! Seu planejamento está alinhado. Você terá um surplus de ${new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(Math.max(0, gap))} (a valores de hoje).`
     } else if (score >= 80) {
-        return `Quase lá! Você está ${score}% alinhado. Considere aumentar o aporte mensal ou o prazo para fechar o gap de ${new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(Math.abs(gap))}.`
+        return `Quase lá! Você está ${score}% alinhado. Considere aumentar o aporte mensal ou o prazo para fechar o gap de ${new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(Math.abs(gap))} (a valores de hoje).`
     } else if (score >= 60) {
-        return `Atenção! Você precisa ajustar seu plano. Falta ${new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(Math.abs(gap))} para atingir sua meta.`
+        return `Atenção! Você precisa ajustar seu plano. Falta ${new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(Math.abs(gap))} (a valores de hoje) para atingir sua meta.`
     } else if (score >= 40) {
         return `Replanejamento necessário. Considere aumentar significativamente seus aportes ou estender o prazo de investimento.`
     } else {
@@ -190,7 +190,7 @@ export function projectFinancialPlan(plan: FinancialPlan): ProjectionResult {
 
     // Alignment
     const alignmentScore = calculateAlignmentScore(projectedValueReal, requiredCapitalReal)
-    const gap = projectedValueNominal - requiredCapitalNominal
+    const gap = projectedValueReal - requiredCapitalReal
 
     // Generate monthly projections
     const monthlyData = generateMonthlyProjections(plan)
