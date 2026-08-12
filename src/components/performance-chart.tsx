@@ -189,7 +189,7 @@ export function PerformanceChart() {
             </linearGradient>
           </defs>
 
-          <g fontFamily="'Space Grotesk', sans-serif" fontSize="11" fill="var(--ink-4)" textAnchor="end">
+          <g fontFamily="inherit" fontSize="11" fill="var(--ink-4)" textAnchor="end">
             <text x="50" y="10" fontWeight="600" fill="var(--ink-3)">Retorno %</text>
             <text x="50" y="254" className="y-label">{yLabels[0]}</text>
             <text x="50" y="196.5" className="y-label">{yLabels[1]}</text>
@@ -206,7 +206,7 @@ export function PerformanceChart() {
             </g>
           </g>
 
-          <g fontFamily="'Space Grotesk', sans-serif" fontSize="11" fill="var(--ink-4)" textAnchor="middle">
+          <g fontFamily="inherit" fontSize="11" fill="var(--ink-4)" textAnchor="middle">
             {labels.map((lbl, i) => (
               <text key={i} x={60 + (i / (labels.length - 1)) * 620} y="275" className="x-label">{lbl}</text>
             ))}
