@@ -497,7 +497,7 @@ export default function LandingPage() {
       <section className="hero">
         <div className="wrap hero-grid">
           <div>
-            <div className="eyebrow rise"><span className="dot"></span>Orientação financeira independente · Fee-only · Zero comissão</div>
+            <div className="eyebrow rise"><span className="dot"></span>Orientação financeira independente · Sem comissão por produto indicado</div>
             <h1 className="rise rise-2" style={{ fontSize: "clamp(32px, 4vw, 56px)", lineHeight: "1.05" }}>
               Você sabe quanto guardar,<br/>onde investir e<br/><b>quando pode parar?</b>
             </h1>
@@ -517,11 +517,15 @@ export default function LandingPage() {
             <div style={{ marginTop: "16px", fontSize: "11.5px", color: "var(--ink-3)", fontFamily: "'JetBrains Mono', monospace", letterSpacing: ".04em" }}>
               ✓ 5 min · ✓ Sem cartão · ✓ Resultado imediato
             </div>
+            
+            <div className="rise rise-4" style={{ marginTop: "24px", padding: "16px 20px", background: "var(--bg-2)", border: "1px solid var(--rule-strong)", borderRadius: "12px", fontSize: "13.5px", color: "var(--ink-2)", lineHeight: "1.5" }}>
+              <strong style={{ color: "var(--ink)", fontWeight: 600 }}>Para quem é a ARVO?</strong> Feito para quem guarda a partir de R$ 1.000/mês ou já tem patrimônio acumulado a partir de R$ 30 mil.
+            </div>
 
-            <div className="rise rise-4" style={{ marginTop: "56px", paddingTop: "32px", borderTop: "1px solid var(--rule)" }}>
+            <div className="rise rise-4" style={{ marginTop: "40px", paddingTop: "32px", borderTop: "1px solid var(--rule)" }}>
               <div style={{ fontSize: "13px", fontWeight: "600", color: "var(--ink)", marginBottom: "10px", letterSpacing: "1px", textTransform: "uppercase" }}>Quem criou a ARVO</div>
-              <p style={{ fontSize: "13.5px", color: "var(--ink-2)", lineHeight: "1.6", maxWidth: "46ch", marginBottom: "16px" }}>
-                Lucas Matos. Trabalhou anos no mercado financeiro e percebeu que o modelo tradicional tem falhas graves de conflito de interesse. Criou a ARVO para oferecer o que usaria com o próprio dinheiro.
+              <p style={{ fontSize: "14px", color: "var(--ink-2)", lineHeight: "1.6", maxWidth: "46ch", marginBottom: "16px" }}>
+                <b style={{ color: "var(--ink)", fontWeight: 600 }}>Lucas Matos</b>. Trabalhou anos no mercado financeiro e percebeu que o modelo tradicional tem falhas graves de conflito de interesse. Criou a ARVO para oferecer o que usaria com o próprio dinheiro.
               </p>
               <div className="sig" style={{ justifyContent: "flex-start", gap: "8px", flexWrap: "wrap", marginTop: 0 }}>
                 <span className="chip" style={{ fontSize: "10.5px", padding: "4px 10px" }}>CFP®</span>
@@ -546,7 +550,7 @@ export default function LandingPage() {
 <section class="section" id="planejamento">
   <div class="wrap split">
     <div>
-      <div class="eyebrow" style="margin-bottom: 16px;"><span class="dot"></span>O problema & a resposta</div>
+      <div class="eyebrow" style="margin-bottom: 16px;"><span class="dot"></span>§01 · O problema & a resposta</div>
       <h2 style="font-family: 'Sora', sans-serif; font-weight: 300; font-size: clamp(32px, 4vw, 56px); line-height: 1.02; margin: 0 0 24px; letter-spacing: -.028em;">Guardar dinheiro é disciplina.<br>Saber o que fazer com ele é <b>método</b>.</h2>
       <p style="font-size: 16px; color: var(--ink-2); line-height: 1.6; max-width: 48ch;">
         Você faz sua parte: trabalha, poupa, coloca na caixinha ou no fundo que o banco indicou. Mas convive com perguntas que nunca foram respondidas. Sem resposta, qualquer decisão é chute. O planejamento ARVO responde com clareza:
@@ -588,7 +592,7 @@ export default function LandingPage() {
   <div class="wrap">
     <div class="section-head" style="text-align: center;">
       <div style="margin: 0 auto;">
-        <div class="eyebrow"><span class="dot"></span>Como funciona</div>
+        <div class="eyebrow"><span class="dot"></span>§02 · Como funciona</div>
         <h2 style="font-size: clamp(32px, 4.2vw, 56px);">Três passos. Um processo <b>contínuo</b>.</h2>
       </div>
     </div>
@@ -626,17 +630,18 @@ export default function LandingPage() {
   </div>
 </section>
 
-<!-- CARTEIRAS (§04) -->
+<!-- CARTEIRAS (§03) -->
 <section class="section" id="carteiras">
   <div class="wrap">
     <div class="section-head">
       <div>
-        <div class="eyebrow"><span class="dot"></span>§04 · Carteiras</div>
+        <div class="eyebrow"><span class="dot"></span>§03 · Carteiras</div>
         <h2 style="font-size: clamp(32px, 4.2vw, 56px);">Quatro carteiras. <b>Resultado aberto</b>. Atualização contínua.</h2>
       </div>
-      <p class="lede">
-        Cada carteira ARVO é monitorada mês a mês. Você acompanha a performance comparada ao CDI, sem maquiagem. O resultado está ali, transparente.
-      </p>
+      <div class="lede">
+        <p style="margin-top:0; margin-bottom:12px;">Cada carteira ARVO é monitorada mês a mês. Você acompanha a performance comparada ao CDI, sem maquiagem. O resultado está ali, transparente.</p>
+        <p style="font-size: 14px; font-weight: 500; color: var(--ink);">Veja abaixo como nossas carteiras se comparam com o rendimento básico do mercado. Uma estratégia sólida faz toda a diferença no longo prazo.</p>
+      </div>
     </div>
 
     <div class="portfolios" style="margin-bottom: 64px;">
@@ -692,11 +697,11 @@ export default function LandingPage() {
   </div>
 </section>
 
-<!-- NA PRÁTICA (§08) -->
+<!-- NA PRÁTICA (§04) -->
 <section class="section" id="prova">
   <div class="wrap">
     <div class="section-head" style="grid-template-columns: 1fr; text-align: center;">
-      <div class="eyebrow" style="margin-bottom: 16px;"><span class="dot"></span>§08 · Na prática</div>
+      <div class="eyebrow" style="margin-bottom: 16px;"><span class="dot"></span>§04 · Na prática</div>
       <h2>O que muda quando você tem <b>método</b>.</h2>
     </div>
 
@@ -726,16 +731,16 @@ export default function LandingPage() {
   </div>
 </section>
 
-<!-- ASSINATURA (§07) -->
+<!-- ASSINATURA (§05) -->
 <section class="section" id="assinatura" style="background: var(--bg-2);">
   <div class="wrap">
       <div class="section-head">
       <div>
-        <div class="eyebrow"><span class="dot"></span>§07 · Assinatura</div>
+        <div class="eyebrow"><span class="dot"></span>§05 · Assinatura</div>
         <h2 style="font-size: clamp(32px, 4.2vw, 56px);">Um custo que se paga na primeira <b>decisão errada</b> que você evita.</h2>
       </div>
       <p class="lede">
-        A ARVO custa R\$ 59,90 por mês. Plano anual, porque orientação financeira séria precisa de tempo para funcionar — assim como qualquer estratégia de investimento.
+        A ARVO não cobra comissões obscuras. Nossa única fonte de receita é a assinatura do plano anual. Assim, garantimos alinhamento total de interesses.
       </p>
     </div>
 
@@ -750,9 +755,11 @@ export default function LandingPage() {
           <span class="price tab">R\$ 59<span style="font-size:36px;letter-spacing:-.02em">,90</span></span>
           <span style="font-size: 22px; color: rgba(255,255,255,.8); font-weight: 300; font-family: 'Sora', sans-serif;">/ mês</span>
         </div>
-        <div style="font-size: 14px; color: rgba(255,255,255,.78); margin-top: 8px; line-height: 1.6;">
-          12x de R$ 59,90/mês ou R$ 599,00 no plano anual<br>
-          <span style="color: var(--accent); font-weight: 500;">(2 meses grátis - 16,67% OFF)</span>
+        <div style="font-size: 14px; color: rgba(255,255,255,.9); font-weight: 500; margin-top: 8px; line-height: 1.6;">
+          (Fidelidade mínima de 12 meses)
+        </div>
+        <div style="font-size: 13px; color: rgba(255,255,255,.6); margin-top: 4px; line-height: 1.6;">
+          Cobrado em 12x de R$ 59,90/mês ou R$ 599,00 à vista (2 meses grátis)
         </div>
 
         <ul class="feat" style="grid-template-columns: 1fr; text-align: left; margin: 32px auto; max-width: 400px; gap: 16px;">
@@ -769,23 +776,19 @@ export default function LandingPage() {
         </div>
         <div style="font-size: 13px; color: rgba(255,255,255,.65); margin-top: 24px; display: flex; align-items: center; gap: 8px; justify-content: center;">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1l1.8 3.65 4.05.6-2.93 2.86.7 4.05L7 10.25 3.38 12.16l.7-4.05L1.15 5.25l4.05-.6L7 1z" stroke="var(--accent)" stroke-width="1.2" fill="var(--accent)"/></svg>
-          Garantia de 7 dias. Se não fizer sentido, devolvemos tudo. Sem pergunta.
+          <span>Garantia incondicional de 7 dias. Você tem uma semana para testar antes do compromisso de 12 meses iniciar.</span>
         </div>
       </div>
-    </div>
-
-    <div style="margin: 40px auto 0; max-width: 800px; font-size: 13.5px; color: var(--ink-3); text-align: center; line-height: 1.6;">
-      A ARVO foi feita para quem guarda a partir de R\$ 1.000/mês ou tem patrimônio entre R\$ 30 mil e R\$ 3 milhões. Se você está nessa faixa, R\$ 59,90 é irrelevante perto do custo de uma decisão sem orientação.
     </div>
   </div>
 </section>
 
-<!-- FAQ (§09) -->
+<!-- FAQ (§06) -->
 <section class="section" id="faq" style="background: var(--bg-2);">
   <div class="wrap">
     <div class="section-head">
       <div>
-        <div class="eyebrow"><span class="dot"></span>§09 · Dúvidas</div>
+        <div class="eyebrow"><span class="dot"></span>§06 · Dúvidas</div>
         <h2>Antes de decidir.</h2>
       </div>
     </div>
