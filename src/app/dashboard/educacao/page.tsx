@@ -11,13 +11,13 @@ export default function EducacaoPage() {
             </div>
 
             <div className="grid grid-cols-3 gap-3.5 mb-6">
-                <div className="bg-dash-surface border border-dash-border rounded-2xl overflow-hidden cursor-pointer hover:border-dash-border-strong hover:-translate-y-0.5 transition-all shadow-sm">
-                    <div className="h-[100px] flex items-center justify-center bg-dash-accent-light text-dash-accent">
-                        <PiggyBank className="w-8 h-8" />
-                    </div>
-                    <div className="p-4">
-                        <div className="text-[10px] font-medium uppercase tracking-[0.06em] text-dash-text-light mb-1">Fundação</div>
-                        <div className="text-[13px] font-medium mb-3 leading-snug">Como montar sua reserva de emergência</div>
+                <div className="bg-white border border-[#e4e0d7] rounded-xl p-5 cursor-pointer hover:shadow-md hover:border-[#1f674f] transition-all flex flex-col justify-between h-full">
+                    <div>
+                        <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-emerald-50 text-emerald-600 mb-3">
+                            <PiggyBank className="w-5 h-5" />
+                        </div>
+                        <div className="text-[13px] font-bold text-[#123044] mb-1 leading-snug">Como montar sua reserva de emergência</div>
+                        <div className="text-xs text-[#667085] mb-4">Módulo Fundação</div>
                         <div className="flex items-center justify-between">
                             <div className="text-[11px] text-dash-text-light">8 aulas · 42 min</div>
                             <div className="flex items-center gap-1.5 w-[50px] shrink-0 justify-end">
@@ -27,13 +27,13 @@ export default function EducacaoPage() {
                     </div>
                 </div>
 
-                <div className="bg-dash-surface border border-dash-border rounded-2xl overflow-hidden cursor-pointer hover:border-dash-border-strong hover:-translate-y-0.5 transition-all shadow-sm">
-                    <div className="h-[100px] flex items-center justify-center bg-dash-blue-light text-dash-blue">
-                        <BarChart3 className="w-8 h-8" />
-                    </div>
-                    <div className="p-4">
-                        <div className="text-[10px] font-medium uppercase tracking-[0.06em] text-dash-text-light mb-1">Em andamento</div>
-                        <div className="text-[13px] font-medium mb-3 leading-snug">Renda fixa sem mistério: Tesouro, CDB e LCI</div>
+                <div className="bg-white border border-[#e4e0d7] rounded-xl p-5 cursor-pointer hover:shadow-md hover:border-[#3b82f6] transition-all flex flex-col justify-between h-full">
+                    <div>
+                        <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-blue-50 text-blue-600 mb-3">
+                            <BarChart3 className="w-5 h-5" />
+                        </div>
+                        <div className="text-[13px] font-bold text-[#123044] mb-1 leading-snug">Renda fixa sem mistério: Tesouro, CDB e LCI</div>
+                        <div className="text-xs text-[#667085] mb-4">Em andamento</div>
                         <div className="flex items-center justify-between">
                             <div className="text-[11px] text-dash-text-light">10 aulas · 58 min</div>
                             <div className="flex items-center gap-1.5 w-[55px] shrink-0">
@@ -44,13 +44,13 @@ export default function EducacaoPage() {
                     </div>
                 </div>
 
-                <div className="bg-dash-surface border border-dash-border rounded-2xl overflow-hidden cursor-pointer hover:border-dash-border-strong hover:-translate-y-0.5 transition-all shadow-sm">
-                    <div className="h-[100px] flex items-center justify-center bg-dash-amber-light text-dash-amber">
-                        <TrendingUp className="w-8 h-8" />
-                    </div>
-                    <div className="p-4">
-                        <div className="text-[10px] font-medium uppercase tracking-[0.06em] text-dash-text-light mb-1">Próxima recomendada</div>
-                        <div className="text-[13px] font-medium mb-3 leading-snug">Renda variável: ações e ETFs para iniciantes</div>
+                <div className="bg-white border border-[#e4e0d7] rounded-xl p-5 cursor-pointer hover:shadow-md hover:border-[#f59e0b] transition-all flex flex-col justify-between h-full">
+                    <div>
+                        <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-amber-50 text-amber-600 mb-3">
+                            <TrendingUp className="w-5 h-5" />
+                        </div>
+                        <div className="text-[13px] font-bold text-[#123044] mb-1 leading-snug">Renda variável: ações e ETFs para iniciantes</div>
+                        <div className="text-xs text-[#667085] mb-4">Recomendado</div>
                         <div className="flex items-center justify-between">
                             <div className="text-[11px] text-dash-text-light">12 aulas · 74 min</div>
                             <div className="flex items-center gap-1.5">
@@ -60,13 +60,13 @@ export default function EducacaoPage() {
                     </div>
                 </div>
 
-                <div className="bg-dash-surface border border-dash-border rounded-2xl overflow-hidden cursor-pointer hover:border-dash-border-strong hover:-translate-y-0.5 transition-all shadow-sm">
-                    <div className="h-[100px] flex items-center justify-center bg-[#F3EAF9] text-[#8B5CF6]">
-                        <Globe2 className="w-8 h-8" />
-                    </div>
-                    <div className="p-4">
-                        <div className="text-[10px] font-medium uppercase tracking-[0.06em] text-dash-text-light mb-1">Avançado · Bloqueado</div>
-                        <div className="text-[13px] font-medium mb-3 leading-snug text-dash-text-muted">Diversificação global: S&P 500 e dolarização</div>
+                <div className="bg-[#fbfaf8] border border-[#e4e0d7] rounded-xl p-5 cursor-pointer hover:shadow-sm transition-all flex flex-col justify-between h-full opacity-70">
+                    <div>
+                        <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-purple-50 text-purple-400 mb-3">
+                            <Globe2 className="w-5 h-5" />
+                        </div>
+                        <div className="text-[13px] font-bold text-[#667085] mb-1 leading-snug">Diversificação global: S&P 500 e dolarização</div>
+                        <div className="text-xs text-[#8d97a5] mb-4">Módulo Avançado</div>
                         <div className="flex items-center justify-between">
                             <div className="text-[11px] text-dash-text-light">9 aulas · 55 min</div>
                             <div className="flex items-center gap-1.5">
@@ -76,13 +76,13 @@ export default function EducacaoPage() {
                     </div>
                 </div>
 
-                <div className="bg-dash-surface border border-dash-border rounded-2xl overflow-hidden cursor-pointer hover:border-dash-border-strong hover:-translate-y-0.5 transition-all shadow-sm">
-                    <div className="h-[100px] flex items-center justify-center bg-dash-danger-light text-dash-danger">
-                        <Home className="w-8 h-8" />
-                    </div>
-                    <div className="p-4">
-                        <div className="text-[10px] font-medium uppercase tracking-[0.06em] text-dash-text-light mb-1">Seu objetivo</div>
-                        <div className="text-[13px] font-medium mb-3 leading-snug">FIIs: como investir em imóveis sem comprar um</div>
+                <div className="bg-white border border-[#e4e0d7] rounded-xl p-5 cursor-pointer hover:shadow-md hover:border-[#ef4444] transition-all flex flex-col justify-between h-full">
+                    <div>
+                        <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-red-50 text-red-600 mb-3">
+                            <Home className="w-5 h-5" />
+                        </div>
+                        <div className="text-[13px] font-bold text-[#123044] mb-1 leading-snug">FIIs: como investir em imóveis sem comprar um</div>
+                        <div className="text-xs text-[#667085] mb-4">Alinhado com Objetivo</div>
                         <div className="flex items-center justify-between">
                             <div className="text-[11px] text-dash-text-light">7 aulas · 38 min</div>
                             <div className="flex items-center gap-1.5">
@@ -92,13 +92,13 @@ export default function EducacaoPage() {
                     </div>
                 </div>
 
-                <div className="bg-dash-surface border border-dash-border rounded-2xl overflow-hidden cursor-pointer hover:border-dash-border-strong hover:-translate-y-0.5 transition-all shadow-sm">
-                    <div className="h-[100px] flex items-center justify-center bg-dash-surface-active text-dash-text">
-                        <FileText className="w-8 h-8" />
-                    </div>
-                    <div className="p-4">
-                        <div className="text-[10px] font-medium uppercase tracking-[0.06em] text-dash-text-light mb-1">Planejamento</div>
-                        <div className="text-[13px] font-medium mb-3 leading-snug">IR e declaração: o que todo investidor precisa saber</div>
+                <div className="bg-white border border-[#e4e0d7] rounded-xl p-5 cursor-pointer hover:shadow-md transition-all flex flex-col justify-between h-full">
+                    <div>
+                        <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-gray-100 text-gray-600 mb-3">
+                            <FileText className="w-5 h-5" />
+                        </div>
+                        <div className="text-[13px] font-bold text-[#123044] mb-1 leading-snug">IR e declaração: o que todo investidor precisa saber</div>
+                        <div className="text-xs text-[#667085] mb-4">Planejamento e Rotina</div>
                         <div className="flex items-center justify-between">
                             <div className="text-[11px] text-dash-text-light">6 aulas · 32 min</div>
                             <div className="flex items-center gap-1.5">

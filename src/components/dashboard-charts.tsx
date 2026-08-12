@@ -221,8 +221,8 @@ export function DashboardCharts({
                     </div>
                 </div>
 
-                <div className="h-[280px] w-full">
-                    <ResponsiveContainer width="100%" height="100%">
+                <div className="w-full">
+                    <ResponsiveContainer width="100%" height={280}>
                         <LineChart data={chartData} margin={{ top: 10, right: 10, bottom: 0, left: -20 }}>
                             <CartesianGrid vertical={false} stroke="rgba(0,0,0,0.04)" />
                             <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: '#94A3B8', fontSize: 11 }} dy={8} />
@@ -268,8 +268,8 @@ export function DashboardCharts({
                     </div>
                 </div>
 
-                <div className="h-[280px] w-full mt-4">
-                    <ResponsiveContainer width="100%" height="100%">
+                <div className="w-full mt-4">
+                    <ResponsiveContainer width="100%" height={280}>
                         <BarChart data={projectionData} margin={{ top: 10, right: 0, bottom: 0, left: -20 }}>
                             <CartesianGrid vertical={false} stroke="rgba(0,0,0,0.04)" />
                             <XAxis dataKey="label" axisLine={false} tickLine={false} tick={{ fill: '#94A3B8', fontSize: 10 }} dy={8} />

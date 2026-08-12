@@ -142,6 +142,15 @@ export default function MarkowitzDashboardPage() {
                 </div>
             </div>
 
+            <div className="p-3.5 bg-blue-50 border border-blue-100 rounded-xl flex items-start gap-3 w-full mb-2">
+                <Info className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
+                <p className="text-xs text-blue-900 leading-relaxed font-medium">
+                    <span className="font-bold">Aviso Importante:</span> Dados simulados com base em estimativas de volatilidade e correlação por categoria de fundo.
+                    Para análise precisa, recomenda-se substituir por séries de cotas diárias reais (CVM, Quantum, Comdinheiro).
+                    Rentabilidade passada não é garantia de retorno futuro.
+                </p>
+            </div>
+
             <div className="bg-dash-surface border border-dash-border p-1.5 rounded-[14px] flex flex-wrap gap-2 w-full md:w-max shadow-sm">
                 {[
                     { id: "frontier", label: "Fronteira Eficiente" },
@@ -410,15 +419,6 @@ export default function MarkowitzDashboardPage() {
                         </div>
                     </div>
                 )}
-
-                <div className="mt-8 p-3.5 bg-blue-50 border border-blue-100 rounded-xl flex items-start gap-3">
-                    <Info className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
-                    <p className="text-xs text-blue-900 leading-relaxed font-medium">
-                        <span className="font-bold">Aviso Importante:</span> Dados simulados com base em estimativas de volatilidade e correlação por categoria de fundo.
-                        Para análise precisa, recomenda-se substituir por séries de cotas diárias reais (CVM, Quantum, Comdinheiro).
-                        Rentabilidade passada não é garantia de retorno futuro.
-                    </p>
-                </div>
             </div>
         </div>
     );

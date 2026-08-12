@@ -346,8 +346,8 @@ export default function BussolaPage() {
                             </div>
                         </div>
 
-                        <div className="flex-1 min-h-[200px] w-full">
-                            <ResponsiveContainer width="100%" height="100%">
+                        <div className="w-full mt-2">
+                            <ResponsiveContainer width="100%" height={260}>
                                 <LineChart data={chartData} margin={{ top: 5, right: 10, bottom: 5, left: 10 }}>
                                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e4e0d7" />
                                     <XAxis dataKey="month" tick={{ fontSize: 10, fill: '#8d97a5' }} tickLine={false} axisLine={false} minTickGap={30} />

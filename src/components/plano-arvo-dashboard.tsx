@@ -400,8 +400,8 @@ export default function PlanoArvoDashboard({ onBack }: { onBack?: () => void }) 
                     <div className="w-2 h-2 rounded-full bg-[#123044]"></div>
                     <h3 className="text-lg font-bold text-[#123044]">Evolução do Score Global</h3>
                 </div>
-                <div className="h-[280px]">
-                    <ResponsiveContainer width="100%" height="100%">
+                <div className="w-full">
+                    <ResponsiveContainer width="100%" height={280}>
                     <AreaChart data={financialSummary.scoreEvolucao} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                         <defs>
                         <linearGradient id="scoreGradLight" x1="0" y1="0" x2="0" y2="1">
@@ -472,8 +472,8 @@ export default function PlanoArvoDashboard({ onBack }: { onBack?: () => void }) 
                         <span className="text-xs font-bold text-[#667085] bg-[#f0ece1] px-3 py-1.5 rounded-lg">Cenário: 8.5% a.a.</span>
                     </div>
                     
-                    <div className="h-[300px]">
-                        <ResponsiveContainer width="100%" height="100%">
+                    <div className="w-full">
+                        <ResponsiveContainer width="100%" height={300}>
                         <AreaChart data={patrimonioProjection} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
                             <defs>
                                 <linearGradient id="aportesGradL" x1="0" y1="0" x2="0" y2="1">

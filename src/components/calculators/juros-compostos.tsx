@@ -523,9 +523,9 @@ export function CalculadoraJurosCompostos() {
                 ))}
               </div>
 
-              <div className="p-4" style={{ height: 400 }}>
+              <div className="p-4 w-full">
                 {abaAtiva === "evolucao" ? (
-                  <ResponsiveContainer width="100%" height="100%">
+                  <ResponsiveContainer width="100%" height={320}>
                     <AreaChart data={resultados.dados}>
                       <defs>
                         <linearGradient
@@ -603,7 +603,7 @@ export function CalculadoraJurosCompostos() {
                     </AreaChart>
                   </ResponsiveContainer>
                 ) : (
-                  <ResponsiveContainer width="100%" height="100%">
+                  <ResponsiveContainer width="100%" height={320}>
                     <BarChart data={resultados.dadosAnuais}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
                       <XAxis
