@@ -43,21 +43,21 @@ export default function PaymentPage() {
 
     if (isSuccess) {
         return (
-            <div className="min-h-screen bg-slate-950 flex items-center justify-center p-6 text-white">
+            <div className="min-h-screen bg-[#0A192F] flex items-center justify-center p-6 text-white">
                 <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     className="max-w-md w-full text-center space-y-8"
                 >
-                    <div className="w-24 h-24 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto border border-emerald-500/50">
-                        <CheckCircle2 className="w-12 h-12 text-emerald-400" />
+                    <div className="w-24 h-24 bg-[#4fa080]/20 rounded-full flex items-center justify-center mx-auto border border-[#4fa080]/50">
+                        <CheckCircle2 className="w-12 h-12 text-[#9bcbb4]" />
                     </div>
                     <div className="space-y-2">
                         <h1 className="text-4xl font-black !text-white">Pagamento Confirmado!</h1>
                         <p className="text-slate-300 font-medium">Seja bem-vindo ao ARVO Premium. Seu acesso foi liberado com sucesso.</p>
                     </div>
                     <Link href="/dashboard" className="block w-full">
-                        <Button className="w-full h-14 bg-emerald-600 hover:bg-emerald-500 text-lg font-bold rounded-2xl">
+                        <Button className="w-full h-14 bg-[#4fa080] hover:bg-[#2b6e76] text-lg font-bold rounded-2xl">
                             IR PARA O DASHBOARD
                         </Button>
                     </Link>
@@ -67,8 +67,8 @@ export default function PaymentPage() {
     }
 
     return (
-        <div className="min-h-screen bg-slate-950 text-white font-sans selection:bg-emerald-500/30">
-            <div className="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-emerald-500/5 to-transparent pointer-events-none" />
+        <div className="min-h-screen bg-[#0A192F] text-white font-sans selection:bg-[#4fa080]/30">
+            <div className="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-[#4fa080]/5 to-transparent pointer-events-none" />
 
             <div className="max-w-5xl mx-auto px-6 py-12 relative z-10">
                 <Link href="/checkout" className="inline-flex items-center gap-2 !text-slate-100 hover:!text-white mb-12 group transition-colors font-bold">
@@ -80,17 +80,17 @@ export default function PaymentPage() {
                     {/* Lateral: Resumo */}
                     <div className="lg:col-span-2 space-y-8">
                         <div>
-                            <Badge className="bg-emerald-500/10 !text-emerald-300 border-emerald-500/30 mb-4 px-3 py-1 font-black tracking-widest uppercase text-[10px]">
+                            <Badge className="bg-[#4fa080]/10 !text-[#9bcbb4] border-[#4fa080]/30 mb-4 px-3 py-1 font-black tracking-widest uppercase text-[10px]">
                                 Checkout Seguro
                             </Badge>
                             <h1 className="text-4xl font-black !text-white leading-tight">Finalize seu acesso Premium</h1>
                         </div>
 
-                        <Card className="bg-slate-900/50 border-slate-800 backdrop-blur-xl rounded-3xl overflow-hidden">
+                        <Card className="bg-[#123044]/50 border-[#1E3A5F] backdrop-blur-xl rounded-3xl overflow-hidden">
                             <CardContent className="p-8 space-y-6">
                                 <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 bg-emerald-500/20 rounded-xl flex items-center justify-center">
-                                        <Zap className="w-6 h-6 text-emerald-400 fill-emerald-400" />
+                                    <div className="w-12 h-12 bg-[#4fa080]/20 rounded-xl flex items-center justify-center">
+                                        <Zap className="w-6 h-6 text-[#9bcbb4] fill-[#9bcbb4]" />
                                     </div>
                                     <div>
                                         <p className="font-bold !text-white text-base">ARVO Premium</p>
@@ -104,12 +104,12 @@ export default function PaymentPage() {
                                         <span className="font-bold !text-white">12x R$ 42,00</span>
                                     </div>
                                     <div className="flex justify-between text-sm">
-                                        <span className="text-emerald-400 font-bold">Taxa de Adesão (Beta)</span>
-                                        <span className="text-emerald-400 font-bold line-through opacity-50">Grátis</span>
+                                        <span className="text-[#9bcbb4] font-bold">Taxa de Adesão (Beta)</span>
+                                        <span className="text-[#9bcbb4] font-bold line-through opacity-50">Grátis</span>
                                     </div>
                                     <div className="flex justify-between items-end pt-4 border-t border-white/5">
                                         <span className="text-lg font-bold !text-white">Total</span>
-                                        <span className="text-3xl font-black !text-emerald-400 tracking-tighter">12x R$ 42,00</span>
+                                        <span className="text-3xl font-black !text-[#9bcbb4] tracking-tighter">12x R$ 42,00</span>
                                     </div>
                                 </div>
                             </CardContent>
@@ -117,11 +117,11 @@ export default function PaymentPage() {
 
                         <div className="space-y-4">
                             <div className="flex items-center gap-3 !text-slate-100 text-xs font-black uppercase tracking-widest">
-                                <ShieldCheck className="w-4 h-4 !text-emerald-400" />
+                                <ShieldCheck className="w-4 h-4 !text-[#9bcbb4]" />
                                 Ambiente Criptografado
                             </div>
                             <div className="flex items-center gap-3 !text-slate-100 text-xs font-black uppercase tracking-widest">
-                                <Lock className="w-4 h-4 !text-emerald-400" />
+                                <Lock className="w-4 h-4 !text-[#9bcbb4]" />
                                 Pagamento Processado pela ARVO
                             </div>
                         </div>
@@ -130,12 +130,12 @@ export default function PaymentPage() {
                     {/* Principal: Formas de Pagamento */}
                     <div className="lg:col-span-3">
                         <Tabs defaultValue="card" className="w-full">
-                            <TabsList className="w-full bg-slate-900 border border-slate-800 p-1 h-14 rounded-2xl mb-8">
-                                <TabsTrigger value="card" className="flex-1 rounded-xl data-[state=active]:bg-slate-800 data-[state=active]:!text-white !text-slate-300 font-black gap-2 transition-all">
+                            <TabsList className="w-full bg-[#123044] border border-[#1E3A5F] p-1 h-14 rounded-2xl mb-8">
+                                <TabsTrigger value="card" className="flex-1 rounded-xl data-[state=active]:bg-[#1E3A5F] data-[state=active]:!text-white !text-slate-300 font-black gap-2 transition-all">
                                     <CreditCard className="w-4 h-4" />
                                     Cartão
                                 </TabsTrigger>
-                                <TabsTrigger value="pix" className="flex-1 rounded-xl data-[state=active]:bg-slate-800 data-[state=active]:!text-white !text-slate-300 font-black gap-2 transition-all">
+                                <TabsTrigger value="pix" className="flex-1 rounded-xl data-[state=active]:bg-[#1E3A5F] data-[state=active]:!text-white !text-slate-300 font-black gap-2 transition-all">
                                     <QrCode className="w-4 h-4" />
                                     PIX
                                 </TabsTrigger>
@@ -147,7 +147,7 @@ export default function PaymentPage() {
                                         <Label className="text-xs font-black uppercase tracking-widest !text-slate-100">Nome no Cartão</Label>
                                         <Input
                                             placeholder="NOME IGUAL AO CARTÃO"
-                                            className="h-14 bg-slate-900 border-slate-800 rounded-xl focus:border-emerald-500 transition-all font-bold uppercase !text-white placeholder:text-slate-400"
+                                            className="h-14 bg-[#123044] border-[#1E3A5F] rounded-xl focus:border-[#4fa080] transition-all font-bold uppercase !text-white placeholder:text-slate-400"
                                             required
                                         />
                                     </div>
@@ -156,7 +156,7 @@ export default function PaymentPage() {
                                         <Label className="text-xs font-black uppercase tracking-widest !text-slate-100">Número do Cartão</Label>
                                         <Input
                                             placeholder="0000 0000 0000 0000"
-                                            className="h-14 bg-slate-900 border-slate-800 rounded-xl focus:border-emerald-500 transition-all font-bold !text-white placeholder:text-slate-400"
+                                            className="h-14 bg-[#123044] border-[#1E3A5F] rounded-xl focus:border-[#4fa080] transition-all font-bold !text-white placeholder:text-slate-400"
                                             required
                                         />
                                     </div>
@@ -166,7 +166,7 @@ export default function PaymentPage() {
                                             <Label className="text-xs font-black uppercase tracking-widest !text-slate-100">Validade</Label>
                                             <Input
                                                 placeholder="MM/AA"
-                                                className="h-14 bg-slate-900 border-slate-800 rounded-xl focus:border-emerald-500 transition-all font-bold !text-white placeholder:text-slate-400 text-center"
+                                                className="h-14 bg-[#123044] border-[#1E3A5F] rounded-xl focus:border-[#4fa080] transition-all font-bold !text-white placeholder:text-slate-400 text-center"
                                                 required
                                             />
                                         </div>
@@ -174,7 +174,7 @@ export default function PaymentPage() {
                                             <Label className="text-xs font-black uppercase tracking-widest !text-slate-100">CVC</Label>
                                             <Input
                                                 placeholder="000"
-                                                className="h-14 bg-slate-900 border-slate-800 rounded-xl focus:border-emerald-500 transition-all font-bold !text-white placeholder:text-slate-400 text-center"
+                                                className="h-14 bg-[#123044] border-[#1E3A5F] rounded-xl focus:border-[#4fa080] transition-all font-bold !text-white placeholder:text-slate-400 text-center"
                                                 required
                                             />
                                         </div>
@@ -183,7 +183,7 @@ export default function PaymentPage() {
                                     <Button
                                         type="submit"
                                         disabled={isProcessing}
-                                        className="w-full h-16 bg-emerald-600 hover:bg-emerald-500 text-white text-lg font-black rounded-2xl shadow-lg shadow-emerald-500/20 transition-all active:scale-[0.98]"
+                                        className="w-full h-16 bg-[#4fa080] hover:bg-[#2b6e76] text-white text-lg font-black rounded-2xl shadow-lg shadow-[#4fa080]/20 transition-all active:scale-[0.98]"
                                     >
                                         {isProcessing ? "PROCESSANDO..." : "FINALIZAR PAGAMENTO"}
                                     </Button>
@@ -191,13 +191,13 @@ export default function PaymentPage() {
                             </TabsContent>
 
                             <TabsContent value="pix">
-                                <div className="space-y-8 text-center bg-slate-900/50 p-10 rounded-[2rem] border border-slate-800">
+                                <div className="space-y-8 text-center bg-[#123044]/50 p-10 rounded-[2rem] border border-[#1E3A5F]">
                                     <div className="space-y-2">
                                         <p className="text-2xl font-black !text-white tracking-tight">Escaneie o QR Code</p>
                                         <p className="text-base !text-slate-100 font-bold">O pagamento por PIX é liberado instantaneamente.</p>
                                     </div>
 
-                                    <div className="w-56 h-56 bg-white p-6 rounded-3xl mx-auto flex items-center justify-center border-4 border-emerald-500/20 shadow-2xl relative group">
+                                    <div className="w-56 h-56 bg-white p-6 rounded-3xl mx-auto flex items-center justify-center border-4 border-[#4fa080]/20 shadow-2xl relative group">
                                         {/* Simulação de QR Code */}
                                         <div className="w-full h-full bg-slate-100 flex flex-col items-center justify-center border-2 border-dashed border-slate-300">
                                             <QrCode className="w-16 h-16 text-slate-800" />
@@ -206,11 +206,11 @@ export default function PaymentPage() {
                                     </div>
 
                                     <div className="space-y-4 max-w-sm mx-auto">
-                                        <div className="p-4 bg-slate-950 rounded-xl border border-slate-800 text-[11px] font-mono break-all !text-slate-100 border-dashed leading-relaxed font-bold">
+                                        <div className="p-4 bg-[#0A192F] rounded-xl border border-[#1E3A5F] text-[11px] font-mono break-all !text-slate-100 border-dashed leading-relaxed font-bold">
                                             00020126420014br.gov.bcb.pix0120suporte@arvo.com.br52040000530398654064504.0058 02BR5915ARVO0PAYMENT6009SAO PAULO62070503***6304E2D3
                                         </div>
                                         <Button
-                                            className="w-full h-12 bg-slate-800 hover:bg-slate-700 !text-white text-xs font-black uppercase tracking-widest rounded-xl transition-all active:scale-95 border border-slate-700"
+                                            className="w-full h-12 bg-[#1E3A5F] hover:bg-[#123044] !text-white text-xs font-black uppercase tracking-widest rounded-xl transition-all active:scale-95 border border-[#1E3A5F]"
                                             onClick={() => {
                                                 navigator.clipboard.writeText("00020126420014br.gov.bcb.pix0120suporte@arvo.com.br5204000053039865406497.0058 02BR5915ARVO0PAYMENT6009SAO PAULO62070503***6304E2D3")
                                                 alert("Link PIX Copiado!")
@@ -221,8 +221,8 @@ export default function PaymentPage() {
                                     </div>
 
                                     <div className="flex items-center justify-center gap-2">
-                                        <div className="w-2 h-2 bg-emerald-500 animate-pulse rounded-full" />
-                                        <p className="text-xs !text-emerald-400 font-black uppercase tracking-widest leading-none">Aguardando confirmação em tempo real</p>
+                                        <div className="w-2 h-2 bg-[#4fa080] animate-pulse rounded-full" />
+                                        <p className="text-xs !text-[#9bcbb4] font-black uppercase tracking-widest leading-none">Aguardando confirmação em tempo real</p>
                                     </div>
                                 </div>
                             </TabsContent>

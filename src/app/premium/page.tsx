@@ -16,10 +16,10 @@ export default function PremiumLandingPage() {
                         <Link href="#contato" className="text-sm font-medium text-gray-600 hover:text-arvo-primary transition-colors">Falar com Especialista</Link>
                     </nav>
                     <div className="flex gap-4">
-                        <Link href="/dashboard" className="hidden md:flex items-center justify-center px-5 py-2.5 text-sm font-semibold text-arvo-primary border-2 border-arvo-primary rounded-xl hover:bg-emerald-50 transition-colors">
+                        <Link href="/dashboard" className="hidden md:flex items-center justify-center px-5 py-2.5 text-sm font-semibold text-arvo-primary border-2 border-arvo-primary rounded-xl hover:bg-[#f4f8f6] transition-colors">
                             Acessar Plataforma
                         </Link>
-                        <Link href="#assinar" className="flex items-center justify-center px-5 py-2.5 text-sm font-bold text-white bg-arvo-primary rounded-xl hover:bg-emerald-700 transition-colors shadow-lg shadow-emerald-600/20">
+                        <Link href="#assinar" className="flex items-center justify-center px-5 py-2.5 text-sm font-bold text-white bg-arvo-primary rounded-xl hover:bg-[#2b6e76] transition-colors shadow-lg shadow-arvo-primary/20">
                             Ser Premium
                         </Link>
                     </div>
@@ -28,9 +28,9 @@ export default function PremiumLandingPage() {
 
             {/* Hero Section */}
             <section className="pt-40 pb-24 px-6 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-emerald-100/50 rounded-full blur-[120px] -z-10 translate-x-1/3 -translate-y-1/3 pointer-events-none" />
+                <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[#eef5f1]/50 rounded-full blur-[120px] -z-10 translate-x-1/3 -translate-y-1/3 pointer-events-none" />
                 <div className="max-w-4xl mx-auto text-center">
-                    <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-100 text-emerald-800 text-sm font-bold tracking-wide uppercase mb-8 shadow-sm">
+                    <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#eef5f1] text-[#044c38] text-sm font-bold tracking-wide uppercase mb-8 shadow-sm">
                         <Rocket className="w-4 h-4" /> Arvo Premium
                     </span>
                     <h1 className="font-serif text-5xl md:text-7xl text-arvo-primary leading-[1.1] mb-8 tracking-tight">
@@ -41,7 +41,7 @@ export default function PremiumLandingPage() {
                         Acesso total às 4 carteiras exclusivas, relatórios trimestrais avançados, e atendimento direto com nossos especialistas financeiros.
                     </p>
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                        <Link href="/checkout/pagamento" className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 text-base font-bold text-white bg-arvo-primary rounded-xl hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-900/10 hover:shadow-2xl hover:shadow-emerald-900/20 active:scale-[0.98]">
+                        <Link href="/checkout/pagamento" className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 text-base font-bold text-white bg-arvo-primary rounded-xl hover:bg-[#2b6e76] transition-all shadow-xl shadow-[#0A192F]/10 hover:shadow-2xl hover:shadow-[#0A192F]/20 active:scale-[0.98]">
                             Assinar Agora <ArrowRight className="w-5 h-5" />
                         </Link>
                         <Link href="#contato" className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 text-base font-bold text-gray-700 bg-white border-2 border-gray-200 rounded-xl hover:border-gray-300 hover:bg-gray-50 transition-all">
@@ -91,8 +91,8 @@ export default function PremiumLandingPage() {
 
                         <div className="space-y-6">
                             <div className="flex items-start gap-4">
-                                <div className="w-12 h-12 bg-emerald-100 rounded-2xl flex items-center justify-center shrink-0">
-                                    <Calendar className="w-6 h-6 text-emerald-700" />
+                                <div className="w-12 h-12 bg-[#eef5f1] rounded-2xl flex items-center justify-center shrink-0">
+                                    <Calendar className="w-6 h-6 text-[#2b6e76]" />
                                 </div>
                                 <div>
                                     <h4 className="font-bold text-gray-900 text-lg mb-1">Agendamento Flexível</h4>
@@ -100,8 +100,8 @@ export default function PremiumLandingPage() {
                                 </div>
                             </div>
                             <div className="flex items-start gap-4">
-                                <div className="w-12 h-12 bg-indigo-100 rounded-2xl flex items-center justify-center shrink-0">
-                                    <Download className="w-6 h-6 text-indigo-700" />
+                                <div className="w-12 h-12 bg-[#eaf0f9] rounded-2xl flex items-center justify-center shrink-0">
+                                    <Download className="w-6 h-6 text-[#1b4f8a]" />
                                 </div>
                                 <div>
                                     <h4 className="font-bold text-gray-900 text-lg mb-1">Material de Excelência</h4>
@@ -115,15 +115,15 @@ export default function PremiumLandingPage() {
                         <form className="space-y-6">
                             <div>
                                 <label className="block text-sm font-semibold text-gray-700 mb-2">Nome completo</label>
-                                <input type="text" className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all font-medium text-gray-900" placeholder="Como gosta de ser chamado" />
+                                <input type="text" className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4fa080]/20 focus:border-[#4fa080] transition-all font-medium text-gray-900" placeholder="Como gosta de ser chamado" />
                             </div>
                             <div>
                                 <label className="block text-sm font-semibold text-gray-700 mb-2">E-mail corporativo ou pessoal</label>
-                                <input type="email" className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all font-medium text-gray-900" placeholder="exemplo@arvo.com" />
+                                <input type="email" className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4fa080]/20 focus:border-[#4fa080] transition-all font-medium text-gray-900" placeholder="exemplo@arvo.com" />
                             </div>
                             <div>
                                 <label className="block text-sm font-semibold text-gray-700 mb-2">Qual o melhor horário para falarmos?</label>
-                                <select className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all font-medium text-gray-900">
+                                <select className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4fa080]/20 focus:border-[#4fa080] transition-all font-medium text-gray-900">
                                     <option>Manhã (09:00 - 12:00)</option>
                                     <option>Tarde (13:00 - 18:00)</option>
                                     <option>Noite (18:00 - 20:00)</option>
@@ -131,11 +131,11 @@ export default function PremiumLandingPage() {
                             </div>
 
                             <label className="flex items-center gap-3 cursor-pointer p-4 bg-gray-50 rounded-xl border border-gray-200">
-                                <input type="checkbox" className="w-5 h-5 rounded text-emerald-600 focus:ring-emerald-500 bg-white border-gray-300" defaultChecked />
+                                <input type="checkbox" className="w-5 h-5 rounded text-[#4fa080] focus:ring-[#4fa080] bg-white border-gray-300" defaultChecked />
                                 <span className="text-sm font-medium text-gray-700">Quero baixar o E-book "Metodologia ARVO".</span>
                             </label>
 
-                            <button type="submit" className="w-full py-4 text-base font-bold text-white bg-arvo-primary rounded-xl hover:bg-emerald-700 transition-colors shadow-lg shadow-emerald-600/20">
+                            <button type="submit" className="w-full py-4 text-base font-bold text-white bg-arvo-primary rounded-xl hover:bg-[#2b6e76] transition-colors shadow-lg shadow-[#0A192F]/20">
                                 Solicitar Contato & E-book
                             </button>
                         </form>
@@ -147,8 +147,8 @@ export default function PremiumLandingPage() {
             <section id="assinar" className="py-24 px-6 bg-arvo-primary text-white text-center">
                 <div className="max-w-3xl mx-auto">
                     <h2 className="font-serif text-4xl md:text-5xl mb-8 leading-tight text-white">Pronto para dar o próximo passo rumo à independência?</h2>
-                    <p className="text-emerald-100 text-lg mb-10 max-w-xl mx-auto">Assine agora com débito em seu cartão e cancele quando quiser. Sua jornada como investidor premium começa aqui.</p>
-                    <Link href="/checkout/pagamento" className="inline-flex items-center justify-center gap-2 px-10 py-5 text-lg font-bold text-arvo-primary bg-white rounded-2xl hover:scale-105 transition-transform shadow-2xl shadow-emerald-900/50">
+                    <p className="text-[#eef5f1] text-lg mb-10 max-w-xl mx-auto">Assine agora com débito em seu cartão e cancele quando quiser. Sua jornada como investidor premium começa aqui.</p>
+                    <Link href="/checkout/pagamento" className="inline-flex items-center justify-center gap-2 px-10 py-5 text-lg font-bold text-arvo-primary bg-white rounded-2xl hover:scale-105 transition-transform shadow-2xl shadow-[#0A192F]/50">
                         Assinar ARVO Premium (R$ 99/mês)
                     </Link>
                 </div>
