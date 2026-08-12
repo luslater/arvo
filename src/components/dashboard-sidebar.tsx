@@ -91,9 +91,9 @@ export function DashboardSidebar() {
             <nav className="flex-1 overflow-y-auto p-4 flex flex-col gap-0.5">
                 <span className="text-[10px] font-semibold text-dash-text-light uppercase tracking-widest px-3 py-2 mt-1">Principal</span>
 
+                <NavLink href="/dashboard/jornada" icon={<Map className="w-4 h-4" />} label="Jornada" onClick={closeMobileMenu} />
                 <NavLink href="/dashboard/carteira" icon={<Wallet className="w-4 h-4" />} label="Minha Carteira" exact onClick={closeMobileMenu} />
                 <NavLink href="/dashboard/planejamento" icon={<Calculator className="w-4 h-4" />} label="Calculadora Pl." onClick={closeMobileMenu} />
-                <NavLink href="/dashboard/jornada" icon={<Map className="w-4 h-4" />} label="Jornada" onClick={closeMobileMenu} />
                 <NavLink href="/dashboard/bussola" icon={<Compass className="w-4 h-4" />} label="Bússola de Risco" onClick={closeMobileMenu} />
                 <NavLink href="/dashboard/calculadoras" icon={<Calculator className="w-4 h-4" />} label="Calculadoras" onClick={closeMobileMenu} />
 
