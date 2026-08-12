@@ -272,225 +272,187 @@ export default function CalculadoraInflacao() {
     await navigator.clipboard?.writeText(text);
   }
 
+  const inputClass = "w-full bg-dash-surface-active border border-dash-border rounded-lg px-4 py-3 text-dash-text text-lg focus:outline-none focus:ring-1 focus:ring-dash-accent focus:border-dash-accent transition";
+  const labelClass = "block text-dash-text-light text-sm font-medium mb-1.5";
+
   return (
-    <div className="arvo-inflation-calculator">
-    <main>
-      <header className="topbar">
-        <a className="brand" href="#top" aria-label="Arvo — início">
-          <span className="brand-mark">A</span>
-          <span>ARVO</span>
-        </a>
-        <span className="tool-label">Ferramentas financeiras</span>
-      </header>
+    <div className="w-full">
+      <div className="max-w-6xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-3xl md:text-4xl font-bold text-dash-text">
+            Calculadora de Correção Monetária
+          </h1>
+          <p className="text-dash-text-muted mt-2">
+            Atualize qualquer valor pela inflação oficial (IPCA, INPC, IGP-M) do período.
+          </p>
+        </div>
 
-      <div className="page-shell" id="top">
-        <section className="intro">
-          <div>
-            <p className="eyebrow">CALCULADORA DE INFLAÇÃO</p>
-            <h1>Quanto o seu dinheiro vale hoje?</h1>
-            <p className="subtitle">
-              Atualize qualquer valor pela inflação oficial e entenda, em números claros,
-              quanto o poder de compra mudou no período.
-            </p>
-          </div>
-          <div className="official-badge">
-            <span className="status-dot" />
-            <div>
-              <strong>Dados oficiais</strong>
-              <small>Banco Central, IBGE e FGV</small>
-            </div>
-          </div>
-        </section>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Painel de Inputs */}
+          <div className="lg:col-span-1 space-y-5">
+            <form className="bg-dash-bg rounded-2xl p-6 border border-dash-border shadow-sm" onSubmit={submit}>
+              <h2 className="text-lg font-semibold text-dash-accent mb-4">
+                Dados da Correção
+              </h2>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className={labelClass}>Índice de correção</label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {INDEXES.map((item) => (
+                      <button
+                        type="button"
+                        key={item.key}
+                        onClick={() => {
+                          setSelected(item.key);
+                          setResult(null);
+                          setError("");
+                        }}
+                        className={`py-2 px-1 text-sm font-semibold rounded-lg transition-colors border ${
+                          selected === item.key 
+                            ? "bg-dash-accent text-white border-dash-accent" 
+                            : "bg-dash-surface text-dash-text-muted border-dash-border hover:bg-dash-surface-active"
+                        }`}
+                      >
+                        {item.name}
+                      </button>
+                    ))}
+                  </div>
+                  <p className="text-xs text-dash-text-muted mt-1.5">{currentIndex.fullName} ({currentIndex.source})</p>
+                </div>
 
-        <section className="calculator-grid">
-          <form className="calculator-card" onSubmit={submit}>
-            <div className="section-heading">
-              <span className="step">1</span>
-              <div>
-                <h2>Informe os dados</h2>
-                <p>Escolha o índice e o período da correção.</p>
-              </div>
-            </div>
-
-            <fieldset>
-              <legend>Índice de correção</legend>
-              <div className="index-options">
-                {INDEXES.map((item) => (
-                  <button
-                    type="button"
-                    key={item.key}
-                    className={`index-option ${selected === item.key ? "active" : ""}`}
-                    onClick={() => {
-                      setSelected(item.key);
+                <div>
+                  <label className={labelClass}>Valor a corrigir (R$)</label>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    className={inputClass}
+                    value={formatInput(amount)}
+                    onChange={(event) => {
+                      setAmount(parseMoneyInput(event.target.value));
                       setResult(null);
-                      setError("");
                     }}
-                    aria-pressed={selected === item.key}
-                  >
-                    <strong>{item.name}</strong>
-                    <span>{item.source}</span>
-                  </button>
-                ))}
-              </div>
-              <p className="index-description">{currentIndex.fullName}</p>
-            </fieldset>
-
-            <label className="field">
-              <span>Valor a corrigir</span>
-              <div className="money-input">
-                <span>R$</span>
-                <input
-                  inputMode="numeric"
-                  value={formatInput(amount)}
-                  onChange={(event) => {
-                    setAmount(parseMoneyInput(event.target.value));
-                    setResult(null);
-                  }}
-                  aria-label="Valor a corrigir em reais"
-                />
-              </div>
-            </label>
-
-            <div className="date-row">
-              <label className="field">
-                <span>Mês inicial</span>
-                <input
-                  type="month"
-                  min="1994-07"
-                  max={previousMonth()}
-                  value={startMonth}
-                  onChange={(event) => {
-                    setStartMonth(event.target.value);
-                    setResult(null);
-                  }}
-                />
-                <small>Inclui o índice deste mês</small>
-              </label>
-              <div className="date-arrow" aria-hidden="true">→</div>
-              <label className="field">
-                <span>Mês final</span>
-                <input
-                  type="month"
-                  min="1994-07"
-                  max={previousMonth()}
-                  value={endMonth}
-                  onChange={(event) => {
-                    setEndMonth(event.target.value);
-                    setResult(null);
-                  }}
-                />
-                <small>Inclui o índice deste mês</small>
-              </label>
-            </div>
-
-            {error && <div className="error-message" role="alert">{error}</div>}
-
-            <button className="primary-button" type="submit" disabled={loading}>
-              {loading ? "Consultando dados oficiais…" : "Calcular valor corrigido"}
-              {!loading && <span aria-hidden="true">↗</span>}
-            </button>
-            <button className="reset-button" type="button" onClick={reset}>Limpar dados</button>
-          </form>
-
-          <section className={`result-card ${result ? "has-result" : ""}`} aria-live="polite">
-            <div className="section-heading result-heading">
-              <span className="step">2</span>
-              <div>
-                <h2>Resultado</h2>
-                <p>Correção monetária estimada.</p>
-              </div>
-            </div>
-
-            {loading ? (
-              <div className="result-empty">
-                <span className="loader" />
-                <strong>Buscando a série histórica</strong>
-                <p>A consulta é feita diretamente na base oficial.</p>
-              </div>
-            ) : result ? (
-              <div className="result-content">
-                <p className="equivalence-label">
-                  {money.format(amount)} em {prettyMonth(result.firstMonth)} equivalem a
-                </p>
-                <div className="corrected-value">{money.format(result.corrected)}</div>
-                <p className="result-date">em {prettyMonth(result.lastMonth)}, pelo {currentIndex.name}</p>
-
-                {result.lastMonth < result.requestedEnd && (
-                  <div className="data-note">
-                    O cálculo termina em {prettyMonth(result.lastMonth)}, último dado publicado.
-                  </div>
-                )}
-
-                <div className="metric-grid">
-                  <div className="metric highlight">
-                    <span>Inflação acumulada</span>
-                    <strong>{percent.format(result.accumulated)}%</strong>
-                  </div>
-                  <div className="metric">
-                    <span>Aumento no valor</span>
-                    <strong>{money.format(result.increase)}</strong>
-                  </div>
-                  <div className="metric">
-                    <span>Média anual</span>
-                    <strong>{percent.format(result.annualized)}% a.a.</strong>
-                  </div>
-                  <div className="metric">
-                    <span>Fator de correção</span>
-                    <strong>{result.factor.toFixed(6).replace(".", ",")}</strong>
-                  </div>
+                  />
                 </div>
 
-                <div className="chart-header">
+                <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <span>Evolução corrigida</span>
-                    <small>{result.months} índices mensais considerados</small>
+                    <label className={labelClass}>Mês inicial</label>
+                    <input
+                      type="month"
+                      className="w-full bg-dash-surface-active border border-dash-border rounded-lg px-3 py-2.5 text-dash-text text-sm focus:outline-none focus:ring-1 focus:ring-dash-accent"
+                      min="1994-07"
+                      max={previousMonth()}
+                      value={startMonth}
+                      onChange={(event) => {
+                        setStartMonth(event.target.value);
+                        setResult(null);
+                      }}
+                    />
                   </div>
-                  <strong>{currentIndex.name}</strong>
+                  <div>
+                    <label className={labelClass}>Mês final</label>
+                    <input
+                      type="month"
+                      className="w-full bg-dash-surface-active border border-dash-border rounded-lg px-3 py-2.5 text-dash-text text-sm focus:outline-none focus:ring-1 focus:ring-dash-accent"
+                      min="1994-07"
+                      max={previousMonth()}
+                      value={endMonth}
+                      onChange={(event) => {
+                        setEndMonth(event.target.value);
+                        setResult(null);
+                      }}
+                    />
+                  </div>
                 </div>
-                <TrendChart points={result.chart} />
 
-                <button className="copy-button" type="button" onClick={copyResult}>
-                  Copiar resumo do cálculo
-                </button>
+                {error && <div className="text-red-500 text-sm font-medium mt-2">{error}</div>}
+
+                <div className="pt-2 flex flex-col gap-2">
+                  <button 
+                    type="submit" 
+                    disabled={loading}
+                    className="w-full bg-dash-accent hover:bg-dash-accent/90 text-white font-semibold py-3 px-4 rounded-xl transition-colors disabled:opacity-70 shadow-sm"
+                  >
+                    {loading ? "Consultando BACEN..." : "Calcular Correção"}
+                  </button>
+                  <button 
+                    type="button" 
+                    onClick={reset}
+                    className="w-full bg-transparent hover:bg-dash-surface-active text-dash-text-light font-semibold py-2 px-4 rounded-xl transition-colors text-sm"
+                  >
+                    Limpar
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          {/* Painel de Resultados */}
+          <div className="lg:col-span-2 space-y-6">
+            {!result ? (
+              <div className="bg-dash-surface border border-dash-border rounded-2xl h-full min-h-[300px] flex flex-col items-center justify-center text-dash-text-muted p-6 text-center">
+                <div className="w-16 h-16 bg-dash-surface-active rounded-full flex items-center justify-center mb-4">
+                  <span className="text-2xl font-bold text-dash-text-light">%</span>
+                </div>
+                <h3 className="font-semibold text-lg text-dash-text">Seu resultado aparecerá aqui</h3>
+                <p className="text-sm max-w-sm mt-1">Preencha os dados e clique em Calcular para buscar a série histórica atualizada.</p>
               </div>
             ) : (
-              <div className="result-empty">
-                <div className="empty-icon" aria-hidden="true">%</div>
-                <strong>Seu resultado aparecerá aqui</strong>
-                <p>Preencha os dados ao lado para calcular a correção.</p>
-              </div>
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="bg-dash-accent text-white p-6 rounded-2xl shadow-lg relative overflow-hidden flex flex-col justify-center">
+                    <div className="absolute top-0 right-0 p-4 opacity-10">
+                      <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
+                    </div>
+                    <p className="text-dash-surface text-sm font-medium mb-1">Valor Corrigido</p>
+                    <h3 className="text-4xl md:text-5xl font-bold tracking-tight mb-2">
+                      {money.format(result.corrected)}
+                    </h3>
+                    <p className="text-dash-surface-active text-sm">
+                      Valor equivalente em {prettyMonth(result.lastMonth)}
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-dash-bg p-5 rounded-2xl border border-dash-border">
+                      <p className="text-xs text-dash-text-muted font-medium mb-1 uppercase tracking-wider">Inflação Acumulada</p>
+                      <p className="text-2xl font-bold text-dash-accent">{percent.format(result.accumulated)}%</p>
+                    </div>
+                    <div className="bg-dash-bg p-5 rounded-2xl border border-dash-border">
+                      <p className="text-xs text-dash-text-muted font-medium mb-1 uppercase tracking-wider">Diferença (Aumento)</p>
+                      <p className="text-2xl font-bold text-dash-text">{money.format(result.increase)}</p>
+                    </div>
+                    <div className="bg-dash-bg p-5 rounded-2xl border border-dash-border">
+                      <p className="text-xs text-dash-text-muted font-medium mb-1 uppercase tracking-wider">Média Anualizada</p>
+                      <p className="text-xl font-bold text-dash-text">{percent.format(result.annualized)}% <span className="text-sm font-normal text-dash-text-light">a.a.</span></p>
+                    </div>
+                    <div className="bg-dash-bg p-5 rounded-2xl border border-dash-border">
+                      <p className="text-xs text-dash-text-muted font-medium mb-1 uppercase tracking-wider">Fator Multiplicador</p>
+                      <p className="text-xl font-bold text-dash-text">{result.factor.toFixed(6).replace(".", ",")}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-dash-bg rounded-2xl p-6 border border-dash-border">
+                  <div className="flex justify-between items-center mb-6">
+                    <div>
+                      <h3 className="text-lg font-bold text-dash-text">Evolução do valor</h3>
+                      <p className="text-sm text-dash-text-muted">{result.months} meses analisados pelo índice {currentIndex.name}</p>
+                    </div>
+                  </div>
+                  <TrendChart points={result.chart} />
+                </div>
+                
+                <div className="bg-blue-50/50 border border-blue-100 rounded-xl p-4 text-sm text-blue-800">
+                  <strong>Entenda o cálculo:</strong> Aplicamos mês a mês a variação do {currentIndex.name}. O valor é multiplicado pelo produto de cada taxa mensal divulgada pelo {currentIndex.source}, garantindo precisão absoluta.
+                </div>
+              </>
             )}
-          </section>
-        </section>
-
-        <section className="method-section">
-          <div>
-            <p className="eyebrow">COMO CALCULAMOS</p>
-            <h2>Inflação não se soma. Ela se acumula.</h2>
           </div>
-          <div className="method-copy">
-            <p>
-              Aplicamos mês a mês a variação do índice escolhido. O valor inicial é
-              multiplicado pelo produto de cada taxa mensal, incluindo os meses inicial e final.
-            </p>
-            <div className="formula">Valor corrigido = valor inicial × ∏ (1 + índice mensal ÷ 100)</div>
-            <p className="fine-print">
-              A estimativa é informativa e utiliza as séries temporais oficiais divulgadas pelo
-              Banco Central. Resultados podem ser revisados pela fonte. Para períodos anteriores ao
-              Real, é necessário considerar as conversões de moeda.
-            </p>
-          </div>
-        </section>
+        </div>
       </div>
-
-      <footer>
-        <span>ARVO</span>
-        <p>Clareza para decisões financeiras melhores.</p>
-        <a href="https://www.bcb.gov.br/meubc/calculadoradocidadao" target="_blank" rel="noreferrer">
-          Fonte: Calculadora do Cidadão — BCB ↗
-        </a>
-      </footer>
-    </main>
     </div>
   );
 }
