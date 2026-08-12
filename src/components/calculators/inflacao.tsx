@@ -1,7 +1,16 @@
 "use client";
 
 import { FormEvent, useCallback, useMemo, useState } from "react";
-import "./inflacao.css";
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer
+} from "recharts";
 
 type IndexKey = "ipca" | "inpc" | "igpm";
 
@@ -111,60 +120,68 @@ function parseMoneyInput(value: string) {
   return digits ? Number(digits) / 100 : 0;
 }
 
+const formatBRLCompact = (v: number) => {
+  if (v >= 1_000_000) return `R$ ${(v / 1_000_000).toFixed(1)}M`;
+  if (v >= 1_000) return `R$ ${(v / 1_000).toFixed(0)}k`;
+  return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(v);
+};
+
 function TrendChart({ points }: { points: ChartPoint[] }) {
-  const width = 680;
-  const height = 210;
-  const left = 12;
-  const top = 14;
-  const bottom = 30;
-  const plotHeight = height - top - bottom;
-  const values = points.map((point) => point.value);
-  const min = Math.min(...values);
-  const max = Math.max(...values);
-  const range = max - min || 1;
-  const coords = points.map((point, index) => ({
-    x: left + (index / Math.max(points.length - 1, 1)) * (width - left * 2),
-    y: top + ((max - point.value) / range) * plotHeight,
-  }));
-  const line = coords.map((point) => `${point.x},${point.y}`).join(" ");
-  const area = `${left},${height - bottom} ${line} ${width - left},${height - bottom}`;
-  const ticks = [0, Math.floor((points.length - 1) / 2), points.length - 1];
+  if (!points || points.length === 0) return null;
 
   return (
-    <div className="chart-wrap" aria-label="Evolução do valor corrigido no período">
-      <svg viewBox={`0 0 ${width} ${height}`} role="img">
-        <defs>
-          <linearGradient id="chartFill" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor="#2f725f" stopOpacity="0.28" />
-            <stop offset="100%" stopColor="#2f725f" stopOpacity="0" />
-          </linearGradient>
-        </defs>
-        <line x1="12" x2="668" y1="180" y2="180" className="chart-grid" />
-        <polygon points={area} fill="url(#chartFill)" />
-        <polyline points={line} className="chart-line" />
-        {coords.length > 0 && (
-          <>
-            <circle cx={coords[0].x} cy={coords[0].y} r="4" className="chart-dot" />
-            <circle
-              cx={coords[coords.length - 1].x}
-              cy={coords[coords.length - 1].y}
-              r="5"
-              className="chart-dot"
-            />
-          </>
-        )}
-        {ticks.map((index) => (
-          <text
-            key={`${index}-${points[index]?.label}`}
-            x={coords[index]?.x ?? 0}
-            y="204"
-            textAnchor={index === 0 ? "start" : index === points.length - 1 ? "end" : "middle"}
-            className="chart-label"
-          >
-            {points[index] ? prettyMonth(points[index].label) : ""}
-          </text>
-        ))}
-      </svg>
+    <div style={{ width: '100%', height: 320 }}>
+      <ResponsiveContainer width="100%" height="100%">
+        <AreaChart data={points} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+          <defs>
+            <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="#10b981" stopOpacity={0.2} />
+              <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+            </linearGradient>
+          </defs>
+          <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
+          <XAxis 
+            dataKey="label" 
+            stroke="#94a3b8" 
+            tickFormatter={(v, i) => {
+              if (points.length < 10) return prettyMonth(v);
+              if (i === 0 || i === points.length - 1) return prettyMonth(v);
+              if (i % Math.ceil(points.length / 5) === 0) return prettyMonth(v);
+              return "";
+            }}
+            tick={{ fontSize: 12 }} 
+          />
+          <YAxis 
+            stroke="#94a3b8" 
+            tickFormatter={formatBRLCompact} 
+            tick={{ fontSize: 12 }} 
+            width={80} 
+          />
+          <Tooltip 
+            content={({ active, payload, label }) => {
+              if (active && payload && payload.length) {
+                return (
+                  <div className="bg-white text-dash-text p-3 rounded-lg shadow-xl text-sm border border-dash-border">
+                    <p className="font-semibold mb-1 text-dash-text-light">{prettyMonth(label)}</p>
+                    <p><span className="text-dash-accent font-semibold">Valor Corrigido:</span> {new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(payload[0].value as number)}</p>
+                    <p><span className="text-blue-600 font-semibold">Fator Acumulado:</span> {Number(payload[0].payload.factor).toFixed(4)}</p>
+                  </div>
+                );
+              }
+              return null;
+            }} 
+          />
+          <Legend wrapperStyle={{ fontSize: 12, color: "#64748b" }} />
+          <Area 
+            type="monotone" 
+            dataKey="value" 
+            name="Valor Corrigido" 
+            stroke="#10b981" 
+            fill="url(#colorValue)" 
+            strokeWidth={2} 
+          />
+        </AreaChart>
+      </ResponsiveContainer>
     </div>
   );
 }
