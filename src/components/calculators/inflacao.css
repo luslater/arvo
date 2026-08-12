@@ -1,0 +1,480 @@
+.arvo-inflation-calculator {
+  --ink: #17342c;
+  --muted: #66756f;
+  --green: #245c4d;
+  --green-2: #327563;
+  --green-soft: #e9f0ec;
+  --paper: #f7f5ef;
+  --card: #fffefa;
+  --line: #deded4;
+  --orange: #ef8d54;
+}
+
+.arvo-inflation-calculator * { box-sizing: border-box; }
+.arvo-inflation-calculator { scroll-behavior: smooth; }
+.arvo-inflation-calculator {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-geist-sans, Arial), sans-serif;
+}
+.arvo-inflation-calculator button, .arvo-inflation-calculator input { font: inherit; }
+.arvo-inflation-calculator button, .arvo-inflation-calculator a { -webkit-tap-highlight-color: transparent; }
+
+.arvo-inflation-calculator .topbar {
+  height: 74px;
+  padding: 0 max(24px, calc((100vw - 1180px) / 2));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(247, 245, 239, 0.92);
+  border-bottom: 1px solid rgba(23, 52, 44, 0.12);
+  backdrop-filter: blur(14px);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.arvo-inflation-calculator .brand {
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 18px;
+  letter-spacing: 0.2em;
+  font-weight: 750;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.arvo-inflation-calculator .brand-mark {
+  width: 30px;
+  height: 30px;
+  border-radius: 50% 50% 48% 48%;
+  display: grid;
+  place-items: center;
+  background: var(--green);
+  color: white;
+  letter-spacing: 0;
+  font-family: Georgia, serif;
+  font-size: 17px;
+}
+
+.arvo-inflation-calculator .tool-label { color: var(--muted); font-size: 13px; }
+.arvo-inflation-calculator .page-shell { width: min(1180px, calc(100% - 48px)); margin: 0 auto; }
+
+.arvo-inflation-calculator .intro {
+  padding: 70px 0 42px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 48px;
+}
+
+.arvo-inflation-calculator .eyebrow {
+  margin: 0 0 14px;
+  color: var(--orange);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  font-weight: 750;
+}
+
+.arvo-inflation-calculator h1, .arvo-inflation-calculator h2, .arvo-inflation-calculator p { margin-top: 0; }
+.arvo-inflation-calculator h1 {
+  margin-bottom: 18px;
+  max-width: 720px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(44px, 6vw, 72px);
+  line-height: 0.98;
+  font-weight: 500;
+  letter-spacing: -0.045em;
+}
+
+.arvo-inflation-calculator .subtitle {
+  margin-bottom: 0;
+  max-width: 690px;
+  font-size: 18px;
+  line-height: 1.65;
+  color: var(--muted);
+}
+
+.arvo-inflation-calculator .official-badge {
+  min-width: 228px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px 17px;
+  background: rgba(255, 254, 250, 0.7);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+.arvo-inflation-calculator .official-badge strong, .arvo-inflation-calculator .official-badge small { display: block; }
+.arvo-inflation-calculator .official-badge strong { font-size: 13px; }
+.arvo-inflation-calculator .official-badge small { margin-top: 3px; color: var(--muted); font-size: 11px; }
+.arvo-inflation-calculator .status-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #55a87f;
+  box-shadow: 0 0 0 5px #e5f3eb;
+}
+
+.arvo-inflation-calculator .calculator-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  align-items: start;
+  box-shadow: 0 25px 70px rgba(34, 55, 47, 0.09);
+  border-radius: 22px;
+  overflow: hidden;
+}
+.arvo-inflation-calculator .calculator-card, .arvo-inflation-calculator .result-card { min-height: 675px; padding: 38px; }
+.arvo-inflation-calculator .calculator-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-right: 0;
+  border-radius: 22px 0 0 22px;
+}
+.arvo-inflation-calculator .result-card {
+  position: relative;
+  background: var(--green);
+  color: white;
+  border-radius: 0 22px 22px 0;
+  overflow: hidden;
+}
+.arvo-inflation-calculator .result-card::after {
+  content: "";
+  width: 380px;
+  height: 380px;
+  position: absolute;
+  top: -240px;
+  right: -160px;
+  border: 74px solid rgba(255, 255, 255, 0.035);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.arvo-inflation-calculator .section-heading {
+  display: flex;
+  gap: 15px;
+  align-items: flex-start;
+  margin-bottom: 31px;
+}
+.arvo-inflation-calculator .section-heading h2 {
+  margin-bottom: 4px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 26px;
+  font-weight: 500;
+}
+.arvo-inflation-calculator .section-heading p { margin: 0; color: var(--muted); font-size: 13px; }
+.arvo-inflation-calculator .step {
+  width: 29px;
+  height: 29px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  color: var(--green);
+  font-size: 12px;
+  font-weight: 750;
+}
+.arvo-inflation-calculator .result-heading .step { color: white; border-color: rgba(255, 255, 255, 0.28); }
+.arvo-inflation-calculator .result-heading h2 { color: white; }
+.arvo-inflation-calculator .result-heading p { color: rgba(255, 255, 255, 0.6); }
+
+.arvo-inflation-calculator fieldset { padding: 0; margin: 0 0 24px; border: 0; }
+.arvo-inflation-calculator legend, .arvo-inflation-calculator .field > span {
+  margin-bottom: 9px;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 680;
+}
+.arvo-inflation-calculator .index-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.arvo-inflation-calculator .index-option {
+  padding: 12px 10px 10px;
+  text-align: left;
+  background: #faf9f4;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  color: var(--ink);
+  cursor: pointer;
+  transition: 160ms ease;
+}
+.arvo-inflation-calculator .index-option:hover { border-color: #8ba79e; transform: translateY(-1px); }
+.arvo-inflation-calculator .index-option.active {
+  background: var(--green-soft);
+  border-color: var(--green);
+  box-shadow: inset 0 0 0 1px var(--green);
+}
+.arvo-inflation-calculator .index-option strong, .arvo-inflation-calculator .index-option span { display: block; }
+.arvo-inflation-calculator .index-option strong { font-size: 14px; }
+.arvo-inflation-calculator .index-option span { margin-top: 3px; color: var(--muted); font-size: 10px; }
+.arvo-inflation-calculator .index-description { margin: 8px 0 0; color: var(--muted); font-size: 11px; }
+
+.arvo-inflation-calculator .field { display: flex; flex-direction: column; }
+.arvo-inflation-calculator .field input {
+  min-width: 0;
+  height: 50px;
+  padding: 0 14px;
+  background: #faf9f4;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  outline: none;
+  color: var(--ink);
+  font-size: 14px;
+  transition: border 160ms ease, box-shadow 160ms ease;
+}
+.arvo-inflation-calculator .field input:focus { border-color: var(--green-2); box-shadow: 0 0 0 3px rgba(47, 114, 95, 0.12); }
+.arvo-inflation-calculator .field small { margin-top: 6px; color: #8a9691; font-size: 10px; }
+.arvo-inflation-calculator .money-input {
+  height: 58px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  background: #faf9f4;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+.arvo-inflation-calculator .money-input:focus-within { border-color: var(--green-2); box-shadow: 0 0 0 3px rgba(47, 114, 95, 0.12); }
+.arvo-inflation-calculator .money-input > span { padding-right: 13px; color: var(--muted); font-size: 13px; font-weight: 680; }
+.arvo-inflation-calculator .money-input input {
+  width: 100%;
+  height: auto;
+  padding: 0;
+  border: 0;
+  box-shadow: none !important;
+  background: transparent;
+  font-family: var(--font-geist-mono, "SFMono-Regular"), monospace;
+  font-size: 22px;
+  font-weight: 650;
+}
+.arvo-inflation-calculator .date-row {
+  margin-top: 24px;
+  display: grid;
+  grid-template-columns: 1fr 24px 1fr;
+  gap: 10px;
+  align-items: center;
+}
+.arvo-inflation-calculator .date-arrow { margin-top: 7px; color: #9aa49f; text-align: center; }
+
+.arvo-inflation-calculator .primary-button, .arvo-inflation-calculator .reset-button, .arvo-inflation-calculator .copy-button {
+  width: 100%;
+  border: 0;
+  cursor: pointer;
+  transition: 160ms ease;
+}
+.arvo-inflation-calculator .primary-button {
+  height: 54px;
+  margin-top: 28px;
+  padding: 0 19px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--orange);
+  color: #321c11;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 750;
+  box-shadow: 0 9px 24px rgba(239, 141, 84, 0.23);
+}
+.arvo-inflation-calculator .primary-button:hover:not(:disabled) { background: #f29a65; transform: translateY(-1px); }
+.arvo-inflation-calculator .primary-button:disabled { opacity: 0.7; cursor: progress; }
+.arvo-inflation-calculator .reset-button { margin-top: 13px; background: transparent; color: var(--muted); font-size: 11px; }
+.arvo-inflation-calculator .reset-button:hover { color: var(--ink); }
+.arvo-inflation-calculator .error-message, .arvo-inflation-calculator .data-note {
+  margin-top: 18px;
+  padding: 11px 13px;
+  border-radius: 9px;
+  font-size: 11px;
+  line-height: 1.45;
+}
+.arvo-inflation-calculator .error-message { color: #8a2e21; background: #fff0ec; border: 1px solid #f2c9be; }
+
+.arvo-inflation-calculator .result-empty {
+  min-height: 490px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.75);
+}
+.arvo-inflation-calculator .empty-icon {
+  width: 70px;
+  height: 70px;
+  margin-bottom: 20px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 50%;
+  font-family: Georgia, serif;
+  font-size: 29px;
+}
+.arvo-inflation-calculator .result-empty strong { color: white; font-family: Georgia, serif; font-size: 20px; font-weight: 500; }
+.arvo-inflation-calculator .result-empty p { margin: 8px 0 0; max-width: 250px; font-size: 12px; line-height: 1.5; }
+.arvo-inflation-calculator .loader {
+  width: 34px;
+  height: 34px;
+  margin-bottom: 22px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-top-color: var(--orange);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.arvo-inflation-calculator .result-content { position: relative; z-index: 1; }
+.arvo-inflation-calculator .equivalence-label { margin: 0 0 5px; color: rgba(255, 255, 255, 0.68); font-size: 12px; }
+.arvo-inflation-calculator .corrected-value {
+  font-family: var(--font-geist-mono, "SFMono-Regular"), monospace;
+  font-size: clamp(37px, 4.6vw, 54px);
+  font-weight: 690;
+  letter-spacing: -0.055em;
+  color: #fff;
+}
+.arvo-inflation-calculator .result-date { margin: 2px 0 25px; color: rgba(255, 255, 255, 0.62); font-size: 12px; }
+.arvo-inflation-calculator .data-note { margin: -11px 0 19px; background: rgba(255, 255, 255, 0.08); color: rgba(255, 255, 255, 0.78); }
+.arvo-inflation-calculator .metric-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  border-left: 1px solid rgba(255, 255, 255, 0.14);
+}
+.arvo-inflation-calculator .metric {
+  min-height: 70px;
+  padding: 13px 14px;
+  border-right: 1px solid rgba(255, 255, 255, 0.14);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+}
+.arvo-inflation-calculator .metric span, .arvo-inflation-calculator .metric strong { display: block; }
+.arvo-inflation-calculator .metric span {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.arvo-inflation-calculator .metric strong {
+  margin-top: 7px;
+  font-family: var(--font-geist-mono, "SFMono-Regular"), monospace;
+  color: white;
+  font-size: 14px;
+  font-weight: 630;
+}
+.arvo-inflation-calculator .metric.highlight strong { color: #ffb88f; }
+.arvo-inflation-calculator .chart-header {
+  margin-top: 22px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+.arvo-inflation-calculator .chart-header span, .arvo-inflation-calculator .chart-header small { display: block; }
+.arvo-inflation-calculator .chart-header span { font-size: 11px; font-weight: 650; }
+.arvo-inflation-calculator .chart-header small { margin-top: 3px; color: rgba(255, 255, 255, 0.48); font-size: 9px; }
+.arvo-inflation-calculator .chart-header > strong { color: #ffb88f; font-size: 10px; }
+.arvo-inflation-calculator .chart-wrap { width: 100%; margin-top: 9px; }
+.arvo-inflation-calculator .chart-wrap svg { width: 100%; display: block; overflow: visible; }
+.arvo-inflation-calculator .chart-line {
+  fill: none;
+  stroke: #f6ab80;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.arvo-inflation-calculator .chart-dot { fill: #f6ab80; stroke: var(--green); stroke-width: 2; }
+.arvo-inflation-calculator .chart-grid { stroke: rgba(255, 255, 255, 0.12); stroke-width: 1; }
+.arvo-inflation-calculator .chart-label { fill: rgba(255, 255, 255, 0.5); font-family: var(--font-geist-sans, Arial), sans-serif; font-size: 9px; }
+.arvo-inflation-calculator .copy-button {
+  height: 37px;
+  margin-top: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.17);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 10px;
+}
+.arvo-inflation-calculator .copy-button:hover { background: rgba(255, 255, 255, 0.1); color: white; }
+
+.arvo-inflation-calculator .method-section {
+  padding: 96px 0;
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  gap: 100px;
+  border-bottom: 1px solid var(--line);
+}
+.arvo-inflation-calculator .method-section h2 {
+  max-width: 430px;
+  margin-bottom: 0;
+  font-family: Georgia, serif;
+  font-size: 37px;
+  line-height: 1.12;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+}
+.arvo-inflation-calculator .method-copy > p { color: var(--muted); font-size: 14px; line-height: 1.7; }
+.arvo-inflation-calculator .formula {
+  margin: 23px 0;
+  padding: 18px 20px;
+  background: var(--green-soft);
+  border-left: 3px solid var(--green-2);
+  font-family: var(--font-geist-mono, "SFMono-Regular"), monospace;
+  font-size: 12px;
+}
+.arvo-inflation-calculator .method-copy .fine-print { margin-bottom: 0; font-size: 11px; color: #88938e; }
+
+.arvo-inflation-calculator footer {
+  min-height: 102px;
+  width: min(1180px, calc(100% - 48px));
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  color: var(--muted);
+  font-size: 11px;
+}
+.arvo-inflation-calculator footer > span { color: var(--ink); font-weight: 780; letter-spacing: 0.17em; }
+.arvo-inflation-calculator footer p { margin: 0; }
+.arvo-inflation-calculator footer a { margin-left: auto; color: var(--green); text-decoration: none; }
+.arvo-inflation-calculator footer a:hover { text-decoration: underline; }
+
+@media (max-width: 900px) {
+  .arvo-inflation-calculator .intro { padding-top: 48px; align-items: flex-start; flex-direction: column; }
+  .arvo-inflation-calculator .calculator-grid { grid-template-columns: 1fr; box-shadow: none; }
+  .arvo-inflation-calculator .calculator-card, .arvo-inflation-calculator .result-card { min-height: auto; }
+  .arvo-inflation-calculator .calculator-card { border-right: 1px solid var(--line); border-radius: 18px 18px 0 0; }
+  .arvo-inflation-calculator .result-card { border-radius: 0 0 18px 18px; }
+  .arvo-inflation-calculator .result-empty { min-height: 400px; }
+  .arvo-inflation-calculator .method-section { gap: 45px; }
+}
+
+@media (max-width: 620px) {
+  .arvo-inflation-calculator .topbar { height: 64px; }
+  .arvo-inflation-calculator .tool-label { display: none; }
+  .arvo-inflation-calculator .page-shell { width: min(100% - 28px, 1180px); }
+  .arvo-inflation-calculator .intro { padding: 40px 2px 30px; gap: 25px; }
+  .arvo-inflation-calculator h1 { font-size: 45px; }
+  .arvo-inflation-calculator .subtitle { font-size: 15px; }
+  .arvo-inflation-calculator .official-badge { width: 100%; }
+  .arvo-inflation-calculator .calculator-card, .arvo-inflation-calculator .result-card { padding: 26px 20px; }
+  .arvo-inflation-calculator .index-options { gap: 5px; }
+  .arvo-inflation-calculator .index-option { padding: 11px 8px 9px; }
+  .arvo-inflation-calculator .date-row { grid-template-columns: 1fr; gap: 15px; }
+  .arvo-inflation-calculator .date-arrow { display: none; }
+  .arvo-inflation-calculator .corrected-value { font-size: 37px; }
+  .arvo-inflation-calculator .method-section { padding: 72px 2px; grid-template-columns: 1fr; gap: 32px; }
+  .arvo-inflation-calculator .method-section h2 { font-size: 33px; }
+  .arvo-inflation-calculator footer {
+    width: min(100% - 28px, 1180px);
+    padding: 26px 0;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .arvo-inflation-calculator footer a { margin-left: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arvo-inflation-calculator *, .arvo-inflation-calculator *::before, .arvo-inflation-calculator *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

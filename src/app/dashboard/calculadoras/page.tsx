@@ -4,10 +4,11 @@ import { useState } from "react";
 import { CalculadoraJurosCompostos } from "@/components/calculators/juros-compostos";
 import { CalculadoraFinanciamento } from "@/components/calculators/financiamento";
 import { ComparadorContent } from "../comparador/page";
+import CalculadoraInflacao from "@/components/calculators/inflacao";
 import { Calculator } from "lucide-react";
 
 export default function CalculadorasHubPage() {
-    const [activeTab, setActiveTab] = useState<"compostos" | "financiamento" | "comparador">("comparador");
+    const [activeTab, setActiveTab] = useState<"compostos" | "financiamento" | "comparador" | "inflacao">("inflacao");
 
     return (
         <div className="flex flex-col gap-6 w-full max-w-7xl mx-auto pb-12 pt-6">
@@ -51,6 +52,15 @@ export default function CalculadorasHubPage() {
                 >
                     Comparador de Ativos
                 </button>
+                <button
+                    onClick={() => setActiveTab("inflacao")}
+                    className={`flex-1 md:flex-none px-6 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 ${activeTab === "inflacao"
+                        ? "bg-dash-accent text-white shadow-md scale-[1.02]"
+                        : "text-dash-text-muted hover:text-dash-text hover:bg-dash-surface-active"
+                        }`}
+                >
+                    Correção de Inflação
+                </button>
             </div>
 
             {/* Container principal das calculadoras */}
@@ -60,6 +70,11 @@ export default function CalculadorasHubPage() {
                 {activeTab === "comparador" && (
                     <div className="bg-white rounded-3xl overflow-hidden mt-0 -mx-4 sm:mx-0">
                         <ComparadorContent />
+                    </div>
+                )}
+                {activeTab === "inflacao" && (
+                    <div className="bg-white rounded-3xl overflow-hidden mt-0 -mx-4 sm:mx-0">
+                        <CalculadoraInflacao />
                     </div>
                 )}
             </div>
