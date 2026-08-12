@@ -14,6 +14,13 @@ export async function POST(req: Request) {
             )
         }
 
+        if (typeof password !== "string" || password.length < 6) {
+            return NextResponse.json(
+                { message: "A senha deve ter no mínimo 6 caracteres" },
+                { status: 400 }
+            )
+        }
+
         const existingUser = await prisma.user.findUnique({ where: { email } })
 
         if (existingUser) {
@@ -62,9 +69,10 @@ export async function POST(req: Request) {
             { status: 201 }
         )
     } catch (error: any) {
+        // Log completo fica só no servidor — não expor detalhes internos (stack, mensagem do Prisma/DB) ao cliente.
         console.error("Registration error:", error)
         return NextResponse.json(
-            { message: "Erro ao criar usuário", error: error?.message || String(error), code: error?.code },
+            { message: "Erro ao criar usuário. Tente novamente em instantes." },
             { status: 500 }
         )
     }

@@ -49,12 +49,12 @@ const LAYER_COLORS: Record<
     string,
     { bg: string; border: string; text: string; dot: string; bar: string; ring: string; badge: string }
 > = {
-    blue: { bg: "bg-blue-50", border: "border-blue-200", text: "text-blue-700", dot: "bg-blue-500", bar: "bg-blue-500", ring: "ring-blue-300", badge: "bg-blue-50 text-blue-700 border-blue-200" },
-    indigo: { bg: "bg-indigo-50", border: "border-indigo-200", text: "text-indigo-700", dot: "bg-indigo-500", bar: "bg-indigo-500", ring: "ring-indigo-300", badge: "bg-indigo-50 text-indigo-700 border-indigo-200" },
-    violet: { bg: "bg-violet-50", border: "border-violet-200", text: "text-violet-700", dot: "bg-violet-500", bar: "bg-violet-500", ring: "ring-violet-300", badge: "bg-violet-50 text-violet-700 border-violet-200" },
-    amber: { bg: "bg-amber-50", border: "border-amber-200", text: "text-amber-700", dot: "bg-amber-500", bar: "bg-amber-500", ring: "ring-amber-300", badge: "bg-amber-50 text-amber-700 border-amber-200" },
-    cyan: { bg: "bg-cyan-50", border: "border-cyan-200", text: "text-cyan-700", dot: "bg-cyan-500", bar: "bg-cyan-500", ring: "ring-cyan-300", badge: "bg-cyan-50 text-cyan-700 border-cyan-200" },
-    rose: { bg: "bg-rose-50", border: "border-rose-200", text: "text-rose-700", dot: "bg-rose-500", bar: "bg-rose-500", ring: "ring-rose-300", badge: "bg-rose-50 text-rose-700 border-rose-200" },
+    blue: { bg: "bg-[#f0f4f7]", border: "border-[#123044]/20", text: "text-[#123044]", dot: "bg-[#123044]", bar: "bg-[#123044]", ring: "ring-[#123044]/30", badge: "bg-[#f0f4f7] text-[#123044] border-[#123044]/20" },
+    indigo: { bg: "bg-[#e8f2ee]", border: "border-[#2b6e76]/20", text: "text-[#2b6e76]", dot: "bg-[#2b6e76]", bar: "bg-[#2b6e76]", ring: "ring-[#2b6e76]/30", badge: "bg-[#e8f2ee] text-[#2b6e76] border-[#2b6e76]/20" },
+    violet: { bg: "bg-[#eef5f1]", border: "border-[#4fa080]/20", text: "text-[#4fa080]", dot: "bg-[#4fa080]", bar: "bg-[#4fa080]", ring: "ring-[#4fa080]/30", badge: "bg-[#eef5f1] text-[#4fa080] border-[#4fa080]/20" },
+    amber: { bg: "bg-[#f5f8f7]", border: "border-[#9bcbb4]/20", text: "text-[#9bcbb4]", dot: "bg-[#9bcbb4]", bar: "bg-[#9bcbb4]", ring: "ring-[#9bcbb4]/30", badge: "bg-[#f5f8f7] text-[#9bcbb4] border-[#9bcbb4]/20" },
+    cyan: { bg: "bg-[#f4f7f8]", border: "border-[#0A192F]/20", text: "text-[#0A192F]", dot: "bg-[#0A192F]", bar: "bg-[#0A192F]", ring: "ring-[#0A192F]/30", badge: "bg-[#f4f7f8] text-[#0A192F] border-[#0A192F]/20" },
+    rose: { bg: "bg-[#f7f8fa]", border: "border-[#475467]/20", text: "text-[#475467]", dot: "bg-[#475467]", bar: "bg-[#475467]", ring: "ring-[#475467]/30", badge: "bg-[#f7f8fa] text-[#475467] border-[#475467]/20" },
 };
 
 function lc(color: string) { return LAYER_COLORS[color] ?? LAYER_COLORS.blue; }

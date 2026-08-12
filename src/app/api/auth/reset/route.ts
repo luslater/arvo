@@ -26,7 +26,11 @@ export async function POST(req: Request) {
         }
 
         // Gera JWT estático para reset de senha válido por 1 hora
-        const secret = new TextEncoder().encode(process.env.NEXTAUTH_SECRET || 'secret-key-fallback')
+        if (!process.env.NEXTAUTH_SECRET) {
+            console.error('NEXTAUTH_SECRET não configurado — recusando gerar token de reset de senha.')
+            return NextResponse.json({ error: 'Erro interno do servidor' }, { status: 500 })
+        }
+        const secret = new TextEncoder().encode(process.env.NEXTAUTH_SECRET)
         const token = await new SignJWT({ email: user.email, purpose: 'reset_password' })
             .setProtectedHeader({ alg: 'HS256' })
             .setIssuedAt()

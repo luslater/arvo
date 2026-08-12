@@ -859,9 +859,14 @@ export default function LandingPage() {
       </div>
     </div>
     <div class="foot-bot">
-      <span>ARVO Orientação Financeira LTDA · CNPJ: XX.XXX.XXX/0001-XX</span>
+      <span>ARVO Orientação Financeira LTDA · CNPJ: [INSERIR_CNPJ_REAL_AQUI]</span>
       <span>ARVO® 2026</span>
       <span>Feito em São Paulo</span>
+    </div>
+    <div style="font-size: 11px; color: var(--ink-3); margin-top: 16px; line-height: 1.5; border-top: 1px solid var(--rule); padding-top: 16px;">
+      <strong>Aviso Regulatório:</strong> A ARVO é uma plataforma de tecnologia educacional e ferramentas financeiras. 
+      A ARVO não atua como consultora de valores mobiliários, gestora ou analista de investimentos registrada na Comissão de Valores Mobiliários (CVM). 
+      Nenhuma informação fornecida pela plataforma constitui recomendação individualizada de investimento.
     </div>
   </div>
 </footer>

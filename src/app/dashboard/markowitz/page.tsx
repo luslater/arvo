@@ -154,7 +154,7 @@ export default function MarkowitzDashboardPage() {
 
             {!advancedMode ? (
                 <div className="bg-dash-surface rounded-[24px] p-8 md:p-12 text-center border border-dash-border shadow-sm max-w-3xl mx-auto mt-8">
-                    <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <div className="w-16 h-16 bg-[#e8f2ee] text-[#2b6e76] rounded-full flex items-center justify-center mx-auto mb-6">
                         <TrendingUp className="w-8 h-8" />
                     </div>
                     <h2 className="text-xl font-bold text-dash-text mb-3">Modo Avançado (Quant)</h2>

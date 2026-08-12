@@ -209,9 +209,9 @@ function RegisterForm() {
 
                     <p className="mt-5 text-center text-xs text-gray-400 leading-relaxed">
                         Ao criar sua conta, você concorda com os nossos{" "}
-                        <a href="#" className="text-[#0A192F] hover:underline font-medium">Termos de Uso</a>
+                        <Link href="/termos" className="text-[#0A192F] hover:underline font-medium">Termos de Uso</Link>
                         {" "}e{" "}
-                        <a href="#" className="text-[#0A192F] hover:underline font-medium">Política de Privacidade</a>.
+                        <Link href="/privacidade" className="text-[#0A192F] hover:underline font-medium">Política de Privacidade</Link>.
                     </p>
 
                     <div className="mt-5 text-center text-sm">
