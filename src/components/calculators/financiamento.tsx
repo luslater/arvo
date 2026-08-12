@@ -696,7 +696,7 @@ export function CalculadoraFinanciamento() {
                 {abaAtiva === "comparativo" && (
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={resultados.dadosComparativos}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
                       <XAxis
                         dataKey="mes"
                         stroke="#6b7280"
@@ -784,7 +784,7 @@ export function CalculadoraFinanciamento() {
                           />
                         </linearGradient>
                       </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
                       <XAxis
                         dataKey="ano"
                         stroke="#6b7280"
@@ -852,7 +852,7 @@ export function CalculadoraFinanciamento() {
                         };
                       })}
                     >
-                      <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
                       <XAxis
                         dataKey="mes"
                         stroke="#6b7280"
