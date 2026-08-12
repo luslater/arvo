@@ -423,11 +423,11 @@ export default function CalculadoraInflacao() {
                     <div className="absolute top-0 right-0 p-4 opacity-10">
                       <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
                     </div>
-                    <p className="text-blue-100/80 text-sm font-medium mb-1">Valor Corrigido</p>
-                    <h3 className="text-white text-4xl md:text-5xl font-bold tracking-tight mb-2">
+                    <p className="text-sm font-medium mb-1" style={{ color: "rgba(255,255,255,0.8)" }}>Valor Corrigido</p>
+                    <h3 className="text-4xl md:text-5xl font-bold tracking-tight mb-2" style={{ color: "#FFFFFF" }}>
                       {money.format(result.corrected)}
                     </h3>
-                    <p className="text-blue-100/60 text-sm">
+                    <p className="text-sm" style={{ color: "rgba(255,255,255,0.6)" }}>
                       Valor equivalente em {prettyMonth(result.lastMonth)}
                     </p>
                   </div>
