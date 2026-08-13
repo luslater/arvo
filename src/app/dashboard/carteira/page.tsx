@@ -1469,6 +1469,14 @@ export default function MinhaCarteiraPage() {
 
   return (
     <div className="minha-carteira-app">
+      <div dangerouslySetInnerHTML={{
+        __html: `
+        <div class="ticker-tape-container" style="position: relative; z-index: 50; width: 100%; border-bottom: 1px solid var(--dash-border);">
+          <script type="module" src="https://widgets.tradingview-widget.com/w/en/tv-ticker-tape.js"></script>
+          <tv-ticker-tape symbols="FOREXCOM:SPXUSD,FOREXCOM:NSXUSD,FOREXCOM:DJI,FX:EURUSD,BITSTAMP:BTCUSD,BITSTAMP:ETHUSD,CMCMARKETS:GOLD"></tv-ticker-tape>
+        </div>
+        `
+      }} />
       <Script 
         src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js" 
         onLoad={initApp}

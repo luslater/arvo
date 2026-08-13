@@ -199,7 +199,16 @@ export default function BussolaPage() {
 
 
     return (
-        <div className="min-h-screen text-slate-900 font-sans p-6 md:p-8 animate-in fade-in slide-in-from-bottom-2 duration-300 bg-[#f6f4ef]">
+        <>
+            <div dangerouslySetInnerHTML={{
+              __html: `
+              <div class="ticker-tape-container" style="position: relative; z-index: 50; width: 100%; border-bottom: 1px solid #e4e0d7; background: #f6f4ef;">
+                <script type="module" src="https://widgets.tradingview-widget.com/w/en/tv-ticker-tape.js"></script>
+                <tv-ticker-tape symbols="FOREXCOM:SPXUSD,FOREXCOM:NSXUSD,FOREXCOM:DJI,FX:EURUSD,BITSTAMP:BTCUSD,BITSTAMP:ETHUSD,CMCMARKETS:GOLD"></tv-ticker-tape>
+              </div>
+              `
+            }} />
+            <div className="min-h-[calc(100vh-62px)] text-slate-900 font-sans p-6 md:p-8 animate-in fade-in slide-in-from-bottom-2 duration-300 bg-[#f6f4ef]">
             <style>{`
                 .arvo-slider [role=slider] {
                     border-color: ${currentColor} !important;
@@ -459,7 +468,9 @@ export default function BussolaPage() {
                     </section>
                 </div>
 
+                <div dangerouslySetInnerHTML={{ __html: '<!-- TradingView Ticker Widget -->' }} />
             </div>
         </div>
+        </>
     )
 }
