@@ -468,11 +468,7 @@ export default function LandingPage() {
       <div dangerouslySetInnerHTML={{
         __html: `
 
-<!-- TICKER TAPE -->
-<div class="ticker-tape-container" style="position: relative; z-index: 50; width: 100%; background: var(--bg); border-bottom: 1px solid var(--rule);">
-  <script type="module" src="https://widgets.tradingview-widget.com/w/en/tv-ticker-tape.js"></script>
-  <tv-ticker-tape symbols="FOREXCOM:SPXUSD,FOREXCOM:NSXUSD,FOREXCOM:DJI,FX:EURUSD,BITSTAMP:BTCUSD,BITSTAMP:ETHUSD,CMCMARKETS:GOLD"></tv-ticker-tape>
-</div>
+
 
 <!-- NAV -->
 <header class="nav">
