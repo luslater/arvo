@@ -469,9 +469,11 @@ export default function LandingPage() {
         __html: `
 
 <!-- TICKER TAPE -->
-<div class="ticker-tape-container" style="position: relative; z-index: 50; width: 100%; background: var(--bg); border-bottom: 1px solid var(--rule);">
-  <script type="module" src="https://widgets.tradingview-widget.com/w/en/tv-ticker-tape.js"></script>
-  <tv-ticker-tape symbols="FOREXCOM:SPXUSD,FOREXCOM:NSXUSD,FOREXCOM:DJI,FX:EURUSD,BITSTAMP:BTCUSD,BITSTAMP:ETHUSD,CMCMARKETS:GOLD"></tv-ticker-tape>
+<div class="ticker-tape-container" style="position: relative; z-index: 50; width: 100%; background: var(--bg); border-bottom: 1px solid var(--rule); height: 38px; overflow: hidden;">
+  <div style="transform: scale(0.75); transform-origin: top left; width: 133.33%;">
+    <script type="module" src="https://widgets.tradingview-widget.com/w/en/tv-ticker-tape.js"></script>
+    <tv-ticker-tape symbols="FOREXCOM:SPXUSD,FOREXCOM:NSXUSD,FOREXCOM:DJI,FX:EURUSD,BITSTAMP:BTCUSD,BITSTAMP:ETHUSD,CMCMARKETS:GOLD"></tv-ticker-tape>
+  </div>
 </div>
 
 <!-- NAV -->
