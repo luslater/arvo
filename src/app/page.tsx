@@ -81,8 +81,8 @@ export default function LandingPage() {
   }
   .btn-primary { background: var(--ink); color: var(--bg); }
   .btn-primary:hover { background: var(--ink-2); }
-  .btn-accent { background: var(--accent); color: #1a1308; }
-  .btn-accent:hover { filter: brightness(1.08); }
+  .btn-accent { background: var(--accent); color: #ffffff; }
+  .btn-accent:hover { filter: brightness(1.08); color: #ffffff; }
   .btn-ghost { color: var(--ink); border: 1px solid var(--rule-strong); }
   .btn-ghost:hover { background: var(--ink); color: var(--bg); border-color: var(--ink); }
   .plan .btn-ghost, .compare .col.arvo .btn-ghost { color: #fff; border-color: rgba(255,255,255,.32); }
