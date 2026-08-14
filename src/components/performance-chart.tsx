@@ -212,20 +212,20 @@ export function PerformanceChart() {
             ))}
           </g>
 
-          <path d={paths.CDI} fill="none" stroke="var(--ink-4)" strokeWidth="1.5" strokeDasharray="4 5" style={{ transition: "d 0.4s ease" }} />
-          <path d={paths.ABRIGO} fill="none" stroke="rgba(201,169,97,.4)" strokeWidth="2" strokeLinecap="round" style={{ transition: "d 0.4s ease" }} />
-          <path d={paths.RITMO} fill="none" stroke="rgba(201,169,97,.7)" strokeWidth="2" strokeLinecap="round" style={{ transition: "d 0.4s ease" }} />
-          <path d={paths.VISAO} fill="none" stroke="var(--ink)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ transition: "d 0.4s ease" }} />
+          <path d={paths.CDI} fill="none" stroke="#8a918a" strokeWidth="1.75" strokeDasharray="4 4" style={{ transition: "d 0.4s ease" }} />
+          <path d={paths.ABRIGO} fill="none" stroke="#bfa075" strokeWidth="2.2" strokeLinecap="round" style={{ transition: "d 0.4s ease" }} />
+          <path d={paths.RITMO} fill="none" stroke="#4FA080" strokeWidth="2.2" strokeLinecap="round" style={{ transition: "d 0.4s ease" }} />
+          <path d={paths.VISAO} fill="none" stroke="#123044" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ transition: "d 0.4s ease" }} />
           <path d={paths.VISAO + " L680,250 L60,250 Z"} fill="url(#perfG)" style={{ transition: "d 0.4s ease" }} />
-          <path d={paths.OCEANO} fill="none" stroke="var(--accent)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ transition: "d 0.4s ease" }} />
+          <path d={paths.OCEANO} fill="none" stroke="#2B6E76" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" style={{ transition: "d 0.4s ease" }} />
         </svg>
-        <div className="chart-legend" style={{ flexWrap: "wrap", gap: "12px 24px", justifyContent: "flex-start", marginLeft: "60px" }}>
-          <span><i style={{ background: "rgba(201,169,97,.4)" }}></i> Abrigo <small style={{ opacity: .6, fontSize: "11px", marginLeft: "4px" }}>({fmtPct(portRets.Abrigo / cdiRet)} do CDI | {fmtPct(portMonth.Abrigo)} am)</small></span>
-          <span><i style={{ background: "rgba(201,169,97,.7)" }}></i> Ritmo <small style={{ opacity: .6, fontSize: "11px", marginLeft: "4px" }}>({fmtPct(portRets.Ritmo / cdiRet)} do CDI | {fmtPct(portMonth.Ritmo)} am)</small></span>
-          <span><i style={{ background: "var(--ink)" }}></i> Visão <small style={{ opacity: .6, fontSize: "11px", marginLeft: "4px" }}>({fmtPct(portRets.Visão / cdiRet)} do CDI | {fmtPct(portMonth.Visão)} am)</small></span>
-          <span><i style={{ background: "var(--accent)" }}></i> Oceano <small style={{ opacity: .6, fontSize: "11px", marginLeft: "4px" }}>({fmtPct(portRets.Oceano / cdiRet)} do CDI | {fmtPct(portMonth.Oceano)} am)</small></span>
-          <span><i style={{ background: "var(--ink-4)", border: "1px dashed currentColor" }}></i> CDI <small style={{ opacity: .6, fontSize: "11px", marginLeft: "4px" }}>({fmtPct(cdiMonth)} am)</small></span>
-          <span style={{ marginLeft: "auto", color: "var(--ink-3)", fontSize: "11px" }}>{formatDate(HISTORICAL_DATA.months[0])} a Atual | Acumulado</span>
+        <div className="chart-legend" style={{ display: "flex", flexWrap: "wrap", gap: "14px 20px", justifyContent: "flex-start", marginTop: "16px", paddingTop: "14px", borderTop: "1px solid var(--rule)" }}>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}><i style={{ width: "12px", height: "4px", borderRadius: "2px", background: "#bfa075", display: "inline-block" }}></i> <strong style={{ color: "var(--ink)" }}>Abrigo</strong> <small style={{ opacity: .7, fontSize: "11px" }}>({fmtPct(portRets.Abrigo / cdiRet)} CDI)</small></span>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}><i style={{ width: "12px", height: "4px", borderRadius: "2px", background: "#4FA080", display: "inline-block" }}></i> <strong style={{ color: "var(--ink)" }}>Ritmo</strong> <small style={{ opacity: .7, fontSize: "11px" }}>({fmtPct(portRets.Ritmo / cdiRet)} CDI)</small></span>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}><i style={{ width: "12px", height: "4px", borderRadius: "2px", background: "#123044", display: "inline-block" }}></i> <strong style={{ color: "var(--ink)" }}>Visão</strong> <small style={{ opacity: .7, fontSize: "11px" }}>({fmtPct(portRets.Visão / cdiRet)} CDI)</small></span>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}><i style={{ width: "12px", height: "4px", borderRadius: "2px", background: "#2B6E76", display: "inline-block" }}></i> <strong style={{ color: "var(--ink)" }}>Oceano</strong> <small style={{ opacity: .7, fontSize: "11px" }}>({fmtPct(portRets.Oceano / cdiRet)} CDI)</small></span>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}><i style={{ width: "12px", height: "4px", borderRadius: "2px", background: "#8a918a", border: "1px dashed #8a918a", display: "inline-block" }}></i> <strong style={{ color: "var(--ink)" }}>CDI</strong> <small style={{ opacity: .7, fontSize: "11px" }}>({fmtPct(cdiMonth)} a.m.)</small></span>
+          <span style={{ marginLeft: "auto", color: "var(--ink-3)", fontSize: "11px", fontFamily: "monospace" }}>{formatDate(HISTORICAL_DATA.months[0])} a Atual | Acumulado</span>
         </div>
       </div>
     </div>

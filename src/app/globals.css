@@ -1,31 +1,32 @@
 @import "tailwindcss";
 
 @theme {
-  /* Dashboard Colors — ARVO Brand */
-  --color-dash-bg: #F4F6F9;
-  --color-dash-surface: #FFFFFF;
-  --color-dash-surface-active: #EEF2F7;
-  --color-dash-border: rgba(10, 25, 47, 0.08);
-  --color-dash-border-strong: rgba(10, 25, 47, 0.18);
-  --color-dash-text: #0A192F;
-  --color-dash-text-muted: #4A5568;
-  --color-dash-text-light: #94A3B8;
-  --color-dash-accent: #0A192F;
-  --color-dash-accent-light: #EEF2F7;
-  --color-dash-accent-mid: #1E3A5F;
+  /* Dashboard Colors — ARVO Brand (User Interviews / Warm Paper Editorial System) */
+  --color-dash-bg: #f4f1ea;
+  --color-dash-surface: #fbfaf5;
+  --color-dash-surface-active: #ecebe2;
+  --color-dash-border: rgba(14, 21, 17, 0.10);
+  --color-dash-border-strong: rgba(14, 21, 17, 0.20);
+  --color-dash-text: #0e1511;
+  --color-dash-text-muted: #2a332d;
+  --color-dash-text-light: #5a635c;
+  --color-dash-accent: #2B6E76;
+  --color-dash-accent-light: #ecebe2;
+  --color-dash-accent-mid: #1e5258;
   --color-dash-danger: #C0392B;
   --color-dash-danger-light: #FBEAEA;
   --color-dash-amber: #B8860B;
   --color-dash-amber-light: #FDF6E3;
-  --color-dash-blue: #1B4F8A;
-  --color-dash-blue-light: #EAF0F9;
+  --color-dash-blue: #123044;
+  --color-dash-blue-light: #ecebe2;
 
   /* Fonts */
-  --font-serif: var(--font-dm-serif);
-  --font-sans: var(--font-dm-sans);
+  --font-serif: 'Lora', Georgia, serif;
+  --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
 
   /* ARVO Primary & Profiles */
-  --color-arvo-primary: #065f46;
+  --color-arvo-primary: #2B6E76;
 
   --color-abrigo-primary: #C9B8A3;
   --color-abrigo-secondary: #A89178;

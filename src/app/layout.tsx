@@ -22,6 +22,11 @@ export default function RootLayout({
 
     return (
         <html lang="pt-BR" className={`${dmSans.variable} ${dmSerif.variable}`}>
+            <head>
+                <link rel="preconnect" href="https://fonts.googleapis.com" />
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+                <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+            </head>
             <body className="antialiased light bg-white text-gray-900 font-sans">
                 <AuthProvider>
                     <ThemeProvider>
