@@ -4,12 +4,12 @@ import React, { useState, useMemo } from "react"
 import { HISTORICAL_DATA } from "@/data/historicalData"
 import { RECOMMENDED_PORTFOLIOS } from "@/data/portfoliosData"
 
-type Range = "Total" | "1A" | "6M" | "3M"
+type Range = "1A" | "2A" | "3A" | "Máx"
 
 function niceMax(val: number) {
   if (val <= 0) return 0.05
   // find a nice ceiling (like 0.05, 0.10, 0.20, 0.50, 1.0)
-  const steps = [0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.40, 0.50, 0.60, 0.80, 1.0, 1.5, 2.0]
+  const steps = [0.05, 0.08, 0.10, 0.15, 0.20, 0.25, 0.30, 0.40, 0.50, 0.60, 0.80, 1.0, 1.5, 2.0]
   for (const s of steps) {
     if (val <= s) return s
   }
@@ -18,7 +18,9 @@ function niceMax(val: number) {
 
 function formatDate(ds: string) {
   // ds is "2023-01"
+  if (!ds || ds === "Inicio" || ds === "Início") return "Início"
   const parts = ds.split("-")
+  if (parts.length < 2) return ds
   const m = parseInt(parts[1], 10)
   const y = parts[0].slice(2)
   const mNames = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"]
@@ -26,9 +28,9 @@ function formatDate(ds: string) {
 }
 
 export function PerformanceChart() {
-  const [range, setRange] = useState<Range>("Total")
+  const [range, setRange] = useState<Range>("Máx")
 
-  const { data, labels, maxVal, cdiRet, portRets, cdiMonth, portMonth } = useMemo(() => {
+  const { data, labels, maxVal, cdiRet, portRets, cdiMonth, portMonth, periodText } = useMemo(() => {
     const portfoliosToCalc = ["Abrigo", "Ritmo", "Visão", "Oceano"]
     const iqPortfolios = RECOMMENDED_PORTFOLIOS.filter(p => p.itype === "IQ" && p.tier === "Normal" && portfoliosToCalc.includes(p.perfil))
 
@@ -60,21 +62,22 @@ export function PerformanceChart() {
           portSeries[pf].push(currentVal)
         }
       } else {
-        // fallback to 1s if missing
         for (let i = 0; i < numMonths; i++) portSeries[pf].push(1)
       }
     })
 
-    // Determine window based on range
+    // Determine window based on range: 1A = 12m, 2A = 24m, 3A = 36m, Máx = total
     let sliceLen = numMonths + 1
-    if (range === "1A") sliceLen = 13 // 12 months of returns = 13 data points
-    if (range === "6M") sliceLen = 7
-    if (range === "3M") sliceLen = 4
+    if (range === "1A") sliceLen = 13
+    if (range === "2A") sliceLen = 25
+    if (range === "3A") sliceLen = 37
+    if (range === "Máx") sliceLen = numMonths + 1
     
     // Safety check if historical data is shorter than requested range
     if (sliceLen > numMonths + 1) sliceLen = numMonths + 1
 
     const startIdx = (numMonths + 1) - sliceLen
+    const actualMonths = sliceLen - 1
 
     // Rebase series to 1 at startIdx
     const rebase = (series: number[]) => {
@@ -94,16 +97,13 @@ export function PerformanceChart() {
       max = Math.max(max, ...pDataRebased[pf])
     })
     
-    // Labels for X-axis (extract dates for the period)
-    // The dates array is `months`, shifted by 1 because the 0th point is the start (0% return)
-    const dates = ["Inicio", ...HISTORICAL_DATA.months]
+    // Labels for X-axis
+    const dates = ["Início", ...HISTORICAL_DATA.months]
     const sliceDates = dates.slice(startIdx)
-    // Show max 7 labels on X axis
     const step = Math.max(1, Math.floor((sliceDates.length - 1) / 6))
-    const xLabels = []
+    const xLabels: string[] = []
     for (let i = 0; i < sliceDates.length; i += step) {
-      if (i === 0 && sliceDates[i] === "Inicio") {
-         // get previous month for the 'Inicio' point
+      if (i === 0 && sliceDates[i] === "Início") {
          const prevIdx = startIdx - 1
          if (prevIdx >= 0 && prevIdx < HISTORICAL_DATA.months.length) {
             xLabels.push(formatDate(HISTORICAL_DATA.months[prevIdx]))
@@ -111,26 +111,28 @@ export function PerformanceChart() {
             xLabels.push("Início")
          }
       } else {
-         xLabels.push(sliceDates[i] !== "Inicio" ? formatDate(sliceDates[i]) : "Início")
+         xLabels.push(sliceDates[i] !== "Início" ? formatDate(sliceDates[i]) : "Início")
       }
     }
-    // Ensure the last label is the current month
-    if (xLabels[xLabels.length-1] !== formatDate(HISTORICAL_DATA.months[numMonths-1])) {
-       xLabels[xLabels.length-1] = formatDate(HISTORICAL_DATA.months[numMonths-1])
+    if (xLabels[xLabels.length - 1] !== formatDate(HISTORICAL_DATA.months[numMonths - 1])) {
+       xLabels[xLabels.length - 1] = formatDate(HISTORICAL_DATA.months[numMonths - 1])
     }
 
-    // Legend data (Total cumulative returns)
-    // Note: Legend usually shows full period return (Total) even if viewing 3M
-    const cTot = cdiSeries[numMonths] - 1
+    // Legend data (period-specific cumulative returns and monthly averages)
+    const cTot = (cdiSeries[numMonths] / cdiSeries[startIdx]) - 1
     const pRets: Record<string, number> = {}
-    const cdiMonthly = Math.pow(1 + cTot, 1 / numMonths) - 1
+    const cdiMonthly = actualMonths > 0 ? Math.pow(1 + cTot, 1 / actualMonths) - 1 : 0
     const pMonthly: Record<string, number> = {}
 
     portfoliosToCalc.forEach(pf => {
-      const tot = portSeries[pf][numMonths] - 1
+      const tot = (portSeries[pf][numMonths] / portSeries[pf][startIdx]) - 1
       pRets[pf] = tot
-      pMonthly[pf] = Math.pow(1 + tot, 1 / numMonths) - 1
+      pMonthly[pf] = actualMonths > 0 ? Math.pow(1 + tot, 1 / actualMonths) - 1 : 0
     })
+
+    const startMonthStr = startIdx === 0 ? formatDate(HISTORICAL_DATA.months[0]) : formatDate(HISTORICAL_DATA.months[startIdx])
+    const endMonthStr = formatDate(HISTORICAL_DATA.months[numMonths - 1])
+    const pText = `${startMonthStr} a ${endMonthStr} | Acumulado`
 
     return { 
       data: { CDI: cdiData, ABRIGO: pDataRebased["Abrigo"], RITMO: pDataRebased["Ritmo"], VISAO: pDataRebased["Visão"], OCEANO: pDataRebased["Oceano"] },
@@ -139,7 +141,8 @@ export function PerformanceChart() {
       cdiRet: cTot,
       portRets: pRets,
       cdiMonth: cdiMonthly,
-      portMonth: pMonthly
+      portMonth: pMonthly,
+      periodText: pText
     }
   }, [range])
 
@@ -170,11 +173,11 @@ export function PerformanceChart() {
         <div className="chart-head">
           <div className="title">Carteira ARVO vs. CDI</div>
           <div className="range">
-            {["3M", "6M", "1A", "Total"].map((r) => (
+            {(["1A", "2A", "3A", "Máx"] as const).map((r) => (
               <button
                 key={r}
                 className={range === r ? "on" : ""}
-                onClick={() => setRange(r as Range)}
+                onClick={() => setRange(r)}
               >
                 {r}
               </button>
@@ -225,7 +228,7 @@ export function PerformanceChart() {
           <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}><i style={{ width: "12px", height: "4px", borderRadius: "2px", background: "#123044", display: "inline-block" }}></i> <strong style={{ color: "var(--ink)" }}>Visão</strong> <small style={{ opacity: .7, fontSize: "11px" }}>({fmtPct(portRets.Visão / cdiRet)} CDI)</small></span>
           <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}><i style={{ width: "12px", height: "4px", borderRadius: "2px", background: "#2B6E76", display: "inline-block" }}></i> <strong style={{ color: "var(--ink)" }}>Oceano</strong> <small style={{ opacity: .7, fontSize: "11px" }}>({fmtPct(portRets.Oceano / cdiRet)} CDI)</small></span>
           <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}><i style={{ width: "12px", height: "4px", borderRadius: "2px", background: "#8a918a", border: "1px dashed #8a918a", display: "inline-block" }}></i> <strong style={{ color: "var(--ink)" }}>CDI</strong> <small style={{ opacity: .7, fontSize: "11px" }}>({fmtPct(cdiMonth)} a.m.)</small></span>
-          <span style={{ marginLeft: "auto", color: "var(--ink-3)", fontSize: "11px", fontFamily: "monospace" }}>{formatDate(HISTORICAL_DATA.months[0])} a Atual | Acumulado</span>
+          <span style={{ marginLeft: "auto", color: "var(--ink-3)", fontSize: "11px", fontFamily: "monospace" }}>{periodText}</span>
         </div>
       </div>
     </div>
