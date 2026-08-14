@@ -162,7 +162,7 @@ function TrendChart({ points }: { points: ChartPoint[] }) {
               if (active && payload && payload.length) {
                 return (
                   <div className="bg-white text-dash-text p-3 rounded-lg shadow-xl text-sm border border-dash-border">
-                    <p className="font-semibold mb-1 text-dash-text-light">{prettyMonth(label)}</p>
+                    <p className="font-semibold mb-1 text-dash-text-light">{prettyMonth(String(label || ""))}</p>
                     <p><span className="text-dash-accent font-semibold">Valor Corrigido:</span> {new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(payload[0].value as number)}</p>
                     <p><span className="text-blue-600 font-semibold">Fator Acumulado:</span> {Number(payload[0].payload.factor).toFixed(4)}</p>
                   </div>

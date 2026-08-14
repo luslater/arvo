@@ -203,32 +203,32 @@ export default function ArvoSimulador() {
       {/* Header do card */}
           <div style={{
             display: "flex", justifyContent: "space-between", alignItems: "center",
-            marginBottom: 12
+            marginBottom: 16
           }}>
             <div>
               <span style={{
                 fontSize: 11, letterSpacing: 1.5, textTransform: "uppercase",
-                color: "#bbb", fontWeight: 600
+                color: "#4FA080", fontWeight: 600
               }}>
-                Simulador ARVO
+                Simulação em tempo real
               </span>
               <p style={{
-                fontSize: 14, color: "#888", margin: "4px 0 0 0"
+                fontSize: 15, color: "#123044", margin: "4px 0 0 0", fontWeight: 500
               }}>
-                Descubra quando pode parar.
+                Quando seu dinheiro pode trabalhar por você?
               </p>
             </div>
             <div style={{
               display: "flex", alignItems: "center", gap: 4,
-              fontSize: 11, color: "#ccc",
+              fontSize: 11, color: "#888",
             }}>
-              <Info size={12} /> Projeção ilustrativa
+              <Info size={12} /> Projeção
             </div>
           </div>
 
           {/* Sliders */}
           <SliderInput
-            label="Quanto já tem investido"
+            label="Quanto você já tem investido?"
             value={patrimonio}
             onChange={setPatrimonio}
             min={0}
@@ -236,7 +236,7 @@ export default function ArvoSimulador() {
             step={5000}
           />
           <SliderInput
-            label="Quanto investe por mês"
+            label="Quanto investe por mês?"
             value={aporte}
             onChange={setAporte}
             min={500}
@@ -244,7 +244,7 @@ export default function ArvoSimulador() {
             step={500}
           />
           <SliderInput
-            label="Quanto gasta por mês"
+            label="Quanto gostaria de ter por mês no futuro?"
             value={gasto}
             onChange={setGasto}
             min={2000}
@@ -340,20 +340,20 @@ export default function ArvoSimulador() {
           {/* CTA dentro do card */}
           <a href="/register" style={{
             width: "100%",
-            background: "#0A192F", color: "#F5F0E8",
+            background: "#2B6E76", color: "#FFFFFF",
             border: "none", borderRadius: 100,
-            padding: "10px 0", fontSize: 13, fontWeight: 600, cursor: "pointer",
+            padding: "12px 0", fontSize: 14, fontWeight: 600, cursor: "pointer",
             display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-            textDecoration: "none"
+            textDecoration: "none", transition: "filter 0.2s"
           }}>
-            Quero meu plano personalizado <ArrowRight size={14} />
+            Ver meu plano completo <ArrowRight size={15} />
           </a>
 
           <p style={{
-            fontSize: 11, color: "#ccc", textAlign: "center", marginTop: 12, marginBottom: 0,
-            lineHeight: 1.5
+            fontSize: 10.5, color: "#9aa0a6", textAlign: "center", marginTop: 10, marginBottom: 0,
+            lineHeight: 1.4
           }}>
-            Projeção com retorno real de 8% a.a. · Rentabilidade passada não garante futura
+            Projeção ilustrativa baseada nas premissas apresentadas. Rentabilidade passada não representa garantia de resultados futuros.
           </p>
         </div>
   );

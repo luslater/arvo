@@ -1,9 +1,32 @@
+"use client";
+
+import { useEffect } from "react";
 import LandingSimulator from "@/components/landing-simulator"
 import { PerformanceChart } from "@/components/performance-chart"
 import Head from "next/head";
 import Link from "next/link";
 
 export default function LandingPage() {
+  useEffect(() => {
+    const handleFaqClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const btn = target.closest('.faq-btn');
+      if (!btn) return;
+      
+      const item = btn.closest('.faq-item');
+      if (!item) return;
+      
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!isOpen) {
+        item.classList.add('open');
+      }
+    };
+
+    document.addEventListener('click', handleFaqClick);
+    return () => document.removeEventListener('click', handleFaqClick);
+  }, []);
+
   return (
     <div className="landing-page light" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <style dangerouslySetInnerHTML={{
@@ -96,18 +119,18 @@ export default function LandingPage() {
     -webkit-backdrop-filter: blur(16px) saturate(140%);
     border-bottom: 1px solid var(--rule);
   }
-  .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 72px; }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 64px; }
   .logo { display: flex; align-items: center; gap: 12px; font-family: 'Sora', sans-serif; font-weight: 600; font-size: 18px; letter-spacing: .08em; }
   .logo-mark { width: 24px; height: 24px; display: grid; place-items: center; }
   .nav-links { display: flex; gap: 36px; font-size: 13px; color: var(--ink-2); font-weight: 400; }
   .nav-links a:hover { color: var(--accent); }
   .nav-cta { display: flex; align-items: center; gap: 8px; }
-  .nav-cta .btn { padding: 10px 16px; font-size: 12.5px; }
+  .nav-cta .btn { padding: 9px 15px; font-size: 12.5px; }
   @media (max-width: 900px) { .nav-links { display: none; } }
 
   /* ---------- HERO ---------- */
   .hero {
-    padding: 40px 0 40px; border-bottom: 1px solid var(--rule);
+    padding: 16px 0 32px; border-bottom: 1px solid var(--rule);
     position: relative; overflow: hidden;
   }
   .hero::before {
@@ -118,10 +141,10 @@ export default function LandingPage() {
     pointer-events: none;
   }
   .hero-grid {
-    display: grid; grid-template-columns: 1.15fr .85fr; gap: 72px; align-items: start;
+    display: grid; grid-template-columns: 1.15fr .85fr; gap: 48px; align-items: center;
     position: relative;
   }
-  @media (max-width: 980px) { .hero-grid { grid-template-columns: 1fr; gap: 40px; } }
+  @media (max-width: 980px) { .hero-grid { grid-template-columns: 1fr; gap: 32px; } }
 
   .hero h1 {
     font-family: 'Sora', sans-serif;
@@ -205,10 +228,10 @@ export default function LandingPage() {
   @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
   /* Section scaffolding */
-  .section { padding: 80px 0; border-bottom: 1px solid var(--rule); position: relative; }
+  .section { padding: 60px 0; border-bottom: 1px solid var(--rule); position: relative; }
   .section-head {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: end;
-    margin-bottom: 72px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: end;
+    margin-bottom: 48px;
   }
   @media (max-width: 900px) { .section-head { grid-template-columns: 1fr; gap: 24px; } }
   .section-head h2 {
@@ -480,14 +503,15 @@ export default function LandingPage() {
       <span>ARVO</span>
     </a>
     <nav class="nav-links">
-      <a href="#carteiras">Carteiras</a>
       <a href="#como-funciona">Método</a>
-      <a href="#assinatura">Assinatura</a>
+      <a href="#carteiras">Carteiras</a>
+      <a href="#independencia">Independência</a>
+      <a href="#assinatura">Planos</a>
       <a href="#faq">Dúvidas</a>
     </nav>
     <div class="nav-cta">
       <a href="/login" class="btn btn-ghost" style="color: var(--ink);">Entrar</a>
-      <a href="/register" class="btn btn-primary">Fazer meu diagnóstico gratuito <span class="arr">→</span></a>
+      <a href="/register" class="btn btn-primary">Descobrir meu plano <span class="arr">→</span></a>
     </div>
   </div>
 </header>
@@ -496,43 +520,36 @@ export default function LandingPage() {
       {/* HERO SECTION AS NATIVE JSX */}
       <section className="hero">
         <div className="wrap hero-grid">
-          <div>
-            <div className="eyebrow rise">Orientação financeira independente | Sem comissão por produto</div>
-            <h1 className="rise rise-2" style={{ fontSize: "clamp(32px, 4vw, 56px)", lineHeight: "1.05" }}>
-              Você sabe quanto guardar,<br/>onde investir e<br/><b>quando pode parar?</b>
+          <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
+            <div className="eyebrow rise" style={{ marginBottom: "12px", display: "inline-flex", alignItems: "center" }}>
+              <span className="dot"></span> Planejamento financeiro independente · Sem comissão por produto
+            </div>
+            
+            <h1 className="rise rise-2" style={{ fontSize: "clamp(34px, 4.3vw, 60px)", lineHeight: "1.06", margin: "12px 0 0" }}>
+              Não basta investir.<br/>
+              <b>É preciso ter um plano.</b>
             </h1>
-            <p className="hero-sub rise rise-3" style={{ fontSize: "16px", color: "var(--ink)", fontWeight: 500, marginTop: "16px" }}>
-              A maioria não sabe. A ARVO responde e te acompanha até lá.
+            
+            <p className="hero-sub rise rise-3" style={{ fontSize: "16.5px", color: "var(--ink-2)", lineHeight: "1.6", marginTop: "20px", maxWidth: "44ch" }}>
+              A ARVO transforma seus investimentos em uma estratégia clara para você saber quanto investir, como organizar seu patrimônio e se está no caminho dos seus objetivos.
             </p>
             
-            <ul className="hero-bullets rise rise-3">
-              <li><span className="chk"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5L8.5 2" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg></span> Saiba em quantos anos pode conquistar sua independência financeira com números precisos</li>
-              <li><span className="chk"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5L8.5 2" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg></span> Receba uma carteira pronta para o seu perfil, acompanhada mês a mês</li>
-              <li><span className="chk"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5L8.5 2" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg></span> Descubra se o que você guarda hoje é suficiente ou o que precisa mudar</li>
-            </ul>
-            <div className="hero-cta rise rise-4">
-              <a href="/register" className="btn btn-accent">Fazer meu diagnóstico gratuito</a>
-              <a href="#como-funciona" className="btn btn-ghost">Ver como funciona ↓</a>
-            </div>
-            <div style={{ marginTop: "16px", fontSize: "11.5px", color: "var(--ink-3)", fontFamily: "'JetBrains Mono', monospace", letterSpacing: ".04em" }}>
-              ✓ 5 min · ✓ Sem cartão · ✓ Resultado imediato
-            </div>
-            
-            <div className="rise rise-4" style={{ marginTop: "24px", padding: "16px 20px", background: "var(--bg-2)", border: "1px solid var(--rule-strong)", borderRadius: "12px", fontSize: "13.5px", color: "var(--ink-2)", lineHeight: "1.5" }}>
-              <strong style={{ color: "var(--ink)", fontWeight: 600 }}>Para quem é a ARVO?</strong> Feito para quem guarda a partir de R$ 1.000/mês ou já tem patrimônio acumulado a partir de R$ 30 mil.
+            <div className="hero-cta rise rise-4" style={{ marginTop: "28px", display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "10px" }}>
+              <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "center" }}>
+                <a href="/register" className="btn btn-accent" style={{ fontSize: "15px", padding: "16px 28px" }}>
+                  Descobrir meu plano <span className="arr" style={{ marginLeft: "4px" }}>→</span>
+                </a>
+                <a href="#como-funciona" className="btn btn-ghost" style={{ fontSize: "14px", padding: "15px 22px" }}>
+                  Ver como funciona ↓
+                </a>
+              </div>
+              <div style={{ fontSize: "12px", color: "var(--ink-3)", fontFamily: "'JetBrains Mono', monospace", letterSpacing: ".04em", marginTop: "2px" }}>
+                ✓ 5 minutos · ✓ Gratuito · ✓ Sem cartão
+              </div>
             </div>
 
-            <div className="rise rise-4" style={{ marginTop: "40px", paddingTop: "32px", borderTop: "1px solid var(--rule)" }}>
-              <div style={{ fontSize: "13px", fontWeight: "600", color: "var(--ink)", marginBottom: "10px", letterSpacing: "1px", textTransform: "uppercase" }}>Quem criou a ARVO</div>
-              <p style={{ fontSize: "14px", color: "var(--ink-2)", lineHeight: "1.6", maxWidth: "46ch", marginBottom: "16px" }}>
-                <b style={{ color: "var(--ink)", fontWeight: 600 }}>Lucas Matos</b>. Trabalhou anos no mercado financeiro e percebeu que o modelo tradicional tem falhas graves de conflito de interesse. Criou a ARVO para oferecer o que usaria com o próprio dinheiro.
-              </p>
-              <div className="sig" style={{ justifyContent: "flex-start", gap: "8px", flexWrap: "wrap", marginTop: 0 }}>
-                <span className="chip" style={{ fontSize: "10.5px", padding: "4px 10px" }}>CFP®</span>
-                <span className="chip" style={{ fontSize: "10.5px", padding: "4px 10px" }}>CPA-20</span>
-                <span className="chip" style={{ fontSize: "10.5px", padding: "4px 10px" }}>Ancord</span>
-                <span className="chip" style={{ fontSize: "10.5px", padding: "4px 10px" }}>Mestre em Eng.</span>
-              </div>
+            <div className="rise rise-4" style={{ marginTop: "24px", padding: "14px 18px", background: "var(--bg-2)", border: "1px solid var(--rule)", borderRadius: "12px", fontSize: "13px", color: "var(--ink-2)", lineHeight: "1.5", maxWidth: "44ch" }}>
+              <strong style={{ color: "var(--ink)", fontWeight: 600 }}>Para quem é a ARVO?</strong> Feito para quem guarda a partir de R$ 1.000/mês ou já tem patrimônio acumulado e quer direção profissional.
             </div>
           </div>
 
@@ -546,278 +563,452 @@ export default function LandingPage() {
 
 
 
-<!-- O PROBLEMA + A RESPOSTA -->
-<section class="section" id="planejamento">
-  <div class="wrap split">
-    <div>
-      <h2 style="font-family: 'Sora', sans-serif; font-weight: 300; font-size: clamp(32px, 4vw, 56px); line-height: 1.02; margin: 0 0 24px; letter-spacing: -.028em;">Guardar dinheiro é disciplina.<br>Saber o que fazer com ele é método.</h2>
-      <p style="font-size: 16px; color: var(--ink-2); line-height: 1.6; max-width: 48ch;">
-        Você faz sua parte: trabalha, poupa, coloca na caixinha ou no fundo que o banco indicou. Mas convive com perguntas que nunca foram respondidas. Sem resposta, qualquer decisão é chute. O planejamento ARVO responde com clareza:
-      </p>
-      <ul style="margin: 32px 0 0; padding: 0; list-style: none; border-top: 1px solid var(--rule);">
-        <li style="padding: 18px 0; border-bottom: 1px solid var(--rule); display: flex; align-items: center; gap: 18px; font-size: 16px;">Quanto precisa acumular para ter liberdade financeira</li>
-        <li style="padding: 18px 0; border-bottom: 1px solid var(--rule); display: flex; align-items: center; gap: 18px; font-size: 16px;">Quanto precisa guardar por mês para chegar lá</li>
-        <li style="padding: 18px 0; border-bottom: 1px solid var(--rule); display: flex; align-items: center; gap: 18px; font-size: 16px;">Quando pode tirar o pé com data, não apenas esperança</li>
-        <li style="padding: 18px 0; border-bottom: 1px solid var(--rule); display: flex; align-items: center; gap: 18px; font-size: 16px;">Quais ajustes fazer quando a vida muda</li>
-      </ul>
+<!-- 3. O PROBLEMA -->
+<section class="section" id="problema">
+  <div class="wrap">
+    <div class="section-head" style="margin-bottom: 48px;">
+      <div>
+        <div class="eyebrow" style="margin-bottom: 12px;"><span class="dot"></span> O Problema</div>
+        <h2 style="font-size: clamp(32px, 4vw, 52px); line-height: 1.08;">Você já investe.<br><b>Mas sabe se está no caminho certo?</b></h2>
+      </div>
+      <div class="lede" style="display: flex; align-items: flex-end;">
+        <p style="font-size: 17px; color: var(--ink-2); line-height: 1.6; margin: 0;">
+          Ter bons investimentos não significa necessariamente ter um bom plano. Sem uma direção clara, qualquer oscilação gera dúvida.
+        </p>
+      </div>
     </div>
 
-    <aside class="alloc-card">
-      <div class="label">Perfil Visão</div>
-      <div class="amount tab">Carteira equilibrada</div>
-      <div class="donut">
-                <svg width="168" height="168" viewBox="0 0 168 168">
-          <circle cx="84" cy="84" r="64" fill="none" stroke="rgba(236,231,219,.06)" stroke-width="22"/>
-          <circle cx="84" cy="84" r="64" fill="none" stroke="var(--accent)" stroke-width="22"
-                  stroke-dasharray="205 402" stroke-dashoffset="0" transform="rotate(-90 84 84)"/>
-          <circle cx="84" cy="84" r="64" fill="none" stroke="#4FA080" stroke-width="22"
-                  stroke-dasharray="105 402" stroke-dashoffset="-205" transform="rotate(-90 84 84)"/>
-          <circle cx="84" cy="84" r="64" fill="none" stroke="#2B6E76" stroke-width="22"
-                  stroke-dasharray="92 402" stroke-dashoffset="-310" transform="rotate(-90 84 84)"/>
-        </svg>
-        <div class="leg">
-          <div class="row"><span class="l"><i style="background: var(--accent)"></i>Renda Fixa</span><span class="r tab">51%</span></div>
-          <div class="row"><span class="l"><i style="background: #4FA080"></i>Ações</span><span class="r tab">26%</span></div>
-          <div class="row"><span class="l"><i style="background: #2B6E76"></i>Multimercado</span><span class="r tab">23%</span></div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px;">
+      <div style="background: var(--card); border: 1px solid var(--rule); border-radius: 16px; padding: 28px 24px; display: flex; flex-direction: column; gap: 12px;">
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: .12em; text-transform: uppercase;">Pergunta 01</div>
+        <div style="font-family: 'Sora', sans-serif; font-size: 18px; color: var(--ink); font-weight: 400; line-height: 1.35;">
+          Quanto preciso acumular?
         </div>
       </div>
-    </aside>
+
+      <div style="background: var(--card); border: 1px solid var(--rule); border-radius: 16px; padding: 28px 24px; display: flex; flex-direction: column; gap: 12px;">
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: .12em; text-transform: uppercase;">Pergunta 02</div>
+        <div style="font-family: 'Sora', sans-serif; font-size: 18px; color: var(--ink); font-weight: 400; line-height: 1.35;">
+          Quanto devo investir por mês?
+        </div>
+      </div>
+
+      <div style="background: var(--card); border: 1px solid var(--rule); border-radius: 16px; padding: 28px 24px; display: flex; flex-direction: column; gap: 12px;">
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: .12em; text-transform: uppercase;">Pergunta 03</div>
+        <div style="font-family: 'Sora', sans-serif; font-size: 18px; color: var(--ink); font-weight: 400; line-height: 1.35;">
+          Minha carteira faz sentido para os meus objetivos?
+        </div>
+      </div>
+
+      <div style="background: var(--card); border: 1px solid var(--rule); border-radius: 16px; padding: 28px 24px; display: flex; flex-direction: column; gap: 12px;">
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: .12em; text-transform: uppercase;">Pergunta 04</div>
+        <div style="font-family: 'Sora', sans-serif; font-size: 18px; color: var(--ink); font-weight: 400; line-height: 1.35;">
+          Estou mais perto ou mais longe da minha independência?
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top: 36px; padding: 24px 32px; background: var(--bg-2); border: 1px solid var(--rule); border-radius: 14px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+      <div style="font-size: 17px; font-weight: 500; color: var(--ink);">
+        <b>É isso que a ARVO organiza.</b> Clareza para suas decisões financeiras, sem conflito de interesses.
+      </div>
+      <a href="/register" class="btn btn-accent" style="font-size: 13.5px; padding: 12px 20px;">
+        Descobrir meu plano →
+      </a>
+    </div>
   </div>
 </section>
 
-
-<!-- COMO FUNCIONA -->
+<!-- 4. COMO FUNCIONA -->
 <section class="section" id="como-funciona" style="background: var(--bg-2);">
   <div class="wrap">
-    <div class="section-head" style="text-align: center;">
+    <div class="section-head" style="text-align: center; margin-bottom: 56px;">
       <div style="margin: 0 auto;">
-        <h2 style="font-size: clamp(32px, 4.2vw, 56px);">Três passos. Um processo contínuo.</h2>
+        <div class="eyebrow" style="margin-bottom: 12px;"><span class="dot"></span> Método ARVO</div>
+        <h2 style="font-size: clamp(32px, 4.2vw, 56px); margin: 0;">Um plano. <b>Três movimentos.</b></h2>
       </div>
     </div>
-  </div>
-  <div class="wrap" style="padding: 0;">
-    <div class="method-grid">
-      <div class="step" style="background: var(--bg-2);">
-        <span class="idx">1. Independente</span>
-        <h4>Diagnóstico sem venda de produto</h4>
-        <p>Não vendemos fundo nem ganhamos rebate. Em 5 minutos você descobre seu perfil e onde estão as lacunas, 100% alinhado ao seu interesse.</p>
-        <div class="foot-meta">
-          Sem custo
-        </div>
+
+    <div class="method-grid" style="border: none; background: transparent; gap: 20px;">
+      <div class="step" style="background: var(--card); border: 1px solid var(--rule); border-radius: 16px; padding: 36px 30px; min-height: 260px;">
+        <span class="idx" style="font-size: 12px; font-weight: 600;">01 — Planeje</span>
+        <h4 style="font-size: 24px; margin: 12px 0 8px;">Metas claras</h4>
+        <p style="font-size: 15px; color: var(--ink-2); line-height: 1.55;">
+          Transforme patrimônio, renda e objetivos em metas financeiras claras e mensuráveis.
+        </p>
       </div>
-      <div class="step" style="background: var(--bg-2);">
-        <span class="idx">2. Por método</span>
-        <h4>Estratégia antes da carteira</h4>
-        <p>Toda decisão parte de um planejamento. Primeiro entendemos o que você precisa. Depois montamos a carteira. Nunca o contrário.</p>
-        <div class="foot-meta">
-          Plano estruturado
-        </div>
+
+      <div class="step" style="background: var(--card); border: 1px solid var(--rule); border-radius: 16px; padding: 36px 30px; min-height: 260px;">
+        <span class="idx" style="font-size: 12px; font-weight: 600;">02 — Invista</span>
+        <h4 style="font-size: 24px; margin: 12px 0 8px;">Estratégia sob medida</h4>
+        <p style="font-size: 15px; color: var(--ink-2); line-height: 1.55;">
+          Organize sua estratégia de investimentos de acordo com seu perfil, patrimônio e momento de vida.
+        </p>
       </div>
-      <div class="step" style="background: var(--bg-2);">
-        <span class="idx">3. Com acompanhamento</span>
-        <h4>Rebalanceamento e reuniões</h4>
-        <p>A ARVO não entrega um plano e desaparece. Relatórios, rebalanceamento, reuniões 1:1 e suporte contínuo enquanto você for assinante.</p>
-        <div class="foot-meta">
-          Contínuo
-        </div>
+
+      <div class="step" style="background: var(--card); border: 1px solid var(--rule); border-radius: 16px; padding: 36px 30px; min-height: 260px;">
+        <span class="idx" style="font-size: 12px; font-weight: 600;">03 — Acompanhe</span>
+        <h4 style="font-size: 24px; margin: 12px 0 8px;">Evolução contínua</h4>
+        <p style="font-size: 15px; color: var(--ink-2); line-height: 1.55;">
+          Veja sua evolução e ajuste o plano conforme sua vida e seus objetivos mudam.
+        </p>
       </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 44px;">
+      <a href="/register" class="btn btn-accent" style="font-size: 15px; padding: 16px 32px;">
+        Descobrir meu plano <span class="arr">→</span>
+      </a>
     </div>
   </div>
 </section>
 
-<!-- CARTEIRAS (§03) -->
+<!-- 5. CARTEIRAS -->
 <section class="section" id="carteiras">
   <div class="wrap">
     <div class="section-head">
       <div>
-        <h2 style="font-size: clamp(32px, 4.2vw, 56px);">Quatro carteiras. Resultado aberto. Atualização contínua.</h2>
+        <div class="eyebrow" style="margin-bottom: 12px;"><span class="dot"></span> Metodologia</div>
+        <h2 style="font-size: clamp(32px, 4vw, 54px); line-height: 1.05;">
+          Não existe a melhor carteira.<br><b>Existe a carteira certa para cada momento.</b>
+        </h2>
       </div>
-      <div class="lede">
-        <p style="margin-top:0; margin-bottom:12px;">Cada carteira ARVO é monitorada mês a mês. Você acompanha a performance comparada ao CDI, sem maquiagem. O resultado está ali, transparente.</p>
-        <p style="font-size: 14px; font-weight: 500; color: var(--ink);">Veja abaixo como nossas carteiras se comparam com o rendimento básico do mercado. Uma estratégia sólida faz toda a diferença no longo prazo.</p>
+      <div class="lede" style="display: flex; align-items: flex-end;">
+        <p style="margin: 0; font-size: 16px; color: var(--ink-2); line-height: 1.6;">
+          Seu patrimônio muda. Seus objetivos mudam. Sua capacidade de assumir risco também. A ARVO organiza suas estratégias em diferentes níveis de risco e diversificação para você entender onde está e o que muda conforme avança.
+        </p>
       </div>
     </div>
 
-    <div class="portfolios" style="margin-bottom: 64px;">
+    <div class="portfolios" style="margin-bottom: 48px;">
       <article class="pf">
-        <div class="pf-top"><span>Reserva</span><span>Conservadora</span></div>
+        <div class="pf-top"><span>Preservação</span><span>Conservadora</span></div>
         <h3>Abrigo</h3>
-        <p class="pf-tag">Selic, liquidez diária. Dinheiro que você pode precisar amanhã.</p>
+        <p class="pf-tag">Segurança e liquidez. Dinheiro que você pode precisar a qualquer momento.</p>
         <div class="pf-foot">
           <div class="pf-perf">Liquidez<small>imediata</small></div>
-          <div class="pf-bar"><i style="width: 35%"></i></div>
-          <div class="pf-foot-meta"><span>Selic · RF</span><span style="display:flex;align-items:center;gap:4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>Baixa vol.</span></div>
+          <div class="pf-bar"><i style="width: 30%"></i></div>
+          <div class="pf-foot-meta"><span>Selic · RF</span><span>Baixa vol.</span></div>
         </div>
       </article>
 
       <article class="pf">
-        <div class="pf-top"><span>Conservadora</span><span>Conservadora / Moderada</span></div>
+        <div class="pf-top"><span>Equilíbrio</span><span>Conservadora / Mod.</span></div>
         <h3>Ritmo</h3>
-        <p class="pf-tag">80% Selic, 20% diversificação. Para quem quer sair do básico sem susto.</p>
+        <p class="pf-tag">O primeiro passo além do básico. Diversificação estruturada em renda fixa e inflação.</p>
         <div class="pf-foot">
           <div class="pf-perf">Diversifica<small>renda fixa</small></div>
           <div class="pf-bar"><i style="width: 55%"></i></div>
-          <div class="pf-foot-meta"><span>RF · IPCA · Pré</span><span style="display:flex;align-items:center;gap:4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>Baixa+ vol.</span></div>
+          <div class="pf-foot-meta"><span>RF · IPCA · Pré</span><span>Baixa+ vol.</span></div>
         </div>
       </article>
 
-      <article class="pf">
-        <div class="pf-top"><span>Equilibrada</span><span>Equilibrada</span></div>
+      <article class="pf feature">
+        <div class="pf-top"><span>Diversificação</span><span>Equilibrada</span></div>
         <h3>Visão</h3>
-        <p class="pf-tag">Renda fixa + variável controlada. Crescer com os pés no chão.</p>
+        <p class="pf-tag">Mais diversificação para buscar crescimento. Renda fixa + renda variável controlada.</p>
         <div class="pf-foot">
           <div class="pf-perf">Crescimento<small>controlado</small></div>
           <div class="pf-bar"><i style="width: 78%"></i></div>
-          <div class="pf-foot-meta"><span>Inflação · Ações · Multi</span><span style="display:flex;align-items:center;gap:4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>Mod. vol.</span></div>
+          <div class="pf-foot-meta"><span>Inflação · Ações · Multi</span><span>Mod. vol.</span></div>
         </div>
       </article>
 
       <article class="pf">
-        <div class="pf-top"><span>Arrojada</span><span>Arrojada</span></div>
+        <div class="pf-top"><span>Crescimento</span><span>Arrojada</span></div>
         <h3>Oceano</h3>
-        <p class="pf-tag">Ações, multimercado, longo prazo. Para quem entende que volatilidade é preço, não risco.</p>
+        <p class="pf-tag">Mais exposição ao longo prazo para quem aceita oscilações maiores em busca de retorno.</p>
         <div class="pf-foot">
           <div class="pf-perf">Arrojado<small>longo prazo</small></div>
-          <div class="pf-bar"><i style="width: 96%"></i></div>
-          <div class="pf-foot-meta"><span>Ações · Multimercados</span><span style="display:flex;align-items:center;gap:4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>Alta vol.</span></div>
+          <div class="pf-bar"><i style="width: 95%"></i></div>
+          <div class="pf-foot-meta"><span>Ações · Multimercados</span><span>Alta vol.</span></div>
         </div>
       </article>
+    </div>
+
+    <div style="text-align: center;">
+      <a href="/register" class="btn btn-ghost" style="font-size: 14px; padding: 14px 28px;">
+        Conhecer as carteiras ARVO →
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- 6. RESULTADOS / PERFORMANCE -->
+<section class="section" id="resultados" style="background: var(--bg-2);">
+  <div class="wrap">
+    <div class="section-head" style="margin-bottom: 40px;">
+      <div>
+        <div class="eyebrow" style="margin-bottom: 12px;"><span class="dot"></span> Transparência</div>
+        <h2 style="font-size: clamp(32px, 4vw, 54px); line-height: 1.05;">
+          Resultado aberto.<br><b>Sem promessa de resultado.</b>
+        </h2>
+      </div>
+      <div class="lede" style="display: flex; align-items: flex-end;">
+        <p style="margin: 0; font-size: 16px; color: var(--ink-2); line-height: 1.6;">
+          Acompanhe o histórico das estratégias ARVO e compare sua evolução com os principais referenciais de mercado.
+        </p>
+      </div>
     </div>
 
 ` }} />
       <PerformanceChart />
       <div dangerouslySetInnerHTML={{ __html: `
-    </div>
-  </div>
-</section>
 
-<!-- NA PRÁTICA (§04) -->
-<section class="section" id="prova">
-  <div class="wrap">
-    <div class="section-head" style="grid-template-columns: 1fr; text-align: center;">
-      <h2>O que muda quando você tem método.</h2>
-    </div>
-
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; max-width: 900px; margin: 0 auto;">
-      <div style="background: var(--card); border: 1px solid var(--rule); border-radius: 14px; padding: 40px;">
-        <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .14em; color: var(--ink-3); text-transform: uppercase; margin-bottom: 24px;">Antes</div>
-        <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 16px; font-size: 15px; color: var(--ink-2);">
-          <li><span style="color: var(--ink-4); margin-right: 8px;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></span> Dinheiro em CDB do banco e caixinha</li>
-          <li><span style="color: var(--ink-4); margin-right: 8px;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></span> Sem saber se estava no caminho certo</li>
-          <li><span style="color: var(--ink-4); margin-right: 8px;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></span> Sem meta ou planejamento estruturado</li>
-          <li><span style="color: var(--ink-4); margin-right: 8px;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></span> Sem prazo definido para parar</li>
-        </ul>
+    <div style="margin-top: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; font-size: 13px; color: var(--ink-3);">
+      <div style="font-weight: 500; color: var(--ink);">
+        ✓ Metodologia transparente. Acompanhamento contínuo.
       </div>
-      <div style="background: var(--bg); border: 1px solid var(--accent); border-radius: 14px; padding: 40px;">
-        <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .14em; color: var(--accent); text-transform: uppercase; margin-bottom: 24px;">Depois com ARVO</div>
-        <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 16px; font-size: 15px; color: var(--ink);">
-          <li><span style="color: var(--accent); margin-right: 8px;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span> Carteira Visão (Moderada) estruturada</li>
-          <li><span style="color: var(--accent); margin-right: 8px;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span> Foco na rentabilidade global da carteira</li>
-          <li><span style="color: var(--accent); margin-right: 8px;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span> Meta mensal de investimento definida</li>
-          <li><span style="color: var(--accent); margin-right: 8px;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span> Plano de independência em 19 anos</li>
-        </ul>
-      </div>
-    </div>
-    
-    
-  </div>
-</section>
-
-<!-- ASSINATURA (§05) -->
-<section class="section" id="assinatura" style="background: var(--bg-2);">
-  <div class="wrap">
-      <div class="section-head">
-      <div>
-        <h2 style="font-size: clamp(32px, 4.2vw, 56px);">Um custo que se paga na primeira decisão errada que você evita.</h2>
-      </div>
-      <p class="lede">
-        A ARVO não cobra comissões obscuras. Nossa única fonte de receita é a assinatura do plano anual. Assim, garantimos alinhamento total de interesses.
-      </p>
-    </div>
-
-    <div class="pricing" style="grid-template-columns: 1fr; max-width: 800px; margin: 0 auto;">
-      <div class="plan" style="align-items: center; text-align: center;">
-        <div>
-          <h3>Acesso completo ARVO</h3>
-        </div>
-
-        <div class="price-row" style="margin-top:24px; justify-content: center;">
-          <span class="price tab">R\$ 59<span style="font-size:36px;letter-spacing:-.02em">,90</span></span>
-          <span style="font-size: 22px; color: rgba(255,255,255,.8); font-weight: 300; font-family: 'Sora', sans-serif;">/ mês</span>
-        </div>
-        <div style="font-size: 14px; color: rgba(255,255,255,.9); font-weight: 500; margin-top: 8px; line-height: 1.6;">
-          (Fidelidade mínima de 12 meses)
-        </div>
-        <div style="font-size: 13px; color: rgba(255,255,255,.6); margin-top: 4px; line-height: 1.6;">
-          Cobrado em 12x de R$ 59,90/mês ou R$ 599,00 à vista (2 meses grátis)
-        </div>
-
-        <ul class="feat" style="grid-template-columns: 1fr; text-align: left; margin: 32px auto; max-width: 400px; gap: 16px;">
-          <li>4 carteiras com acompanhamento mensal</li>
-          <li>Planejamento financeiro completo</li>
-          <li>Reuniões 1:1 quando você precisar</li>
-          <li>Comunidade, relatórios e conteúdo exclusivo</li>
-          <li>Chat direto com o time</li>
-          <li>Calculadoras e ferramentas</li>
-        </ul>
-
-        <div style="display:flex; gap: 12px; margin-top: 16px; position: relative; flex-wrap: wrap; justify-content: center; width: 100%;">
-          <a href="/register" class="btn btn-accent" style="font-size: 16px; padding: 18px 32px;">Fazer meu diagnóstico gratuito</a>
-        </div>
-        <div style="font-size: 13px; color: rgba(255,255,255,.65); margin-top: 24px; display: flex; align-items: center; gap: 8px; justify-content: center;">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-          <span>Garantia incondicional de 7 dias. Você tem uma semana para testar antes do compromisso de 12 meses iniciar.</span>
-        </div>
+      <div style="font-style: italic; font-size: 12px;">
+        *Rentabilidade passada não representa garantia de resultados futuros.
       </div>
     </div>
   </div>
 </section>
 
-<!-- FAQ (§06) -->
-<section class="section" id="faq" style="background: var(--bg-2);">
+<!-- 7. INDEPENDÊNCIA / MODELO DE NEGÓCIO -->
+<section class="section" id="independencia">
   <div class="wrap">
     <div class="section-head">
       <div>
-        <h2>Antes de decidir.</h2>
+        <div class="eyebrow" style="margin-bottom: 12px;"><span class="dot"></span> Modelo Fee-Only</div>
+        <h2 style="font-size: clamp(32px, 4vw, 54px); line-height: 1.05;">
+          Independência não é só uma palavra.<br><b>É o nosso modelo de negócio.</b>
+        </h2>
+      </div>
+      <div class="lede" style="display: flex; align-items: flex-end;">
+        <p style="margin: 0; font-size: 16px; color: var(--ink-2); line-height: 1.6;">
+          A ARVO não recebe comissão para indicar um produto financeiro. Nossa receita vem exclusivamente da assinatura.
+        </p>
+      </div>
+    </div>
+
+    <div style="background: linear-gradient(180deg, #141a22, #0b0f14); border: 1px solid var(--rule-strong); border-radius: 20px; padding: 36px 36px; color: #ffffff; margin-bottom: 32px;">
+      <div style="font-family: 'Sora', sans-serif; font-size: clamp(22px, 2.8vw, 32px); font-weight: 300; line-height: 1.3; max-width: 42ch;">
+        Você sabe exatamente quanto paga. E sabe quem está remunerando: <span style="color: #4FA080; font-weight: 500; white-space: nowrap;">a ARVO.</span>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+      <div style="background: var(--card); border: 1px solid var(--rule); border-radius: 16px; padding: 32px 28px;">
+        <div style="width: 36px; height: 36px; border-radius: 999px; background: rgba(43,110,118,0.1); color: var(--accent); display: grid; place-items: center; margin-bottom: 16px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <h4 style="font-family: 'Sora', sans-serif; font-size: 19px; font-weight: 500; margin: 0 0 8px; color: var(--ink);">Sem comissão por produto</h4>
+        <p style="margin: 0; font-size: 14.5px; color: var(--ink-2); line-height: 1.55;">
+          Nenhuma indicação é motivada por rebate ou remuneração de corretoras. Alinhamento 100% com você.
+        </p>
+      </div>
+
+      <div style="background: var(--card); border: 1px solid var(--rule); border-radius: 16px; padding: 32px 28px;">
+        <div style="width: 36px; height: 36px; border-radius: 999px; background: rgba(43,110,118,0.1); color: var(--accent); display: grid; place-items: center; margin-bottom: 16px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path></svg>
+        </div>
+        <h4 style="font-family: 'Sora', sans-serif; font-size: 19px; font-weight: 500; margin: 0 0 8px; color: var(--ink);">Sem mudar de banco ou corretora</h4>
+        <p style="margin: 0; font-size: 14.5px; color: var(--ink-2); line-height: 1.55;">
+          Você continua investindo onde preferir (XP, BTG, Itaú, NuInvest ou qualquer outra).
+        </p>
+      </div>
+
+      <div style="background: var(--card); border: 1px solid var(--rule); border-radius: 16px; padding: 32px 28px;">
+        <div style="width: 36px; height: 36px; border-radius: 999px; background: rgba(43,110,118,0.1); color: var(--accent); display: grid; place-items: center; margin-bottom: 16px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+        </div>
+        <h4 style="font-family: 'Sora', sans-serif; font-size: 19px; font-weight: 500; margin: 0 0 8px; color: var(--ink);">Patrimônio sob seu controle</h4>
+        <p style="margin: 0; font-size: 14.5px; color: var(--ink-2); line-height: 1.55;">
+          A ARVO orienta a estratégia e o plano. A custódia e as decisões de execução são sempre suas.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 8. FILOSOFIA + FUNDADOR -->
+<section class="section" id="fundador" style="background: var(--bg-2);">
+  <div class="wrap">
+    <div class="founder" style="gap: 56px;">
+      <div class="founder-photo" style="max-width: 440px; margin: 0 auto; width: 100%;">
+        <div class="ph">
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 32px; text-align: center;">
+            <div style="width: 64px; height: 64px; border-radius: 999px; background: var(--accent); color: white; display: grid; place-items: center; font-size: 24px; font-weight: 600; font-family: 'Sora', sans-serif;">
+              LM
+            </div>
+            <div style="color: #ffffff; font-family: 'Sora', sans-serif; font-size: 18px; font-weight: 500;">Lucas Matos, CFP®</div>
+            <div style="color: var(--ink-3); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;">Fundador da ARVO</div>
+          </div>
+        </div>
+        <div class="badge">
+          CFP® · Planejador Financeiro
+        </div>
+      </div>
+
+      <div>
+        <div class="eyebrow" style="margin-bottom: 12px;"><span class="dot"></span> Filosofia</div>
+        <h2 style="font-size: clamp(32px, 4vw, 52px); line-height: 1.06; margin: 0 0 20px;">
+          Estratégia antes <b>do investimento.</b>
+        </h2>
+        <p style="font-size: 16.5px; color: var(--ink-2); line-height: 1.65; max-width: 50ch; margin: 0 0 16px;">
+          A ARVO nasceu de uma constatação simples: <b>muita gente começa escolhendo o investimento antes de saber o que precisa fazer com o dinheiro.</b>
+        </p>
+        <p style="font-size: 16.5px; color: var(--ink-2); line-height: 1.65; max-width: 50ch; margin: 0 0 24px;">
+          Nós fazemos o contrário. <b>Primeiro vem o plano. Depois, a estratégia.</b>
+        </p>
+        
+        <div style="border-top: 1px solid var(--rule); padding-top: 20px; margin-top: 24px;">
+          <div style="font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.08em;">
+            Lucas Matos · Credenciais
+          </div>
+          <div class="sig" style="margin-top: 0; gap: 8px;">
+            <span class="chip">CFP®</span>
+            <span class="chip">CPA-20</span>
+            <span class="chip">Ancord</span>
+            <span class="chip">Mestre em Eng.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 9. OFERTA / ASSINATURA -->
+<section class="section" id="assinatura">
+  <div class="wrap">
+    <div class="section-head" style="text-align: center; margin-bottom: 56px;">
+      <div style="margin: 0 auto;">
+        <div class="eyebrow" style="margin-bottom: 12px;"><span class="dot"></span> Acesso Completo</div>
+        <h2 style="font-size: clamp(32px, 4.2vw, 56px); margin: 0 0 16px;">
+          Sua vida financeira não precisa de mais uma dica.<br><b>Precisa de acompanhamento.</b>
+        </h2>
+      </div>
+    </div>
+
+    <div class="pricing" style="grid-template-columns: 1fr; max-width: 760px; margin: 0 auto;">
+      <div class="plan" style="align-items: center; text-align: center; padding: 48px 40px;">
+        <div class="eyebrow">Assinatura Anual ARVO</div>
+        <h3 style="font-size: 32px; font-weight: 300; margin: 8px 0 0;">Plano Completo</h3>
+
+        <div class="price-row" style="margin-top: 20px; justify-content: center;">
+          <span class="price tab">R\$ 59<span style="font-size:36px;letter-spacing:-.02em">,90</span></span>
+          <span style="font-size: 20px; color: rgba(255,255,255,.8); font-weight: 300; font-family: 'Sora', sans-serif;">/ mês</span>
+        </div>
+        
+        <div style="font-size: 13.5px; color: rgba(255,255,255,.7); margin-top: 6px; line-height: 1.5;">
+          Cobrado em 12x de R$ 59,90/mês ou R$ 599,00 à vista (2 meses grátis)
+        </div>
+
+        <ul class="feat" style="grid-template-columns: 1fr 1fr; text-align: left; margin: 32px auto; max-width: 520px; gap: 14px 28px;">
+          <li>Planejamento financeiro</li>
+          <li>Estratégias de investimento</li>
+          <li>Atualizações e rebalanceamentos</li>
+          <li>Acompanhamento contínuo</li>
+          <li>Conteúdo e comunidade</li>
+          <li>Calculadoras e ferramentas</li>
+          <li style="grid-column: span 2;">Suporte direto ARVO</li>
+        </ul>
+
+        <div style="display: flex; flex-direction: column; gap: 14px; width: 100%; max-width: 420px; margin-top: 8px;">
+          <a href="/register" class="btn btn-accent" style="font-size: 16px; padding: 18px 32px; width: 100%;">
+            Começar pela ARVO
+          </a>
+          
+          <div style="border-top: 1px solid rgba(255,255,255,0.12); padding-top: 16px; margin-top: 8px;">
+            <div style="font-size: 13px; color: rgba(255,255,255,0.8); margin-bottom: 10px;">
+              Antes de assinar, conheça seu plano.
+            </div>
+            <a href="/register" class="btn btn-ghost" style="font-size: 13.5px; padding: 12px 24px; width: 100%; border-color: rgba(255,255,255,0.3); color: #ffffff;">
+              Fazer meu diagnóstico gratuito
+            </a>
+          </div>
+        </div>
+
+        <div style="font-size: 12px; color: rgba(255,255,255,.6); margin-top: 24px; display: flex; align-items: center; gap: 8px; justify-content: center;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <span>Garantia incondicional de 7 dias com 100% de reembolso.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 10. FAQ -->
+<section class="section" id="faq" style="background: var(--bg-2);">
+  <div class="wrap">
+    <div class="section-head" style="margin-bottom: 48px;">
+      <div>
+        <div class="eyebrow" style="margin-bottom: 12px;"><span class="dot"></span> Dúvidas Frequentes</div>
+        <h2 style="font-size: clamp(32px, 4vw, 52px);">Antes de decidir.</h2>
+      </div>
+      <div class="lede" style="display: flex; align-items: flex-end;">
+        <p style="margin: 0; font-size: 16px; color: var(--ink-2); line-height: 1.6;">
+          Tudo o que você precisa saber sobre o método, independência e segurança da ARVO.
+        </p>
       </div>
     </div>
 
     <div class="faq-list">
       <div class="faq-item open">
-        <button class="faq-btn"><h4>Preciso tirar meu dinheiro do meu banco?</h4><span class="pm"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span></button>
+        <button class="faq-btn"><h4>Preciso tirar meus investimentos do meu banco?</h4><span class="pm"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span></button>
         <div class="faq-body"><div class="faq-body-inner">
-          Não. Você mantém seus investimentos onde preferir: BTG, XP, Rico ou o seu banco atual. A ARVO orienta a estratégia. A custódia é sua.
+          Não. Você continua investindo no banco ou corretora que preferir e mantém o controle do seu patrimônio. A ARVO ajuda a organizar a estratégia; você decide e executa seus investimentos onde quiser.
         </div></div>
       </div>
+
       <div class="faq-item">
-        <button class="faq-btn"><h4>R\$ 59,90 é pouco. O que tem de pegadinha?</h4><span class="pm"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span></button>
+        <button class="faq-btn"><h4>A ARVO investe o dinheiro por mim?</h4><span class="pm"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span></button>
         <div class="faq-body"><div class="faq-body-inner">
-          Nenhuma. Não existe upsell, produto mais caro, nem taxa escondida. O preço é baixo porque o modelo é escalável — não porque a entrega é fraca.
+          Não. A ARVO não recebe, movimenta ou mantém a custódia do seu dinheiro. Seus investimentos continuam no seu banco ou corretora e todas as decisões e movimentações permanecem sob seu controle.
         </div></div>
       </div>
+
       <div class="faq-item">
-        <button class="faq-btn"><h4>Vocês vão investir por mim?</h4><span class="pm"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span></button>
+        <button class="faq-btn"><h4>Como a ARVO ganha dinheiro?</h4><span class="pm"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span></button>
         <div class="faq-body"><div class="faq-body-inner">
-          Não. A ARVO orienta e estrutura. Você executa na sua corretora. Seus ativos, sua custódia, seu controle.
+          Pela assinatura dos nossos clientes. A ARVO não depende de comissão sobre os produtos que você investe. Isso permite construir nossa relação com um objetivo simples: ajudar você a tomar decisões financeiras melhores, sem precisar empurrar um produto.
         </div></div>
       </div>
+
       <div class="faq-item">
-        <button class="faq-btn"><h4>Posso testar antes?</h4><span class="pm"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span></button>
+        <button class="faq-btn"><h4>Posso conhecer antes de pagar?</h4><span class="pm"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span></button>
         <div class="faq-body"><div class="faq-body-inner">
-          Sim. O diagnóstico é gratuito, sem cartão, e você vê resultado antes de pagar qualquer coisa.
+          Sim. Você pode começar gratuitamente pelo diagnóstico da ARVO, conhecer seu cenário financeiro e entender como a plataforma funciona antes de decidir assinar.
         </div></div>
       </div>
+
       <div class="faq-item">
-        <button class="faq-btn"><h4>Como funciona o cancelamento?</h4><span class="pm"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span></button>
+        <button class="faq-btn"><h4>Como funciona o cancelamento e a garantia?</h4><span class="pm"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span></button>
         <div class="faq-body"><div class="faq-body-inner">
-          A assinatura é anual para garantir que o método tenha tempo de funcionar. Se em 7 dias perceber que não é para você, devolvemos 100%. Depois disso, o compromisso é de 12 meses — como qualquer processo sério.
+          Você pode cancelar a renovação da sua assinatura quando quiser. Caso esteja dentro do período de garantia informado no momento da contratação, também poderá solicitar o reembolso conforme as condições apresentadas na assinatura.
         </div></div>
       </div>
+
       <div class="faq-item">
         <button class="faq-btn"><h4>Para quem NÃO é a ARVO?</h4><span class="pm"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span></button>
         <div class="faq-body"><div class="faq-body-inner">
-          Para quem busca day trade, dica quente de ação ou promessa de rentabilidade. A ARVO é para quem quer direção, não emoção.
+          <p style="margin: 0 0 10px;">A ARVO não é para quem procura dinheiro rápido, promessas de rentabilidade ou a “ação da vez”.</p>
+          <p style="margin: 0 0 10px;">Também não é para quem quer entregar o dinheiro para outra pessoa administrar.</p>
+          <p style="margin: 0;">A ARVO é para quem quer construir patrimônio com planejamento, estratégia e visão de longo prazo — mantendo o controle das próprias decisões.</p>
         </div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 11. CTA FINAL -->
+<section class="big-cta" style="padding: 100px 0; background: var(--bg);">
+  <div class="wrap">
+    <div class="eyebrow" style="margin-bottom: 16px;"><span class="dot"></span> Comece Agora</div>
+    <h2 style="font-size: clamp(36px, 5.5vw, 76px); line-height: 1.05; letter-spacing: -.03em; max-width: 18ch; margin: 0 auto;">
+      Você já começou a investir.<br><b>Agora descubra se está no caminho certo.</b>
+    </h2>
+    <p style="margin: 24px auto 0; max-width: 44ch; color: var(--ink-2); font-size: 17px; line-height: 1.6;">
+      Em menos de 5 minutos você descobre o plano ideal para o seu momento financeiro.
+    </p>
+    <div style="margin-top: 36px; display: flex; flex-direction: column; align-items: center; gap: 12px;">
+      <a href="/register" class="btn btn-accent" style="font-size: 16.5px; padding: 18px 36px;">
+        Descobrir meu plano <span class="arr">→</span>
+      </a>
+      <div style="font-size: 12px; color: var(--ink-3); font-family: 'JetBrains Mono', monospace; letter-spacing: .04em;">
+        ✓ 5 minutos · ✓ Gratuito · ✓ Sem cartão
       </div>
     </div>
   </div>
