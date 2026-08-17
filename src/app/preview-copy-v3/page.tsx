@@ -346,7 +346,7 @@ export default function PreviewCopyV3Page() {
             <div className="v3-eyebrow"><span className="v3-eyebrow-dot"></span> O PROBLEMA</div>
             
             <h2 className="v3-serif" style={{ fontSize: "clamp(30px, 3.8vw, 46px)", color: "var(--ink-navy)", lineHeight: "1.2", margin: "0 0 24px 0" }}>
-              Ter bons investimentos não significa ter um bom plano.
+              Você pode estar construindo patrimônio sem saber se ele será suficiente.
             </h2>
 
             <div style={{ fontSize: "17.5px", color: "var(--text-secondary)", lineHeight: "1.75", display: "flex", flexDirection: "column", gap: "18px" }}>
