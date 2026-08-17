@@ -1,12 +1,14 @@
 "use client"
 
-import { useState, useMemo } from "react"
-import { motion } from "framer-motion"
+import { useState, useMemo, useEffect } from "react"
+import { motion, AnimatePresence } from "framer-motion"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import { Slider } from "@/components/ui/slider"
 import { ASSET_METRICS, RECOMMENDED_PORTFOLIOS, TIER_ORDER, TIER_LABEL, ITYPE_ORDER, ITYPE_LABEL } from "@/data/portfoliosData"
 import { HISTORICAL_DATA } from "@/data/historicalData"
 import { getRiskInterval, interpolatePortfolio, applyMinimumThreshold } from "@/lib/bussola/interpolation"
+import { Compass, Sparkles, AlertTriangle, CheckCircle, Info, ArrowRight } from "lucide-react"
+import Link from "next/link"
 
 const MIN_WEIGHT_THRESHOLD = 3
 
@@ -14,6 +16,33 @@ export default function BussolaPage() {
     const [tier, setTier] = useState(TIER_ORDER[0] || "30k")
     const [itype, setItype] = useState(ITYPE_ORDER[0] || "Geral 360")
     const [riskPosition, setRiskPosition] = useState(50) // 0 to 100
+    const [clientProfile, setClientProfile] = useState<string>("RITMO")
+    const [hasDiagnosedProfile, setHasDiagnosedProfile] = useState<boolean>(false)
+
+    useEffect(() => {
+        async function fetchProfile() {
+            try {
+                const res = await fetch("/api/user/profile")
+                if (res.ok) {
+                    const data = await res.json()
+                    if (data.portfolioType) {
+                        const normalized = data.portfolioType.toUpperCase().replace("VISAO", "VISÃO")
+                        setClientProfile(normalized)
+                        setHasDiagnosedProfile(true)
+                        
+                        // Default position aligned to profile if first load
+                        if (normalized === "ABRIGO") setRiskPosition(0)
+                        else if (normalized === "RITMO") setRiskPosition(33)
+                        else if (normalized === "VISÃO") setRiskPosition(66)
+                        else if (normalized === "OCEANO") setRiskPosition(100)
+                    }
+                }
+            } catch (err) {
+                console.error("Error fetching client profile in Bussola:", err)
+            }
+        }
+        fetchProfile()
+    }, [])
 
     // Calcs
     const getMockLevel = (perfilName: string) => {
@@ -111,6 +140,170 @@ export default function BussolaPage() {
     }
     const currentColor = getSliderColor(riskPosition)
 
+    // Avaliação de Alinhamento com o Perfil do Cliente
+    const profileAlignment = useMemo(() => {
+        const norm = clientProfile.toUpperCase().replace("VISAO", "VISÃO")
+        
+        if (norm === "ABRIGO") {
+            if (riskPosition <= 25) {
+                return {
+                    status: "aligned",
+                    badge: "100% Alinhado ao Perfil",
+                    icon: <CheckCircle size={18} className="text-[#1f674f] shrink-0" />,
+                    color: "#1f674f",
+                    bg: "#e8f1ed",
+                    border: "#4fa080",
+                    title: "Carteira Alinhada ao seu Perfil (Abrigo / Conservador)",
+                    message: "Esta alocação prioriza preservação e liquidez imediata, perfeitamente em linha com sua tolerância de risco diagnosticada na Jornada.",
+                    recommendedRange: "0 – 25 (Abrigo)"
+                }
+            } else if (riskPosition <= 55) {
+                return {
+                    status: "warning",
+                    badge: "Atenção: Acima do Perfil",
+                    icon: <AlertTriangle size={18} className="text-[#b45309] shrink-0" />,
+                    color: "#b45309",
+                    bg: "#fef3c7",
+                    border: "#f59e0b",
+                    title: "Nível de Risco Superior ao seu Perfil (Abrigo)",
+                    message: "Você está adicionando exposição a risco moderado e indexadores IPCA+. Verifique se sua reserva de segurança está completa antes de assumir oscilações de mercado.",
+                    recommendedRange: "0 – 25 (Abrigo)"
+                }
+            } else {
+                return {
+                    status: "danger",
+                    badge: "Alerta: Fora do Perfil",
+                    icon: <AlertTriangle size={18} className="text-[#b91c1c] shrink-0" />,
+                    color: "#b91c1c",
+                    bg: "#fee2e2",
+                    border: "#ef4444",
+                    title: "Alocação Muito Superior à sua Tolerância (Abrigo)",
+                    message: "Esta carteira possui forte exposição a renda variável, ações e ativos globais. O nível de volatilidade esperado pode ultrapassar o que você tolera segundo seu diagnóstico.",
+                    recommendedRange: "0 – 25 (Abrigo)"
+                }
+            }
+        }
+
+        if (norm === "RITMO") {
+            if (riskPosition < 20) {
+                return {
+                    status: "below",
+                    badge: "Abaixo da Tolerância de Risco",
+                    icon: <Info size={18} className="text-[#123044] shrink-0" />,
+                    color: "#123044",
+                    bg: "#e9edf1",
+                    border: "#123044",
+                    title: "Alocação Mais Defensiva que o seu Perfil (Ritmo)",
+                    message: "Esta posição é ultra-conservadora (foco em liquidez/caixa). Seu patrimônio terá menor oscilação, mas pode ter retorno real inferior à inflação no longo prazo.",
+                    recommendedRange: "20 – 55 (Ritmo)"
+                }
+            } else if (riskPosition <= 55) {
+                return {
+                    status: "aligned",
+                    badge: "100% Alinhado ao Perfil",
+                    icon: <CheckCircle size={18} className="text-[#1f674f] shrink-0" />,
+                    color: "#1f674f",
+                    bg: "#e8f1ed",
+                    border: "#4fa080",
+                    title: "Carteira Alinhada ao seu Perfil (Ritmo / Moderado)",
+                    message: "Equilíbrio ideal entre liquidez de segurança e proteção do poder de compra via títulos IPCA+, perfeitamente calibrado para o seu perfil.",
+                    recommendedRange: "20 – 55 (Ritmo)"
+                }
+            } else if (riskPosition <= 80) {
+                return {
+                    status: "warning",
+                    badge: "Atenção: Acima do Perfil",
+                    icon: <AlertTriangle size={18} className="text-[#b45309] shrink-0" />,
+                    color: "#b45309",
+                    bg: "#fef3c7",
+                    border: "#f59e0b",
+                    title: "Nível de Risco Superior ao seu Perfil (Ritmo)",
+                    message: "Você está adicionando exposição relevante a renda variável e fundos multimercados. Pode gerar oscilações maiores em momentos de estresse de mercado.",
+                    recommendedRange: "20 – 55 (Ritmo)"
+                }
+            } else {
+                return {
+                    status: "danger",
+                    badge: "Alerta: Fora do Perfil",
+                    icon: <AlertTriangle size={18} className="text-[#b91c1c] shrink-0" />,
+                    color: "#b91c1c",
+                    bg: "#fee2e2",
+                    border: "#ef4444",
+                    title: "Alocação Agressiva Acima do seu Perfil (Ritmo)",
+                    message: "Exposição máxima a ações globais e risco sistemático. Indicada prioritariamente para horizontes muito longos e investidores arrojados.",
+                    recommendedRange: "20 – 55 (Ritmo)"
+                }
+            }
+        }
+
+        if (norm === "VISÃO" || norm === "VISAO") {
+            if (riskPosition < 45) {
+                return {
+                    status: "below",
+                    badge: "Abaixo da Capacidade de Risco",
+                    icon: <Info size={18} className="text-[#123044] shrink-0" />,
+                    color: "#123044",
+                    bg: "#e9edf1",
+                    border: "#123044",
+                    title: "Alocação Conservadora para o seu Perfil (Visão)",
+                    message: "Você está com alocação conservadora para a sua capacidade de absorver oscilações. Isso pode desacelerar o crescimento do seu patrimônio no longo prazo.",
+                    recommendedRange: "45 – 80 (Visão)"
+                }
+            } else if (riskPosition <= 80) {
+                return {
+                    status: "aligned",
+                    badge: "100% Alinhado ao Perfil",
+                    icon: <CheckCircle size={18} className="text-[#1f674f] shrink-0" />,
+                    color: "#1f674f",
+                    bg: "#e8f1ed",
+                    border: "#4fa080",
+                    title: "Carteira Alinhada ao seu Perfil (Visão / Arrojado)",
+                    message: "Excelente combinação entre núcleo de proteção e motor de crescimento com ações, multimercados e ativos imobiliários.",
+                    recommendedRange: "45 – 80 (Visão)"
+                }
+            } else {
+                return {
+                    status: "warning",
+                    badge: "Atenção: Exposição Máxima",
+                    icon: <AlertTriangle size={18} className="text-[#b45309] shrink-0" />,
+                    color: "#b45309",
+                    bg: "#fef3c7",
+                    border: "#f59e0b",
+                    title: "Exposição Máxima a Ativos Globais (Oceano)",
+                    message: "Você está no nível máximo de risco da plataforma. Assegure-se de que não precisará desses recursos nos próximos 5 anos.",
+                    recommendedRange: "45 – 80 (Visão)"
+                }
+            }
+        }
+
+        // OCEANO (Agressivo)
+        if (riskPosition < 65) {
+            return {
+                status: "below",
+                badge: "Abaixo da Tolerância ao Risco",
+                icon: <Info size={18} className="text-[#123044] shrink-0" />,
+                color: "#123044",
+                bg: "#e9edf1",
+                border: "#123044",
+                title: "Alocação Abaixo da sua Tolerância ao Risco (Oceano)",
+                message: "Como investidor agressivo, alocações defensivas podem subutilizar seu horizonte longo e capacidade de suportar volatilidade para maximizar retornos.",
+                recommendedRange: "70 – 100 (Oceano)"
+            }
+        } else {
+            return {
+                status: "aligned",
+                badge: "100% Alinhado ao Perfil",
+                icon: <CheckCircle size={18} className="text-[#1f674f] shrink-0" />,
+                color: "#1f674f",
+                bg: "#e8f1ed",
+                border: "#4fa080",
+                title: "Carteira Alinhada ao seu Perfil (Oceano / Agressivo)",
+                message: "Foco total na maximização de retornos e multiplicação patrimonial no longo prazo, com plena tolerância a oscilações de mercado.",
+                recommendedRange: "70 – 100 (Oceano)"
+            }
+        }
+    }, [riskPosition, clientProfile])
+
     const getFundReturns = (assetName: string) => {
         const findFund = (name: string) => HISTORICAL_DATA.funds.find((f: any) => f.name === name)?.values;
         
@@ -197,7 +390,6 @@ export default function BussolaPage() {
     // Needle Angle: -90 (0%) to +90 (100%)
     const needleAngle = -90 + (riskPosition / 100) * 180
 
-
     return (
         <>
             <div dangerouslySetInnerHTML={{
@@ -226,16 +418,53 @@ export default function BussolaPage() {
                 
                 <header className="flex flex-col md:flex-row md:items-start justify-between gap-4">
                     <div>
-                        <h1 className="text-3xl md:text-4xl font-extralight tracking-tight text-[#123044] mb-2">Bússola Arvo de Carteiras</h1>
+                        <h1 className="text-3xl md:text-4xl font-extralight tracking-tight text-[#123044] mb-2">Bússola ARVO de Carteiras</h1>
                         <p className="text-[#667085] text-sm max-w-2xl leading-relaxed">
                             A carteira parte de preservação (Abrigo), passa por equilíbrio (Ritmo), diversificação (Visão) 
-                            e chega a crescimento global (Oceano). A cada nível, novos ativos aparecem e os pesos mudam com lógica controlada.
+                            e chega a crescimento global (Oceano). A Bússola está calibrada com o seu perfil diagnosticado na Jornada.
                         </p>
                     </div>
-                    <div className="inline-flex items-center gap-2 px-3 py-1.5 border border-[#e4e0d7] rounded-full bg-white/60 text-[#17384d] text-xs font-semibold">
-                        Modo de simulação educativa
+                    
+                    {/* PERFIL DO CLIENTE BADGE */}
+                    <div className="flex flex-col items-end gap-1.5 shrink-0">
+                        <div className="inline-flex items-center gap-2 px-3.5 py-2 border border-[#2b6e76]/30 rounded-2xl bg-[#e8f1ed] text-[#123044] text-xs font-semibold shadow-sm">
+                            <Compass size={16} className="text-[#2b6e76]" />
+                            <span>Seu Perfil: <strong>{clientProfile}</strong></span>
+                        </div>
+                        <Link href="/dashboard/jornada" className="text-[11px] font-bold text-[#2b6e76] hover:underline flex items-center gap-1">
+                            Refazer Etapa 7 da Jornada <ArrowRight size={12} />
+                        </Link>
                     </div>
                 </header>
+
+                {/* FEEDBACK DINÂMICO DE ALINHAMENTO DO VELOCÍMETRO */}
+                <motion.div 
+                    key={profileAlignment.status + riskPosition}
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="p-4 rounded-2xl border flex flex-col md:flex-row items-start md:items-center justify-between gap-3 shadow-sm transition-all"
+                    style={{ 
+                        backgroundColor: profileAlignment.bg, 
+                        borderColor: profileAlignment.border 
+                    }}
+                >
+                    <div className="flex items-center gap-3">
+                        {profileAlignment.icon}
+                        <div>
+                            <div className="text-xs font-extrabold uppercase tracking-wider" style={{ color: profileAlignment.color }}>
+                                {profileAlignment.title}
+                            </div>
+                            <div className="text-xs text-[#344054] mt-0.5 max-w-3xl leading-relaxed">
+                                {profileAlignment.message}
+                            </div>
+                        </div>
+                    </div>
+                    <div className="shrink-0 text-right">
+                        <span className="inline-flex px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-white/90 shadow-sm border border-black/5" style={{ color: profileAlignment.color }}>
+                            Faixa Ideal: {profileAlignment.recommendedRange}
+                        </span>
+                    </div>
+                </motion.div>
 
                 {/* COCKPIT HERO: Bússola + Gráfico */}
                 <div className="grid lg:grid-cols-2 gap-6">
@@ -266,7 +495,12 @@ export default function BussolaPage() {
                                 </select>
                             </div>
                             <div className="col-span-2 space-y-4 pt-2">
-                                <label className="text-xs font-bold text-[#667085]">Nível de risco (0 a 100)</label>
+                                <div className="flex justify-between items-center">
+                                    <label className="text-xs font-bold text-[#667085]">Nível de risco no Velocímetro (0 a 100)</label>
+                                    <span className="text-xs font-extrabold px-2 py-0.5 rounded-full" style={{ backgroundColor: profileAlignment.bg, color: profileAlignment.color }}>
+                                        {profileAlignment.badge}
+                                    </span>
+                                </div>
                                 <Slider 
                                     value={[riskPosition]} 
                                     min={0} max={100} step={1}
@@ -274,10 +508,10 @@ export default function BussolaPage() {
                                     className="arvo-slider"
                                 />
                                 <div className="flex justify-between text-[11px] font-bold text-[#8d97a5] uppercase tracking-widest px-1">
-                                    <span>Abrigo</span>
-                                    <span>Ritmo</span>
-                                    <span>Visão</span>
-                                    <span>Oceano</span>
+                                    <span className={riskPosition <= 25 ? "text-[#123044] font-black" : ""}>Abrigo (0)</span>
+                                    <span className={riskPosition > 25 && riskPosition <= 55 ? "text-[#123044] font-black" : ""}>Ritmo (33)</span>
+                                    <span className={riskPosition > 55 && riskPosition <= 80 ? "text-[#123044] font-black" : ""}>Visão (66)</span>
+                                    <span className={riskPosition > 80 ? "text-[#123044] font-black" : ""}>Oceano (100)</span>
                                 </div>
                             </div>
                         </div>
@@ -333,7 +567,7 @@ export default function BussolaPage() {
                             <div className="text-xs text-[#667085] mt-1.5 px-6">{currentHeadline}</div>
                             {isOfficial && (
                                 <div className="inline-flex mt-3 mx-auto px-3 py-1 rounded-full bg-[#e8f1ed] text-[#1f674f] text-[11px] font-bold">
-                                    Carteira oficial Arvo
+                                    Carteira oficial ARVO
                                 </div>
                             )}
                         </div>
@@ -429,7 +663,7 @@ export default function BussolaPage() {
                         <div className="bg-gradient-to-br from-[#fffdf8] to-[#edf5f2] border border-[#e4e0d7] rounded-2xl p-5 mb-6">
                             <p className="text-sm text-[#475467] leading-relaxed">
                                 {isOfficial ? (
-                                    <>Este é um ponto oficial da metodologia Arvo: <strong>{currentName}</strong>. </>
+                                    <>Este é um ponto oficial da metodologia ARVO: <strong>{currentName}</strong>. </>
                                 ) : (
                                     <>Você está simulando uma transição entre <strong>{from.name}</strong> e <strong>{to.name}</strong>. </>
                                 )}

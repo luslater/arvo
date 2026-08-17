@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Check, Lock, ArrowRight, ArrowRightCircle, Target, Wallet, ShieldCheck, HeartPulse, Building2, Landmark, Loader2 } from "lucide-react"
+import { Check, ArrowRight, ArrowRightCircle, Target, Wallet, ShieldCheck, HeartPulse, Building2, Landmark, Compass, Loader2, Sparkles } from "lucide-react"
 import PlanoArvoDashboard from "@/components/plano-arvo-dashboard"
-import { saveJornadaProgress, getJornadaProgress } from "./actions"
+import { saveJornadaProgress, getJornadaProgress, calculateInvestorProfile } from "./actions"
 
 // Types
 type FieldDef = {
@@ -74,26 +74,25 @@ const PLAN_DATA = [
     },
     {
         title: "Construção de Patrimônio",
-        short: "Perfil e Alocação",
+        short: "Objetivos e Aportes",
         status: "Estratégia patrimonial",
-        desc: "O Pilar 3 define como seu dinheiro vai trabalhar. Avaliamos seu perfil (Suitability ARVO), seus objetivos no tempo e propomos uma alocação de carteira (Abrigo, Ritmo, Visão ou Oceano).",
-        objective: "Conectar carteira, perfil de risco e objetivos.",
-        delivery: "Alocação sugerida vs. atual e simulação.",
-        signal: "Cada investimento tem um motivo no plano.",
+        desc: "O Pilar 3 organiza seus objetivos no tempo e a sua capacidade de poupança contínua para fazer o patrimônio trabalhar a seu favor.",
+        objective: "Conectar capacidade de aporte a objetivos de vida.",
+        delivery: "Plano de acumulação patrimonial estruturado.",
+        signal: "Cada aporte possui meta e destino definidos.",
         icon: <Target className="text-[#4fa080] shrink-0" size={24} />,
         fields: [
-            { name: "experienciaInvestimentos", label: "Tempo investindo", type: "select", options: ["Nunca", "Menos de 1 ano", "1 a 3 anos", "3 a 5 anos", "Mais de 5 anos"] },
-            { name: "reacaoQueda", label: "Se caísse 20% no mês, você:", type: "select", options: ["Venderia tudo", "Venderia parte", "Não faria nada", "Compraria mais"] },
-            { name: "objetivoPrincipal", label: "Principal objetivo", type: "select", options: ["Preservar patrimônio", "Renda extra", "Crescer no longo prazo", "Aposentadoria"] },
-            { name: "horizonteTempo", label: "Quando vai usar o dinheiro?", type: "select", options: ["Menos de 1 ano", "1 a 3 anos", "3 a 5 anos", "5 a 10 anos", "Mais de 10 anos"] },
             { name: "patrimonioInvestido", label: "Patrimônio Atual Investido", type: "currency", placeholder: "R$ 0,00" },
-            { name: "aporteMensal", label: "Aporte Mensal Planejado", type: "currency", placeholder: "R$ 0,00" }
+            { name: "aporteMensal", label: "Aporte Mensal Planejado", type: "currency", placeholder: "R$ 0,00" },
+            { name: "objetivoPrincipal", label: "Principal objetivo financeiro", type: "select", options: ["Preservar patrimônio", "Renda extra e dividendos", "Crescer patrimônio no longo prazo", "Comprar imóvel / Bens de alto valor", "Independência financeira"] },
+            { name: "prazoPrincipalObjetivo", label: "Prazo para o principal objetivo", type: "select", options: ["Curto prazo (até 2 anos)", "Médio prazo (2 a 5 anos)", "Longo prazo (5 a 10 anos)", "Mais de 10 anos"] },
+            { name: "prioridadeAportes", label: "Prioridade dos próximos aportes", type: "select", options: ["Completar reserva de emergência", "Acelerar independência financeira", "Projetos de médio prazo", "Diversificar em ativos globais"] }
         ],
         analysis: [
-            "Suitability e Perfil de Risco ARVO",
             "Classificação de objetivos por horizonte de tempo",
-            "Proposta de Carteira (Abrigo, Ritmo, Visão, Oceano)",
-            "Simulação do poder dos Juros Compostos"
+            "Taxa de Poupança vs. Renda Líquida",
+            "Simulação do poder dos Juros Compostos no tempo",
+            "Mapeamento de prioridades para os próximos 12 meses"
         ]
     },
     {
@@ -164,16 +163,101 @@ const PLAN_DATA = [
             "Estruturas eficientes (Uso de VGBL, Doação)",
             "Checklist do Dossiê Financeiro Familiar"
         ]
+    },
+    {
+        title: "Análise de Perfil do Cliente",
+        short: "Suitability & Perfil de Risco",
+        status: "Diretriz da Bússola",
+        desc: "O Pilar 7 avalia cientificamente sua tolerância ao risco, capacidade financeira de absorver perdas e horizonte de investimento para calibrar sua Bússola de Carteiras (Abrigo, Ritmo, Visão ou Oceano).",
+        objective: "Determinar seu perfil oficial de investidor ARVO.",
+        delivery: "Classificação de Suitability e calibração da Bússola.",
+        signal: "Sua carteira está perfeitamente alinhada ao seu estômago e metas.",
+        icon: <Compass className="text-[#4fa080] shrink-0" size={24} />,
+        fields: [
+            {
+                name: "perfil_experiencia",
+                label: "Qual a sua experiência no mercado financeiro?",
+                type: "select",
+                options: [
+                    "Iniciante (Poupança ou nunca investi)",
+                    "Básico (Renda Fixa tradicional: CDB, Tesouro)",
+                    "Intermediário (Renda Fixa, Fundos e FIIs)",
+                    "Avançado (Ações, FIIs, Cripto e Ativos Globais)"
+                ]
+            },
+            {
+                name: "perfil_reacao_queda",
+                label: "Se seus investimentos caíssem 15% em um mês de estresse, você:",
+                type: "select",
+                options: [
+                    "Ficaria desesperado e resgataria tudo imediatamente",
+                    "Ficaria muito desconfortável e reduziria o risco para Renda Fixa",
+                    "Compreenderia que faz parte do plano e manteria a alocação",
+                    "Veria como oportunidade e aproveitaria para investir mais"
+                ]
+            },
+            {
+                name: "perfil_objetivo",
+                label: "Qual o objetivo prioritário para seus investimentos?",
+                type: "select",
+                options: [
+                    "Preservação absoluta do capital e liquidez imediata",
+                    "Proteger contra a inflação com baixo risco e estabilidade",
+                    "Crescimento patrimonial de longo prazo aceitando oscilações",
+                    "Maximizar retorno aceitando alta volatilidade"
+                ]
+            },
+            {
+                name: "perfil_horizonte",
+                label: "Por quanto tempo pretende manter a maior parte investida?",
+                type: "select",
+                options: [
+                    "Menos de 1 ano",
+                    "De 1 a 3 anos",
+                    "De 3 a 7 anos",
+                    "Mais de 7 a 10 anos"
+                ]
+            },
+            {
+                name: "perfil_liquidez",
+                label: "Quanto do patrimônio pode precisar nos próximos 12 meses?",
+                type: "select",
+                options: [
+                    "Mais de 50% do total",
+                    "Entre 20% e 50%",
+                    "Entre 10% e 20%",
+                    "Menos de 10% (Reserva de segurança já está separada)"
+                ]
+            },
+            {
+                name: "perfil_perdas",
+                label: "Qual frase melhor descreve sua tolerância a oscilações temporárias?",
+                type: "select",
+                options: [
+                    "Não admito perdas nominais em hipótese alguma",
+                    "Aceito pequenas oscilações temporárias se render mais que o CDI",
+                    "Aceito perdas temporárias de médio prazo para buscar retornos expressivos",
+                    "Busco rentabilidade máxima e tolero quedas severas sem mudar a rota"
+                ]
+            }
+        ],
+        analysis: [
+            "Cálculo do Score de Tolerância ao Risco",
+            "Determinação do Perfil Oficial ARVO (Abrigo, Ritmo, Visão, Oceano)",
+            "Calibração de Alertas Inteligentes na Bússola de Investimentos",
+            "Validação de Adequação Regulatória (Suitability Fee-Only)"
+        ]
     }
 ]
 
 const PROGRESS_LABELS = [
-    "Pilar 1: Preencha seus dados de renda e despesa. O Raio-X é o alicerce onde a Arvo constrói suas projeções.",
+    "Pilar 1: Preencha seus dados de renda e despesa. O Raio-X é o alicerce onde a ARVO constrói suas projeções.",
     "Pilar 2: Proteção. Mapeie seus riscos e assegure que acidentes de percurso não destruam sua estabilidade.",
-    "Pilar 3: Estratégia. Suas respostas ajustam seu perfil e moldam a carteira ideal para o seu momento.",
+    "Pilar 3: Construção. Defina seus objetivos patrimoniais e alinhe o ritmo dos seus aportes.",
     "Pilar 4: Futuro. Descubra o número exato para a independência financeira e calcule o gap.",
     "Pilar 5: Inteligência Fiscal. Dados sobre seu IR permitem encontrar atalhos legais para reter mais ganhos.",
-    "Pilar 6: Legado. Organizar como o patrimônio passa para a próxima geração evita que a burocracia consuma seu trabalho."
+    "Pilar 6: Legado. Organizar como o patrimônio passa para a próxima geração evita burocracia e custos.",
+    "Pilar 7: Perfil do Investidor. Responda o questionário de Suitability para calibrar sua Bússola de Carteiras."
 ]
 
 export default function PlanejamentoJornadaPage() {
@@ -186,7 +270,6 @@ export default function PlanejamentoJornadaPage() {
         async function loadProgress() {
             const res = await getJornadaProgress()
             if (res.success && res.data) {
-                // Ignore parsing errors and load what we have
                 try {
                     const savedData = res.data as Record<string, string>
                     setFormData(savedData)
@@ -210,6 +293,8 @@ export default function PlanejamentoJornadaPage() {
         const num = parseInt(clean) / 100
         return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(num)
     }
+
+    const calculatedCurrentProfile = calculateInvestorProfile(formData)
 
     const goNext = async () => {
         if (current < PLAN_DATA.length - 1) {
@@ -238,6 +323,13 @@ export default function PlanejamentoJornadaPage() {
     const step = PLAN_DATA[current]
     const score = Math.round(((current + 1) / PLAN_DATA.length) * 100)
 
+    const profileMetaMap: Record<string, { label: string; color: string; desc: string }> = {
+        ABRIGO: { label: "Abrigo (Conservador)", color: "#9bcbb4", desc: "Prioridade absoluta em liquidez e preservação do capital." },
+        RITMO: { label: "Ritmo (Moderado)", color: "#4fa080", desc: "Equilíbrio entre segurança e proteção real contra a inflação (IPCA+)." },
+        "VISÃO": { label: "Visão (Arrojado)", color: "#2b6e76", desc: "Crescimento de longo prazo com ações, multimercados e ativos reais." },
+        OCEANO: { label: "Oceano (Agressivo)", color: "#123044", desc: "Máximo potencial de retorno com exposição global e tolerância a alta volatilidade." }
+    }
+
     return (
         <div className="min-h-screen text-slate-900 font-sans p-6 md:p-8 animate-in fade-in slide-in-from-bottom-2 duration-300 bg-[#f6f4ef]">
             
@@ -248,14 +340,13 @@ export default function PlanejamentoJornadaPage() {
                     <div>
                         <div className="text-[11px] font-extrabold text-[#1f674f] uppercase tracking-widest mb-3 flex items-center gap-2">
                             <span className="w-2 h-2 rounded-full bg-[#1f674f] animate-pulse"></span>
-                            Método Arvo de Planejamento (CFP®)
+                            Jornada de Planejamento ARVO (7 Etapas)
                         </div>
                         <h1 className="text-4xl md:text-5xl font-extralight tracking-tight text-[#123044] mb-4 leading-[1.1]">
-                            Sua vida financeira<br/><span className="font-semibold">em uma jornada clara.</span>
+                            Sua vida financeira<br/><span className="font-semibold">em 7 etapas completas.</span>
                         </h1>
                         <p className="text-[#667085] text-base max-w-xl leading-relaxed mb-8">
-                            Nós não vendemos apenas fundos. Nós construímos o seu mapa financeiro global. 
-                            Preencha cada etapa abaixo para iniciarmos a análise estrutural da sua vida.
+                            Construímos seu mapa financeiro global e calibramos sua tolerância a risco na etapa final para conectar suas decisões à Bússola de Investimentos.
                         </p>
                     </div>
 
@@ -263,7 +354,7 @@ export default function PlanejamentoJornadaPage() {
                     <div className="bg-[#fffdf8]/90 border border-[#e4e0d7] rounded-[32px] p-8 shadow-[0_30px_60px_rgba(18,48,68,0.06)] backdrop-blur-md">
                         <div className="flex justify-between items-start mb-6">
                             <div>
-                                <div className="text-xs font-bold text-[#667085] mb-1 uppercase tracking-wider">Progresso da Análise</div>
+                                <div className="text-xs font-bold text-[#667085] mb-1 uppercase tracking-wider">Progresso da Jornada</div>
                                 <div className="text-5xl font-extrabold text-[#123044] tracking-tighter">{score}%</div>
                             </div>
                             <div className="px-3 py-1.5 bg-[#e8f1ed] text-[#1f674f] rounded-full text-xs font-extrabold whitespace-nowrap">
@@ -286,9 +377,9 @@ export default function PlanejamentoJornadaPage() {
                     </div>
                 </section>
 
-                {/* HORIZONTAL NAVIGATION */}
+                {/* HORIZONTAL NAVIGATION (7 ETAPAS) */}
                 <nav className="w-full pb-6">
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-2.5">
                         {PLAN_DATA.map((item, idx) => {
                             const isActive = idx === current
                             const isDone = idx < current
@@ -303,18 +394,18 @@ export default function PlanejamentoJornadaPage() {
                                             : "border-[#e4e0d7] bg-[#fffdf8]/90 hover:bg-[#f0ece1] text-[#123044]"
                                     }`}
                                 >
-                                    <div className={`w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-[10px] font-extrabold text-xs ${
+                                    <div className={`w-7 h-7 flex-shrink-0 flex items-center justify-center rounded-[8px] font-extrabold text-xs ${
                                         isActive ? "bg-white text-[#123044]" : 
                                         isDone ? "bg-[#1f674f] !text-white" : 
                                         "bg-[#e4e0d7] text-[#667085]"
                                     }`}>
-                                        {isDone ? <Check size={16} strokeWidth={3} /> : (idx + 1)}
+                                        {isDone ? <Check size={14} strokeWidth={3} /> : (idx + 1)}
                                     </div>
                                     <div className="w-full mt-1">
-                                        <div className={`font-bold text-[13px] leading-tight line-clamp-2 ${isActive ? "!text-white" : "text-[#123044]"}`}>
+                                        <div className={`font-bold text-[12px] leading-tight line-clamp-2 ${isActive ? "!text-white" : "text-[#123044]"}`}>
                                             {item.title}
                                         </div>
-                                        <div className={`text-[10px] truncate mt-1 ${isActive ? "!text-white/70" : "text-[#667085]"}`}>
+                                        <div className={`text-[9.5px] truncate mt-0.5 ${isActive ? "!text-white/70" : "text-[#667085]"}`}>
                                             {item.short}
                                         </div>
                                     </div>
@@ -328,7 +419,7 @@ export default function PlanejamentoJornadaPage() {
                 <section className="flex flex-col items-start w-full">
 
                     {/* MAIN PANEL CONTENT */}
-                    <main className="bg-[#fffdf8]/90 border border-[#e4e0d7] rounded-[32px] p-8 md:p-10 shadow-[0_20px_50px_rgba(23,33,43,0.04)] min-h-[600px] flex flex-col">
+                    <main className="bg-[#fffdf8]/90 border border-[#e4e0d7] rounded-[32px] p-8 md:p-10 shadow-[0_20px_50px_rgba(23,33,43,0.04)] min-h-[600px] flex flex-col w-full">
                         <AnimatePresence mode="wait">
                             <motion.div 
                                 key={current}
@@ -343,144 +434,170 @@ export default function PlanejamentoJornadaPage() {
                                     <div>
                                         <div className="text-[11px] font-extrabold text-[#4fa080] uppercase tracking-widest mb-2 flex items-center gap-2">
                                             {step.icon}
-                                            PASSO {current + 1}
+                                            ETAPA {current + 1} DE {PLAN_DATA.length} · {step.status}
                                         </div>
                                         <h2 className="text-3xl md:text-4xl font-extralight tracking-tight text-[#123044]">
                                             {step.title}
                                         </h2>
-                                    </div>
-                                    <div className="px-4 py-2 bg-[#e8f1ed] text-[#1f674f] rounded-full text-xs font-extrabold self-start whitespace-nowrap border border-[#d6e5de]">
-                                        {step.status}
+                                        <p className="text-sm text-[#667085] mt-2 max-w-2xl leading-relaxed">
+                                            {step.desc}
+                                        </p>
                                     </div>
                                 </div>
 
-                                <p className="text-[#475467] text-base leading-relaxed mb-10 max-w-3xl">
-                                    {step.desc}
-                                </p>
-
-                                {/* INTERACTIVE FORM & ANALYSIS */}
-                                <div className="grid lg:grid-cols-[1fr_350px] gap-8 mb-10">
-                                    
-                                    {/* FORMULÁRIO DE ENTRADA */}
-                                    <div className="bg-white border border-[#e4e0d7] rounded-[24px] p-6 shadow-sm">
-                                        <h3 className="text-lg font-bold text-[#123044] mb-6 flex items-center gap-2">
-                                            <div className="w-2 h-2 rounded-full bg-[#4fa080]"></div>
-                                            Colete seus dados
-                                        </h3>
-                                        <div className="grid sm:grid-cols-2 gap-5">
-                                            {step.fields.map((field) => (
-                                                <div key={field.name} className={`space-y-2 ${field.type === "radio" ? "sm:col-span-2" : ""}`}>
-                                                    <label className="text-xs font-bold text-[#667085] uppercase tracking-wider">{field.label}</label>
-                                                    
-                                                    {field.type === "text" || field.type === "number" ? (
-                                                        <input 
-                                                            type={field.type}
-                                                            className="w-full border border-[#e4e0d7] bg-[#fbfaf8] rounded-xl px-4 py-3 text-sm text-[#123044] font-semibold outline-none focus:border-[#4fa080] focus:ring-1 focus:ring-[#4fa080] transition-all"
-                                                            placeholder={field.placeholder}
-                                                            value={formData[field.name] || ""}
-                                                            onChange={(e) => handleInputChange(field.name, e.target.value)}
-                                                        />
-                                                    ) : field.type === "currency" ? (
-                                                        <input 
-                                                            type="text"
-                                                            className="w-full border border-[#e4e0d7] bg-[#fbfaf8] rounded-xl px-4 py-3 text-sm text-[#123044] font-semibold outline-none focus:border-[#4fa080] focus:ring-1 focus:ring-[#4fa080] transition-all"
-                                                            placeholder={field.placeholder}
-                                                            value={formData[field.name] || ""}
-                                                            onChange={(e) => {
-                                                                const formatted = formatCurrency(e.target.value)
-                                                                handleInputChange(field.name, formatted)
-                                                            }}
-                                                        />
-                                                    ) : field.type === "select" ? (
-                                                        <select 
-                                                            className="w-full border border-[#e4e0d7] bg-[#fbfaf8] rounded-xl px-4 py-3 text-sm text-[#123044] font-semibold outline-none focus:border-[#4fa080] focus:ring-1 focus:ring-[#4fa080] transition-all appearance-none"
-                                                            value={formData[field.name] || ""}
-                                                            onChange={(e) => handleInputChange(field.name, e.target.value)}
-                                                        >
-                                                            <option value="" disabled>Selecione uma opção...</option>
-                                                            {field.options?.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-                                                        </select>
-                                                    ) : field.type === "radio" ? (
-                                                        <div className="grid sm:grid-cols-2 gap-2">
-                                                            {field.options?.map(opt => (
-                                                                <label key={opt} className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all ${
-                                                                    formData[field.name] === opt ? "bg-[#e8f1ed] border-[#4fa080]" : "bg-[#fbfaf8] border-[#e4e0d7] hover:bg-[#f5f3ed]"
-                                                                }`}>
-                                                                    <input 
-                                                                        type="radio" 
-                                                                        name={field.name} 
-                                                                        value={opt} 
-                                                                        checked={formData[field.name] === opt}
-                                                                        onChange={(e) => handleInputChange(field.name, e.target.value)}
-                                                                        className="w-4 h-4 text-[#4fa080] border-gray-300 focus:ring-[#4fa080]"
-                                                                    />
-                                                                    <span className={`text-sm font-semibold ${formData[field.name] === opt ? "text-[#1f674f]" : "text-[#475467]"}`}>
-                                                                        {opt}
-                                                                    </span>
-                                                                </label>
-                                                            ))}
-                                                        </div>
-                                                    ) : null}
+                                {/* Se for a Etapa 7 (Análise de Perfil), mostramos o Badge de Perfil em tempo real */}
+                                {current === 6 && (
+                                    <div className="mb-8 p-6 rounded-2xl border border-[#2b6e76]/30 bg-[#e8f1ed]/50 flex flex-col sm:flex-row justify-between items-center gap-4">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-12 h-12 rounded-xl bg-[#2b6e76] text-white flex items-center justify-center shrink-0">
+                                                <Compass size={24} />
+                                            </div>
+                                            <div>
+                                                <div className="text-xs font-bold text-[#2b6e76] uppercase tracking-wider flex items-center gap-1.5">
+                                                    <Sparkles size={14} />
+                                                    Perfil Calculado em Tempo Real
                                                 </div>
-                                            ))}
+                                                <div className="text-2xl font-extrabold text-[#123044]">
+                                                    {profileMetaMap[calculatedCurrentProfile]?.label || calculatedCurrentProfile}
+                                                </div>
+                                                <div className="text-xs text-[#667085] mt-0.5">
+                                                    {profileMetaMap[calculatedCurrentProfile]?.desc}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="text-right shrink-0">
+                                            <span className="inline-flex px-3 py-1.5 rounded-full bg-white text-[#123044] text-xs font-bold border border-[#e4e0d7] shadow-sm">
+                                                Conectado à Bússola
+                                            </span>
                                         </div>
                                     </div>
+                                )}
 
-                                    {/* O QUE A ARVO ANALISA */}
-                                    <div className="bg-[#f8f6f0] border border-[#e4e0d7] rounded-[24px] p-6 shadow-sm flex flex-col">
-                                        <h3 className="text-lg font-bold text-[#123044] mb-6 flex items-center gap-2">
-                                            <div className="w-2 h-2 rounded-full bg-[#123044]"></div>
-                                            O que a Arvo analisa
-                                        </h3>
-                                        <div className="flex-1 flex flex-col justify-center">
-                                            <ul className="space-y-5">
-                                                {step.analysis.map((analysisItem, i) => (
-                                                    <li key={i} className="flex gap-4 items-center p-4 bg-white rounded-xl shadow-sm border border-[#e4e0d7]/60">
-                                                        <Check className="text-[#4fa080] shrink-0" size={20} strokeWidth={3} />
-                                                        <span className="text-sm font-semibold text-[#123044] leading-tight">{analysisItem}</span>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                        <div className="mt-8 p-4 bg-white rounded-xl border border-[#e4e0d7] text-center">
-                                            <div className="text-[10px] font-extrabold text-[#667085] uppercase tracking-widest mb-1">Entregável da Etapa</div>
-                                            <div className="text-[13px] font-bold text-[#1f674f] leading-snug">{step.delivery}</div>
-                                        </div>
-                                    </div>
+                                {/* FORM FIELDS */}
+                                <div className="grid md:grid-cols-2 gap-6 my-8">
+                                    {step.fields.map((field) => {
+                                        const val = formData[field.name] || ""
+                                        
+                                        return (
+                                            <div key={field.name} className={`space-y-2 ${field.type === 'radio' ? 'md:col-span-2' : ''}`}>
+                                                <label className="text-xs font-bold text-[#123044] flex items-center gap-1.5">
+                                                    {field.label}
+                                                </label>
 
+                                                {field.type === "currency" && (
+                                                    <div className="relative">
+                                                        <input 
+                                                            type="text" 
+                                                            placeholder={field.placeholder || "R$ 0,00"}
+                                                            value={val}
+                                                            onChange={(e) => handleInputChange(field.name, formatCurrency(e.target.value))}
+                                                            className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-4 py-3 text-sm text-[#123044] font-medium placeholder:text-[#a09e99] focus:outline-none focus:border-[#4fa080] focus:ring-1 focus:ring-[#4fa080] transition-all"
+                                                        />
+                                                    </div>
+                                                )}
+
+                                                {field.type === "number" && (
+                                                    <input 
+                                                        type="number" 
+                                                        placeholder={field.placeholder}
+                                                        value={val}
+                                                        onChange={(e) => handleInputChange(field.name, e.target.value)}
+                                                        className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-4 py-3 text-sm text-[#123044] font-medium placeholder:text-[#a09e99] focus:outline-none focus:border-[#4fa080] focus:ring-1 focus:ring-[#4fa080] transition-all"
+                                                    />
+                                                )}
+
+                                                {field.type === "text" && (
+                                                    <input 
+                                                        type="text" 
+                                                        placeholder={field.placeholder}
+                                                        value={val}
+                                                        onChange={(e) => handleInputChange(field.name, e.target.value)}
+                                                        className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-4 py-3 text-sm text-[#123044] font-medium placeholder:text-[#a09e99] focus:outline-none focus:border-[#4fa080] focus:ring-1 focus:ring-[#4fa080] transition-all"
+                                                    />
+                                                )}
+
+                                                {field.type === "select" && (
+                                                    <select 
+                                                        value={val}
+                                                        onChange={(e) => handleInputChange(field.name, e.target.value)}
+                                                        className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-4 py-3 text-sm text-[#123044] font-medium focus:outline-none focus:border-[#4fa080] focus:ring-1 focus:ring-[#4fa080] transition-all"
+                                                    >
+                                                        <option value="">Selecione uma opção...</option>
+                                                        {field.options?.map(opt => (
+                                                            <option key={opt} value={opt}>{opt}</option>
+                                                        ))}
+                                                    </select>
+                                                )}
+
+                                                {field.type === "radio" && (
+                                                    <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3 pt-1">
+                                                        {field.options?.map(opt => (
+                                                            <button
+                                                                type="button"
+                                                                key={opt}
+                                                                onClick={() => handleInputChange(field.name, opt)}
+                                                                className={`px-4 py-3 text-xs font-semibold rounded-xl border text-left transition-all ${
+                                                                    val === opt 
+                                                                        ? "bg-[#123044] text-white border-transparent shadow-sm" 
+                                                                        : "bg-[#f6f4ef] text-[#123044] border-[#e4e0d7] hover:bg-[#e4e0d7]/60"
+                                                                }`}
+                                                            >
+                                                                {opt}
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )
+                                    })}
                                 </div>
 
+                                {/* WHAT WE DELIVER / ANALYSIS */}
+                                <div className="mt-8 pt-6 border-t border-[#e4e0d7]">
+                                    <div className="text-[11px] font-extrabold text-[#667085] uppercase tracking-wider mb-3">
+                                        Entregáveis da Etapa {current + 1}
+                                    </div>
+                                    <div className="grid sm:grid-cols-2 gap-2.5">
+                                        {step.analysis.map((an, i) => (
+                                            <div key={i} className="flex items-center gap-2 text-xs font-medium text-[#123044] bg-[#f6f4ef]/80 p-2.5 rounded-xl border border-[#e4e0d7]/70">
+                                                <Check size={14} className="text-[#4fa080] shrink-0" />
+                                                <span>{an}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
                             </motion.div>
                         </AnimatePresence>
 
-                        {/* NEXT BUTTON STRIP */}
-                        <div className="mt-auto pt-6 border-t border-[#e4e0d7]">
-                            <div className="bg-[#123044] rounded-[24px] p-6 md:p-8 flex flex-col md:flex-row justify-between items-center gap-6 shadow-lg">
-                                <div className="text-center md:text-left">
-                                    <div className="text-xl font-bold mb-1 !text-white">
-                                        {current === PLAN_DATA.length - 1 
-                                            ? "Jornada concluída. Gerar Diagnóstico." 
-                                            : `Próximo passo: ${PLAN_DATA[current + 1].title}`}
-                                    </div>
-                                    <div className="!text-white/80 text-sm">
-                                        {current === PLAN_DATA.length - 1
-                                            ? "Você preencheu todas as etapas. A Arvo está pronta para processar o seu mapa financeiro."
-                                            : "Preencha os campos e avance para estruturar a próxima dimensão do seu plano."}
-                                    </div>
-                                </div>
-                                <button 
-                                    onClick={goNext}
-                                    className="px-6 py-3 bg-white text-[#123044] rounded-full font-extrabold text-sm hover:bg-[#f0ece1] transition-colors shrink-0 flex items-center gap-2 w-full md:w-auto justify-center"
-                                >
-                                    {current === PLAN_DATA.length - 1 ? "Salvar Diagnóstico" : "Avançar Etapa"}
-                                    <ArrowRightCircle size={18} />
-                                </button>
-                            </div>
+                        {/* BOTTOM ACTIONS */}
+                        <div className="flex items-center justify-between mt-auto pt-8 border-t border-[#e4e0d7]">
+                            <button
+                                onClick={() => setCurrent(prev => Math.max(0, prev - 1))}
+                                disabled={current === 0}
+                                className="px-5 py-2.5 text-xs font-bold text-[#667085] hover:text-[#123044] disabled:opacity-30 disabled:pointer-events-none transition-colors"
+                            >
+                                Voltar Etapa
+                            </button>
+
+                            <button
+                                onClick={goNext}
+                                className="inline-flex items-center gap-2 px-6 py-3 bg-[#123044] hover:bg-[#1e4866] text-white text-xs font-bold uppercase tracking-wider rounded-xl shadow-md transition-all transform hover:-translate-y-0.5"
+                            >
+                                {current < PLAN_DATA.length - 1 ? (
+                                    <>
+                                        Avançar para Etapa {current + 2}
+                                        <ArrowRight size={16} />
+                                    </>
+                                ) : (
+                                    <>
+                                        Finalizar Análise & Ver Plano
+                                        <ArrowRightCircle size={16} />
+                                    </>
+                                )}
+                            </button>
                         </div>
-                        
                     </main>
                 </section>
-                
             </div>
         </div>
     )

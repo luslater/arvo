@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { PieChart, Pie, Cell, AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, CartesianGrid } from "recharts"
-import { Shield, TrendingUp, Target, Sun, Scale, TreePine, ChevronRight, CheckCircle, AlertTriangle, ArrowUpRight, ArrowDownRight, Flame, Award, DollarSign, Wallet, PiggyBank, BarChart3, Zap, Star, ChevronDown, ChevronUp, Info, Eye } from "lucide-react"
+import { Shield, TrendingUp, Target, Sun, Scale, TreePine, ChevronRight, CheckCircle, AlertTriangle, ArrowUpRight, ArrowDownRight, Flame, Award, DollarSign, Wallet, PiggyBank, BarChart3, Zap, Star, ChevronDown, ChevronUp, Info, Eye, Compass } from "lucide-react"
 
 // ============================================================
 // DADOS SIMULADOS (Plano ARVO)
@@ -23,6 +23,7 @@ const pillarData = [
   { id: 4, name: "Futuro e Aposentadoria", score: 65, icon: Sun, color: "#123044", badge: "Arquiteto do Futuro", status: "completed" },
   { id: 5, name: "Inteligência Tributária", score: 58, icon: Scale, color: "#2b6e76", badge: "Estrategista Tributário", status: "completed" },
   { id: 6, name: "Legado e Sucessão", score: 52, icon: TreePine, color: "#4fa080", badge: "Arquiteto do Legado", status: "completed" },
+  { id: 7, name: "Análise de Perfil do Cliente", score: 85, icon: Compass, color: "#1f674f", badge: "Perfil de Investidor", status: "completed" },
 ]
 
 const financialSummary = {
