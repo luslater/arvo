@@ -1,24 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import LandingSimulator from "@/components/landing-simulator";
 import Link from "next/link";
-import { 
-  Play, 
-  CheckCircle2, 
-  XCircle, 
-  ShieldCheck, 
-  ArrowRight, 
-  Sparkles, 
-  Clock, 
-  TrendingUp, 
-  Compass, 
-  FileText, 
-  Users, 
-  Lock, 
-  Award,
-  HelpCircle,
-  AlertCircle
-} from "lucide-react";
 
 export default function PreviewCopyV2Page() {
   const [activeFaq, setActiveFaq] = useState<number | null>(0);
@@ -105,7 +89,7 @@ export default function PreviewCopyV2Page() {
           align-items: center;
           justify-content: center;
           gap: 10px;
-          padding: 14px 30px;
+          padding: 14px 28px;
           border-radius: 100px;
           font-weight: 500;
           font-size: 15px;
@@ -154,7 +138,7 @@ export default function PreviewCopyV2Page() {
           position: sticky;
           top: 0;
           z-index: 50;
-          background: rgba(244, 241, 234, 0.92);
+          background: rgba(244, 241, 234, 0.94);
           backdrop-filter: blur(12px);
           border-bottom: 1px solid var(--border);
         }
@@ -162,7 +146,7 @@ export default function PreviewCopyV2Page() {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          height: 64px;
+          height: 66px;
         }
         .v2-logo {
           display: flex;
@@ -177,7 +161,7 @@ export default function PreviewCopyV2Page() {
         }
         .v2-nav-links {
           display: flex;
-          gap: 28px;
+          gap: 24px;
           font-size: 14px;
           font-weight: 500;
           color: var(--text-secondary);
@@ -190,7 +174,7 @@ export default function PreviewCopyV2Page() {
         .v2-nav-links a:hover {
           color: var(--deep-teal);
         }
-        @media (max-width: 860px) {
+        @media (max-width: 900px) {
           .v2-nav-links { display: none; }
         }
 
@@ -220,7 +204,7 @@ export default function PreviewCopyV2Page() {
 
         /* Sections */
         .v2-section {
-          padding: 80px 0;
+          padding: 76px 0;
           border-bottom: 1px solid var(--border);
           position: relative;
         }
@@ -228,7 +212,7 @@ export default function PreviewCopyV2Page() {
           background: var(--section-alt);
         }
 
-        /* Story cards */
+        /* Card System */
         .v2-card {
           background: var(--card);
           border: 1px solid var(--border);
@@ -237,29 +221,38 @@ export default function PreviewCopyV2Page() {
           box-shadow: 0 2px 12px rgba(14, 21, 17, 0.02);
         }
 
-        /* Trilha Step Card */
-        .v2-step-card {
+        /* Movement cards */
+        .v2-movement-card {
           background: var(--card);
           border: 1px solid var(--border);
-          border-radius: 16px;
-          padding: 28px;
-          position: relative;
+          border-radius: 18px;
+          padding: 32px 28px;
+          display: flex;
+          flex-direction: column;
           transition: transform 0.2s, border-color 0.2s;
         }
-        .v2-step-card:hover {
+        .v2-movement-card:hover {
           transform: translateY(-3px);
           border-color: var(--deep-teal);
         }
-        .v2-step-num {
-          font-family: 'IBM Plex Mono', monospace;
-          font-size: 11.5px;
-          font-weight: 600;
-          color: var(--deep-teal);
-          background: var(--section-alt);
-          padding: 4px 10px;
-          border-radius: 100px;
-          display: inline-block;
-          margin-bottom: 12px;
+
+        /* Faixa de Confiança */
+        .v2-trust-strip {
+          border-top: 1px solid var(--border);
+          border-bottom: 1px solid var(--border);
+          background: var(--card);
+          padding: 24px 0;
+        }
+        .v2-trust-grid {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 24px;
+        }
+        @media (max-width: 900px) {
+          .v2-trust-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 540px) {
+          .v2-trust-grid { grid-template-columns: 1fr; }
         }
 
         /* FAQ */
@@ -305,7 +298,7 @@ export default function PreviewCopyV2Page() {
       `}} />
 
       <div className="v2-page-frame">
-        {/* NAV HEADER */}
+        {/* MENU / HEADER */}
         <header className="v2-nav">
           <div className="v2-wrap v2-nav-inner">
             <Link href="/" className="v2-logo">
@@ -313,138 +306,316 @@ export default function PreviewCopyV2Page() {
               <span>ARVO</span>
             </Link>
             <nav className="v2-nav-links">
-              <a href="#dor">O Problema</a>
-              <a href="#metodo">Trilha ARVO</a>
-              <a href="#para-quem">Para Quem É</a>
-              <a href="#entregaveis">O que Você Recebe</a>
-              <a href="#depoimentos">Histórias Reais</a>
-              <a href="#faq">Dúvidas</a>
+              <a href="#como-funciona">Como funciona</a>
+              <a href="#o-que-voce-recebe">O que você recebe</a>
+              <a href="#por-que-a-arvo">Por que a ARVO</a>
+              <a href="#planos">Planos</a>
+              <a href="#duvidas">Dúvidas</a>
             </nav>
             <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
               <Link href="/login" className="v2-btn v2-btn-ghost" style={{ padding: "8px 16px" }}>Entrar</Link>
-              <Link href="/register" className="v2-btn v2-btn-primary" style={{ padding: "10px 22px" }}>Fazer Diagnóstico →</Link>
+              <Link href="/register" className="v2-btn v2-btn-primary" style={{ padding: "9px 22px" }}>Fazer diagnóstico →</Link>
             </div>
           </div>
         </header>
 
-        {/* 1. HERO */}
-        <section className="v2-section" style={{ paddingTop: "56px", paddingBottom: "72px" }}>
-          <div className="v2-wrap" style={{ textAlign: "center", maxWidth: "900px" }}>
-            <div className="v2-eyebrow">
-              <span className="v2-eyebrow-dot"></span>
-              DIREÇÃO FINANCEIRA INDEPENDENTE
-            </div>
-
-            <h1 className="v2-serif" style={{ fontSize: "clamp(36px, 4.8vw, 62px)", lineHeight: "1.12", color: "var(--ink-navy)", margin: "0 auto 20px auto" }}>
-              Ganhar bem não é o mesmo que <i style={{ color: "var(--deep-teal)", fontStyle: "italic" }}>ter destino.</i>
-            </h1>
-
-            <p style={{ fontSize: "20px", color: "var(--text-secondary)", lineHeight: "1.55", margin: "0 auto 36px auto", maxWidth: "700px" }}>
-              Existe uma forma de saber, com números, se o dinheiro que já passa pelas suas mãos está te levando pra onde você quer chegar.
-            </p>
-
-            {/* 3 Key Narrative Cards */}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "16px", textAlign: "left", marginBottom: "40px" }}>
-              <div className="v2-card" style={{ padding: "22px 20px" }}>
-                <div className="v2-mono" style={{ fontSize: "11px", color: "var(--deep-teal)", fontWeight: 600, marginBottom: "8px" }}>01 · O CUSTO DO TEMPO</div>
-                <p style={{ fontSize: "14px", color: "var(--text-secondary)", margin: 0, lineHeight: "1.5" }}>
-                  Cada ano sem um plano claro é mais um ano de decisões tomadas no escuro, e isso fica mais caro de corrigir com o tempo. Ver o caminho todo, agora, muda o que você faz com cada real daqui pra frente.
-                </p>
+        {/* 1. HERO COM SIMULADOR */}
+        <section className="v2-section" style={{ paddingTop: "44px", paddingBottom: "60px" }}>
+          <div className="v2-wrap" style={{ display: "grid", gridTemplateColumns: "1.1fr 0.9fr", gap: "48px", alignItems: "center" }}>
+            <div>
+              <div className="v2-eyebrow">
+                <span className="v2-eyebrow-dot"></span>
+                PLANEJAMENTO FINANCEIRO INDEPENDENTE · SEM COMISSÃO
               </div>
 
-              <div className="v2-card" style={{ padding: "22px 20px" }}>
-                <div className="v2-mono" style={{ fontSize: "11px", color: "var(--deep-teal)", fontWeight: 600, marginBottom: "8px" }}>02 · PRODUTOS VS. ESTRATÉGIA</div>
-                <p style={{ fontSize: "14px", color: "var(--text-secondary)", margin: 0, lineHeight: "1.5" }}>
-                  Dinheiro em produtos diferentes, comprados em momentos diferentes, raramente forma uma estratégia. Ver tudo junto muda a forma como você decide dali em diante.
-                </p>
+              <h1 className="v2-serif" style={{ fontSize: "clamp(34px, 4.4vw, 56px)", lineHeight: "1.12", color: "var(--ink-navy)", margin: "0 0 18px 0" }}>
+                Você já investe.<br />
+                <i style={{ color: "var(--deep-teal)", fontStyle: "italic" }}>Mas sabe se está no caminho certo?</i>
+              </h1>
+
+              <p style={{ fontSize: "17.5px", color: "var(--text-secondary)", lineHeight: "1.65", margin: "0 0 28px 0", maxWidth: "44ch" }}>
+                A ARVO transforma seus objetivos em um plano financeiro claro para você saber quanto investir, como organizar seu patrimônio e quais ajustes fazer para chegar aonde deseja.
+              </p>
+
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "10px" }}>
+                <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+                  <Link href="/register" className="v2-btn v2-btn-primary" style={{ fontSize: "15.5px", padding: "15px 30px" }}>
+                    Descobrir se estou no caminho certo →
+                  </Link>
+                  <a href="#como-funciona" className="v2-btn v2-btn-outline" style={{ fontSize: "14.5px", padding: "14px 22px" }}>
+                    Ver como funciona ↓
+                  </a>
+                </div>
+                <div className="v2-mono" style={{ fontSize: "11.5px", color: "var(--text-muted)", marginTop: "4px" }}>
+                  ✓ 5 MINUTOS · ✓ GRATUITO · ✓ SEM CARTÃO
+                </div>
               </div>
 
-              <div className="v2-card" style={{ padding: "22px 20px" }}>
-                <div className="v2-mono" style={{ fontSize: "11px", color: "var(--deep-teal)", fontWeight: 600, marginBottom: "8px" }}>03 · ANSIEDADE POR PLANO</div>
-                <p style={{ fontSize: "14px", color: "var(--text-secondary)", margin: 0, lineHeight: "1.5" }}>
-                  Quem não sabe quanto precisa acumular também não sabe se está perto ou longe da liberdade que quer. Ter esse número na mão troca ansiedade por plano.
-                </p>
-              </div>
-            </div>
-
-            {/* VIDEO PLACEHOLDER FRAME */}
-            <div style={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: "20px", padding: "16px", maxWidth: "800px", margin: "0 auto 36px auto", boxShadow: "0 8px 30px rgba(14, 21, 17, 0.06)" }}>
-              <div style={{ background: "var(--section-alt)", borderRadius: "14px", minHeight: "360px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", position: "relative", border: "1px dashed var(--border-strong)", padding: "32px 20px" }}>
-                <div style={{ width: "64px", height: "64px", borderRadius: "50%", background: "var(--deep-teal)", color: "#ffffff", display: "grid", placeItems: "center", marginBottom: "16px", boxShadow: "0 4px 16px rgba(43, 110, 118, 0.35)", cursor: "pointer" }}>
-                  <span style={{ fontSize: "24px", marginLeft: "4px" }}>▶</span>
-                </div>
-                <div className="v2-serif" style={{ fontSize: "20px", color: "var(--ink-navy)", fontWeight: 500, marginBottom: "6px" }}>
-                  Como funciona o Diagnóstico e o Plano ARVO
-                </div>
-                <div className="v2-mono" style={{ fontSize: "12px", color: "var(--text-muted)" }}>
-                  Explicação em 90 segundos · Navegação dentro da plataforma
-                </div>
+              {/* Para quem é a ARVO */}
+              <div style={{ marginTop: "28px", padding: "16px 20px", background: "var(--section-alt)", border: "1px solid var(--border)", borderRadius: "14px", fontSize: "13.5px", color: "var(--text-secondary)", lineHeight: "1.55", maxWidth: "45ch" }}>
+                <strong style={{ color: "var(--ink-navy)", fontWeight: 600 }}>Para quem é a ARVO?</strong> Para quem investe a partir de R$ 1.000 por mês ou já possui patrimônio acumulado e quer tomar decisões com mais clareza, método e independência.
               </div>
             </div>
 
-            {/* CTA Hero */}
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
-              <Link href="/register" className="v2-btn v2-btn-primary" style={{ fontSize: "16.5px", padding: "16px 36px" }}>
-                Quero ver se meu dinheiro está no caminho certo →
+            {/* Simulador Interativo */}
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <LandingSimulator />
+            </div>
+          </div>
+        </section>
+
+        {/* FAIXA DE CONFIANÇA */}
+        <div className="v2-trust-strip">
+          <div className="v2-wrap">
+            <div className="v2-trust-grid">
+              <div style={{ borderLeft: "3px solid var(--deep-teal)", paddingLeft: "14px" }}>
+                <div className="v2-mono" style={{ fontSize: "12px", color: "var(--ink-navy)", fontWeight: 600 }}>100% FEE-ONLY</div>
+                <div style={{ fontSize: "13px", color: "var(--text-muted)", marginTop: "2px" }}>Sem comissão por produto</div>
+              </div>
+              <div style={{ borderLeft: "3px solid var(--deep-teal)", paddingLeft: "14px" }}>
+                <div className="v2-mono" style={{ fontSize: "12px", color: "var(--ink-navy)", fontWeight: 600 }}>CUSTÓDIA PRÓPRIA</div>
+                <div style={{ fontSize: "13px", color: "var(--text-muted)", marginTop: "2px" }}>Seu dinheiro continua no seu banco ou corretora</div>
+              </div>
+              <div style={{ borderLeft: "3px solid var(--deep-teal)", paddingLeft: "14px" }}>
+                <div className="v2-mono" style={{ fontSize: "12px", color: "var(--ink-navy)", fontWeight: 600 }}>PLANEJAMENTO PRIMEIRO</div>
+                <div style={{ fontSize: "13px", color: "var(--text-muted)", marginTop: "2px" }}>Os objetivos vêm antes dos investimentos</div>
+              </div>
+              <div style={{ borderLeft: "3px solid var(--deep-teal)", paddingLeft: "14px" }}>
+                <div className="v2-mono" style={{ fontSize: "12px", color: "var(--ink-navy)", fontWeight: 600 }}>ACOMPANHAMENTO CONTÍNUO</div>
+                <div style={{ fontSize: "13px", color: "var(--text-muted)", marginTop: "2px" }}>O plano evolui junto com a sua vida</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 2. O PROBLEMA */}
+        <section className="v2-section" id="problema">
+          <div className="v2-wrap">
+            <div style={{ maxWidth: "860px", marginBottom: "44px" }}>
+              <div className="v2-eyebrow"><span className="v2-eyebrow-dot"></span> INVESTIR NÃO É O MESMO QUE TER UM PLANO</div>
+              <h2 className="v2-serif" style={{ fontSize: "clamp(30px, 3.8vw, 48px)", lineHeight: "1.15", color: "var(--ink-navy)", margin: "0 0 16px 0" }}>
+                Você pode estar construindo patrimônio sem saber se ele será suficiente.
+              </h2>
+              <p style={{ fontSize: "17.5px", color: "var(--text-secondary)", lineHeight: "1.65", margin: 0 }}>
+                Ter bons investimentos isoladamente não significa que eles formam uma boa estratégia. Sem uma visão completa, algumas das decisões mais importantes da sua vida financeira continuam sendo tomadas no escuro:
+              </p>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "18px", marginBottom: "36px" }}>
+              {[
+                { num: "01", q: "Quanto preciso acumular?", desc: "Qual patrimônio será necessário para sustentar os objetivos que desejo alcançar?" },
+                { num: "02", q: "Quanto devo investir por mês?", desc: "Meu aporte atual é suficiente ou preciso ajustar o ritmo?" },
+                { num: "03", q: "Minha carteira faz sentido?", desc: "Os investimentos que tenho combinam com meus objetivos, prazos e momento de vida?" },
+                { num: "04", q: "Estou avançando na velocidade certa?", desc: "Estou à frente, dentro ou atrás da trajetória necessária?" },
+              ].map((item, idx) => (
+                <div key={idx} className="v2-card" style={{ padding: "28px 24px" }}>
+                  <div className="v2-mono" style={{ fontSize: "12px", color: "var(--deep-teal)", fontWeight: 600, marginBottom: "10px" }}>
+                    {item.num}
+                  </div>
+                  <h3 className="v2-serif" style={{ fontSize: "20px", color: "var(--ink-navy)", margin: "0 0 8px 0" }}>{item.q}</h3>
+                  <p style={{ fontSize: "14px", color: "var(--text-secondary)", margin: 0, lineHeight: "1.55" }}>{item.desc}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Banner de Rota */}
+            <div style={{ background: "var(--section-alt)", border: "1px solid var(--border)", borderRadius: "16px", padding: "28px 32px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "20px" }}>
+              <div style={{ maxWidth: "680px" }}>
+                <div style={{ fontSize: "16.5px", color: "var(--ink-navy)", lineHeight: "1.6" }}>
+                  A ARVO reúne essas respostas em uma única rota financeira. Você deixa de acumular produtos sem direção e passa a saber <strong>onde está, aonde precisa chegar e o que fazer mês a mês para chegar lá.</strong>
+                </div>
+              </div>
+              <Link href="/register" className="v2-btn v2-btn-navy" style={{ fontSize: "14.5px" }}>
+                Calcular minha rota financeira →
               </Link>
-              <div className="v2-mono" style={{ fontSize: "12px", color: "var(--text-muted)" }}>
-                ✓ 5 MINUTOS · ✓ GRATUITO · ✓ SEM CARTÃO DE CRÉDITO
+            </div>
+          </div>
+        </section>
+
+        {/* 3. COMO FUNCIONA (MÉTODO ARVO) */}
+        <section className="v2-section v2-section-alt" id="como-funciona">
+          <div className="v2-wrap">
+            <div style={{ textAlign: "center", maxWidth: "780px", margin: "0 auto 48px auto" }}>
+              <div className="v2-eyebrow"><span className="v2-eyebrow-dot"></span> MÉTODO ARVO</div>
+              <h2 className="v2-serif" style={{ fontSize: "clamp(32px, 4vw, 50px)", color: "var(--ink-navy)", margin: "0 0 16px 0", lineHeight: "1.15" }}>
+                Primeiro o destino.<br />
+                <i style={{ color: "var(--deep-teal)", fontStyle: "italic" }}>Depois, os investimentos.</i>
+              </h2>
+              <p style={{ fontSize: "17px", color: "var(--text-secondary)", lineHeight: "1.6" }}>
+                A maioria das pessoas começa perguntando qual produto comprar. A ARVO começa por uma pergunta mais importante: <strong>o que o seu dinheiro precisa tornar possível?</strong> A partir da resposta, construímos sua rota em três movimentos:
+              </p>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "22px", marginBottom: "40px" }}>
+              {[
+                {
+                  step: "01 — DEFINA A ROTA",
+                  title: "Entenda onde está e aonde quer chegar",
+                  desc: "Você informa sua renda, patrimônio, dívidas, capacidade de investimento e objetivos. A ARVO transforma essas informações em números claros: quanto precisa acumular, qual prazo possui e qual aporte mensal aproxima você desse destino.",
+                  tag: "Diagnóstico + objetivos + patrimônio necessário"
+                },
+                {
+                  step: "02 — CONSTRUA O PLANO",
+                  title: "Conecte seus investimentos aos seus objetivos",
+                  desc: "Com o destino definido, a ARVO mostra a trajetória entre seu patrimônio atual e o patrimônio necessário. A estratégia de investimentos é organizada de acordo com seu perfil, seus prazos e seus objetivos — e não pela comissão de um produto.",
+                  tag: "Plano mensal + trajetória patrimonial + estratégia"
+                },
+                {
+                  step: "03 — ACOMPANHE A EVOLUÇÃO",
+                  title: "Saiba se continua no caminho certo",
+                  desc: "Seu plano não termina quando a carteira é definida. Você acompanha sua evolução e pode ajustar a rota quando sua renda, patrimônio, família ou prioridades mudarem.",
+                  tag: "Painel de evolução + revisões + acompanhamento"
+                },
+              ].map((m, idx) => (
+                <div key={idx} className="v2-movement-card">
+                  <div className="v2-mono" style={{ fontSize: "11.5px", color: "var(--deep-teal)", fontWeight: 600, marginBottom: "10px" }}>
+                    {m.step}
+                  </div>
+                  <h3 className="v2-serif" style={{ fontSize: "22px", color: "var(--ink-navy)", margin: "0 0 12px 0", lineHeight: "1.3" }}>
+                    {m.title}
+                  </h3>
+                  <p style={{ fontSize: "14.5px", color: "var(--text-secondary)", lineHeight: "1.6", margin: "0 0 20px 0", flex: 1 }}>
+                    {m.desc}
+                  </p>
+                  <div className="v2-mono" style={{ fontSize: "11px", color: "var(--deep-teal)", background: "var(--section-alt)", padding: "8px 12px", borderRadius: "8px", border: "1px solid var(--border)" }}>
+                    ✓ {m.tag}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ textAlign: "center" }}>
+              <Link href="/register" className="v2-btn v2-btn-primary" style={{ fontSize: "15.5px", padding: "15px 32px" }}>
+                Descobrir se estou no caminho certo →
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* 4. O QUE VOCÊ RECEBE */}
+        <section className="v2-section" id="o-que-voce-recebe">
+          <div className="v2-wrap">
+            <div style={{ textAlign: "center", maxWidth: "780px", margin: "0 auto 48px auto" }}>
+              <div className="v2-eyebrow"><span className="v2-eyebrow-dot"></span> SEU PLANO COMPLETO</div>
+              <h2 className="v2-serif" style={{ fontSize: "clamp(30px, 3.8vw, 46px)", color: "var(--ink-navy)", margin: "0 0 14px 0" }}>
+                Mais do que uma carteira recomendada.
+              </h2>
+              <p style={{ fontSize: "17px", color: "var(--text-secondary)" }}>
+                A ARVO conecta planejamento, investimentos e acompanhamento em uma única experiência.
+              </p>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "20px", marginBottom: "40px" }}>
+              {[
+                { title: "Raio-X financeiro", desc: "Uma visão organizada da sua renda, patrimônio, dívidas, investimentos e capacidade real de aporte." },
+                { title: "Objetivos transformados em números", desc: "Você descobre quanto precisa acumular, em quanto tempo e qual patrimônio deverá construir." },
+                { title: "Plano mês a mês", desc: "Uma trajetória clara com o aporte recomendado para sair do cenário atual e alcançar seus objetivos." },
+                { title: "Estratégia de investimentos", desc: "Uma carteira compatível com seu perfil de risco, prazo, patrimônio e momento de vida." },
+                { title: "Painel de evolução", desc: "Uma visão simples para acompanhar se você está à frente, dentro ou atrás da rota planejada." },
+                { title: "Revisões do plano", desc: "Ajustes sempre que mudanças relevantes de renda, patrimônio, família ou objetivos exigirem uma nova direção." },
+                { title: "Suporte ARVO", desc: "Orientação para entender o plano e tomar decisões financeiras com mais segurança." },
+              ].map((item, idx) => (
+                <div key={idx} className="v2-card" style={{ padding: "26px 24px" }}>
+                  <div style={{ width: "28px", height: "28px", borderRadius: "50%", background: "var(--section-alt)", color: "var(--deep-teal)", display: "grid", placeItems: "center", fontWeight: "bold", fontSize: "13px", marginBottom: "12px" }}>
+                    ✓
+                  </div>
+                  <h3 className="v2-serif" style={{ fontSize: "19px", color: "var(--ink-navy)", margin: "0 0 8px 0" }}>{item.title}</h3>
+                  <p style={{ fontSize: "14px", color: "var(--text-secondary)", margin: 0, lineHeight: "1.55" }}>{item.desc}</p>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ textAlign: "center" }}>
+              <Link href="/register" className="v2-btn v2-btn-navy" style={{ fontSize: "15px" }}>
+                Ver meu plano →
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* 5. POR QUE A ARVO */}
+        <section className="v2-section v2-section-alt" id="por-que-a-arvo">
+          <div className="v2-wrap">
+            <div style={{ textAlign: "center", maxWidth: "820px", margin: "0 auto 48px auto" }}>
+              <div className="v2-eyebrow"><span className="v2-eyebrow-dot"></span> INDEPENDÊNCIA DE VERDADE</div>
+              <h2 className="v2-serif" style={{ fontSize: "clamp(30px, 3.8vw, 46px)", color: "var(--ink-navy)", margin: "0 0 16px 0", lineHeight: "1.15" }}>
+                Quem orienta você não deveria ganhar mais por indicar um produto.
+              </h2>
+              <p style={{ fontSize: "17px", color: "var(--text-secondary)", lineHeight: "1.6" }}>
+                Grande parte do mercado financeiro é remunerada pelos produtos que vende. A ARVO funciona de outra forma: nossa receita vem exclusivamente da assinatura dos clientes. Isso permite começar pelos seus objetivos — e não pelo investimento que alguém precisa vender.
+              </p>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "18px", marginBottom: "36px" }}>
+              {[
+                { title: "Sem comissão por produto", desc: "Nenhuma orientação é motivada por rebate ou remuneração de bancos, corretoras ou fundos." },
+                { title: "Sem mudar de banco ou corretora", desc: "Você continua investindo onde preferir." },
+                { title: "Patrimônio sempre sob seu controle", desc: "A ARVO não recebe, movimenta ou mantém a custódia do seu dinheiro." },
+                { title: "Planejamento contínuo", desc: "Você não recebe apenas um relatório estático. Seu plano pode ser acompanhado e ajustado conforme sua vida muda." },
+              ].map((p, idx) => (
+                <div key={idx} className="v2-card" style={{ padding: "26px 22px" }}>
+                  <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: "var(--section-alt)", color: "var(--deep-teal)", display: "grid", placeItems: "center", fontWeight: "bold", fontSize: "13px", marginBottom: "14px" }}>
+                    ✓
+                  </div>
+                  <h3 className="v2-serif" style={{ fontSize: "19px", color: "var(--ink-navy)", margin: "0 0 8px 0" }}>{p.title}</h3>
+                  <p style={{ fontSize: "14px", color: "var(--text-secondary)", margin: 0, lineHeight: "1.55" }}>{p.desc}</p>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ background: "var(--ink-navy)", color: "#ffffff", borderRadius: "16px", padding: "24px 32px", textAlign: "center" }}>
+              <div className="v2-serif" style={{ fontSize: "20px", maxWidth: "60ch", margin: "0 auto" }}>
+                Planejamento independente significa saber <strong>quem você está remunerando e por quê.</strong>
               </div>
             </div>
           </div>
         </section>
 
-        {/* 2. DOR / O EXTRATO BANCÁRIO */}
-        <section className="v2-section v2-section-alt" id="dor">
-          <div className="v2-wrap" style={{ maxWidth: "860px" }}>
-            <div className="v2-eyebrow"><span className="v2-eyebrow-dot"></span> Dinheiro à Deriva</div>
-            
-            <h2 className="v2-serif" style={{ fontSize: "clamp(30px, 3.8vw, 48px)", color: "var(--ink-navy)", lineHeight: "1.15", margin: "0 0 28px 0" }}>
-              O extrato bancário não organiza o futuro, <i style={{ color: "var(--deep-teal)", fontStyle: "italic" }}>só registra o passado.</i>
-            </h2>
-
-            <div style={{ fontSize: "17.5px", color: "var(--text-secondary)", lineHeight: "1.75", display: "flex", flexDirection: "column", gap: "20px" }}>
-              <p style={{ margin: 0 }}>
-                Você fecha o notebook depois de mais um dia inteiro respondendo mensagem de cliente, ajustando planilha, resolvendo problema de gente. Antes de dormir, abre o aplicativo do banco só pra conferir o saldo, vê os investimentos ali, alguns em CDB, outros em fundo, um pouco em ação que alguém indicou há dois anos, e fecha o aplicativo sem saber dizer se aquilo, junto, forma um plano ou só um monte de decisões separadas, tomadas em momentos diferentes por motivos diferentes.
-              </p>
-
-              {/* Focus Callout Card */}
-              <div style={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: "18px", padding: "28px 28px 28px 24px", borderLeft: "4px solid var(--deep-teal)", margin: "10px 0" }}>
-                <div className="v2-mono" style={{ fontSize: "12px", color: "var(--deep-teal)", fontWeight: 600, marginBottom: "8px" }}>
-                  O CONCEITO
-                </div>
-                <div className="v2-serif" style={{ fontSize: "22px", color: "var(--ink-navy)", margin: "0 0 10px 0" }}>
-                  Isso tem nome: <strong>Dinheiro à Deriva.</strong>
-                </div>
-                <p style={{ fontSize: "16px", color: "var(--text-secondary)", margin: 0, lineHeight: "1.65" }}>
-                  É quando cada aporte, cada produto e cada troca de banco aconteceu por um motivo isolado (indicação de um amigo, oferta do gerente, notícia que viu no feed) e nunca por causa de um destino definido antes. Isso raramente tem a ver com falta de disciplina. Tem a ver com <strong>falta de rota</strong>. Dá pra ganhar bem, guardar dinheiro todo mês e ainda assim estar à deriva, porque o problema nunca foi quanto entra na conta, e sim pra onde esse dinheiro está indo.
-                </p>
-              </div>
-
-              <p style={{ margin: 0 }}>
-                Grande parte desse problema começa com quem dá o conselho. Boa parte do mercado financeiro ainda paga assessor e gerente por comissão de produto, não por resultado do cliente. Isso significa que a recomendação que você recebeu pode ter sido a melhor pra quem vendeu, sem ser necessariamente a melhor pra sua meta, porque quem indicou tinha outro interesse no meio.
-              </p>
-
-              <p style={{ margin: 0 }}>
-                Isso aparece mais forte fora de casa. Num jantar, alguém pergunta com quanto e em que idade você pretende diminuir o ritmo de trabalho, e a resposta sai em generalidades, porque o número exato nunca foi calculado. Ou alguém comenta sobre ter usado o FGTS de um jeito que você nunca tinha ouvido falar, e a sensação é de estar sempre um passo atrás de gente que parece ter decifrado algo que você ainda não decifrou.
-              </p>
-
-              <div style={{ background: "var(--ink-navy)", color: "#ffffff", borderRadius: "16px", padding: "26px 28px", marginTop: "10px" }}>
-                <div className="v2-serif" style={{ fontSize: "20px", lineHeight: "1.4" }}>
-                  "O medo maior não costuma ser perder dinheiro, e sim chegar aos 50 ou 60 anos, olhar pra trás, ver que trabalhou muito e ganhou bem a vida inteira, e perceber que essa renda nunca virou a liberdade que ela poderia ter virado, porque nunca existiu um plano puxando cada decisão na mesma direção."
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* 3. PROVA SOCIAL (1) */}
+        {/* AUTORIDADE */}
         <section className="v2-section">
           <div className="v2-wrap">
+            <div style={{ display: "grid", gridTemplateColumns: "0.85fr 1.15fr", gap: "48px", alignItems: "center" }}>
+              <div className="v2-card" style={{ textAlign: "center", padding: "36px 28px" }}>
+                <div style={{ width: "76px", height: "76px", borderRadius: "50%", background: "var(--deep-teal)", color: "#ffffff", display: "grid", placeItems: "center", fontSize: "26px", fontFamily: "Lora, serif", margin: "0 auto 16px auto" }}>
+                  LM
+                </div>
+                <h3 className="v2-serif" style={{ fontSize: "24px", color: "var(--ink-navy)", margin: "0 0 4px 0" }}>Lucas Matos, CFP®</h3>
+                <div className="v2-mono" style={{ fontSize: "12px", color: "var(--deep-teal)", fontWeight: 600 }}>Fundador da ARVO</div>
+                <div style={{ marginTop: "20px", paddingTop: "16px", borderTop: "1px solid var(--border)", display: "flex", gap: "6px", justifyContent: "center", flexWrap: "wrap" }}>
+                  {["CFP®", "CPA-20", "ANCORD", "Mestre em Engenharia"].map((c, i) => (
+                    <span key={i} className="v2-mono" style={{ background: "var(--section-alt)", border: "1px solid var(--border)", padding: "4px 10px", borderRadius: "100px", fontSize: "11px", color: "var(--text-secondary)" }}>
+                      {c}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <div className="v2-eyebrow"><span className="v2-eyebrow-dot"></span> QUEM CRIOU A ARVO</div>
+                <h2 className="v2-serif" style={{ fontSize: "clamp(30px, 3.6vw, 44px)", color: "var(--ink-navy)", margin: "0 0 16px 0", lineHeight: "1.15" }}>
+                  Estratégia antes <i style={{ color: "var(--deep-teal)", fontStyle: "italic" }}>do investimento.</i>
+                </h2>
+                <p style={{ fontSize: "16.5px", color: "var(--text-secondary)", lineHeight: "1.65", margin: "0 0 14px 0" }}>
+                  Lucas é planejador financeiro CFP®, certificado CPA-20, Ancord e mestre em Engenharia.
+                </p>
+                <p style={{ fontSize: "16.5px", color: "var(--text-secondary)", lineHeight: "1.65", margin: "0 0 20px 0" }}>
+                  Ao longo da carreira, percebeu um padrão: mesmo pessoas com boa renda e patrimônio relevante recebiam recomendações de investimentos sem possuir um plano que conectasse essas decisões aos seus objetivos de vida. A ARVO nasceu para inverter essa ordem.
+                </p>
+                <div style={{ padding: "14px 20px", background: "var(--section-alt)", borderLeft: "3px solid var(--deep-teal)", borderRadius: "8px", fontSize: "16px", color: "var(--ink-navy)", fontWeight: 600 }}>
+                  "Primeiro vem o plano. Depois, a estratégia."
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* EXPERIÊNCIAS DE CLIENTES */}
+        <section className="v2-section v2-section-alt">
+          <div className="v2-wrap">
             <div style={{ textAlign: "center", maxWidth: "760px", margin: "0 auto 48px auto" }}>
-              <div className="v2-eyebrow"><span className="v2-eyebrow-dot"></span> Clareza na Prática</div>
+              <div className="v2-eyebrow"><span className="v2-eyebrow-dot"></span> CLAREZA NA PRÁTICA</div>
               <h2 className="v2-serif" style={{ fontSize: "clamp(28px, 3.6vw, 44px)", color: "var(--ink-navy)", margin: 0 }}>
-                O que muda quando alguém finalmente vê o plano inteiro, <i style={{ color: "var(--deep-teal)", fontStyle: "italic" }}>não só os investimentos separados.</i>
+                O que muda quando os investimentos passam a <i style={{ color: "var(--deep-teal)", fontStyle: "italic" }}>seguir um plano.</i>
               </h2>
             </div>
 
@@ -453,22 +624,22 @@ export default function PreviewCopyV2Page() {
                 {
                   author: "Marina T.",
                   role: "Empresária · 38 anos",
-                  text: "Tinha o dinheiro espalhado em 6 produtos diferentes, sem saber se juntos formavam uma estratégia. Em 3 semanas depois do diagnóstico, teve pela primeira vez um número exato de quanto precisava investir por mês pra se aposentar aos 55."
+                  quote: "“Tinha dinheiro distribuído em vários investimentos, mas não sabia se eles formavam uma estratégia. Depois do diagnóstico, consegui entender quanto precisava investir por mês para alcançar meu objetivo.”"
                 },
                 {
                   author: "Rafael C.",
-                  role: "Engenheiro de Software · 34 anos",
-                  text: "Investia havia 8 anos seguindo indicação do gerente do banco. Depois do plano, descobriu que metade da carteira estava concentrada em produtos com taxa alta e trocou a estratégia em menos de um mês."
+                  role: "Engenheiro · 42 anos",
+                  quote: "“Investia seguindo recomendações pontuais, sem enxergar o patrimônio como um todo. O plano mostrou quais decisões faziam sentido para os meus objetivos e quais precisavam ser revistas.”"
                 },
                 {
-                  author: "Juliana P.",
-                  role: "Médica Especialista · 42 anos",
-                  text: "Guardava por guardar, sem meta clara. Em 45 dias, teve resposta pra uma pergunta que evitava fazer há anos: quanto realmente precisava acumular pra manter o padrão de vida da família."
+                  author: "Rodrigo M.",
+                  role: "Sócio de consultoria · 36 anos",
+                  quote: "“Eu investia havia anos, mas não tinha uma meta numérica. Com a ARVO, descobri o aporte necessário e passei a acompanhar se estava dentro da trajetória.”"
                 }
               ].map((dep, idx) => (
                 <div key={idx} className="v2-card" style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                   <div style={{ fontSize: "15px", color: "var(--text-secondary)", lineHeight: "1.65", marginBottom: "20px" }}>
-                    "{dep.text}"
+                    {dep.quote}
                   </div>
                   <div style={{ borderTop: "1px solid var(--border)", paddingTop: "14px", display: "flex", alignItems: "center", gap: "12px" }}>
                     <div style={{ width: "38px", height: "38px", borderRadius: "50%", background: "var(--section-alt)", color: "var(--deep-teal)", display: "grid", placeItems: "center", fontWeight: "bold", fontSize: "14px", fontFamily: "Lora, serif" }}>
@@ -485,447 +656,120 @@ export default function PreviewCopyV2Page() {
           </div>
         </section>
 
-        {/* 4. CTA INTERMEDIÁRIO */}
-        <section className="v2-section v2-section-alt" style={{ padding: "56px 0", textAlign: "center" }}>
-          <div className="v2-wrap" style={{ maxWidth: "720px" }}>
-            <h3 className="v2-serif" style={{ fontSize: "28px", color: "var(--ink-navy)", margin: "0 0 10px 0" }}>
-              Se você já se reconheceu até aqui, a próxima parte é sobre como sair do <i style={{ color: "var(--deep-teal)", fontStyle: "italic" }}>Dinheiro à Deriva.</i>
-            </h3>
-            <p style={{ fontSize: "16px", color: "var(--text-secondary)", margin: "0 0 24px 0" }}>
-              Reconhecer o padrão é o primeiro passo. O segundo é ver exatamente como sair dele.
-            </p>
-            <Link href="#metodo" className="v2-btn v2-btn-navy" style={{ fontSize: "15px" }}>
-              Quero ver como funciona o plano ↓
-            </Link>
-          </div>
-        </section>
-
-        {/* 5. MÉTODO — A TRILHA ARVO */}
-        <section className="v2-section" id="metodo">
+        {/* 6. PLANO (OFERTA) */}
+        <section className="v2-section" id="planos">
           <div className="v2-wrap">
-            <div style={{ textAlign: "center", maxWidth: "820px", margin: "0 auto 48px auto" }}>
-              <div className="v2-eyebrow"><span className="v2-eyebrow-dot"></span> Método ARVO</div>
-              <h2 className="v2-serif" style={{ fontSize: "clamp(30px, 4vw, 50px)", color: "var(--ink-navy)", margin: "0 0 16px 0", lineHeight: "1.15" }}>
-                Por que ter uma boa carteira nunca foi a mesma coisa que <i style={{ color: "var(--deep-teal)", fontStyle: "italic" }}>ter um plano financeiro.</i>
-              </h2>
-              <p style={{ fontSize: "17px", color: "var(--text-secondary)", lineHeight: "1.6" }}>
-                A Arvo existe pra resolver exatamente esse ponto: transformar decisões financeiras soltas numa rota única, com destino definido antes de qualquer investimento ser escolhido. O caminho segue uma sequência chamada <strong>Trilha Arvo</strong>, dividida em 5 etapas:
-              </p>
-            </div>
-
-            {/* 5 Steps Grid */}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "16px", marginBottom: "40px" }}>
-              {[
-                { num: "01", title: "Diagnóstico", desc: "Você declara sua realidade financeira real: renda, patrimônio, dívidas, capacidade de investir por mês e os objetivos de vida que o dinheiro precisa sustentar." },
-                { num: "02", title: "Destino", desc: "Os objetivos viram números. Quanto você precisa acumular, até quando, e qual renda esse patrimônio precisa sustentar quando chegar lá." },
-                { num: "03", title: "Plano", desc: "A Arvo traça o caminho entre onde você está agora e o destino definido: quanto investir por mês, qual patrimônio construir em cada fase e quais ajustes fazer ao longo do tempo." },
-                { num: "04", title: "Estratégia", desc: "Você recebe a carteira recomendada dentro de 4 perfis de risco (Abrigo, Ritmo, Visão e Oceano), e aplica no banco ou corretora que já usa, mantendo a custódia e o controle total do próprio dinheiro." },
-                { num: "05", title: "Acompanhamento", desc: "O plano é revisado ao longo do tempo, com tecnologia organizando dados e projeções, e um especialista humano disponível pra interpretar as decisões mais importantes." },
-              ].map((step, idx) => (
-                <div key={idx} className="v2-step-card">
-                  <div className="v2-step-num">Etapa {step.num}</div>
-                  <h3 className="v2-serif" style={{ fontSize: "20px", color: "var(--ink-navy)", margin: "0 0 10px 0" }}>{step.title}</h3>
-                  <p style={{ fontSize: "13.5px", color: "var(--text-secondary)", margin: 0, lineHeight: "1.55" }}>{step.desc}</p>
-                </div>
-              ))}
-            </div>
-
-            {/* Inverted Logic Card */}
-            <div className="v2-card" style={{ background: "var(--section-alt)", padding: "36px", marginBottom: "28px" }}>
-              <h3 className="v2-serif" style={{ fontSize: "24px", color: "var(--ink-navy)", margin: "0 0 12px 0" }}>
-                A lógica invertida: Primeiro o Destino, depois o Produto
-              </h3>
-              <p style={{ fontSize: "16px", color: "var(--text-secondary)", lineHeight: "1.7", margin: "0 0 16px 0" }}>
-                O mecanismo por trás da Trilha Arvo é simples de entender e raro de encontrar: <strong>nenhuma etapa começa pela pergunta "o que eu compro". Toda etapa começa pela pergunta "pra onde eu quero ir"</strong>, e só depois disso entra a escolha de produto. Isso inverte a ordem que a maioria das pessoas usa pra decidir sobre o próprio dinheiro, porque muda a lógica de quem vende primeiro e planeja depois.
-              </p>
-              <p style={{ fontSize: "16px", color: "var(--text-secondary)", lineHeight: "1.7", margin: 0 }}>
-                Na prática, tudo acontece dentro da plataforma: o diagnóstico é preenchido em poucos minutos, o destino é calculado automaticamente a partir dos objetivos declarados, e o plano gera uma trajetória mês a mês, acompanhada dentro do <strong>Painel de Rota</strong>. A Arvo não movimenta o dinheiro do cliente. A execução acontece no banco ou na corretora que o cliente já usa, o que significa que o patrimônio nunca sai do controle de quem é dono dele.
-              </p>
-            </div>
-
-            {/* Founder Authority Footnote */}
-            <div style={{ display: "flex", alignItems: "center", gap: "16px", padding: "18px 24px", background: "var(--card)", border: "1px solid var(--border)", borderRadius: "14px" }}>
-              <div style={{ width: "42px", height: "42px", borderRadius: "50%", background: "var(--deep-teal)", color: "#ffffff", display: "grid", placeItems: "center", fontWeight: "bold", fontFamily: "Lora, serif" }}>
-                LM
-              </div>
-              <div style={{ fontSize: "14px", color: "var(--text-secondary)", lineHeight: "1.5" }}>
-                <strong>Comprovado em escala:</strong> Antes de existir como plataforma, essa mesma lógica foi aplicada manualmente por Lucas Matos, fundador da Arvo, numa carteira de <strong>mais de R$ 140 milhões</strong> dentro de uma instituição financeira.
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* 6. PARA QUEM É / PARA QUEM NÃO É */}
-        <section className="v2-section v2-section-alt" id="para-quem">
-          <div className="v2-wrap">
-            <div style={{ textAlign: "center", maxWidth: "760px", margin: "0 auto 48px auto" }}>
-              <div className="v2-eyebrow"><span className="v2-eyebrow-dot"></span> Alinhamento Real</div>
-              <h2 className="v2-serif" style={{ fontSize: "clamp(30px, 3.8vw, 46px)", color: "var(--ink-navy)", margin: 0 }}>
-                A Arvo foi desenhada pra um momento financeiro específico, <i style={{ color: "var(--deep-teal)", fontStyle: "italic" }}>não pra qualquer pessoa que já investe.</i>
+            <div style={{ textAlign: "center", marginBottom: "48px" }}>
+              <div className="v2-eyebrow"><span className="v2-eyebrow-dot"></span> ACESSO COMPLETO</div>
+              <h2 className="v2-serif" style={{ fontSize: "clamp(30px, 3.8vw, 48px)", color: "var(--ink-navy)", margin: "0 0 12px 0" }}>
+                Sua vida financeira não precisa de mais uma dica.<br />
+                <i style={{ color: "var(--deep-teal)", fontStyle: "italic" }}>Precisa de direção e acompanhamento.</i>
               </h2>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px" }}>
-              {/* Para quem é */}
-              <div className="v2-card" style={{ borderTop: "4px solid var(--deep-teal)" }}>
-                <div className="v2-mono" style={{ fontSize: "12px", color: "var(--deep-teal)", fontWeight: 600, marginBottom: "12px", display: "flex", alignItems: "center", gap: "6px" }}>
-                  <span style={{ color: "var(--deep-teal)", fontSize: "16px" }}>✓</span> PARA QUEM É A ARVO:
+            <div className="v2-card" style={{ maxWidth: "660px", margin: "0 auto", border: "2px solid var(--deep-teal)", padding: "44px 36px", textAlign: "center" }}>
+              <span className="v2-mono" style={{ fontSize: "11.5px", color: "var(--deep-teal)", fontWeight: 600 }}>PLANO ANUAL ARVO</span>
+              
+              <div style={{ display: "flex", alignItems: "baseline", justifyContent: "center", gap: "6px", margin: "14px 0 6px 0" }}>
+                <span className="v2-serif" style={{ fontSize: "52px", fontWeight: 600, color: "var(--ink-navy)" }}>R$ 59,90</span>
+                <span style={{ fontSize: "17px", color: "var(--text-muted)" }}>/ mês</span>
+              </div>
+              <div style={{ fontSize: "13.5px", color: "var(--text-muted)" }}>
+                Cobrado em 12 parcelas de R$ 59,90 ou <strong>R$ 599 à vista</strong>
+              </div>
+
+              <div style={{ margin: "28px auto", maxWidth: "460px", textAlign: "left" }}>
+                <div className="v2-mono" style={{ fontSize: "11px", color: "var(--ink-navy)", fontWeight: 600, marginBottom: "12px" }}>
+                  O PLANO INCLUI:
                 </div>
-                <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "16px", fontSize: "15px", color: "var(--text-secondary)" }}>
-                  <li style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                    <span style={{ color: "var(--deep-teal)", fontWeight: "bold" }}>✓</span>
-                    <span>Profissionais, empresários ou autônomos entre 28 e 45 anos, que já ganham bem e conseguem investir R$ 1.000 ou mais por mês.</span>
-                  </li>
-                  <li style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                    <span style={{ color: "var(--deep-teal)", fontWeight: "bold" }}>✓</span>
-                    <span>Quem já tem patrimônio formado, mas nunca comparou se a carteira atual realmente serve pro objetivo de vida.</span>
-                  </li>
-                  <li style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                    <span style={{ color: "var(--deep-teal)", fontWeight: "bold" }}>✓</span>
-                    <span>Quem está numa fase de vida mais complexa (casamento, filhos, troca de emprego, imóvel) e sente que a vida financeira não acompanhou essa complexidade.</span>
-                  </li>
-                  <li style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                    <span style={{ color: "var(--deep-teal)", fontWeight: "bold" }}>✓</span>
-                    <span>Quem já foi atendido por gerente de banco ou assessor comissionado e nunca teve certeza se a indicação era pra ajudar o cliente ou pra bater meta de vendas.</span>
-                  </li>
-                  <li style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                    <span style={{ color: "var(--deep-teal)", fontWeight: "bold" }}>✓</span>
-                    <span>Quem quer manter o controle total do próprio patrimônio, sem entregar a movimentação do dinheiro pra terceiros.</span>
+                <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px 16px", fontSize: "13.5px", color: "var(--text-secondary)" }}>
+                  {[
+                    "Diagnóstico financeiro completo",
+                    "Definição dos objetivos",
+                    "Cálculo do patrimônio necessário",
+                    "Plano personalizado de aportes",
+                    "Estratégia de investimentos",
+                    "Painel de acompanhamento",
+                    "Atualizações e revisões",
+                    "Ferramentas e projeções",
+                  ].map((feat, i) => (
+                    <li key={i} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <span style={{ color: "var(--deep-teal)", fontWeight: "bold" }}>✓</span> {feat}
+                    </li>
+                  ))}
+                  <li style={{ gridColumn: "span 2", display: "flex", alignItems: "center", gap: "8px" }}>
+                    <span style={{ color: "var(--deep-teal)", fontWeight: "bold" }}>✓</span> Suporte direto ARVO
                   </li>
                 </ul>
-              </div>
-
-              {/* Para quem não é */}
-              <div className="v2-card" style={{ borderTop: "4px solid #b33939" }}>
-                <div className="v2-mono" style={{ fontSize: "12px", color: "#b33939", fontWeight: 600, marginBottom: "12px", display: "flex", alignItems: "center", gap: "6px" }}>
-                  <span style={{ color: "#b33939", fontSize: "16px" }}>✕</span> PARA QUEM NÃO É:
-                </div>
-                <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "16px", fontSize: "15px", color: "var(--text-secondary)" }}>
-                  <li style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                    <span style={{ color: "#b33939", fontWeight: "bold" }}>✕</span>
-                    <span>Quem está começando agora e ainda não tem capacidade de investir pelo menos R$ 1.000 por mês.</span>
-                  </li>
-                  <li style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                    <span style={{ color: "#b33939", fontWeight: "bold" }}>✕</span>
-                    <span>Quem procura uma dica isolada de qual ação comprar essa semana.</span>
-                  </li>
-                  <li style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                    <span style={{ color: "#b33939", fontWeight: "bold" }}>✕</span>
-                    <span>Quem não está disposto a preencher o diagnóstico com informação real.</span>
-                  </li>
-                  <li style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-                    <span style={{ color: "#b33939", fontWeight: "bold" }}>✕</span>
-                    <span>Quem quer que outra pessoa movimente o dinheiro por ele.</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* 7. ENTREGÁVEIS */}
-        <section className="v2-section" id="entregaveis">
-          <div className="v2-wrap">
-            <div style={{ textAlign: "center", maxWidth: "760px", margin: "0 auto 48px auto" }}>
-              <div className="v2-eyebrow"><span className="v2-eyebrow-dot"></span> Escopo Completo</div>
-              <h2 className="v2-serif" style={{ fontSize: "clamp(30px, 3.8vw, 46px)", color: "var(--ink-navy)", margin: 0 }}>
-                O que exatamente você recebe quando assina a Arvo, <i style={{ color: "var(--deep-teal)", fontStyle: "italic" }}>sem letra miúda.</i>
-              </h2>
-            </div>
-
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "18px", marginBottom: "40px" }}>
-              {[
-                {
-                  title: "Raio-X Patrimonial Completo",
-                  desc: "Diagnóstico profundo de renda, patrimônio, dívidas e capacidade de investimento real.",
-                  valueBadge: "Consultorias avulsas cobram R$ 400 a R$ 800 · Incluso na ARVO"
-                },
-                {
-                  title: "Definição de Destino Financeiro",
-                  desc: "Seus objetivos de vida transformados em metas numéricas, prazos e projeção de renda perpétua.",
-                  valueBadge: "Planejamento certificado avulso: R$ 1.500 a R$ 3.000 · Incluso"
-                },
-                {
-                  title: "Plano Personalizado Mês a Mês",
-                  desc: "Direcionamento exato de quanto aportar e qual trajetória patrimonial construir em cada etapa.",
-                  valueBadge: "Incluso na assinatura"
-                },
-                {
-                  title: "Recomendação de Carteira por Perfil",
-                  desc: "Alocação detalhada nos 4 perfis institucionais: Abrigo, Ritmo, Visão e Oceano.",
-                  valueBadge: "Revisão avulsa de carteira custa R$ 300/sessão · Incluso"
-                },
-                {
-                  title: "Painel de Rota Contínuo",
-                  desc: "Dashboard inteligente para acompanhar se você está na frente ou atrás da sua meta ao longo dos meses.",
-                  valueBadge: "Acesso total incluído"
-                },
-                {
-                  title: "Revisões Periódicas do Plano",
-                  desc: "Ajustes formais conforme sua vida evolui (mudança de renda, filhos, troca de emprego ou novos objetivos).",
-                  valueBadge: "Incluso durante toda a assinatura"
-                }
-              ].map((item, idx) => (
-                <div key={idx} className="v2-card" style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-                  <div>
-                    <h3 className="v2-serif" style={{ fontSize: "20px", color: "var(--ink-navy)", margin: "0 0 8px 0" }}>{item.title}</h3>
-                    <p style={{ fontSize: "14.5px", color: "var(--text-secondary)", lineHeight: "1.55", margin: "0 0 16px 0" }}>{item.desc}</p>
-                  </div>
-                  <div className="v2-mono" style={{ fontSize: "11px", color: "var(--deep-teal)", background: "var(--section-alt)", padding: "6px 12px", borderRadius: "8px", border: "1px solid var(--border)" }}>
-                    ✓ {item.valueBadge}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* 8. BÔNUS */}
-            <div style={{ background: "var(--section-alt)", border: "1px solid var(--border)", borderRadius: "20px", padding: "36px" }}>
-              <div style={{ textAlign: "center", marginBottom: "28px" }}>
-                <span className="v2-mono" style={{ fontSize: "11.5px", color: "var(--deep-teal)", fontWeight: 600 }}>ACELERAÇÃO E SUPORTE</span>
-                <h3 className="v2-serif" style={{ fontSize: "26px", color: "var(--ink-navy)", margin: "4px 0 0 0" }}>
-                  Além do plano, 3 coisas que aceleram a decisão nos momentos que mais pesam:
-                </h3>
-              </div>
-
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "16px" }}>
-                <div className="v2-card" style={{ background: "#ffffff" }}>
-                  <div className="v2-mono" style={{ fontSize: "11px", color: "var(--deep-teal)", fontWeight: 600, marginBottom: "6px" }}>BÔNUS 1</div>
-                  <div className="v2-serif" style={{ fontSize: "18px", color: "var(--ink-navy)", fontWeight: 600, marginBottom: "6px" }}>Segunda Opinião ARVO</div>
-                  <p style={{ fontSize: "13.5px", color: "var(--text-secondary)", margin: "0 0 12px 0" }}>Sessão avulsa com especialista não comissionado pra revisar uma decisão financeira específica.</p>
-                  <div className="v2-mono" style={{ fontSize: "12px", color: "var(--text-muted)" }}>Valor de mercado: <strong style={{ color: "var(--ink-navy)" }}>R$ 350</strong></div>
-                </div>
-
-                <div className="v2-card" style={{ background: "#ffffff" }}>
-                  <div className="v2-mono" style={{ fontSize: "11px", color: "var(--deep-teal)", fontWeight: 600, marginBottom: "6px" }}>BÔNUS 2</div>
-                  <div className="v2-serif" style={{ fontSize: "18px", color: "var(--ink-navy)", fontWeight: 600, marginBottom: "6px" }}>Raio-X de Aposentadoria</div>
-                  <p style={{ fontSize: "13.5px", color: "var(--text-secondary)", margin: "0 0 12px 0" }}>Projeção em 3 cenários de quando e com quanto você poderá reduzir o ritmo de trabalho.</p>
-                  <div className="v2-mono" style={{ fontSize: "12px", color: "var(--text-muted)" }}>Valor de mercado: <strong style={{ color: "var(--ink-navy)" }}>R$ 250</strong></div>
-                </div>
-
-                <div className="v2-card" style={{ background: "#ffffff" }}>
-                  <div className="v2-mono" style={{ fontSize: "11px", color: "var(--deep-teal)", fontWeight: 600, marginBottom: "6px" }}>BÔNUS 3</div>
-                  <div className="v2-serif" style={{ fontSize: "18px", color: "var(--ink-navy)", fontWeight: 600, marginBottom: "6px" }}>Checkup Anual de Carteira</div>
-                  <p style={{ fontSize: "13.5px", color: "var(--text-secondary)", margin: "0 0 12px 0" }}>Revisão completa anual com um especialista CFP® para rebalanceamento estratégico.</p>
-                  <div className="v2-mono" style={{ fontSize: "12px", color: "var(--text-muted)" }}>Valor de mercado: <strong style={{ color: "var(--ink-navy)" }}>R$ 300</strong></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* 9. STACK DE VALOR & PREÇO */}
-        <section className="v2-section v2-section-alt" id="oferta">
-          <div className="v2-wrap" style={{ maxWidth: "780px", textAlign: "center" }}>
-            <div className="v2-eyebrow"><span className="v2-eyebrow-dot"></span> Transparência Absoluta</div>
-            
-            <h2 className="v2-serif" style={{ fontSize: "clamp(30px, 3.8vw, 48px)", color: "var(--ink-navy)", margin: "0 0 12px 0" }}>
-              Somando tudo que está incluído, o valor real é bem maior que o que você paga.
-            </h2>
-            <p style={{ fontSize: "16px", color: "var(--text-secondary)", margin: "0 0 36px 0" }}>
-              Você tem acesso ao mesmo padrão de planejamento de grandes patrimônios por uma fração do custo.
-            </p>
-
-            <div className="v2-card" style={{ border: "2px solid var(--deep-teal)", padding: "44px 36px" }}>
-              <div style={{ display: "inline-block", background: "var(--section-alt)", padding: "6px 14px", borderRadius: "100px", marginBottom: "16px" }}>
-                <span className="v2-mono" style={{ fontSize: "12px", color: "var(--text-muted)", textDecoration: "line-through", marginRight: "8px" }}>
-                  Valor total dos componentes: R$ 3.300
-                </span>
-                <span className="v2-mono" style={{ fontSize: "12px", color: "var(--deep-teal)", fontWeight: 600 }}>
-                  Economia de mais de 80%
-                </span>
-              </div>
-
-              <h3 className="v2-serif" style={{ fontSize: "28px", color: "var(--ink-navy)", margin: "0 0 12px 0" }}>
-                Plano Anual ARVO
-              </h3>
-
-              <div style={{ display: "flex", alignItems: "baseline", justifyContent: "center", gap: "6px", margin: "16px 0 6px 0" }}>
-                <span className="v2-serif" style={{ fontSize: "56px", fontWeight: 600, color: "var(--ink-navy)" }}>R$ 59,90</span>
-                <span style={{ fontSize: "18px", color: "var(--text-muted)" }}>/ mês</span>
-              </div>
-
-              <div style={{ fontSize: "14px", color: "var(--text-muted)", marginBottom: "28px" }}>
-                Cobrado em 12x de R$ 59,90 ou <strong>R$ 599,00 à vista</strong> (com 2 meses grátis)
               </div>
 
               <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "380px", margin: "0 auto" }}>
-                <Link href="/register" className="v2-btn v2-btn-primary" style={{ fontSize: "16px", padding: "16px 32px" }}>
-                  Quero começar meu diagnóstico agora →
+                <Link href="/register" className="v2-btn v2-btn-primary" style={{ fontSize: "15.5px", padding: "15px 26px" }}>
+                  Fazer meu diagnóstico gratuito →
                 </Link>
-                <div className="v2-mono" style={{ fontSize: "11.5px", color: "var(--text-muted)" }}>
-                  ✓ 5 MINUTOS · ✓ SEM CARTÃO · ✓ CANCELAMENTO QUANDO QUISER
+                <div style={{ fontSize: "13px", color: "var(--text-muted)", lineHeight: "1.4" }}>
+                  Conheça seu cenário e entenda como a ARVO funciona antes de decidir pela assinatura.
+                </div>
+                <div className="v2-mono" style={{ fontSize: "11px", color: "var(--text-muted)", marginTop: "4px" }}>
+                  ✓ ~5 MINUTOS · ✓ SEM CARTÃO · ✓ CUSTÓDIA NO SEU BANCO
                 </div>
               </div>
 
-              {/* 12. GARANTIA */}
-              <div style={{ marginTop: "28px", paddingTop: "20px", borderTop: "1px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", fontSize: "13.5px", color: "var(--text-secondary)" }}>
-                <span style={{ fontSize: "18px" }}>🔒</span>
-                <span><strong>Garantia Incondicional de 7 dias:</strong> Se assinar e achar que não é pra você, devolvemos 100% do valor. Sem pergunta, sem formulário, sem burocracia.</span>
+              {/* Garantia */}
+              <div style={{ marginTop: "28px", paddingTop: "20px", borderTop: "1px solid var(--border)", textAlign: "left", fontSize: "13px", color: "var(--text-secondary)", lineHeight: "1.5" }}>
+                <strong style={{ color: "var(--ink-navy)" }}>🔒 Garantia incondicional de 7 dias:</strong> Se você assinar e concluir que a ARVO não é adequada para você, poderá solicitar o reembolso integral nos primeiros sete dias.
               </div>
             </div>
           </div>
         </section>
 
-        {/* 10. DEPOIMENTOS ANTES / VIRADA / RESULTADO */}
-        <section className="v2-section" id="depoimentos">
-          <div className="v2-wrap">
-            <div style={{ textAlign: "center", maxWidth: "780px", margin: "0 auto 48px auto" }}>
-              <div className="v2-eyebrow"><span className="v2-eyebrow-dot"></span> Casos Reais</div>
-              <h2 className="v2-serif" style={{ fontSize: "clamp(30px, 3.8vw, 46px)", color: "var(--ink-navy)", margin: 0 }}>
-                O que muda na prática pra quem sai do Dinheiro à Deriva e passa a <i style={{ color: "var(--deep-teal)", fontStyle: "italic" }}>seguir a Trilha Arvo.</i>
-              </h2>
-            </div>
-
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "20px" }}>
-              {[
-                {
-                  name: "Rodrigo M., 36 anos",
-                  role: "Sócio de Consultoria",
-                  antes: "Investia havia 6 anos em produtos indicados por três gerentes de banco diferentes, sem saber se faziam sentido juntos.",
-                  virada: "Fez o diagnóstico e a definição de destino, e descobriu que precisava aumentar o aporte mensal em R$ 800.",
-                  resultado: "Em 4 meses, reorganizou a carteira e passou a ter uma meta numérica clara pela primeira vez em 6 anos."
-                },
-                {
-                  name: "Camila F., 41 anos",
-                  role: "Diretora de Operações",
-                  antes: "Tinha patrimônio relevante formado, mas sem saber se a carteira estava adequada ao momento atual de vida.",
-                  virada: "Migrou de uma estratégia passiva em Abrigo para a carteira Ritmo com proteção contra inflação.",
-                  resultado: "Em 2 meses, viu a projeção de patrimônio em 15 anos mudar em mais de R$ 300 mil reais."
-                },
-                {
-                  name: "Gustavo B., 32 anos",
-                  role: "Desenvolvedor & Empreendedor",
-                  antes: "Guardava dinheiro todo mês por guardar, sem saber quando ou com quanto poderia ter independência.",
-                  virada: "Fez o Raio-X Patrimonial e a Definição de Destino com projeção mês a mês.",
-                  resultado: "Em 45 dias, teve o plano completo e passou a saber exatamente se estava na frente ou atrás da própria meta."
-                }
-              ].map((caso, idx) => (
-                <div key={idx} className="v2-card" style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                    <div style={{ width: "36px", height: "36px", borderRadius: "50%", background: "var(--section-alt)", color: "var(--deep-teal)", display: "grid", placeItems: "center", fontWeight: "bold", fontFamily: "Lora, serif" }}>
-                      {caso.name.slice(0, 2)}
-                    </div>
-                    <div>
-                      <div className="v2-serif" style={{ fontSize: "16px", fontWeight: 600, color: "var(--ink-navy)" }}>{caso.name}</div>
-                      <div className="v2-mono" style={{ fontSize: "11px", color: "var(--text-muted)" }}>{caso.role}</div>
-                    </div>
-                  </div>
-
-                  <div style={{ fontSize: "13.5px", lineHeight: "1.55", display: "flex", flexDirection: "column", gap: "10px" }}>
-                    <div style={{ background: "rgba(14, 21, 17, 0.03)", padding: "10px 14px", borderRadius: "8px" }}>
-                      <strong style={{ color: "#b33939" }}>Antes: </strong>
-                      <span style={{ color: "var(--text-secondary)" }}>{caso.antes}</span>
-                    </div>
-
-                    <div style={{ background: "rgba(43, 110, 118, 0.06)", padding: "10px 14px", borderRadius: "8px" }}>
-                      <strong style={{ color: "var(--deep-teal)" }}>Virada: </strong>
-                      <span style={{ color: "var(--text-secondary)" }}>{caso.virada}</span>
-                    </div>
-
-                    <div style={{ background: "rgba(79, 160, 128, 0.12)", padding: "10px 14px", borderRadius: "8px" }}>
-                      <strong style={{ color: "var(--accent-green)" }}>Resultado: </strong>
-                      <span style={{ color: "var(--text-secondary)", fontWeight: 500 }}>{caso.resultado}</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* 11. SUPORTE & 13. AUTORIDADE */}
-        <section className="v2-section v2-section-alt">
-          <div className="v2-wrap">
-            <div style={{ display: "grid", gridTemplateColumns: "1.1fr 0.9fr", gap: "40px", alignItems: "center" }}>
-              {/* Autoridade */}
-              <div>
-                <div className="v2-eyebrow"><span className="v2-eyebrow-dot"></span> Quem Criou a Trilha ARVO</div>
-                <h2 className="v2-serif" style={{ fontSize: "clamp(28px, 3.4vw, 42px)", color: "var(--ink-navy)", margin: "0 0 16px 0", lineHeight: "1.2" }}>
-                  Metodologia construída por quem vive o mercado institucional.
-                </h2>
-                <p style={{ fontSize: "16px", color: "var(--text-secondary)", lineHeight: "1.7", margin: "0 0 14px 0" }}>
-                  <strong>Lucas Matos</strong>, fundador da Arvo, é planejador financeiro CFP®, certificado CPA-20, Ancord e mestre em Engenharia.
-                </p>
-                <p style={{ fontSize: "16px", color: "var(--text-secondary)", lineHeight: "1.7", margin: "0 0 20px 0" }}>
-                  Geriu uma carteira de <strong>mais de R$ 140 milhões</strong> dentro de uma instituição financeira de grande porte, assessorou mais de R$ 200 milhões em patrimônio ao longo da carreira e realizou mais de 300 planejamentos financeiros completos. A ARVO nasceu como a alternativa fee-only definitiva: 100% alinhada ao cliente, sem comissão por produto.
-                </p>
-                <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                  {["CFP® Certified", "CPA-20", "Ancord", "Mestre em Engenharia", "Fee-Only Pioneer"].map((c, i) => (
-                    <span key={i} className="v2-mono" style={{ background: "var(--card)", border: "1px solid var(--border)", padding: "4px 10px", borderRadius: "100px", fontSize: "11px", color: "var(--text-secondary)" }}>
-                      {c}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Suporte Card */}
-              <div className="v2-card" style={{ background: "#ffffff" }}>
-                <span className="v2-mono" style={{ fontSize: "11px", color: "var(--deep-teal)", fontWeight: 600 }}>ACOMPANHAMENTO CONTÍNUO</span>
-                <h3 className="v2-serif" style={{ fontSize: "22px", color: "var(--ink-navy)", margin: "8px 0 12px 0" }}>
-                  Como funciona o suporte depois que o plano está pronto?
-                </h3>
-                <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "12px", fontSize: "14px", color: "var(--text-secondary)" }}>
-                  <li style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
-                    <span style={{ color: "var(--deep-teal)", fontWeight: "bold" }}>✓</span>
-                    <span><strong>Chat e e-mail:</strong> Resposta garantida em até 24 horas úteis para dúvidas operacionais.</span>
-                  </li>
-                  <li style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
-                    <span style={{ color: "var(--deep-teal)", fontWeight: "bold" }}>✓</span>
-                    <span><strong>Especialista humano CFP®:</strong> Disponível para interpretar decisões estratégicas complexas.</span>
-                  </li>
-                  <li style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
-                    <span style={{ color: "var(--deep-teal)", fontWeight: "bold" }}>✓</span>
-                    <span><strong>Revisão formal:</strong> Ajustes no plano a cada mudança relevante de renda, patrimônio ou objetivos de vida.</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* 14. FAQ COMPLETO (8 PERGUNTAS) */}
-        <section className="v2-section" id="faq">
+        {/* 7. DÚVIDAS FREQUENTES (FAQ) */}
+        <section className="v2-section v2-section-alt" id="duvidas">
           <div className="v2-wrap" style={{ maxWidth: "860px" }}>
             <div style={{ textAlign: "center", marginBottom: "40px" }}>
-              <div className="v2-eyebrow"><span className="v2-eyebrow-dot"></span> Perguntas Frequentes</div>
-              <h2 className="v2-serif" style={{ fontSize: "clamp(28px, 3.6vw, 44px)", color: "var(--ink-navy)", margin: 0 }}>
-                As perguntas que quase todo mundo faz antes de assinar.
+              <div className="v2-eyebrow"><span className="v2-eyebrow-dot"></span> ANTES DE DECIDIR</div>
+              <h2 className="v2-serif" style={{ fontSize: "clamp(30px, 3.6vw, 46px)", color: "var(--ink-navy)", margin: 0 }}>
+                Perguntas frequentes
               </h2>
             </div>
 
             <div className="v2-card" style={{ padding: "8px 28px" }}>
               {[
                 {
-                  q: "Quanto tempo leva para fazer o diagnóstico e ver meu plano?",
-                  a: "O diagnóstico inicial leva menos de 5 minutos. Você insere seus números básicos de renda, patrimônio e aportes, e o sistema já calcula automaticamente o seu destino e a carteira recomendada."
+                  q: "Preciso tirar meus investimentos do meu banco?",
+                  a: "Não. Você continua investindo no banco ou na corretora que preferir. A ARVO ajuda a organizar o plano e a estratégia, mas seu patrimônio permanece sob sua custódia."
                 },
                 {
-                  q: "Preciso mudar de banco ou corretora para usar a ARVO?",
-                  a: "Não. A ARVO não recebe, não movimenta e não mantém a custódia do seu dinheiro. Você continua investindo na XP, BTG, Itaú, NuInvest ou onde preferir. O patrimônio fica 100% sob seu controle."
+                  q: "A ARVO investe ou movimenta o dinheiro por mim?",
+                  a: "Não. A ARVO não recebe, movimenta nem mantém a custódia do seu dinheiro. Você continua no controle das decisões e da execução dos investimentos."
                 },
                 {
-                  q: "Como a ARVO ganha dinheiro se não recebe comissão?",
-                  a: "Nossa receita vem exclusivamente da assinatura dos nossos membros (modelo fee-only). Não ganhamos um único centavo de comissão ou rebate sobre os investimentos que recomendamos, o que garante 100% de isenção e alinhamento com você."
+                  q: "Como a ARVO ganha dinheiro?",
+                  a: "Por meio da assinatura dos clientes. A ARVO não recebe comissão pela indicação de produtos financeiros."
                 },
                 {
-                  q: "Qual a diferença entre a ARVO e o gerente do meu banco ou assessor?",
-                  a: "O assessor tradicional de banco ou corretora ganha comissão sobre cada produto que vende (quanto mais caro o produto, maior o bônus dele). A ARVO cobra um valor fixo de assinatura e indica o que é melhor para sua meta, sem interesse em empurrar produtos de meta interna."
+                  q: "Qual é a diferença entre a ARVO e um gerente ou assessor?",
+                  a: "O modelo da ARVO não depende da venda de produtos. O trabalho começa pelos seus objetivos e pela construção do plano. Somente depois é definida uma estratégia de investimentos compatível com essa rota."
                 },
                 {
-                  q: "Preciso ter conhecimento técnico para entender o plano?",
-                  a: "Não. A plataforma traduz conceitos complexos de mercado financeiro em metas numéricas simples, diretas e acionáveis: quanto investir por mês e onde alocar por classe de ativo."
+                  q: "Preciso entender de investimentos?",
+                  a: "Não. O plano é apresentado de forma visual e em linguagem clara, para que você entenda os números e o motivo de cada decisão."
                 },
                 {
-                  q: "Eu não posso simplesmente fazer esse planejamento sozinho?",
-                  a: "Você pode tentar fazer em planilhas, mas a maioria das pessoas desiste por falta de tempo, falta de metodologia de rebalanceamento ou pela dúvida constante de se a conta está considerando inflação e impostos corretamente. A ARVO entrega isso pronto e atualizado."
+                  q: "Posso fazer esse planejamento sozinho?",
+                  a: "Sim. Mas será necessário organizar seus dados, definir premissas, realizar projeções, calcular o aporte necessário, estruturar uma estratégia e acompanhar a evolução continuamente. A ARVO reúne esse processo em uma única metodologia e plataforma."
                 },
                 {
-                  q: "Como funcionam as revisões do meu plano com o tempo?",
-                  a: "Sempre que sua vida mudar (troca de emprego, aumento de renda, nascimento de filhos ou compra de imóvel), você pode atualizar seus parâmetros na plataforma e solicitar uma revisão do plano."
+                  q: "Posso conhecer a ARVO antes de pagar?",
+                  a: "Sim. Você pode começar gratuitamente pelo diagnóstico, visualizar seu cenário e entender como a plataforma funciona antes de decidir pela assinatura."
                 },
                 {
-                  q: "Como funciona o cancelamento e a garantia de 7 dias?",
-                  a: "Se você assinar e em até 7 dias achar que a ARVO não é para você, basta solicitar o cancelamento pelo suporte ou pela plataforma para receber 100% do seu dinheiro de volta, sem burocracia."
+                  q: "A ARVO promete rentabilidade?",
+                  a: "Não. A ARVO não promete resultados nem ganhos futuros. O objetivo é ajudar você a tomar decisões mais coerentes com seu perfil, seus prazos e seus objetivos."
+                },
+                {
+                  q: "Para quem a ARVO não é indicada?",
+                  a: "Para quem procura dinheiro rápido, promessa de rentabilidade, uma dica isolada de investimento ou alguém para assumir a custódia do patrimônio."
                 }
               ].map((faq, idx) => (
                 <div key={idx} className={`v2-faq-item ${activeFaq === idx ? "v2-faq-open" : ""}`}>
@@ -942,35 +786,23 @@ export default function PreviewCopyV2Page() {
           </div>
         </section>
 
-        {/* 15. OFERTA FINAL & CTA */}
-        <section className="v2-section v2-section-alt" style={{ textAlign: "center", padding: "88px 0" }}>
-          <div className="v2-wrap" style={{ maxWidth: "780px" }}>
-            <div className="v2-eyebrow"><span className="v2-eyebrow-dot"></span> Comece Hoje</div>
-            <h2 className="v2-serif" style={{ fontSize: "clamp(34px, 4.6vw, 56px)", color: "var(--ink-navy)", margin: "0 auto 16px auto", lineHeight: "1.1" }}>
-              Tudo que você leva ao assinar a ARVO hoje.
+        {/* CTA FINAL */}
+        <section className="v2-section" style={{ textAlign: "center", padding: "88px 0" }}>
+          <div className="v2-wrap">
+            <div className="v2-eyebrow"><span className="v2-eyebrow-dot"></span> COMECE AGORA</div>
+            <h2 className="v2-serif" style={{ fontSize: "clamp(34px, 4.6vw, 58px)", color: "var(--ink-navy)", margin: "0 auto 16px auto", maxWidth: "22ch", lineHeight: "1.12" }}>
+              Você já começou a construir seu patrimônio.<br />
+              <i style={{ color: "var(--deep-teal)", fontStyle: "italic" }}>Agora descubra se ele está levando você aonde deseja.</i>
             </h2>
-            <p style={{ fontSize: "18px", color: "var(--text-secondary)", margin: "0 auto 28px auto", maxWidth: "580px" }}>
-              Diagnóstico completo + Definição de Destino + Carteira Recomendada + Painel de Rota + 3 Bônus Exclusivos.
+            <p style={{ fontSize: "17.5px", color: "var(--text-secondary)", margin: "0 auto 32px auto", maxWidth: "48ch" }}>
+              Em aproximadamente cinco minutos, você entende seu ponto de partida e começa a descobrir quanto precisa investir para alcançar seus objetivos.
             </p>
-
-            <div style={{ background: "var(--card)", border: "2px solid var(--deep-teal)", borderRadius: "20px", padding: "36px 32px", maxWidth: "600px", margin: "0 auto 28px auto" }}>
-              <div className="v2-mono" style={{ fontSize: "12px", color: "var(--text-muted)", textDecoration: "line-through" }}>
-                Valor Total: R$ 3.300
-              </div>
-              <div className="v2-serif" style={{ fontSize: "44px", fontWeight: 600, color: "var(--ink-navy)", margin: "6px 0" }}>
-                12x de R$ 59,90
-              </div>
-              <div style={{ fontSize: "14px", color: "var(--text-muted)", marginBottom: "20px" }}>
-                ou R$ 599,00 à vista no plano anual · Garantia incondicional de 7 dias
-              </div>
-
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
-                <Link href="/register" className="v2-btn v2-btn-primary" style={{ fontSize: "16.5px", padding: "16px 36px", width: "100%", maxWidth: "420px" }}>
-                  Quero começar meu diagnóstico agora →
-                </Link>
-                <div className="v2-mono" style={{ fontSize: "11.5px", color: "var(--text-muted)" }}>
-                  ✓ 5 MINUTOS · ✓ SEM CARTÃO DE CRÉDITO · ✓ CANCELAMENTO QUANDO QUISER
-                </div>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
+              <Link href="/register" className="v2-btn v2-btn-primary" style={{ fontSize: "16px", padding: "16px 36px" }}>
+                Descobrir se estou no caminho certo →
+              </Link>
+              <div className="v2-mono" style={{ fontSize: "11.5px", color: "var(--text-muted)" }}>
+                ✓ GRATUITO · ✓ SEM CARTÃO · ✓ PATRIMÔNIO SOB SEU CONTROLE
               </div>
             </div>
           </div>
@@ -980,21 +812,26 @@ export default function PreviewCopyV2Page() {
         <footer style={{ background: "var(--ink-navy)", color: "#ffffff", padding: "56px 0 28px 0" }}>
           <div className="v2-wrap">
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "24px", borderBottom: "1px solid rgba(255,255,255,0.1)", paddingBottom: "32px" }}>
-              <div className="v2-logo" style={{ color: "#ffffff" }}>
-                <img src="/arvo-simbolo-blue.png" alt="ARVO" style={{ width: "24px", height: "24px", objectFit: "contain" }} />
-                <span>ARVO</span>
+              <div>
+                <div className="v2-logo" style={{ color: "#ffffff", marginBottom: "6px" }}>
+                  <img src="/arvo-simbolo-blue.png" alt="ARVO" style={{ width: "24px", height: "24px", objectFit: "contain" }} />
+                  <span>ARVO</span>
+                </div>
+                <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.6)" }}>
+                  Planejamento financeiro contínuo, com tecnologia e orientação independente.
+                </div>
               </div>
-              <div style={{ display: "flex", gap: "24px", fontSize: "14px", color: "rgba(255,255,255,0.7)" }}>
-                <a href="#dor" style={{ color: "inherit", textDecoration: "none" }}>O Problema</a>
-                <a href="#metodo" style={{ color: "inherit", textDecoration: "none" }}>Trilha ARVO</a>
-                <a href="#para-quem" style={{ color: "inherit", textDecoration: "none" }}>Para Quem É</a>
-                <a href="#entregaveis" style={{ color: "inherit", textDecoration: "none" }}>Entregáveis</a>
-                <a href="#faq" style={{ color: "inherit", textDecoration: "none" }}>Dúvidas</a>
+              <div style={{ display: "flex", gap: "20px", fontSize: "13.5px", color: "rgba(255,255,255,0.7)" }}>
+                <a href="#como-funciona" style={{ color: "inherit", textDecoration: "none" }}>Como funciona</a>
+                <a href="#o-que-voce-recebe" style={{ color: "inherit", textDecoration: "none" }}>O que você recebe</a>
+                <a href="#por-que-a-arvo" style={{ color: "inherit", textDecoration: "none" }}>Por que a ARVO</a>
+                <a href="#planos" style={{ color: "inherit", textDecoration: "none" }}>Planos</a>
+                <a href="#duvidas" style={{ color: "inherit", textDecoration: "none" }}>Dúvidas</a>
               </div>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px", paddingTop: "20px", fontSize: "12px", color: "rgba(255,255,255,0.5)" }}>
               <span>ARVO Orientação Financeira LTDA · ARVO® 2026</span>
-              <span>Plataforma de orientação financeira independente (Fee-Only)</span>
+              <span>Plataforma independente fee-only</span>
             </div>
           </div>
         </footer>
