@@ -4,7 +4,8 @@ import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Check, ArrowRight, ArrowRightCircle, Target, Wallet, ShieldCheck, HeartPulse, Building2, Landmark, Compass, Loader2, Sparkles } from "lucide-react"
 import PlanoArvoDashboard from "@/components/plano-arvo-dashboard"
-import { saveJornadaProgress, getJornadaProgress, calculateInvestorProfile } from "./actions"
+import { saveJornadaProgress, getJornadaProgress } from "./actions"
+import { calculateInvestorProfile } from "@/lib/profile-calculator"
 
 // Types
 type FieldDef = {
