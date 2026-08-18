@@ -72,6 +72,33 @@ export async function GET(req: Request) {
             currentProfile.portfolioType = "VISÃO"
         }
 
+        // Sync from jornadaData if current values are empty or defaults
+        if (currentProfile.jornadaData) {
+            try {
+                const { extractMetricsFromJornada } = await import("@/lib/jornada-sync")
+                const jData = typeof currentProfile.jornadaData === "string" 
+                    ? JSON.parse(currentProfile.jornadaData) 
+                    : currentProfile.jornadaData
+                const metrics = extractMetricsFromJornada(jData)
+                if (metrics) {
+                    if ((!currentProfile.totalCarteira || currentProfile.totalCarteira === 0) && metrics.totalPatrimonio > 0) {
+                        currentProfile.totalCarteira = metrics.totalPatrimonio
+                    }
+                    if ((!currentProfile.emergencyFund || currentProfile.emergencyFund === 0) && metrics.reservaAtual > 0) {
+                        currentProfile.emergencyFund = metrics.reservaAtual
+                    }
+                    if ((!currentProfile.saldo || currentProfile.saldo === 0) && metrics.aporteMensal > 0) {
+                        currentProfile.saldo = metrics.aporteMensal
+                    }
+                    if (!currentProfile.portfolioType && metrics.profile) {
+                        currentProfile.portfolioType = metrics.profile
+                    }
+                }
+            } catch (e) {
+                console.error("Error parsing jornadaData in profile GET:", e)
+            }
+        }
+
         return NextResponse.json({ ...currentProfile, assets: formattedAssets })
     } catch (error: any) {
         console.error("Error fetching user profile:", error)
