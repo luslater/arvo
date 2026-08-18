@@ -301,6 +301,11 @@ export default function PlanejamentoJornadaPage() {
                         } catch (e) {}
                     }
                     
+                    const isAllSuitabilityAnswered = SUITABILITY_QUESTIONS.every(q => Boolean(savedData[q.name]))
+                    if (isAllSuitabilityAnswered) {
+                        setShowQuizResult(true)
+                    }
+
                     if (res.isCompleted) {
                         setShowDashboard(true)
                     }
@@ -629,21 +634,24 @@ export default function PlanejamentoJornadaPage() {
                                                                     key={opt.letter}
                                                                     type="button"
                                                                     onClick={() => handleSelectQuizOption(currentQuizQ.name, opt.text)}
-                                                                    className={`w-full p-4 rounded-2xl border text-left flex items-center justify-between gap-4 transition-all duration-200 ${
+                                                                    className={`w-full p-4 rounded-2xl border text-left flex items-center justify-between gap-4 transition-all duration-200 cursor-pointer ${
                                                                         isSelected
                                                                             ? "bg-[#123044] text-white border-[#123044] shadow-md transform scale-[1.01]"
                                                                             : "bg-[#fffdf8] hover:bg-[#f2efe6] text-[#123044] border-[#e4e0d7] hover:border-[#2b6e76]"
                                                                     }`}
                                                                 >
                                                                     <div className="flex items-center gap-3.5">
-                                                                        <span className={`w-8 h-8 rounded-xl font-bold text-xs flex items-center justify-center shrink-0 transition-colors ${
-                                                                            isSelected
-                                                                                ? "bg-white text-[#123044]"
-                                                                                : "bg-[#e8f1ed] text-[#2b6e76]"
-                                                                        }`}>
+                                                                        <span 
+                                                                            className={`w-8 h-8 rounded-xl font-black text-xs flex items-center justify-center shrink-0 shadow-sm transition-colors ${
+                                                                                isSelected
+                                                                                    ? "bg-white !text-[#123044]"
+                                                                                    : "bg-[#e8f1ed] !text-[#1f674f]"
+                                                                            }`}
+                                                                            style={{ color: isSelected ? "#123044" : "#1f674f" }}
+                                                                        >
                                                                             {opt.letter}
                                                                         </span>
-                                                                        <span className="text-sm font-semibold leading-relaxed">
+                                                                        <span className={`text-sm font-bold leading-relaxed ${isSelected ? "!text-white" : "text-[#123044]"}`}>
                                                                             {opt.text}
                                                                         </span>
                                                                     </div>
@@ -662,7 +670,7 @@ export default function PlanejamentoJornadaPage() {
                                                         type="button"
                                                         onClick={() => setQuizQuestionIndex(prev => Math.max(0, prev - 1))}
                                                         disabled={quizQuestionIndex === 0}
-                                                        className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-[#667085] hover:text-[#123044] disabled:opacity-20 disabled:pointer-events-none transition-colors"
+                                                        className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-[#667085] hover:text-[#123044] disabled:opacity-20 disabled:pointer-events-none transition-colors cursor-pointer"
                                                     >
                                                         <ArrowLeft size={14} />
                                                         Pergunta Anterior
@@ -673,7 +681,7 @@ export default function PlanejamentoJornadaPage() {
                                                             type="button"
                                                             onClick={() => setQuizQuestionIndex(prev => prev + 1)}
                                                             disabled={!formData[currentQuizQ.name]}
-                                                            className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-[#2b6e76] hover:bg-[#1f565d] disabled:opacity-40 disabled:pointer-events-none text-white text-xs font-bold rounded-xl transition-all shadow-sm"
+                                                            className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-[#2b6e76] hover:bg-[#1f565d] disabled:opacity-40 disabled:pointer-events-none text-white text-xs font-bold rounded-xl transition-all shadow-sm cursor-pointer"
                                                         >
                                                             Próxima Pergunta
                                                             <ArrowRight size={14} />
@@ -683,7 +691,7 @@ export default function PlanejamentoJornadaPage() {
                                                             type="button"
                                                             onClick={() => setShowQuizResult(true)}
                                                             disabled={!formData[currentQuizQ.name]}
-                                                            className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-[#123044] hover:bg-[#1c4460] disabled:opacity-40 disabled:pointer-events-none text-white text-xs font-bold rounded-xl transition-all shadow-sm"
+                                                            className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-[#123044] hover:bg-[#1c4460] disabled:opacity-40 disabled:pointer-events-none text-white text-xs font-bold rounded-xl transition-all shadow-sm cursor-pointer"
                                                         >
                                                             Ver Resultado do Perfil
                                                             <Sparkles size={14} />
@@ -695,12 +703,26 @@ export default function PlanejamentoJornadaPage() {
                                             /* CARD DO RESULTADO DO PERFIL */
                                             <div className="bg-[#fbfaf5] border border-[#e4e0d7] rounded-3xl p-8 shadow-sm flex-1 flex flex-col justify-between">
                                                 <div className="space-y-6">
-                                                    <div className="text-center max-w-xl mx-auto">
+                                                    <div className="flex justify-between items-center bg-[#fffdf8] border border-[#e4e0d7] rounded-2xl px-5 py-3 shadow-xs">
+                                                        <div className="flex items-center gap-2 text-xs font-bold text-[#1f674f]">
+                                                            <CheckCircle size={15} />
+                                                            Perfil Diagnosticado e Salvo
+                                                        </div>
+                                                        <button 
+                                                            type="button" 
+                                                            onClick={() => { setShowQuizResult(false); setQuizQuestionIndex(0); }}
+                                                            className="text-xs font-bold text-[#2b6e76] hover:text-[#123044] flex items-center gap-1.5 px-3 py-1.5 rounded-xl hover:bg-[#e8f1ed] transition-colors cursor-pointer border border-[#2b6e76]/30"
+                                                        >
+                                                            <RotateCcw size={13} /> Refazer Perfil
+                                                        </button>
+                                                    </div>
+
+                                                    <div className="text-center max-w-xl mx-auto pt-2">
                                                         <div className="w-16 h-16 rounded-2xl bg-[#2b6e76] text-white flex items-center justify-center mx-auto mb-4 shadow-md">
                                                             <Compass size={32} />
                                                         </div>
                                                         <div className="text-xs font-bold text-[#2b6e76] uppercase tracking-widest mb-1">
-                                                            Perfil de Investidor Identificado
+                                                            Seu Perfil Oficial ARVO
                                                         </div>
                                                         <h3 className="text-3xl md:text-4xl font-extrabold text-[#123044]">
                                                             {profileMetaMap[calculatedCurrentProfile]?.label || calculatedCurrentProfile}
@@ -714,13 +736,7 @@ export default function PlanejamentoJornadaPage() {
                                                     <div className="bg-[#fffdf8] border border-[#e4e0d7] rounded-2xl p-5">
                                                         <div className="flex items-center justify-between mb-3 border-b border-[#e4e0d7] pb-2">
                                                             <span className="text-xs font-bold text-[#123044]">Suas 6 Respostas de Suitability</span>
-                                                            <button 
-                                                                type="button" 
-                                                                onClick={() => { setShowQuizResult(false); setQuizQuestionIndex(0); }}
-                                                                className="text-[11px] font-bold text-[#2b6e76] hover:underline flex items-center gap-1"
-                                                            >
-                                                                <RotateCcw size={12} /> Refazer Questionário
-                                                            </button>
+                                                            <span className="text-[11px] font-semibold text-[#667085]">Conectado à Bússola</span>
                                                         </div>
                                                         <div className="grid sm:grid-cols-2 gap-2 text-xs">
                                                             {SUITABILITY_QUESTIONS.map((q, idx) => (
@@ -737,16 +753,16 @@ export default function PlanejamentoJornadaPage() {
                                                     <button
                                                         type="button"
                                                         onClick={() => { setShowQuizResult(false); setQuizQuestionIndex(0); }}
-                                                        className="px-4 py-2 text-xs font-bold text-[#667085] hover:text-[#123044] transition-colors"
+                                                        className="px-4 py-2 text-xs font-bold text-[#667085] hover:text-[#123044] transition-colors flex items-center gap-1.5 cursor-pointer"
                                                     >
-                                                        ← Alterar Respostas
+                                                        <RotateCcw size={13} /> Refazer Questionário
                                                     </button>
                                                     <button
                                                         type="button"
                                                         onClick={goNext}
-                                                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-[#123044] hover:bg-[#1d4b6b] text-white text-xs font-bold uppercase tracking-wider rounded-xl shadow-lg transition-all transform hover:-translate-y-0.5"
+                                                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-[#123044] hover:bg-[#1d4b6b] text-white text-xs font-bold uppercase tracking-wider rounded-xl shadow-lg transition-all transform hover:-translate-y-0.5 cursor-pointer"
                                                     >
-                                                        Finalizar Análise & Salvar Perfil
+                                                        Concluir Jornada & Ver Plano
                                                         <ArrowRightCircle size={18} />
                                                     </button>
                                                 </div>
