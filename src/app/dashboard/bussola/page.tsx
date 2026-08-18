@@ -655,7 +655,7 @@ export default function BussolaPage() {
 
                             <div className="space-y-4 pt-1">
                                 <div className="flex justify-between items-center">
-                                    <label className="text-xs font-bold text-[#667085]">Nível de risco no Velocímetro (0 a 100)</label>
+                                    <label className="text-xs font-bold text-[#667085]">Nível de risco no Velocímetro</label>
                                     <span className="text-xs font-extrabold px-2 py-0.5 rounded-full" style={{ backgroundColor: profileAlignment.bg, color: profileAlignment.color }}>
                                         {profileAlignment.badge}
                                     </span>
@@ -667,10 +667,10 @@ export default function BussolaPage() {
                                     className="arvo-slider"
                                 />
                                 <div className="flex justify-between text-[11px] font-bold text-[#8d97a5] uppercase tracking-widest px-1">
-                                    <span className={riskPosition <= 25 ? "text-[#123044] font-black" : ""}>Abrigo (0)</span>
-                                    <span className={riskPosition > 25 && riskPosition <= 55 ? "text-[#123044] font-black" : ""}>Ritmo (33)</span>
-                                    <span className={riskPosition > 55 && riskPosition <= 80 ? "text-[#123044] font-black" : ""}>Visão (66)</span>
-                                    <span className={riskPosition > 80 ? "text-[#123044] font-black" : ""}>Oceano (100)</span>
+                                    <span className={riskPosition <= 25 ? "text-[#123044] font-black" : ""}>Abrigo</span>
+                                    <span className={riskPosition > 25 && riskPosition <= 55 ? "text-[#123044] font-black" : ""}>Ritmo</span>
+                                    <span className={riskPosition > 55 && riskPosition <= 80 ? "text-[#123044] font-black" : ""}>Visão</span>
+                                    <span className={riskPosition > 80 ? "text-[#123044] font-black" : ""}>Oceano</span>
                                 </div>
                             </div>
                         </div>
