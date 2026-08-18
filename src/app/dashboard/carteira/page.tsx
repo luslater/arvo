@@ -424,7 +424,8 @@ export default function MinhaCarteiraPage() {
         return p;
       }
 
-      const STORAGE_KEY = 'simuladorCarteirasState_v1';
+      const userScope = session?.user?.email ? encodeURIComponent(session.user.email) : 'guest';
+      const STORAGE_KEY = `simuladorCarteirasState_${userScope}_v2`;
 
       function saveState(){
         try{
