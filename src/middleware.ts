@@ -13,7 +13,9 @@ export default withAuth(
             pathname === "/register" ||
             pathname === "/pending" ||
             pathname === "/checkout" ||
+            pathname === "/obrigado" ||
             pathname.startsWith("/api/auth") ||
+            pathname.startsWith("/api/health") ||
             pathname.startsWith("/preview") ||
             pathname.startsWith("/demo") ||
             pathname.startsWith("/escada") ||
@@ -57,7 +59,9 @@ export default withAuth(
                     pathname === "/register" ||
                     pathname === "/pending" ||
                     pathname === "/checkout" ||
+                    pathname === "/obrigado" ||
                     pathname.startsWith("/api/auth") ||
+                    pathname.startsWith("/api/health") ||
                     pathname.startsWith("/preview") ||
                     pathname.startsWith("/demo") ||
                     pathname.startsWith("/escada") ||
