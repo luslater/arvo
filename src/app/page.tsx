@@ -215,6 +215,66 @@ export default function LandingPage() {
         .ui-section-alt {
           background: var(--section-alt);
         }
+        @media (max-width: 768px) {
+          .ui-section { padding: 48px 0; }
+        }
+
+        /* Responsive Grid Utilities */
+        .ui-hero-grid {
+          display: grid;
+          grid-template-columns: 1.15fr 0.85fr;
+          gap: 48px;
+          align-items: center;
+        }
+        @media (max-width: 960px) {
+          .ui-hero-grid {
+            grid-template-columns: 1fr;
+            gap: 36px;
+          }
+        }
+
+        .ui-split-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 48px;
+          align-items: end;
+        }
+        @media (max-width: 860px) {
+          .ui-split-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+            align-items: start;
+          }
+        }
+
+        .ui-fundador-grid {
+          display: grid;
+          grid-template-columns: 0.85fr 1.15fr;
+          gap: 48px;
+          align-items: center;
+        }
+        @media (max-width: 860px) {
+          .ui-fundador-grid {
+            grid-template-columns: 1fr;
+            gap: 28px;
+          }
+        }
+
+        .ui-cta-actions {
+          display: flex;
+          gap: 12px;
+          flex-wrap: wrap;
+        }
+        @media (max-width: 600px) {
+          .ui-cta-actions {
+            flex-direction: column;
+            width: 100%;
+          }
+          .ui-cta-actions .ui-btn {
+            width: 100%;
+            text-align: center;
+          }
+        }
 
         /* Stat Banner Strip */
         .ui-stat-strip {
@@ -235,12 +295,32 @@ export default function LandingPage() {
           text-transform: uppercase;
           letter-spacing: 0.05em;
         }
+        @media (max-width: 768px) {
+          .ui-stat-strip-inner {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px 10px;
+            font-size: 11px;
+            text-align: center;
+          }
+          .ui-stat-divider { display: none; }
+        }
         .ui-stat-strip-inner strong {
           color: var(--ink-navy);
           font-weight: 600;
         }
         .ui-stat-divider {
           color: var(--border);
+        }
+
+        @media (max-width: 600px) {
+          .ui-pricing-card {
+            padding: 32px 20px !important;
+          }
+          .ui-pricing-features {
+            grid-template-columns: 1fr !important;
+            gap: 10px !important;
+          }
         }
 
         /* Performance Chart Styling */
@@ -418,14 +498,14 @@ export default function LandingPage() {
 
         {/* 1 & 2. HERO + SIMULADOR */}
         <section className="ui-section" style={{ paddingTop: "40px", paddingBottom: "56px" }}>
-          <div className="ui-wrap" style={{ display: "grid", gridTemplateColumns: "1.1fr 0.9fr", gap: "48px", alignItems: "center" }}>
+          <div className="ui-wrap ui-hero-grid">
             <div>
               <div className="ui-eyebrow">
                 <span className="ui-eyebrow-dot"></span>
                 PLANEJAMENTO INDEPENDENTE · SEM COMISSÃO
               </div>
 
-              <h1 className="ui-serif" style={{ fontSize: "clamp(36px, 4.5vw, 58px)", lineHeight: "1.12", color: "var(--ink-navy)", margin: "0 0 18px 0" }}>
+              <h1 className="ui-serif" style={{ fontSize: "clamp(34px, 4.5vw, 58px)", lineHeight: "1.12", color: "var(--ink-navy)", margin: "0 0 18px 0" }}>
                 Não basta investir.<br />
                 <i style={{ color: "var(--deep-teal)", fontStyle: "italic" }}>É preciso ter um plano.</i>
               </h1>
@@ -434,8 +514,8 @@ export default function LandingPage() {
                 A ARVO transforma seus investimentos em uma estratégia clara para você saber quanto investir, como organizar seu patrimônio e se está no caminho dos seus objetivos.
               </p>
 
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "10px" }}>
-                <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "10px", width: "100%" }}>
+                <div className="ui-cta-actions">
                   <a href="/register" className="ui-btn ui-btn-primary" style={{ fontSize: "15.5px", padding: "15px 30px" }}>
                     Descobrir meu plano →
                   </a>
@@ -455,7 +535,7 @@ export default function LandingPage() {
             </div>
 
             {/* Simulator Panel */}
-            <div style={{ display: "flex", justifyContent: "center" }}>
+            <div style={{ display: "flex", justifyContent: "center", width: "100%" }}>
               <LandingSimulator />
             </div>
           </div>
@@ -477,16 +557,16 @@ export default function LandingPage() {
         {/* 3. O PROBLEMA */}
         <section className="ui-section" id="problema">
           <div className="ui-wrap">
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "48px", marginBottom: "40px", alignItems: "end" }}>
+            <div className="ui-split-grid" style={{ marginBottom: "40px" }}>
               <div>
                 <div className="ui-eyebrow"><span className="ui-eyebrow-dot"></span> O Problema</div>
-                <h2 className="ui-serif" style={{ fontSize: "clamp(30px, 3.6vw, 46px)", lineHeight: "1.15", color: "var(--ink-navy)", margin: 0 }}>
+                <h2 className="ui-serif" style={{ fontSize: "clamp(28px, 3.6vw, 46px)", lineHeight: "1.15", color: "var(--ink-navy)", margin: 0 }}>
                   Você já investe.<br />
                   <i style={{ fontStyle: "italic", color: "var(--deep-teal)" }}>Mas sabe se está no caminho certo?</i>
                 </h2>
               </div>
               <div>
-                <p style={{ fontSize: "16.5px", color: "var(--text-secondary)", lineHeight: "1.65", margin: 0 }}>
+                <p style={{ fontSize: "16px", color: "var(--text-secondary)", lineHeight: "1.65", margin: 0 }}>
                   Ter bons investimentos não significa necessariamente ter um bom plano. Sem uma direção clara, qualquer oscilação gera dúvida.
                 </p>
               </div>
@@ -510,8 +590,8 @@ export default function LandingPage() {
               ))}
             </div>
 
-            <div style={{ marginTop: "28px", padding: "22px 30px", background: "var(--section-alt)", border: "1px solid var(--border)", borderRadius: "14px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "16px" }}>
-              <div style={{ fontSize: "16.5px", fontWeight: 500, color: "var(--ink-navy)" }}>
+            <div style={{ marginTop: "28px", padding: "22px 24px", background: "var(--section-alt)", border: "1px solid var(--border)", borderRadius: "14px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "16px" }}>
+              <div style={{ fontSize: "15.5px", fontWeight: 500, color: "var(--ink-navy)" }}>
                 <strong>É isso que a ARVO organiza.</strong> Clareza e método para suas decisões financeiras.
               </div>
               <a href="/register" className="ui-btn ui-btn-navy" style={{ fontSize: "13.5px" }}>
@@ -526,18 +606,18 @@ export default function LandingPage() {
           <div className="ui-wrap">
             <div style={{ textAlign: "center", marginBottom: "48px" }}>
               <div className="ui-eyebrow"><span className="ui-eyebrow-dot"></span> Método ARVO</div>
-              <h2 className="ui-serif" style={{ fontSize: "clamp(32px, 3.8vw, 48px)", color: "var(--ink-navy)", margin: 0 }}>
+              <h2 className="ui-serif" style={{ fontSize: "clamp(30px, 3.8vw, 48px)", color: "var(--ink-navy)", margin: 0 }}>
                 Um plano. <i style={{ fontStyle: "italic", color: "var(--deep-teal)" }}>Três movimentos.</i>
               </h2>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "20px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "20px" }}>
               {[
                 { idx: "01 — Planeje", title: "Metas claras", desc: "Transforme patrimônio, renda e objetivos em metas financeiras claras e mensuráveis." },
                 { idx: "02 — Invista", title: "Estratégia sob medida", desc: "Organize sua estratégia de investimentos de acordo com seu perfil, patrimônio e momento de vida." },
                 { idx: "03 — Acompanhe", title: "Evolução contínua", desc: "Veja sua evolução e ajuste o plano conforme sua vida e seus objetivos mudam." },
               ].map((step, idx) => (
-                <div key={idx} style={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: "16px", padding: "32px 28px", display: "flex", flexDirection: "column" }}>
+                <div key={idx} style={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: "16px", padding: "28px 24px", display: "flex", flexDirection: "column" }}>
                   <span className="ui-mono" style={{ fontSize: "11.5px", fontWeight: 600, color: "var(--deep-teal)" }}>{step.idx}</span>
                   <h3 className="ui-serif" style={{ fontSize: "22px", color: "var(--ink-navy)", margin: "12px 0 8px 0" }}>{step.title}</h3>
                   <p style={{ fontSize: "14.5px", color: "var(--text-secondary)", lineHeight: "1.6", margin: 0 }}>{step.desc}</p>
@@ -556,10 +636,10 @@ export default function LandingPage() {
         {/* 5. CARTEIRAS */}
         <section className="ui-section" id="carteiras">
           <div className="ui-wrap">
-            <div style={{ display: "grid", gridTemplateColumns: "1.1fr 0.9fr", gap: "48px", marginBottom: "44px", alignItems: "end" }}>
+            <div className="ui-split-grid" style={{ marginBottom: "44px" }}>
               <div>
                 <div className="ui-eyebrow"><span className="ui-eyebrow-dot"></span> Estratégias ARVO</div>
-                <h2 className="ui-serif" style={{ fontSize: "clamp(30px, 3.6vw, 46px)", lineHeight: "1.12", color: "var(--ink-navy)", margin: 0 }}>
+                <h2 className="ui-serif" style={{ fontSize: "clamp(28px, 3.6vw, 46px)", lineHeight: "1.12", color: "var(--ink-navy)", margin: 0 }}>
                   Não existe a melhor carteira.<br />
                   <i style={{ fontStyle: "italic", color: "var(--deep-teal)" }}>Existe a certa para cada momento.</i>
                 </h2>
@@ -604,10 +684,10 @@ export default function LandingPage() {
         {/* 6. RESULTADOS / PERFORMANCE */}
         <section className="ui-section ui-section-alt" id="resultados">
           <div className="ui-wrap">
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "48px", marginBottom: "36px", alignItems: "end" }}>
+            <div className="ui-split-grid" style={{ marginBottom: "36px" }}>
               <div>
                 <div className="ui-eyebrow"><span className="ui-eyebrow-dot"></span> Transparência</div>
-                <h2 className="ui-serif" style={{ fontSize: "clamp(30px, 3.6vw, 46px)", color: "var(--ink-navy)", margin: 0 }}>
+                <h2 className="ui-serif" style={{ fontSize: "clamp(28px, 3.6vw, 46px)", color: "var(--ink-navy)", margin: 0 }}>
                   Resultado aberto.<br />
                   <i style={{ fontStyle: "italic", color: "var(--deep-teal)" }}>Sem promessa de resultado.</i>
                 </h2>
@@ -637,7 +717,7 @@ export default function LandingPage() {
           <div className="ui-wrap">
             <div style={{ textAlign: "center", maxWidth: "720px", margin: "0 auto 40px auto" }}>
               <div className="ui-eyebrow"><span className="ui-eyebrow-dot"></span> Modelo Fee-Only</div>
-              <h2 className="ui-serif" style={{ fontSize: "clamp(30px, 3.6vw, 46px)", color: "var(--ink-navy)", margin: "0 0 14px 0" }}>
+              <h2 className="ui-serif" style={{ fontSize: "clamp(28px, 3.6vw, 46px)", color: "var(--ink-navy)", margin: "0 0 14px 0" }}>
                 Independência não é só uma palavra.<br />
                 <i style={{ fontStyle: "italic", color: "var(--deep-teal)" }}>É o nosso modelo de negócio.</i>
               </h2>
@@ -647,7 +727,7 @@ export default function LandingPage() {
             </div>
 
             {/* Highlight banner */}
-            <div style={{ background: "var(--ink-navy)", borderRadius: "18px", padding: "36px 32px", color: "#ffffff", marginBottom: "28px", textAlign: "center" }}>
+            <div style={{ background: "var(--ink-navy)", borderRadius: "18px", padding: "32px 24px", color: "#ffffff", marginBottom: "28px", textAlign: "center" }}>
               <div className="ui-serif" style={{ fontSize: "clamp(20px, 2.6vw, 30px)", lineHeight: "1.3", maxWidth: "42ch", margin: "0 auto" }}>
                 Você sabe exatamente quanto paga. E sabe quem está remunerando: <span style={{ color: "var(--accent-green)", fontStyle: "italic" }}>a ARVO.</span>
               </div>
@@ -659,7 +739,7 @@ export default function LandingPage() {
                 { title: "Sem mudar de banco ou corretora", desc: "Você continua investindo onde preferir (XP, BTG, Itaú, NuInvest ou qualquer outra)." },
                 { title: "Patrimônio sob seu controle", desc: "A ARVO orienta a estratégia e o plano. A custódia e as decisões de execução são sempre suas." },
               ].map((card, idx) => (
-                <div key={idx} style={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: "14px", padding: "28px 24px" }}>
+                <div key={idx} style={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: "14px", padding: "24px 20px" }}>
                   <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: "var(--section-alt)", color: "var(--deep-teal)", display: "grid", placeItems: "center", marginBottom: "14px", fontWeight: "bold", fontSize: "13px" }}>
                     ✓
                   </div>
@@ -674,8 +754,8 @@ export default function LandingPage() {
         {/* 8. FILOSOFIA + FUNDADOR */}
         <section className="ui-section ui-section-alt" id="fundador">
           <div className="ui-wrap">
-            <div style={{ display: "grid", gridTemplateColumns: "0.85fr 1.15fr", gap: "48px", alignItems: "center" }}>
-              <div style={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: "18px", padding: "36px 28px", textAlign: "center" }}>
+            <div className="ui-fundador-grid">
+              <div style={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: "18px", padding: "32px 24px", textAlign: "center" }}>
                 <div style={{ width: "72px", height: "72px", borderRadius: "50%", background: "var(--deep-teal)", color: "#ffffff", display: "grid", placeItems: "center", fontSize: "24px", fontFamily: "Lora, serif", margin: "0 auto 14px auto" }}>
                   LM
                 </div>
@@ -692,7 +772,7 @@ export default function LandingPage() {
 
               <div>
                 <div className="ui-eyebrow"><span className="ui-eyebrow-dot"></span> Filosofia</div>
-                <h2 className="ui-serif" style={{ fontSize: "clamp(30px, 3.6vw, 44px)", color: "var(--ink-navy)", margin: "0 0 16px 0", lineHeight: "1.15" }}>
+                <h2 className="ui-serif" style={{ fontSize: "clamp(28px, 3.6vw, 44px)", color: "var(--ink-navy)", margin: "0 0 16px 0", lineHeight: "1.15" }}>
                   Estratégia antes <i style={{ fontStyle: "italic", color: "var(--deep-teal)" }}>do investimento.</i>
                 </h2>
                 <p style={{ fontSize: "16px", color: "var(--text-secondary)", lineHeight: "1.65", margin: "0 0 14px 0" }}>
@@ -792,7 +872,7 @@ export default function LandingPage() {
               </h2>
             </div>
 
-            <div style={{ maxWidth: "660px", margin: "0 auto", background: "var(--card)", border: "2px solid var(--deep-teal)", borderRadius: "20px", padding: "44px 36px", textAlign: "center" }}>
+            <div className="ui-pricing-card" style={{ maxWidth: "660px", margin: "0 auto", background: "var(--card)", border: "2px solid var(--deep-teal)", borderRadius: "20px", padding: "44px 36px", textAlign: "center" }}>
               <span className="ui-mono" style={{ fontSize: "11.5px", color: "var(--deep-teal)", fontWeight: 600 }}>PLANO ANUAL ARVO</span>
               <h3 className="ui-serif" style={{ fontSize: "30px", color: "var(--ink-navy)", margin: "6px 0 14px 0" }}>Acesso Completo</h3>
 
@@ -804,7 +884,7 @@ export default function LandingPage() {
                 Cobrado em 12x de R$ 59,90 ou R$ 599,00 à vista (2 meses grátis)
               </div>
 
-              <ul style={{ listStyle: "none", padding: 0, margin: "28px auto", maxWidth: "440px", textAlign: "left", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px 20px", fontSize: "14px", color: "var(--text-secondary)" }}>
+              <ul className="ui-pricing-features" style={{ listStyle: "none", padding: 0, margin: "28px auto", maxWidth: "440px", textAlign: "left", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px 20px", fontSize: "14px", color: "var(--text-secondary)" }}>
                 {["Planejamento financeiro", "Estratégias de investimento", "Atualizações e rebalanceamentos", "Acompanhamento contínuo", "Conteúdo e comunidade", "Calculadoras e ferramentas"].map((feat, i) => (
                   <li key={i} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                     <span style={{ color: "var(--deep-teal)", fontWeight: "bold" }}>✓</span> {feat}
@@ -815,8 +895,8 @@ export default function LandingPage() {
                 </li>
               </ul>
 
-              <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "360px", margin: "0 auto" }}>
-                <a href="/register" className="ui-btn ui-btn-primary" style={{ fontSize: "15.5px", padding: "15px 26px" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "360px", margin: "0 auto", width: "100%" }}>
+                <a href="/register" className="ui-btn ui-btn-primary" style={{ fontSize: "15.5px", padding: "15px 26px", width: "100%" }}>
                   Começar pela ARVO
                 </a>
                 <div style={{ borderTop: "1px solid var(--border)", paddingTop: "14px" }}>

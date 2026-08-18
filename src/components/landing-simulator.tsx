@@ -188,7 +188,7 @@ export default function ArvoSimulador() {
     : null;
 
   return (
-    <div style={{
+    <div className="ui-sim-wrapper" style={{
       width: "100%",
       maxWidth: 560,
       background: "white",
@@ -200,6 +200,21 @@ export default function ArvoSimulador() {
       position: "relative",
       zIndex: 10
     }}>
+      <style dangerouslySetInnerHTML={{ __html: `
+        @media (max-width: 500px) {
+          .ui-sim-wrapper {
+            padding: 16px 14px !important;
+            border-radius: 20px !important;
+          }
+          .ui-sim-results-grid {
+            grid-template-columns: 1fr !important;
+            gap: 8px !important;
+          }
+          .ui-sim-val-lg {
+            font-size: 28px !important;
+          }
+        }
+      `}} />
       {/* Header do card */}
           <div style={{
             display: "flex", justifyContent: "space-between", alignItems: "center",
@@ -268,7 +283,7 @@ export default function ArvoSimulador() {
           </div>
 
           {/* Resultados */}
-          <div style={{
+          <div className="ui-sim-results-grid" style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
             gap: 10,
@@ -287,7 +302,7 @@ export default function ArvoSimulador() {
               </span>
               {anoAlvo ? (
                 <>
-                  <span style={{ fontSize: 36, fontWeight: 300, letterSpacing: -1, display: "block" }}>
+                  <span className="ui-sim-val-lg" style={{ fontSize: 36, fontWeight: 300, letterSpacing: -1, display: "block" }}>
                     {anoAlvo}
                   </span>
                   <span style={{ fontSize: 12, color: "rgba(255,255,255,0.4)" }}>
@@ -316,7 +331,7 @@ export default function ArvoSimulador() {
               }}>
                 Renda passiva em 20 anos
               </span>
-              <span style={{ fontSize: 32, fontWeight: 300, letterSpacing: -1, color: "#0A192F", display: "block" }}>
+              <span className="ui-sim-val-lg" style={{ fontSize: 32, fontWeight: 300, letterSpacing: -1, color: "#0A192F", display: "block" }}>
                 {fmtCurrency(Math.round(proj.rendaMensal20))}
               </span>
               <span style={{ fontSize: 12, color: "#bbb" }}>
