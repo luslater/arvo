@@ -1,9 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenAI } from "@google/genai";
 import * as xlsx from "xlsx";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export async function POST(req: NextRequest) {
     try {
+        const session = await getServerSession(authOptions);
+        if (!session?.user?.id && !session?.user?.email) {
+            return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
+        }
+
         const formData = await req.formData();
         const file = formData.get("file") as File;
         
