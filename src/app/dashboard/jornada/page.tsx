@@ -836,77 +836,71 @@ export default function PlanejamentoJornadaPage() {
                                             })}
 
                                             {/* ======================================================== */}
-                                            {/* ETAPA 1: SEÇÃO DINÂMICA DE OUTROS GASTOS MENSAIS         */}
+                                            {/* ETAPA 1: GASTOS PERSONALIZADOS NO MESMO GRID DAS OUTRAS */}
                                             {/* ======================================================== */}
-                                            {current === 0 && (
-                                                <div className="md:col-span-2 pt-6 border-t border-[#e4e0d7] space-y-4">
-                                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                                                        <div>
-                                                            <label className="text-xs font-extrabold text-[#123044] uppercase tracking-wider flex items-center gap-2">
-                                                                <PlusCircle size={16} className="text-[#4fa080]" />
-                                                                Outros Gastos Mensais
-                                                            </label>
-                                                            <p className="text-[12px] text-[#667085] mt-0.5">
-                                                                Adicione outros custos recorrentes (ex: Educação, Lazer, Assinaturas, Dependentes, Pets, etc.)
-                                                            </p>
+                                            {current === 0 && customExpenses.map((expense) => (
+                                                <div key={expense.id} className="space-y-2">
+                                                    <div className="flex items-center justify-between gap-2">
+                                                        <div className="flex items-center gap-1.5 flex-1 min-w-0">
+                                                            <span className="text-xs font-bold text-[#123044] shrink-0">Gastos com</span>
+                                                            <input
+                                                                type="text"
+                                                                placeholder="Lazer, Educação, etc."
+                                                                value={expense.name}
+                                                                onChange={(e) => handleUpdateCustomExpense(expense.id, "name", e.target.value)}
+                                                                className="text-xs font-bold text-[#123044] bg-transparent border-b border-dashed border-[#123044]/30 hover:border-[#4fa080] focus:border-[#4fa080] focus:outline-none px-1 py-0.5 w-full transition-colors placeholder:font-normal placeholder:text-[#a09e99]"
+                                                                autoFocus={!expense.name}
+                                                            />
                                                         </div>
                                                         <button
                                                             type="button"
-                                                            onClick={handleAddCustomExpense}
-                                                            className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#e8f1ed] hover:bg-[#d8e7e0] text-[#1f674f] text-xs font-bold rounded-xl border border-[#4fa080]/30 shadow-sm transition-all self-start sm:self-auto cursor-pointer"
+                                                            onClick={() => handleRemoveCustomExpense(expense.id)}
+                                                            className="text-[#98a2b3] hover:text-[#b91c1c] text-[11px] font-medium flex items-center gap-1 hover:underline transition-colors shrink-0 cursor-pointer"
+                                                            title="Remover este gasto"
                                                         >
-                                                            <Plus size={14} />
-                                                            Adicionar Outro Gasto
+                                                            <Trash2 size={12} />
+                                                            Remover
                                                         </button>
                                                     </div>
 
-                                                    {/* LISTA DE GASTOS ADICIONADOS */}
-                                                    {customExpenses.length > 0 ? (
-                                                        <div className="space-y-2.5">
-                                                            {customExpenses.map((expense) => (
-                                                                <div key={expense.id} className="flex items-center gap-3 bg-[#f6f4ef] p-3 rounded-2xl border border-[#e4e0d7]">
-                                                                    <input
-                                                                        type="text"
-                                                                        placeholder="Descrição do gasto (ex: Educação / Faculdade)"
-                                                                        value={expense.name}
-                                                                        onChange={(e) => handleUpdateCustomExpense(expense.id, "name", e.target.value)}
-                                                                        className="flex-1 bg-white border border-[#e4e0d7] rounded-xl px-3.5 py-2 text-sm text-[#123044] font-medium placeholder:text-[#a09e99] focus:outline-none focus:border-[#4fa080]"
-                                                                    />
-                                                                    <input
-                                                                        type="text"
-                                                                        placeholder="R$ 0,00"
-                                                                        value={expense.value}
-                                                                        onChange={(e) => handleUpdateCustomExpense(expense.id, "value", formatCurrency(e.target.value))}
-                                                                        className="w-36 md:w-44 bg-white border border-[#e4e0d7] rounded-xl px-3.5 py-2 text-sm text-[#123044] font-semibold placeholder:text-[#a09e99] focus:outline-none focus:border-[#4fa080]"
-                                                                    />
-                                                                    <button
-                                                                        type="button"
-                                                                        onClick={() => handleRemoveCustomExpense(expense.id)}
-                                                                        className="p-2 text-[#98a2b3] hover:text-[#b91c1c] rounded-xl hover:bg-white transition-colors cursor-pointer"
-                                                                        title="Remover este gasto"
-                                                                    >
-                                                                        <Trash2 size={16} />
-                                                                    </button>
-                                                                </div>
-                                                            ))}
-                                                        </div>
-                                                    ) : (
-                                                        <div className="bg-[#f6f4ef]/60 border border-dashed border-[#e4e0d7] rounded-2xl p-4 text-center">
-                                                            <p className="text-xs text-[#667085]">
-                                                                Nenhum gasto adicional cadastrado. Clique no botão acima para adicionar despesas com educação, assinaturas, pets, etc.
-                                                            </p>
-                                                        </div>
-                                                    )}
+                                                    <div className="relative">
+                                                        <input 
+                                                            type="text" 
+                                                            placeholder="R$ 0,00"
+                                                            value={expense.value}
+                                                            onChange={(e) => handleUpdateCustomExpense(expense.id, "value", formatCurrency(e.target.value))}
+                                                            className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-4 py-3 text-sm text-[#123044] font-medium placeholder:text-[#a09e99] focus:outline-none focus:border-[#4fa080] focus:ring-1 focus:ring-[#4fa080] transition-all"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            ))}
 
-                                                    {/* TOTALIZADOR DE GASTOS */}
-                                                    <div className="p-4 rounded-2xl bg-[#e8f1ed]/50 border border-[#4fa080]/30 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-                                                        <div className="text-xs text-[#123044] font-bold flex items-center gap-1.5">
-                                                            <DollarSign size={15} className="text-[#1f674f]" />
-                                                            Total Estimado de Gastos Mensais:
-                                                        </div>
-                                                        <div className="text-base font-extrabold text-[#1f674f]">
-                                                            {totalExpensesFormatted}
-                                                        </div>
+                                            {/* BOTÃO + ADICIONAR OUTRO GASTO COMO CAIXA NO GRID */}
+                                            {current === 0 && (
+                                                <div className="space-y-2 flex flex-col justify-end">
+                                                    <label className="text-xs font-bold text-transparent select-none hidden md:block">
+                                                        Novo Gasto
+                                                    </label>
+                                                    <button
+                                                        type="button"
+                                                        onClick={handleAddCustomExpense}
+                                                        className="w-full h-[46px] bg-transparent hover:bg-[#e8f1ed]/50 border-2 border-dashed border-[#d8d3c5] hover:border-[#4fa080] text-[#123044] hover:text-[#1f674f] text-xs font-bold rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer"
+                                                    >
+                                                        <Plus size={15} />
+                                                        Adicionar Outro Gasto
+                                                    </button>
+                                                </div>
+                                            )}
+
+                                            {/* TOTALIZADOR DE GASTOS DA ETAPA 1 */}
+                                            {current === 0 && (
+                                                <div className="md:col-span-2 p-4 rounded-2xl bg-[#e8f1ed]/50 border border-[#4fa080]/30 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mt-2">
+                                                    <div className="text-xs text-[#123044] font-bold flex items-center gap-1.5">
+                                                        <DollarSign size={15} className="text-[#1f674f]" />
+                                                        Total Estimado de Gastos Mensais:
+                                                    </div>
+                                                    <div className="text-base font-extrabold text-[#1f674f]">
+                                                        {totalExpensesFormatted}
                                                     </div>
                                                 </div>
                                             )}
