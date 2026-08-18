@@ -78,32 +78,68 @@ function ScoreGauge({ score, size = 200 }: { score: number, size?: number }) {
   )
 }
 
-function MetricCard({ icon: Icon, label, value, subtitle, color = "#4fa080", trend, tooltip }: {
-  icon: any; label: string; value: string; subtitle?: string; color?: string; trend?: number; tooltip?: string
+function MetricCard({ icon: Icon, label, value, subtitle, color = "#4fa080", trend, tooltip, progress }: {
+  icon: any
+  label: string
+  value: string
+  subtitle?: string
+  color?: string
+  trend?: number
+  tooltip?: string
+  progress?: {
+    pct: number
+    currentFormatted: string
+    targetFormatted: string
+    targetLabel?: string
+  }
 }) {
   return (
-    <div className="bg-white rounded-[24px] border border-[#e4e0d7] p-6 shadow-sm hover:shadow-md transition-all duration-300 group">
-      <div className="flex items-center justify-between mb-4">
-        <div className="w-12 h-12 rounded-2xl flex items-center justify-center transition-colors" style={{ backgroundColor: `${color}15`, color }}>
-          <Icon size={22} />
-        </div>
-        {trend !== undefined && (
-          <div className={`flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full ${trend >= 0 ? "bg-[#e8f1ed] text-[#1f674f]" : "bg-red-50 text-red-600"}`}>
-            {trend >= 0 ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
-            <span>{Math.abs(trend)}%</span>
+    <div className="bg-white rounded-[24px] border border-[#e4e0d7] p-6 shadow-sm hover:shadow-md transition-all duration-300 group flex flex-col justify-between">
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <div className="w-12 h-12 rounded-2xl flex items-center justify-center transition-colors" style={{ backgroundColor: `${color}15`, color }}>
+            <Icon size={22} />
           </div>
-        )}
+          {progress ? (
+            <div className="flex items-center gap-1.5 px-3 py-1 bg-[#e8f1ed] text-[#1f674f] rounded-full text-xs font-extrabold">
+              <span>{progress.pct}% atingido</span>
+            </div>
+          ) : trend !== undefined ? (
+            <div className={`flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full ${trend >= 0 ? "bg-[#e8f1ed] text-[#1f674f]" : "bg-red-50 text-red-600"}`}>
+              {trend >= 0 ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
+              <span>{Math.abs(trend)}%</span>
+            </div>
+          ) : null}
+        </div>
+        <div className="text-xs font-extrabold uppercase tracking-wider text-[#667085] mb-1 flex items-center gap-1.5">
+          {label}
+          {tooltip && (
+            <span title={tooltip} className="cursor-help text-[#a09e99] hover:text-[#123044]">
+              <HelpCircle size={12} />
+            </span>
+          )}
+        </div>
+        <div className="text-2xl md:text-3xl font-extrabold text-[#123044] tracking-tight">{value}</div>
       </div>
-      <div className="text-xs font-extrabold uppercase tracking-wider text-[#667085] mb-1 flex items-center gap-1.5">
-        {label}
-        {tooltip && (
-          <span title={tooltip} className="cursor-help text-[#a09e99] hover:text-[#123044]">
-            <HelpCircle size={12} />
-          </span>
-        )}
-      </div>
-      <div className="text-2xl md:text-3xl font-extrabold text-[#123044] tracking-tight">{value}</div>
-      {subtitle && <div className="text-xs font-semibold text-[#4fa080] mt-1.5">{subtitle}</div>}
+
+      {progress ? (
+        <div className="mt-4 pt-3 border-t border-[#f0ece1] space-y-2">
+          <div className="h-2.5 bg-[#e4e0d7] rounded-full overflow-hidden">
+            <motion.div 
+              className="h-full bg-gradient-to-r from-[#1f674f] to-[#4fa080] rounded-full"
+              initial={{ width: 0 }}
+              animate={{ width: `${Math.min(100, Math.max(0, progress.pct))}%` }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+            />
+          </div>
+          <div className="flex justify-between items-center text-[11px] text-[#667085] font-semibold">
+            <span>{progress.currentFormatted}</span>
+            <span className="text-[#123044] font-bold">Meta: {progress.targetFormatted}</span>
+          </div>
+        </div>
+      ) : (
+        subtitle && <div className="text-xs font-semibold text-[#4fa080] mt-1.5">{subtitle}</div>
+      )}
     </div>
   )
 }
@@ -497,10 +533,14 @@ export default function PlanoArvoDashboard({ onBack, formData = {} }: { onBack?:
                 <MetricCard 
                   icon={PiggyBank} 
                   label="Reserva de Emergência" 
-                  value={`${financialData.reservaPct}%`} 
-                  subtitle={`${formatBRL(financialData.reservaAtual)} de ${formatBRL(financialData.reservaMeta)} (${financialData.mesesMeta}m)`} 
+                  value={formatBRL(financialData.reservaAtual)} 
                   color="#4fa080" 
-                  tooltip={`Meta recomendada de ${financialData.mesesMeta} meses de gastos para o seu perfil (${financialData.isVariavel ? "PJ/Autônomo/Empresário" : "CLT/Público"}).`}
+                  tooltip={`Meta recomendada de ${financialData.mesesMeta} meses de gastos (${formatBRL(financialData.reservaMeta)}) para o seu perfil (${financialData.isVariavel ? "PJ/Autônomo/Empresário" : "CLT/Servidor"}).`}
+                  progress={{
+                    pct: financialData.reservaPct,
+                    currentFormatted: `${formatBRL(financialData.reservaAtual)} atual`,
+                    targetFormatted: `${formatBRL(financialData.reservaMeta)} (${financialData.mesesMeta}m)`,
+                  }}
                 />
                 <MetricCard 
                   icon={TrendingUp} 
