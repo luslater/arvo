@@ -1,8 +1,8 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Check, ArrowRight, ArrowLeft, ArrowRightCircle, Target, Wallet, ShieldCheck, HeartPulse, Building2, Landmark, Compass, Loader2, Sparkles, CheckCircle2, RotateCcw } from "lucide-react"
+import { Check, ArrowRight, ArrowLeft, ArrowRightCircle, Target, Wallet, ShieldCheck, HeartPulse, Building2, Landmark, Compass, Loader2, Sparkles, CheckCircle2, RotateCcw, Plus, Trash2, PlusCircle, DollarSign } from "lucide-react"
 import PlanoArvoDashboard from "@/components/plano-arvo-dashboard"
 import { saveJornadaProgress, getJornadaProgress } from "./actions"
 import { calculateInvestorProfile } from "@/lib/profile-calculator"
@@ -14,6 +14,12 @@ type FieldDef = {
     type: "text" | "number" | "currency" | "select" | "radio"
     options?: string[]
     placeholder?: string
+}
+
+type CustomExpense = {
+    id: string
+    name: string
+    value: string
 }
 
 const SUITABILITY_QUESTIONS = [
@@ -272,6 +278,7 @@ const PROGRESS_LABELS = [
 export default function PlanejamentoJornadaPage() {
     const [current, setCurrent] = useState(0)
     const [formData, setFormData] = useState<Record<string, string>>({})
+    const [customExpenses, setCustomExpenses] = useState<CustomExpense[]>([])
     const [showDashboard, setShowDashboard] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
     const [quizQuestionIndex, setQuizQuestionIndex] = useState(0)
@@ -284,6 +291,16 @@ export default function PlanejamentoJornadaPage() {
                 try {
                     const savedData = res.data as Record<string, string>
                     setFormData(savedData)
+                    
+                    if (savedData.customExpensesJson) {
+                        try {
+                            const parsed = JSON.parse(savedData.customExpensesJson)
+                            if (Array.isArray(parsed)) {
+                                setCustomExpenses(parsed)
+                            }
+                        } catch (e) {}
+                    }
+                    
                     if (res.isCompleted) {
                         setShowDashboard(true)
                     }
@@ -304,6 +321,59 @@ export default function PlanejamentoJornadaPage() {
         const num = parseInt(clean) / 100
         return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(num)
     }
+
+    const handleAddCustomExpense = () => {
+        const newExpense: CustomExpense = {
+            id: Date.now().toString(),
+            name: "",
+            value: ""
+        }
+        const updated = [...customExpenses, newExpense]
+        setCustomExpenses(updated)
+        setFormData(prev => ({
+            ...prev,
+            customExpensesJson: JSON.stringify(updated)
+        }))
+    }
+
+    const handleUpdateCustomExpense = (id: string, key: "name" | "value", val: string) => {
+        const updated = customExpenses.map(item => item.id === id ? { ...item, [key]: val } : item)
+        setCustomExpenses(updated)
+        setFormData(prev => ({
+            ...prev,
+            customExpensesJson: JSON.stringify(updated)
+        }))
+    }
+
+    const handleRemoveCustomExpense = (id: string) => {
+        const updated = customExpenses.filter(item => item.id !== id)
+        setCustomExpenses(updated)
+        setFormData(prev => ({
+            ...prev,
+            customExpensesJson: JSON.stringify(updated)
+        }))
+    }
+
+    // Total de gastos da Etapa 1
+    const totalExpenses = useMemo(() => {
+        const parseCurrencyValue = (val?: string) => {
+            if (!val) return 0
+            const clean = val.replace(/\D/g, "")
+            if (!clean) return 0
+            return parseInt(clean) / 100
+        }
+
+        const moradia = parseCurrencyValue(formData.gastoMoradia)
+        const alimentacao = parseCurrencyValue(formData.gastoAlimentacao)
+        const transporte = parseCurrencyValue(formData.gastoTransporte)
+        const saude = parseCurrencyValue(formData.gastoSaude)
+        const dividas = parseCurrencyValue(formData.parcelasDividas)
+        const customTotal = customExpenses.reduce((sum, item) => sum + parseCurrencyValue(item.value), 0)
+
+        return moradia + alimentacao + transporte + saude + dividas + customTotal
+    }, [formData, customExpenses])
+
+    const totalExpensesFormatted = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(totalExpenses)
 
     const calculatedCurrentProfile = calculateInvestorProfile(formData)
 
@@ -379,7 +449,6 @@ export default function PlanejamentoJornadaPage() {
     const step = PLAN_DATA[current]
     const score = Math.round(((current + 1) / PLAN_DATA.length) * 100)
     const currentQuizQ = SUITABILITY_QUESTIONS[quizQuestionIndex]
-    const allQuizAnswered = SUITABILITY_QUESTIONS.every(q => Boolean(formData[q.name]))
 
     return (
         <div className="min-h-screen text-slate-900 font-sans p-6 md:p-8 animate-in fade-in slide-in-from-bottom-2 duration-300 bg-[#f6f4ef]">
@@ -765,6 +834,82 @@ export default function PlanejamentoJornadaPage() {
                                                     </div>
                                                 )
                                             })}
+
+                                            {/* ======================================================== */}
+                                            {/* ETAPA 1: SEÇÃO DINÂMICA DE OUTROS GASTOS MENSAIS         */}
+                                            {/* ======================================================== */}
+                                            {current === 0 && (
+                                                <div className="md:col-span-2 pt-6 border-t border-[#e4e0d7] space-y-4">
+                                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                                        <div>
+                                                            <label className="text-xs font-extrabold text-[#123044] uppercase tracking-wider flex items-center gap-2">
+                                                                <PlusCircle size={16} className="text-[#4fa080]" />
+                                                                Outros Gastos Mensais
+                                                            </label>
+                                                            <p className="text-[12px] text-[#667085] mt-0.5">
+                                                                Adicione outros custos recorrentes (ex: Educação, Lazer, Assinaturas, Dependentes, Pets, etc.)
+                                                            </p>
+                                                        </div>
+                                                        <button
+                                                            type="button"
+                                                            onClick={handleAddCustomExpense}
+                                                            className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#e8f1ed] hover:bg-[#d8e7e0] text-[#1f674f] text-xs font-bold rounded-xl border border-[#4fa080]/30 shadow-sm transition-all self-start sm:self-auto cursor-pointer"
+                                                        >
+                                                            <Plus size={14} />
+                                                            Adicionar Outro Gasto
+                                                        </button>
+                                                    </div>
+
+                                                    {/* LISTA DE GASTOS ADICIONADOS */}
+                                                    {customExpenses.length > 0 ? (
+                                                        <div className="space-y-2.5">
+                                                            {customExpenses.map((expense) => (
+                                                                <div key={expense.id} className="flex items-center gap-3 bg-[#f6f4ef] p-3 rounded-2xl border border-[#e4e0d7]">
+                                                                    <input
+                                                                        type="text"
+                                                                        placeholder="Descrição do gasto (ex: Educação / Faculdade)"
+                                                                        value={expense.name}
+                                                                        onChange={(e) => handleUpdateCustomExpense(expense.id, "name", e.target.value)}
+                                                                        className="flex-1 bg-white border border-[#e4e0d7] rounded-xl px-3.5 py-2 text-sm text-[#123044] font-medium placeholder:text-[#a09e99] focus:outline-none focus:border-[#4fa080]"
+                                                                    />
+                                                                    <input
+                                                                        type="text"
+                                                                        placeholder="R$ 0,00"
+                                                                        value={expense.value}
+                                                                        onChange={(e) => handleUpdateCustomExpense(expense.id, "value", formatCurrency(e.target.value))}
+                                                                        className="w-36 md:w-44 bg-white border border-[#e4e0d7] rounded-xl px-3.5 py-2 text-sm text-[#123044] font-semibold placeholder:text-[#a09e99] focus:outline-none focus:border-[#4fa080]"
+                                                                    />
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={() => handleRemoveCustomExpense(expense.id)}
+                                                                        className="p-2 text-[#98a2b3] hover:text-[#b91c1c] rounded-xl hover:bg-white transition-colors cursor-pointer"
+                                                                        title="Remover este gasto"
+                                                                    >
+                                                                        <Trash2 size={16} />
+                                                                    </button>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    ) : (
+                                                        <div className="bg-[#f6f4ef]/60 border border-dashed border-[#e4e0d7] rounded-2xl p-4 text-center">
+                                                            <p className="text-xs text-[#667085]">
+                                                                Nenhum gasto adicional cadastrado. Clique no botão acima para adicionar despesas com educação, assinaturas, pets, etc.
+                                                            </p>
+                                                        </div>
+                                                    )}
+
+                                                    {/* TOTALIZADOR DE GASTOS */}
+                                                    <div className="p-4 rounded-2xl bg-[#e8f1ed]/50 border border-[#4fa080]/30 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                                                        <div className="text-xs text-[#123044] font-bold flex items-center gap-1.5">
+                                                            <DollarSign size={15} className="text-[#1f674f]" />
+                                                            Total Estimado de Gastos Mensais:
+                                                        </div>
+                                                        <div className="text-base font-extrabold text-[#1f674f]">
+                                                            {totalExpensesFormatted}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
 
                                         {/* WHAT WE DELIVER / ANALYSIS */}
