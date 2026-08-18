@@ -2,14 +2,34 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { SignJWT } from 'jose'
 import { Resend } from 'resend'
+import { LRUCache } from 'lru-cache'
+
+const resetRateLimit = new LRUCache<string, number>({
+    max: 500,
+    ttl: 15 * 60 * 1000, // 15 minutes
+})
 
 // Usa API key da variável de ambiente, se houver
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
 
 export async function POST(req: Request) {
     try {
+        const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown-ip"
+        const attempts = resetRateLimit.get(ip) || 0
+        if (attempts >= 5) {
+            return NextResponse.json(
+                { message: 'Muitas tentativas de recuperação. Tente novamente em 15 minutos.' },
+                { status: 429 }
+            )
+        }
+
         const { identifier } = await req.json()
-        if (!identifier) return NextResponse.json({ error: 'Identificador obrigatório' }, { status: 400 })
+        if (!identifier) {
+            resetRateLimit.set(ip, attempts + 1)
+            return NextResponse.json({ error: 'Identificador obrigatório' }, { status: 400 })
+        }
+
+        resetRateLimit.set(ip, attempts + 1)
 
         const user = await prisma.user.findFirst({
             where: {

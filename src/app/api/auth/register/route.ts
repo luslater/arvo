@@ -2,12 +2,28 @@ import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import bcrypt from "bcrypt"
 import { sendNewUserNotification, sendRegistrationPendingEmail } from "@/lib/email"
+import { LRUCache } from "lru-cache"
+
+const registerRateLimit = new LRUCache<string, number>({
+    max: 500,
+    ttl: 15 * 60 * 1000, // 15 minutes
+})
 
 export async function POST(req: Request) {
     try {
+        const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown-ip"
+        const attempts = registerRateLimit.get(ip) || 0
+        if (attempts >= 5) {
+            return NextResponse.json(
+                { message: "Muitas tentativas de cadastro a partir deste dispositivo. Tente novamente em 15 minutos." },
+                { status: 429 }
+            )
+        }
+
         const { name, email, password, cpf, phone } = await req.json()
 
         if (!email || !password) {
+            registerRateLimit.set(ip, attempts + 1)
             return NextResponse.json(
                 { message: "Email e senha são obrigatórios" },
                 { status: 400 }
