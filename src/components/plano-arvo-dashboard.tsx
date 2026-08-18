@@ -119,7 +119,9 @@ function MetricCard({ icon: Icon, label, value, subtitle, color = "#4fa080", tre
             </span>
           )}
         </div>
-        <div className="text-2xl md:text-3xl font-extrabold text-[#123044] tracking-tight">{value}</div>
+        <div className="text-xl sm:text-2xl font-extrabold text-[#123044] tracking-tight leading-tight truncate mt-1" title={value}>
+          {value}
+        </div>
       </div>
 
       {progress ? (
@@ -138,7 +140,7 @@ function MetricCard({ icon: Icon, label, value, subtitle, color = "#4fa080", tre
           </div>
         </div>
       ) : (
-        subtitle && <div className="text-xs font-semibold text-[#4fa080] mt-1.5">{subtitle}</div>
+        subtitle && <div className="text-xs font-semibold text-[#4fa080] mt-2 truncate">{subtitle}</div>
       )}
     </div>
   )
@@ -272,9 +274,8 @@ export default function PlanoArvoDashboard({ onBack, formData = {} }: { onBack?:
     const reservaAtual = (formData.reservaAtual !== undefined && formData.reservaAtual !== "") ? reservaAtualInput : 28000
     const reservaPct = reservaMeta > 0 ? Math.min(100, Math.round((reservaAtual / reservaMeta) * 100)) : 0
 
-    // 5. Capacidade de Investimento
-    const aporteMensalInput = parseCurrency(formData.aporteMensal)
-    const capacidadeInvestimento = aporteMensalInput > 0 ? aporteMensalInput : saldoLivre
+    // 5. Capacidade de Investimento: Entradas menos Saídas (Fluxo de caixa real)
+    const capacidadeInvestimento = Math.max(0, rendaTotal - gastoTotal)
 
     // 6. Patrimônio & Futuro
     const patrimonioInvestido = parseCurrency(formData.patrimonioInvestido) || (reservaAtual > 0 ? reservaAtual : 185000)
@@ -518,9 +519,9 @@ export default function PlanoArvoDashboard({ onBack, formData = {} }: { onBack?:
                   icon={DollarSign} 
                   label="Renda Mensal" 
                   value={formatBRL(financialData.rendaTotal)} 
-                  subtitle={`Salário + Renda Variável`}
+                  subtitle="Entradas"
                   color="#4fa080" 
-                  tooltip="Soma do Salário Líquido informado na Etapa 1 com rendas variáveis eventuais."
+                  tooltip="Soma total das entradas declaradas na Jornada."
                 />
                 <MetricCard 
                   icon={Wallet} 
@@ -528,7 +529,7 @@ export default function PlanoArvoDashboard({ onBack, formData = {} }: { onBack?:
                   value={formatBRL(financialData.saldoLivre)} 
                   subtitle={`${financialData.saldoLivrePct}% da sua renda líquida`} 
                   color="#2b6e76" 
-                  tooltip="Cálculo exato: Renda Mensal menos todos os seus gastos informados na Etapa 1."
+                  tooltip="Cálculo exato: Entradas menos Saídas informadas na Etapa 1."
                 />
                 <MetricCard 
                   icon={PiggyBank} 
@@ -546,9 +547,9 @@ export default function PlanoArvoDashboard({ onBack, formData = {} }: { onBack?:
                   icon={TrendingUp} 
                   label="Capacidade de Investimento" 
                   value={formatBRL(financialData.capacidadeInvestimento) + "/mês"} 
-                  subtitle={formData.aporteMensal ? "Aporte planejado na Etapa 3" : "Baseado no seu saldo livre"}
+                  subtitle="Entradas menos saídas"
                   color="#123044" 
-                  tooltip="Valor disponível ou planejado para aportar todo mês em investimentos."
+                  tooltip="Saldo líquido real disponível mensalmente para investir (Entradas menos Saídas)."
                 />
               </div>
             </section>
