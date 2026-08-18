@@ -14,6 +14,8 @@ export default withAuth(
             pathname === "/pending" ||
             pathname === "/checkout" ||
             pathname === "/obrigado" ||
+            pathname === "/politica-de-privacidade" ||
+            pathname === "/termos" ||
             pathname.startsWith("/api/auth") ||
             pathname.startsWith("/api/health") ||
             pathname.startsWith("/preview") ||
@@ -60,6 +62,8 @@ export default withAuth(
                     pathname === "/pending" ||
                     pathname === "/checkout" ||
                     pathname === "/obrigado" ||
+                    pathname === "/politica-de-privacidade" ||
+                    pathname === "/termos" ||
                     pathname.startsWith("/api/auth") ||
                     pathname.startsWith("/api/health") ||
                     pathname.startsWith("/preview") ||
