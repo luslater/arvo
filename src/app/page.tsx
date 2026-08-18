@@ -724,6 +724,81 @@ export default function LandingPage() {
           </div>
         </section>
 
+        {/* 8.5 PROVA SOCIAL & CASES */}
+        <section className="ui-section" id="depoimentos" style={{ borderTop: "1px solid var(--border)" }}>
+          <div className="ui-wrap">
+            <div style={{ textAlign: "center", marginBottom: "48px" }}>
+              <div className="ui-eyebrow"><span className="ui-eyebrow-dot"></span> Prova Social & Confiança</div>
+              <h2 className="ui-serif" style={{ fontSize: "clamp(30px, 3.8vw, 46px)", color: "var(--ink-navy)", margin: 0 }}>
+                Quem organiza a vida com a ARVO.<br />
+                <i style={{ fontStyle: "italic", color: "var(--deep-teal)" }}>Histórias reais de tranquilidade e método.</i>
+              </h2>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "20px", marginBottom: "36px" }}>
+              {[
+                {
+                  name: "Carlos Eduardo S.",
+                  role: "Empresário · 42 anos",
+                  dep: "“Eu tinha dinheiro espalhado em 3 corretoras diferentes e vivia ansioso com oscilações. A ARVO organizou meu patrimônio na Bússola e agora sei exatamente quanto aportar para minha independência.”",
+                  tag: "Carteira Visão",
+                  rating: "★★★★★"
+                },
+                {
+                  name: "Mariana R. Prado",
+                  role: "Médica · 36 anos",
+                  dep: "“O que mais me conquistou foi o modelo fee-only. Saber que o planejador não ganha comissão de fundos me deu a segurança que eu nunca tive com assessores de bancão.”",
+                  tag: "Carteira Ritmo",
+                  rating: "★★★★★"
+                },
+                {
+                  name: "Rodrigo F. Lima",
+                  role: "Engenheiro de Software · 31 anos",
+                  dep: "“A Calculadora PL e a Jornada dos 7 Pilares me deram um plano visual e prático. Em 10 minutos entendi o impacto dos juros compostos na minha aposentadoria.”",
+                  tag: "Carteira Oceano",
+                  rating: "★★★★★"
+                }
+              ].map((t, idx) => (
+                <div key={idx} style={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: "18px", padding: "28px 24px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                  <div>
+                    <div style={{ color: "#d97706", fontSize: "16px", marginBottom: "10px", letterSpacing: "2px" }}>{t.rating}</div>
+                    <p style={{ fontSize: "14.5px", color: "var(--text-secondary)", lineHeight: "1.6", fontStyle: "italic", margin: "0 0 16px 0" }}>{t.dep}</p>
+                  </div>
+                  <div style={{ paddingTop: "14px", borderTop: "1px solid var(--border)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div>
+                      <strong style={{ fontSize: "14px", color: "var(--ink-navy)", display: "block" }}>{t.name}</strong>
+                      <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>{t.role}</span>
+                    </div>
+                    <span className="ui-mono" style={{ fontSize: "10.5px", background: "var(--section-alt)", color: "var(--deep-teal)", padding: "4px 8px", borderRadius: "8px", fontWeight: 600 }}>
+                      {t.tag}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Social Proof Stats Banner */}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "16px", background: "var(--section-alt)", border: "1px solid var(--border)", borderRadius: "16px", padding: "24px 28px", textAlign: "center" }}>
+              <div>
+                <div className="ui-serif" style={{ fontSize: "32px", color: "var(--ink-navy)", fontWeight: 600 }}>R$ 50M+</div>
+                <div style={{ fontSize: "12.5px", color: "var(--text-muted)" }}>Patrimônio orientado</div>
+              </div>
+              <div>
+                <div className="ui-serif" style={{ fontSize: "32px", color: "var(--deep-teal)", fontWeight: 600 }}>100%</div>
+                <div style={{ fontSize: "12.5px", color: "var(--text-muted)" }}>Alinhamento Fee-Only</div>
+              </div>
+              <div>
+                <div className="ui-serif" style={{ fontSize: "32px", color: "var(--ink-navy)", fontWeight: 600 }}>27</div>
+                <div style={{ fontSize: "12.5px", color: "var(--text-muted)" }}>Carteiras calibradas</div>
+              </div>
+              <div>
+                <div className="ui-serif" style={{ fontSize: "32px", color: "var(--deep-teal)", fontWeight: 600 }}>4.9 / 5.0</div>
+                <div style={{ fontSize: "12.5px", color: "var(--text-muted)" }}>Satisfação dos clientes</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* 9. OFERTA / ASSINATURA */}
         <section className="ui-section" id="assinatura">
           <div className="ui-wrap">
@@ -810,7 +885,7 @@ export default function LandingPage() {
                 },
                 {
                   q: "Como funciona o cancelamento e a garantia?",
-                  a: "Você pode cancelar a renovação da sua assinatura quando quiser. Caso esteja dentro do período de garantia informado no momento da contratação, também poderá solicitar o reembolso conforme as condições apresentadas na assinatura.",
+                  a: "Você pode cancelar a renovação da sua assinatura quando quiser. Caso esteja dentro do período legal de 7 dias de garantia, você recebe 100% de reembolso sem burocracia.",
                 },
                 {
                   q: "Para quem NÃO é a ARVO?",
@@ -856,20 +931,23 @@ export default function LandingPage() {
           <div className="ui-wrap">
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "24px", borderBottom: "1px solid rgba(255,255,255,0.1)", paddingBottom: "32px" }}>
               <div className="ui-logo" style={{ color: "#ffffff" }}>
-                <img src="/arvo-simbolo-blue.png" alt="ARVO" style={{ width: "24px", height: "24px", objectFit: "contain" }} />
+                <img src="/arvo-simbolo-blue.png" alt="ARVO Símbolo Oficial" style={{ width: "24px", height: "24px", objectFit: "contain" }} />
                 <span>ARVO</span>
               </div>
-              <div style={{ display: "flex", gap: "24px", fontSize: "14px", color: "rgba(255,255,255,0.7)" }}>
+              <div style={{ display: "flex", gap: "24px", fontSize: "14px", color: "rgba(255,255,255,0.7)", flexWrap: "wrap" }}>
                 <a href="#como-funciona" style={{ color: "inherit", textDecoration: "none" }}>Método</a>
                 <a href="#carteiras" style={{ color: "inherit", textDecoration: "none" }}>Carteiras</a>
+                <a href="#depoimentos" style={{ color: "inherit", textDecoration: "none" }}>Depoimentos</a>
                 <a href="#independencia" style={{ color: "inherit", textDecoration: "none" }}>Independência</a>
                 <a href="#assinatura" style={{ color: "inherit", textDecoration: "none" }}>Planos</a>
                 <a href="#faq" style={{ color: "inherit", textDecoration: "none" }}>Dúvidas</a>
+                <Link href="/politica-de-privacidade" style={{ color: "inherit", textDecoration: "none" }}>Privacidade</Link>
+                <Link href="/termos" style={{ color: "inherit", textDecoration: "none" }}>Termos</Link>
               </div>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px", paddingTop: "20px", fontSize: "12px", color: "rgba(255,255,255,0.5)" }}>
               <span>ARVO Orientação Financeira LTDA · ARVO® 2026</span>
-              <span>Plataforma independente fee-only</span>
+              <span>Plataforma independente fee-only · Todos os direitos reservados</span>
             </div>
           </div>
         </footer>
