@@ -12,6 +12,115 @@ import Link from "next/link"
 
 const MIN_WEIGHT_THRESHOLD = 3
 
+export const ASSET_CATALOG: Record<string, { gestora: string; classe: string }> = {
+    // 1. Renda Fixa / Caixa (Zaga)
+    "Tesouro Selic / Fundo Simples": { gestora: "Tesouro Nacional", classe: "Renda Fixa / Caixa" },
+    "ARX Fuji": { gestora: "ARX Investimentos", classe: "Renda Fixa / Caixa" },
+    "BNP Paribas Rubi": { gestora: "BNP Paribas", classe: "Renda Fixa / Caixa" },
+    "Bahia AM DI": { gestora: "Bahia Asset", classe: "Renda Fixa / Caixa" },
+    "MAPFRE RF FIF": { gestora: "MAPFRE Investimentos", classe: "Renda Fixa / Caixa" },
+    "Kinea Oportunidade FIM": { gestora: "Kinea Investimentos", classe: "Renda Fixa / Caixa" },
+    "Kinea Oportunidade FIF": { gestora: "Kinea Investimentos", classe: "Renda Fixa / Caixa" },
+
+    // 2. Renda Fixa / Crédito Privado & FIDC & Debêntures (Zaga)
+    "VALORA GUARDIAN ADVISORY FIDC – RL": { gestora: "Valora Investimentos", classe: "Renda Fixa / Crédito Privado" },
+    "Sparta Deb Inc FIC Incentivados": { gestora: "Sparta Fundos", classe: "Renda Fixa / Crédito Privado" },
+    "JGP Corporate": { gestora: "JGP Asset Management", classe: "Renda Fixa / Crédito Privado" },
+    "JGP Select Premium": { gestora: "JGP Asset Management", classe: "Renda Fixa / Crédito Privado" },
+    "SPX Seahawk Credito Privado": { gestora: "SPX Capital", classe: "Renda Fixa / Crédito Privado" },
+    "Ibiuna Credit": { gestora: "Ibiuna Investimentos", classe: "Renda Fixa / Crédito Privado" },
+    "Augme 30 CIC": { gestora: "Augme Capital", classe: "Renda Fixa / Crédito Privado" },
+    "Augme 180 FIF": { gestora: "Augme Capital", classe: "Renda Fixa / Crédito Privado" },
+    "Capitania Premium 45": { gestora: "Capitânia Investimentos", classe: "Renda Fixa / Crédito Privado" },
+    "Capitania Radar 90": { gestora: "Capitânia Investimentos", classe: "Renda Fixa / Crédito Privado" },
+    "Capitania Yield 120": { gestora: "Capitânia Investimentos", classe: "Renda Fixa / Crédito Privado" },
+    "Kinea Deb Incentivadas": { gestora: "Kinea Investimentos", classe: "Renda Fixa / Crédito Privado" },
+    "Itau Deb Incentivadas": { gestora: "Itaú Asset", classe: "Renda Fixa / Crédito Privado" },
+    "CDBI11": { gestora: "Investo", classe: "Renda Fixa / Crédito Privado" },
+
+    // 3. Renda Fixa / Pré-Fixado & Infraestrutura IPCA+ (Zaga / Meio)
+    "Trend Pre Fixado": { gestora: "XP Asset / Trend", classe: "Renda Fixa / Pré-Fixado" },
+    "ARX Hedge Infra": { gestora: "ARX Investimentos", classe: "Renda Fixa / Infraestrutura (IPCA+)" },
+
+    // 4. Multimercado / Macro / Long Bias (Meio)
+    "Kapitalo Kappa": { gestora: "Kapitalo Investimentos", classe: "Multimercado / Macro" },
+    "Kapitalo Zeta": { gestora: "Kapitalo Investimentos", classe: "Multimercado / Macro" },
+    "Kinea Atlas": { gestora: "Kinea Investimentos", classe: "Multimercado / Macro" },
+    "Genoa Capital Radar": { gestora: "Genoa Capital", classe: "Multimercado / Macro" },
+    "Legacy Compound": { gestora: "Legacy Capital", classe: "Multimercado / Macro" },
+    "Legacy V10": { gestora: "Legacy Capital", classe: "Multimercado / Macro" },
+    "Gavea Macro": { gestora: "Gávea Investimentos", classe: "Multimercado / Macro" },
+    "Gavea Macro Plus": { gestora: "Gávea Investimentos", classe: "Multimercado / Macro" },
+    "Ibiuna Hedge ST": { gestora: "Ibiuna Investimentos", classe: "Multimercado / Macro" },
+    "Mar Absoluto": { gestora: "Mar Asset", classe: "Multimercado / Macro" },
+    "SPX Nimitz": { gestora: "SPX Capital", classe: "Multimercado / Macro" },
+    "SPX Raptor": { gestora: "SPX Capital", classe: "Multimercado / Macro" },
+    "Verde AM X60": { gestora: "Verde Asset", classe: "Multimercado / Macro" },
+    "Vista Multiestrategia": { gestora: "Vista Capital", classe: "Multimercado / Macro" },
+    "Vista Hedge": { gestora: "Vista Capital", classe: "Multimercado / Macro" },
+    "Dahlia Total Return": { gestora: "Dahlia Capital", classe: "Multimercado / Ações" },
+    "Encore Long Bias": { gestora: "Encore Asset", classe: "Multimercado / Long Bias" },
+    "Truxt Long Bias": { gestora: "Truxt Investimentos", classe: "Multimercado / Long Bias" },
+    "JGP Ecossistema": { gestora: "JGP Asset Management", classe: "Multimercado / ESG" },
+
+    // 5. Ações Brasil (Ataque)
+    "SPX Patriot FIF CIC Ações RL": { gestora: "SPX Capital", classe: "Ações / Brasil" },
+    "SPX Patriot FIF CIC Acoes RL": { gestora: "SPX Capital", classe: "Ações / Brasil" },
+    "Hix Capital HS FIA": { gestora: "Hix Capital", classe: "Ações / Brasil" },
+    "Hix Capital FIC FIA": { gestora: "Hix Capital", classe: "Ações / Brasil" },
+    "DIVO11": { gestora: "Itaú Asset (IT NOW)", classe: "Ações / Dividendos" },
+    "Atmos Acoes": { gestora: "Atmos Capital", classe: "Ações / Brasil" },
+    "Bogari Value": { gestora: "Bogari Capital", classe: "Ações / Brasil" },
+    "Bogari Value Q FIC FIF Acoes RL": { gestora: "Bogari Capital", classe: "Ações / Brasil" },
+    "Brasil Capital Institucional 30 FIC FIF Acoes RL": { gestora: "Brasil Capital", classe: "Ações / Brasil" },
+    "Dynamo Cougar": { gestora: "Dynamo", classe: "Ações / Brasil" },
+    "Forpus Acoes FIC FIF Acoes RL": { gestora: "Forpus Capital", classe: "Ações / Brasil" },
+    "Real Investor FIC FIF Acoes RL": { gestora: "Real Investor", classe: "Ações / Brasil" },
+    "IP Participacoes FIC FIF Acoes RL": { gestora: "IP Participações", classe: "Ações / Brasil" },
+    "Alaska Black FIF Cotas FIA": { gestora: "Alaska Asset", classe: "Ações / Brasil" },
+    "Velt Partners FIF Cotas FIA": { gestora: "Velt Partners", classe: "Ações / Brasil" },
+    "SPX Falcon": { gestora: "SPX Capital", classe: "Ações / Brasil" },
+
+    // 6. Ações / Internacional & Globais (Ataque)
+    "IVVB11": { gestora: "BlackRock (iShares)", classe: "Ações / Internacional (S&P 500)" },
+    "NASD11": { gestora: "Itaú Asset (IT NOW)", classe: "Ações / Internacional (Nasdaq 100)" },
+    "WRLD11": { gestora: "Investo / Vanguard", classe: "Ações / Internacional (Global)" },
+    "Wellington Ventura Advisory": { gestora: "Wellington Management", classe: "Ações / Internacional (Global)" },
+    "WELLINGTON VENTURA ADVISORY": { gestora: "Wellington Management", classe: "Ações / Internacional (Global)" },
+}
+
+function getAssetMetadata(assetName: string): { gestora: string; classe: string } {
+    if (ASSET_CATALOG[assetName]) {
+        return ASSET_CATALOG[assetName]
+    }
+
+    const lower = assetName.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim()
+    for (const [key, val] of Object.entries(ASSET_CATALOG)) {
+        const keyLower = key.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim()
+        if (keyLower === lower || lower.includes(keyLower) || keyLower.includes(lower)) {
+            return val
+        }
+    }
+
+    const fund = HISTORICAL_DATA.funds.find((f: any) => {
+        const fName = (f.name || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim()
+        return fName === lower || fName.includes(lower) || lower.includes(fName)
+    })
+
+    if (fund) {
+        let classe = fund.classe || "Renda Fixa"
+        if (classe === "Zaga") classe = "Renda Fixa / Caixa"
+        else if (classe === "Meio") classe = "Multimercado / Inflação"
+        else if (classe === "Ataque") classe = "Ações / Internacional"
+        return {
+            gestora: fund.gestora || "Gestora Independente",
+            classe
+        }
+    }
+
+    return { gestora: "Gestora Independente", classe: "Diversificado" }
+}
+
 export default function BussolaPage() {
     const [tier, setTier] = useState(TIER_ORDER[0] || "30k")
     const [itype, setItype] = useState(ITYPE_ORDER[0] || "Geral 360")
@@ -52,15 +161,10 @@ export default function BussolaPage() {
                 name: p.perfil,
                 headline: "Carteira " + p.perfil,
                 assets: Object.entries(p.weights).map(([assetName, weight]) => {
-                    const fund = HISTORICAL_DATA.funds.find((f: any) => f.name === assetName)
-                    let assetClass = fund?.classe || "Outros"
-                    if (assetClass === "Zaga") assetClass = "Renda Fixa / Caixa"
-                    else if (assetClass === "Meio") assetClass = "Multimercado / Inflação"
-                    else if (assetClass === "Ataque") assetClass = "Ações / Internacional"
-                    
+                    const meta = getAssetMetadata(assetName)
                     return {
-                        class: assetClass,
-                        manager: fund?.gestor || "ARVO",
+                        class: meta.classe,
+                        manager: meta.gestora,
                         asset: assetName,
                         weight: weight * 100,
                         eligibility: "Geral"
@@ -688,11 +792,19 @@ export default function BussolaPage() {
                                         <tr key={asset.assetName} className="border-b border-[#efebe2] hover:bg-[#fff] transition-colors">
                                             <td className="py-3 px-3 font-extrabold text-[#22313f]">{asset.assetName}</td>
                                             <td className="py-3 px-3">
-                                                <span className="inline-flex px-2 py-0.5 rounded text-[10px] font-bold bg-[#eef3f5] text-[#24485b]">
+                                                <span className={`inline-flex px-2 py-0.5 rounded text-[10px] font-bold ${
+                                                    asset.assetClass.includes("Caixa") || asset.assetClass.includes("Selic") 
+                                                        ? "bg-[#e8f1ed] text-[#1f674f]" 
+                                                        : asset.assetClass.includes("Crédito") || asset.assetClass.includes("Infraestrutura") || asset.assetClass.includes("Pré")
+                                                        ? "bg-[#eef3f5] text-[#24485b]"
+                                                        : asset.assetClass.includes("Multimercado")
+                                                        ? "bg-[#fef3c7] text-[#92400e]"
+                                                        : "bg-[#e0e7ff] text-[#3730a3]"
+                                                }`}>
                                                     {asset.assetClass}
                                                 </span>
                                             </td>
-                                            <td className="py-3 px-3 text-[#475467]">{asset.manager || "-"}</td>
+                                            <td className="py-3 px-3 font-semibold text-[#475467]">{asset.manager || "-"}</td>
                                             <td className="py-3 px-3 font-black text-[#123044]">{formatPct(asset.applicableWeight)}</td>
                                         </tr>
                                     ))}

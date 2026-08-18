@@ -3005,9 +3005,9 @@ export const HISTORICAL_DATA: HistoricalData = {
       ]
     },
     {
-      "name": "WELLINGTON VENTURA ADVISORY",
+      "name": "Wellington Ventura Advisory",
       "gestora": "Wellington Management",
-      "classe": "Meio",
+      "classe": "Ataque",
       "iq_geral": "IQ",
       "minimo": null,
       "values": [
