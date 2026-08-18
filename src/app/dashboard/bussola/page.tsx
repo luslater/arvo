@@ -118,6 +118,9 @@ function getAssetMetadata(assetName: string): { gestora: string; classe: string 
         }
     }
 
+    return { gestora: "Gestora Independente", classe: "Diversificado" }
+}
+
 export function getMacroClass(classe: string): string {
     const c = (classe || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
     if (c.includes("caixa") || c.includes("selic") || c.includes("renda fixa") || c.includes("credito") || c.includes("infraestrutura") || c.includes("pre")) {
