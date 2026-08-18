@@ -101,10 +101,6 @@ function ArvoSliderControl({
         }
     }
 
-    const displayValue = isCurrency
-        ? formatBRL(value)
-        : `${value}${unit}`
-
     return (
         <div className="space-y-3">
             <div className="flex items-center gap-2 text-slate-400 font-bold text-[10px] uppercase tracking-widest">
@@ -119,7 +115,7 @@ function ArvoSliderControl({
                             type="text"
                             value={inputValue}
                             onChange={handleInputChange}
-                            className="text-2xl md:text-3xl font-extralight tracking-tight text-slate-900 bg-transparent outline-none w-32 border-b border-slate-100 focus:border-slate-400 transition-colors"
+                            className="text-2xl md:text-3xl font-light tracking-tight text-slate-900 bg-transparent outline-none w-36 sm:w-44 border-b border-slate-100 focus:border-slate-400 transition-colors"
                         />
                     </div>
                 ) : (
@@ -127,7 +123,7 @@ function ArvoSliderControl({
                         type="text"
                         value={inputValue}
                         onChange={handleInputChange}
-                        className="text-2xl md:text-3xl font-extralight tracking-tight text-slate-900 bg-transparent outline-none w-24 border-b border-slate-100 focus:border-slate-400 transition-colors"
+                        className="text-2xl md:text-3xl font-light tracking-tight text-slate-900 bg-transparent outline-none w-24 sm:w-28 border-b border-slate-100 focus:border-slate-400 transition-colors"
                     />
                 )}
                 {!isCurrency && unit && (
@@ -140,66 +136,55 @@ function ArvoSliderControl({
                 onValueChange={(v: number[]) => onChange(v[0])}
                 className="[&_[role=slider]]:bg-slate-900 [&_[role=slider]]:border-slate-900"
             />
-            <div className="flex justify-between text-[10px] text-slate-300 font-medium">
+            <div className="flex justify-between text-[10px] text-slate-400 font-medium">
                 <span>{isCurrency ? formatBRL(min) : `${min}${unit}`}</span>
                 <span>{isCurrency ? formatBRL(max) : `${max}${unit}`}</span>
             </div>
-            {subtext && (
-                <div className="mt-2">
-                    {subtext}
-                </div>
-            )}
+            {subtext}
         </div>
     )
 }
 
-
-// ─── Componente Principal ──────────────────────────────────────────────────────────
+// ─── Componente Principal de Planejamento ──────────────────────────────────────
 export function PlanejamentoContent() {
-    const INFLATION_RATE = 4.87 // IPCA médio fixo
-
-    const [currentValue, setCurrentValue] = useState(100000)
-    const [monthlyContribution, setMonthlyContribution] = useState(2500)
-    const [investmentPeriod, setInvestmentPeriod] = useState(20)
-    const [nominalReturn, setNominalReturn] = useState(12)
-    const [desiredLifestyleCost, setDesiredLifestyleCost] = useState(12000)
-    const [viewMode, setViewMode] = useState<"NOMINAL" | "REAL">("NOMINAL")
-    const [saved, setSaved] = useState(false)
-
+    const INFLATION_RATE = 4.87
     const { data: session } = useSession()
 
-    // Internal state for formatting the desired cost input
-    const [desiredLifestyleCostInput, setDesiredLifestyleCostInput] = useState(formatNumber(12000))
+    const [currentValue, setCurrentValue] = useState(100000)
+    const [monthlyContribution, setMonthlyContribution] = useState(3000)
+    const [investmentPeriod, setInvestmentPeriod] = useState(20)
+    const [nominalReturn, setNominalReturn] = useState(12)
+    const [desiredLifestyleCost, setDesiredLifestyleCost] = useState(10000)
+    const [desiredLifestyleCostInput, setDesiredLifestyleCostInput] = useState(formatNumber(10000))
+    const [viewMode, setViewMode] = useState<"NOMINAL" | "REAL">("NOMINAL")
+    const [saved, setSaved] = useState(false)
 
     useEffect(() => {
         setDesiredLifestyleCostInput(formatNumber(desiredLifestyleCost))
     }, [desiredLifestyleCost])
 
-    // Carrega dados do Banco de Dados via API
     useEffect(() => {
-        if (!session?.user?.id) return
-
-        const loadData = async () => {
+        async function loadData() {
+            if (!session?.user) return
             try {
                 const res = await fetch("/api/user/financial-plan")
                 if (res.ok) {
                     const data = await res.json()
-                    if (data.desiredLifestyleCost) setDesiredLifestyleCost(data.desiredLifestyleCost)
-                    if (data.monthlyContribution) setMonthlyContribution(data.monthlyContribution)
-                    if (data.investmentPeriod) setInvestmentPeriod(data.investmentPeriod)
-                    if (data.expectedReturn) setNominalReturn(data.expectedReturn)
-                    if (data.currentCapital) setCurrentValue(data.currentCapital)
-                    if (data.riskProfile) {
-                        const profile = data.riskProfile
+                    if (data.desiredLifestyleCost) {
+                        setDesiredLifestyleCost(data.desiredLifestyleCost)
+                        setMonthlyContribution(data.monthlyContribution)
+                        setInvestmentPeriod(data.investmentPeriod)
+                        if (data.expectedReturn) setNominalReturn(data.expectedReturn)
+                        if (data.currentCapital) setCurrentValue(data.currentCapital)
+                    } else if (data.riskProfile) {
+                        const profile = data.riskProfile.toUpperCase()
                         const returnByProfile: Record<string, number> = {
-                            "CONSERVADOR": 9,
-                            "MODERADO_CONSERVADOR": 10,
-                            "MODERADO": 11,
-                            "MODERADO_ARROJADO": 12,
-                            "ARROJADO": 13,
+                            ABRIGO: 10.5,
+                            RITMO: 11.5,
+                            VISÃO: 13.0,
+                            OCEANO: 14.5,
                         }
 
-                        // Default to profile's return only if not explicitly saved by the user
                         if (!data.expectedReturn) {
                             setNominalReturn(returnByProfile[profile] ?? 12)
                         }
@@ -209,11 +194,9 @@ export function PlanejamentoContent() {
                 console.error("Erro ao puxar dados do banco:", error)
             }
         }
-
         loadData()
     }, [session])
 
-    // Projeção financeira (usa lib existente)
     const projection = useMemo(() => {
         if (desiredLifestyleCost <= 0) return null
         return projectFinancialPlan({
@@ -226,7 +209,6 @@ export function PlanejamentoContent() {
         })
     }, [currentValue, monthlyContribution, investmentPeriod, nominalReturn, desiredLifestyleCost])
 
-    // Dados do gráfico (apenas pontos anuais)
     const chartData = useMemo(() => {
         if (!projection) return []
         return projection.monthlyData
@@ -241,18 +223,12 @@ export function PlanejamentoContent() {
     }, [projection, viewMode, currentValue])
 
     const alignmentInfo = projection ? getAlignmentLabel(projection.alignmentScore) : null
-
-    // Meta ajustada pela inflação se estivermos na visão nominal
     const targetIncome = viewMode === "NOMINAL" 
         ? desiredLifestyleCost * Math.pow(1 + INFLATION_RATE / 100, investmentPeriod)
         : desiredLifestyleCost;
-
-    // Renda mensal passiva projetada
     const monthlyPassiveIncome = projection
         ? (viewMode === "NOMINAL" ? projection.projectedValue : projection.projectedValueReal) * 0.04 / 12
         : 0
-
-    // Progresso real sempre reflete o alignmentScore oficial (que é calculado em base real no backend)
     const goalProgress = projection ? Math.min(100, projection.alignmentScore) : 0
 
     const handleSave = async () => {
@@ -277,35 +253,23 @@ export function PlanejamentoContent() {
 
     return (
         <div className="text-slate-900 font-sans selection:bg-emerald-100 animate-in fade-in slide-in-from-bottom-2 duration-300">
-
-            {/* ── HEADER ───────────────────────────────────────────────── */}
-            <header className="mb-10 space-y-3">
-                <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    className="flex items-center gap-2 text-emerald-600 font-bold tracking-widest text-[10px] uppercase"
-                >
-                    <ShieldCheck className="w-4 h-4" />
+            <header className="mb-8 md:mb-12 space-y-3">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-[10px] font-bold tracking-widest uppercase">
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
                     Independência Financeira Transparente
-                </motion.div>
-                <motion.h1
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.05 }}
-                    className="text-5xl md:text-6xl font-extralight tracking-tighter leading-none"
-                >
+                </div>
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-slate-900 leading-[1.08]">
                     Seu futuro, <br />
-                    <span className="font-semibold text-emerald-600">em tempo real.</span>
-                </motion.h1>
+                    <span className="font-serif italic font-normal text-slate-700">em tempo real.</span>
+                </h1>
+                <p className="text-slate-500 max-w-lg text-sm md:text-base font-light leading-relaxed">
+                    Altere as premissas e veja instantaneamente o impacto no seu patrimônio e na sua renda passiva no longo prazo.
+                </p>
             </header>
 
-            {/* ── LAYOUT PRINCIPAL ─────────────────────────────────────── */}
-            <div className="grid lg:grid-cols-12 gap-14 items-start">
-
-                {/* COLUNA DE CONTROLES (7) */}
-                <section className="lg:col-span-7 space-y-10">
-                    <div className="grid md:grid-cols-2 gap-x-12 gap-y-10">
-
+            <div className="grid lg:grid-cols-12 gap-8 lg:gap-8 items-start">
+                <section className="lg:col-span-7 space-y-8">
+                    <div className="grid md:grid-cols-2 gap-x-8 gap-y-8">
                         <ArvoSliderControl
                             label="Patrimônio Atual"
                             value={currentValue}
@@ -314,7 +278,6 @@ export function PlanejamentoContent() {
                             isCurrency
                             icon={<Wallet className="w-4 h-4" />}
                         />
-
                         <ArvoSliderControl
                             label="Aporte Mensal"
                             value={monthlyContribution}
@@ -323,7 +286,6 @@ export function PlanejamentoContent() {
                             isCurrency
                             icon={<PiggyBank className="w-4 h-4" />}
                         />
-
                         <ArvoSliderControl
                             label="Prazo de Investimento"
                             value={investmentPeriod}
@@ -332,7 +294,6 @@ export function PlanejamentoContent() {
                             unit=" anos"
                             icon={<CalendarDays className="w-4 h-4" />}
                         />
-
                         <ArvoSliderControl
                             label="Rentabilidade Nominal"
                             value={nominalReturn}
@@ -341,8 +302,8 @@ export function PlanejamentoContent() {
                             unit="%"
                             icon={<TrendingUp className="w-4 h-4" />}
                             subtext={
-                                <div className="p-2.5 rounded-lg bg-emerald-50/50 border border-emerald-100 flex items-center justify-between">
-                                    <span className="text-[11px] font-semibold text-emerald-700 uppercase tracking-wide">Taxa Mensal Equivalente</span>
+                                <div className="mt-4 p-2.5 rounded-lg bg-emerald-50/50 border border-emerald-100 flex items-center justify-between">
+                                    <span className="text-[11px] font-semibold text-emerald-700 uppercase tracking-wide">Taxa Mensal</span>
                                     <span className="text-xs font-bold text-emerald-800">
                                         {((Math.pow(1 + nominalReturn / 100, 1 / 12) - 1) * 100).toFixed(2).replace(".", ",")}% a.m.
                                     </span>
@@ -351,19 +312,15 @@ export function PlanejamentoContent() {
                         />
                     </div>
 
-                    {/* META DE RENDA */}
-                    <div className="p-8 rounded-[2rem] bg-emerald-50/50 border border-emerald-100 space-y-5">
-                        <div className="flex justify-between items-center">
+                    <div className="p-6 sm:p-7 rounded-[2rem] bg-emerald-50/50 border border-emerald-100 space-y-4">
+                        <div className="flex flex-wrap justify-between items-center gap-3">
                             <div className="flex items-center gap-2">
-                                <Target className="w-4 h-4 text-emerald-600" />
+                                <Target className="w-4 h-4 text-emerald-600 shrink-0" />
                                 <Label className="text-[10px] font-bold uppercase tracking-widest text-emerald-800 cursor-default">
                                     Renda Mensal Desejada na Aposentadoria
                                 </Label>
                                 <div className="group relative">
                                     <Info className="w-3 h-3 text-emerald-400 cursor-help" />
-                                    <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-56 p-2 bg-slate-900 text-white text-[10px] rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
-                                        O patrimônio necessário é calculado pela Regra dos 4% (retirada segura anual = 4% do patrimônio).
-                                    </div>
                                 </div>
                             </div>
                             <div className="flex items-center gap-1">
@@ -372,7 +329,7 @@ export function PlanejamentoContent() {
                                     type="text"
                                     value={desiredLifestyleCostInput}
                                     onChange={(e) => setDesiredLifestyleCost(parseNumber(e.target.value))}
-                                    className="bg-transparent text-right font-bold text-2xl text-emerald-600 outline-none w-28 border-b border-emerald-100 focus:border-emerald-500 transition-colors"
+                                    className="bg-transparent text-right font-bold text-xl sm:text-2xl text-emerald-600 outline-none w-32 sm:w-36 border-b border-emerald-100 focus:border-emerald-500 transition-colors"
                                 />
                             </div>
                         </div>
@@ -382,157 +339,63 @@ export function PlanejamentoContent() {
                             onValueChange={(v: number[]) => setDesiredLifestyleCost(v[0])}
                             className="[&_[role=slider]]:bg-emerald-600 [&_[role=slider]]:border-emerald-600"
                         />
-                        <div className="flex justify-between text-[10px] text-emerald-500 font-medium">
-                            <span>R$ 1.000</span>
-                            <span>R$ 50.000</span>
-                        </div>
                     </div>
 
-
-                    {/* TAXA REAL IMPLÍCITA */}
                     {projection && (
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            className="p-4 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-between text-sm"
-                        >
-                            <span className="text-slate-500 text-[11px]">
-                                Taxa real implícita (descontando IPCA de {INFLATION_RATE}%)
-                            </span>
-                            <span className="font-semibold text-slate-700">
-                                {(((1 + nominalReturn / 100) / (1 + INFLATION_RATE / 100)) - 1).toFixed(2).replace(".", ",")}% a.a.
-                            </span>
-                        </motion.div>
-                    )}
-
-                    {/* RECOMMENDATION */}
-                    {projection && (
-                        <motion.div
-                            key={projection.alignmentScore}
-                            initial={{ opacity: 0, y: 8 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className={`p-5 rounded-2xl border text-sm font-light leading-relaxed ${projection.alignmentScore >= 100
-                                ? "bg-emerald-50 border-emerald-200 text-emerald-800"
-                                : projection.alignmentScore >= 60
-                                    ? "bg-yellow-50 border-yellow-200 text-yellow-800"
-                                    : "bg-red-50 border-red-200 text-red-800"
-                                }`}
-                        >
+                        <div className={`p-5 rounded-2xl border text-sm font-light leading-relaxed ${projection.alignmentScore >= 100 ? "bg-emerald-50 border-emerald-200 text-emerald-800" : projection.alignmentScore >= 60 ? "bg-yellow-50 border-yellow-200 text-yellow-800" : "bg-red-50 border-red-200 text-red-800"}`}>
                             {projection.recommendation}
-                        </motion.div>
+                        </div>
                     )}
                 </section>
 
-                {/* COLUNA DE RESULTADOS (5, sticky) */}
-                <aside className="lg:col-span-5 space-y-6 sticky top-10">
-
-                    {/* CARD ESCURO — RESULTADO PRINCIPAL */}
-                    <div
-                        className="bg-slate-950 border-none shadow-[0_32px_64px_-12px_rgba(0,0,0,0.2)] rounded-[3rem] overflow-hidden"
-                        style={{ color: "#ffffff" }}
-                    >
-                        <div className="p-10 md:p-12 space-y-10">
-
-                            {/* Toggle Nominal / Real */}
+                <aside className="lg:col-span-5 space-y-6 sticky top-6">
+                    <div className="bg-slate-950 border-none shadow-[0_32px_64px_-12px_rgba(0,0,0,0.2)] rounded-[2.5rem] overflow-hidden" style={{ color: "#ffffff" }}>
+                        <div className="p-6 sm:p-8 space-y-7">
                             <div className="flex items-center justify-between">
-                                <p className="text-[10px] uppercase font-bold tracking-[0.2em]" style={{ color: "#94a3b8" }}>
-                                    Visão
-                                </p>
+                                <p className="text-[10px] uppercase font-bold tracking-[0.2em]" style={{ color: "#94a3b8" }}>Visão</p>
                                 <div className="flex items-center gap-1 p-1 bg-slate-800 rounded-xl">
                                     {(["NOMINAL", "REAL"] as const).map((m) => (
-                                        <button
-                                            key={m}
-                                            onClick={() => setViewMode(m)}
-                                            className={`px-3 py-1 text-[10px] font-bold rounded-lg tracking-widest transition-all ${viewMode === m
-                                                ? "bg-white text-slate-900"
-                                                : "hover:text-white"
-                                                }`}
-                                            style={{ color: viewMode === m ? undefined : "#94a3b8" }}
-                                        >
-                                            {m === "NOMINAL" ? "Nominal" : "Real (IPCA)"}
-                                        </button>
+                                        <button key={m} onClick={() => setViewMode(m)} className={`px-3 py-1 text-[10px] font-bold rounded-lg tracking-widest transition-all ${viewMode === m ? "bg-white text-slate-900" : "hover:text-white"}`} style={{ color: viewMode === m ? undefined : "#94a3b8" }}>{m === "NOMINAL" ? "Nominal" : "Real"}</button>
                                     ))}
                                 </div>
                             </div>
 
-                            {/* Patrimônio projetado */}
                             <div className="space-y-1">
-                                <p className="text-[10px] uppercase font-bold tracking-[0.2em]" style={{ color: "#94a3b8" }}>
-                                    Patrimônio em {investmentPeriod} anos
-                                </p>
-                                <motion.h2
-                                    key={`${projection?.projectedValue}-${viewMode}`}
-                                    initial={{ opacity: 0, y: 8 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    className="text-5xl md:text-6xl font-extralight tracking-tighter"
-                                    style={{ color: "#ffffff" }}
-                                >
-                                    {projection
-                                        ? formatBRL(viewMode === "NOMINAL" ? projection.projectedValue : projection.projectedValueReal)
-                                        : "R$ 0"}
+                                <p className="text-[10px] uppercase font-bold tracking-[0.2em]" style={{ color: "#94a3b8" }}>Patrimônio em {investmentPeriod} anos</p>
+                                <motion.h2 key={`${projection?.projectedValue}-${viewMode}`} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="text-3xl sm:text-4xl lg:text-[40px] font-light tracking-tight leading-tight text-white break-words">
+                                    {projection ? formatBRL(viewMode === "NOMINAL" ? projection.projectedValue : projection.projectedValueReal) : "R$ 0"}
                                 </motion.h2>
                             </div>
 
-                            {/* Renda mensal + meta */}
-                            <div className="pt-8 border-t border-slate-800 space-y-6">
-                                <div className="flex justify-between items-end">
-                                    <div className="space-y-1">
-                                        <p className="text-[10px] uppercase font-bold tracking-widest" style={{ color: "#94a3b8" }}>
-                                            Renda Mensal Passiva
-                                        </p>
-                                        <motion.p
-                                            key={monthlyPassiveIncome}
-                                            initial={{ opacity: 0, y: 6 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            className="text-4xl font-semibold"
-                                            style={{ color: "#34d399" }}
-                                        >
+                            <div className="pt-6 border-t border-slate-800 space-y-5">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-start sm:items-end">
+                                    <div className="space-y-1 min-w-0">
+                                        <p className="text-[10px] uppercase font-bold tracking-widest" style={{ color: "#94a3b8" }}>Renda Mensal Passiva</p>
+                                        <motion.p key={monthlyPassiveIncome} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="text-2xl sm:text-3xl font-bold tracking-tight truncate leading-tight" style={{ color: "#34d399" }}>
                                             {formatBRL(monthlyPassiveIncome)}
                                         </motion.p>
-                                        <p className="text-[10px]" style={{ color: "#64748b" }}>
-                                            Regra dos 4% · retirada sustentável
-                                        </p>
+                                        <p className="text-[10px]" style={{ color: "#64748b" }}>Regra dos 4% · retirada sustentável</p>
                                     </div>
-                                    <div className="text-right space-y-1">
-                                        <p className="text-[10px] uppercase font-bold" style={{ color: "#64748b" }}>
-                                            Meta {viewMode === "NOMINAL" && "(Futura)"}
-                                        </p>
-                                        <p className="text-2xl font-light" style={{ color: "#cbd5e1" }}>
-                                            {formatBRL(targetIncome)}
-                                        </p>
+                                    <div className="text-left sm:text-right space-y-1 min-w-0">
+                                        <p className="text-[10px] uppercase font-bold" style={{ color: "#64748b" }}>Meta {viewMode === "NOMINAL" && "(Futura)"}</p>
+                                        <p className="text-xl sm:text-2xl font-light tracking-tight truncate leading-tight" style={{ color: "#cbd5e1" }}>{formatBRL(targetIncome)}</p>
                                     </div>
                                 </div>
 
-                                {/* Barra de progresso */}
                                 <div className="space-y-3">
                                     <div className="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
-                                        <motion.div
-                                            initial={{ width: 0 }}
-                                            animate={{ width: `${goalProgress}%` }}
-                                            transition={{ duration: 0.6, ease: "easeOut" }}
-                                            className={`h-full rounded-full shadow-[0_0_15px_rgba(16,185,129,0.4)] ${goalProgress >= 100
-                                                ? "bg-emerald-400"
-                                                : goalProgress >= 60
-                                                    ? "bg-yellow-400"
-                                                    : "bg-red-400"
-                                                }`}
-                                        />
+                                        <motion.div initial={{ width: 0 }} animate={{ width: `${goalProgress}%` }} className={`h-full rounded-full ${goalProgress >= 100 ? "bg-emerald-400" : goalProgress >= 60 ? "bg-yellow-400" : "bg-red-400"}`} />
                                     </div>
                                     <div className="flex justify-between text-[10px] uppercase font-bold tracking-widest">
-                                        <span style={{ color: "#ffffff" }}>
-                                            {alignmentInfo?.label ?? "—"}
-                                        </span>
-                                        <span style={{ color: "#34d399" }}>{goalProgress.toFixed(1)}%</span>
+                                        <span style={{ color: "#ffffff" }}>{alignmentInfo?.label ?? "—"}</span>
+                                        <span style={{ color: "#34d399" }}>{goalProgress.toFixed(0)}%</span>
                                     </div>
                                 </div>
 
-                                {/* Patrimônio necessário */}
                                 {projection && (
-                                    <div className="flex justify-between text-[11px] border-t border-slate-800 pt-4" style={{ color: "#94a3b8" }}>
-                                        <span>Capital necessário (Meta)</span>
-                                        <span className="font-semibold" style={{ color: "#cbd5e1" }}>
-                                            {formatBRL(viewMode === "NOMINAL" ? projection.requiredCapital : projection.requiredCapitalReal)}
-                                        </span>
+                                    <div className="flex items-center justify-between text-[11px] border-t border-slate-800 pt-4 gap-2" style={{ color: "#94a3b8" }}>
+                                        <span className="truncate">Capital necessário (Meta)</span>
+                                        <span className="font-semibold text-xs sm:text-sm shrink-0" style={{ color: "#cbd5e1" }}>{formatBRL(viewMode === "NOMINAL" ? projection.requiredCapital : projection.requiredCapitalReal)}</span>
                                     </div>
                                 )}
                             </div>
