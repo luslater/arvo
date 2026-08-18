@@ -138,9 +138,36 @@ export function getMacroClass(classe: string): string {
     return "Outros"
 }
 
+export const CARTEIRA_TRACKS = [
+    {
+        id: "geral_light",
+        label: "Geral Light",
+        sublabel: "Até R$ 100k (IG)",
+        tier: "Light",
+        itype: "Geral",
+        badge: "Geral Light - IG"
+    },
+    {
+        id: "geral_normal",
+        label: "Investidor Geral",
+        sublabel: "Acima de R$ 100k (IG)",
+        tier: "Normal",
+        itype: "Geral",
+        badge: "Carteira IG"
+    },
+    {
+        id: "iq_normal",
+        label: "Investidor Qualificado",
+        sublabel: "Carteira IQ",
+        tier: "Normal",
+        itype: "IQ",
+        badge: "Carteira IQ"
+    }
+]
+
 export default function BussolaPage() {
-    const [tier, setTier] = useState(TIER_ORDER[0] || "30k")
-    const [itype, setItype] = useState(ITYPE_ORDER[0] || "Geral 360")
+    const [tier, setTier] = useState<string>("Light")
+    const [itype, setItype] = useState<string>("Geral")
     const [riskPosition, setRiskPosition] = useState(50) // 0 to 100
     const [clientProfile, setClientProfile] = useState<string>("RITMO")
     const [hasDiagnosedProfile, setHasDiagnosedProfile] = useState<boolean>(false)
@@ -593,30 +620,40 @@ export default function BussolaPage() {
                     
                     {/* CONTROLES E MEDIDOR */}
                     <aside className="bg-[#fffdf8]/90 border border-[#e4e0d7] rounded-[24px] shadow-[0_20px_50px_rgba(23,33,43,0.05)] overflow-hidden flex flex-col">
-                        <div className="p-6 grid grid-cols-2 gap-4 border-b border-[#e4e0d7]/50">
+                        <div className="p-6 space-y-5 border-b border-[#e4e0d7]/50">
                             <div className="space-y-2">
-                                <label className="text-xs font-bold text-[#667085]">Tipo de investidor</label>
-                                <select 
-                                    className="w-full border border-[#e4e0d7] rounded-xl px-3 py-2 bg-white text-[#123044] font-semibold outline-none text-sm"
-                                    value={itype} onChange={e => setItype(e.target.value)}
-                                >
-                                    {ITYPE_ORDER.map(t => (
-                                        <option key={t} value={t}>{ITYPE_LABEL[t] || t}</option>
-                                    ))}
-                                </select>
+                                <div className="flex items-center justify-between">
+                                    <label className="text-xs font-bold text-[#667085] uppercase tracking-wider">Carteira Oficial ARVO</label>
+                                    <span className="text-[11px] font-bold text-[#1f674f] bg-[#e8f1ed] px-2.5 py-0.5 rounded-full border border-[#d6e5de]">
+                                        {CARTEIRA_TRACKS.find(t => t.tier === tier && t.itype === itype)?.badge || "Geral Light - IG"}
+                                    </span>
+                                </div>
+                                <div className="grid grid-cols-3 gap-2 bg-[#f0ece1] p-1.5 rounded-2xl border border-[#e4e0d7]">
+                                    {CARTEIRA_TRACKS.map(t => {
+                                        const isSelected = tier === t.tier && itype === t.itype
+                                        return (
+                                            <button
+                                                key={t.id}
+                                                type="button"
+                                                onClick={() => {
+                                                    setTier(t.tier)
+                                                    setItype(t.itype)
+                                                }}
+                                                className={`py-2.5 px-2 rounded-xl text-center transition-all duration-200 flex flex-col items-center justify-center ${
+                                                    isSelected 
+                                                        ? "bg-white text-[#123044] font-extrabold shadow-sm scale-[1.02] border border-[#e4e0d7]" 
+                                                        : "text-[#667085] hover:text-[#123044] font-semibold hover:bg-white/50"
+                                                }`}
+                                            >
+                                                <span className="text-xs font-extrabold leading-tight">{t.label}</span>
+                                                <span className="text-[10px] font-medium text-[#8d97a5] mt-0.5">{t.sublabel}</span>
+                                            </button>
+                                        )
+                                    })}
+                                </div>
                             </div>
-                            <div className="space-y-2">
-                                <label className="text-xs font-bold text-[#667085]">Tamanho da carteira</label>
-                                <select 
-                                    className="w-full border border-[#e4e0d7] rounded-xl px-3 py-2 bg-white text-[#123044] font-semibold outline-none text-sm"
-                                    value={tier} onChange={e => setTier(e.target.value)}
-                                >
-                                    {TIER_ORDER.map(t => (
-                                        <option key={t} value={t}>{TIER_LABEL[t] || t}</option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div className="col-span-2 space-y-4 pt-2">
+
+                            <div className="space-y-4 pt-1">
                                 <div className="flex justify-between items-center">
                                     <label className="text-xs font-bold text-[#667085]">Nível de risco no Velocímetro (0 a 100)</label>
                                     <span className="text-xs font-extrabold px-2 py-0.5 rounded-full" style={{ backgroundColor: profileAlignment.bg, color: profileAlignment.color }}>
