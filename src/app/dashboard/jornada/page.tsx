@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Check, ArrowRight, ArrowLeft, ArrowRightCircle, Target, Wallet, ShieldCheck, HeartPulse, Building2, Landmark, Compass, Loader2, Sparkles, CheckCircle2, RotateCcw, Plus, Trash2, PlusCircle, DollarSign } from "lucide-react"
+import { Check, ArrowRight, ArrowLeft, ArrowRightCircle, Target, Wallet, ShieldCheck, HeartPulse, Building2, Landmark, Compass, Loader2, Sparkles, CheckCircle, CheckCircle2, RotateCcw, Plus, Trash2, PlusCircle, DollarSign } from "lucide-react"
 import PlanoArvoDashboard from "@/components/plano-arvo-dashboard"
 import { saveJornadaProgress, getJornadaProgress } from "./actions"
 import { calculateInvestorProfile } from "@/lib/profile-calculator"
