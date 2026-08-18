@@ -503,8 +503,8 @@ export default function PlanejamentoJornadaPage() {
                 </section>
 
                 {/* HORIZONTAL NAVIGATION (7 ETAPAS) */}
-                <nav className="w-full pb-6">
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-2.5">
+                <nav className="w-full pb-4 sm:pb-6 overflow-x-auto no-scrollbar">
+                    <div className="flex sm:grid sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-2 sm:gap-2.5 min-w-max sm:min-w-0">
                         {PLAN_DATA.map((item, idx) => {
                             const isActive = idx === current
                             const isDone = idx < current
@@ -513,24 +513,24 @@ export default function PlanejamentoJornadaPage() {
                                 <div 
                                     key={idx}
                                     onClick={() => setCurrent(idx)}
-                                    className={`flex flex-col items-start gap-2 p-3 rounded-2xl cursor-pointer transition-all duration-200 border w-full ${
+                                    className={`flex flex-col items-start gap-1.5 sm:gap-2 p-2.5 sm:p-3 rounded-2xl cursor-pointer transition-all duration-200 border w-[130px] sm:w-full shrink-0 select-none ${
                                         isActive 
                                             ? "bg-[#123044] border-transparent shadow-lg text-white transform scale-[1.02]" 
                                             : "border-[#e4e0d7] bg-[#fffdf8]/90 hover:bg-[#f0ece1] text-[#123044]"
                                     }`}
                                 >
-                                    <div className={`w-7 h-7 flex-shrink-0 flex items-center justify-center rounded-[8px] font-extrabold text-xs ${
+                                    <div className={`w-6 h-6 sm:w-7 sm:h-7 flex-shrink-0 flex items-center justify-center rounded-[8px] font-extrabold text-[11px] sm:text-xs ${
                                         isActive ? "bg-white text-[#123044]" : 
                                         isDone ? "bg-[#1f674f] !text-white" : 
                                         "bg-[#e4e0d7] text-[#667085]"
                                     }`}>
-                                        {isDone ? <Check size={14} strokeWidth={3} /> : (idx + 1)}
+                                        {isDone ? <Check size={13} strokeWidth={3} /> : (idx + 1)}
                                     </div>
-                                    <div className="w-full mt-1">
-                                        <div className={`font-bold text-[12px] leading-tight line-clamp-2 ${isActive ? "!text-white" : "text-[#123044]"}`}>
+                                    <div className="w-full mt-0.5">
+                                        <div className={`font-bold text-[11px] sm:text-[12px] leading-tight line-clamp-2 ${isActive ? "!text-white" : "text-[#123044]"}`}>
                                             {item.title}
                                         </div>
-                                        <div className={`text-[9.5px] truncate mt-0.5 ${isActive ? "!text-white/70" : "text-[#667085]"}`}>
+                                        <div className={`text-[9px] sm:text-[9.5px] truncate mt-0.5 ${isActive ? "!text-white/70" : "text-[#667085]"}`}>
                                             {item.short}
                                         </div>
                                     </div>
@@ -544,7 +544,7 @@ export default function PlanejamentoJornadaPage() {
                 <section className="flex flex-col items-start w-full">
 
                     {/* MAIN PANEL CONTENT */}
-                    <main className="bg-[#fffdf8]/90 border border-[#e4e0d7] rounded-[32px] p-8 md:p-10 shadow-[0_20px_50px_rgba(23,33,43,0.04)] min-h-[600px] flex flex-col w-full">
+                    <main className="bg-[#fffdf8]/90 border border-[#e4e0d7] rounded-3xl sm:rounded-[32px] p-4 sm:p-8 md:p-10 shadow-[0_20px_50px_rgba(23,33,43,0.04)] min-h-[500px] flex flex-col w-full">
                         <AnimatePresence mode="wait">
                             <motion.div 
                                 key={current}
@@ -555,16 +555,16 @@ export default function PlanejamentoJornadaPage() {
                                 className="flex-1 flex flex-col"
                             >
                                 {/* HEADER */}
-                                <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-6">
+                                <div className="flex flex-col md:flex-row md:items-start justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
                                     <div>
-                                        <div className="text-[11px] font-extrabold text-[#4fa080] uppercase tracking-widest mb-2 flex items-center gap-2">
+                                        <div className="text-[10px] sm:text-[11px] font-extrabold text-[#4fa080] uppercase tracking-widest mb-1.5 flex items-center gap-2">
                                             {step.icon}
                                             ETAPA {current + 1} DE {PLAN_DATA.length} · {step.status}
                                         </div>
-                                        <h2 className="text-3xl md:text-4xl font-extralight tracking-tight text-[#123044]">
+                                        <h2 className="text-2xl sm:text-3xl md:text-4xl font-light tracking-tight text-[#123044]">
                                             {step.title}
                                         </h2>
-                                        <p className="text-sm text-[#667085] mt-1 max-w-2xl leading-relaxed">
+                                        <p className="text-xs sm:text-sm text-[#667085] mt-1 max-w-2xl leading-relaxed">
                                             {step.desc}
                                         </p>
                                     </div>
@@ -574,10 +574,10 @@ export default function PlanejamentoJornadaPage() {
                                 {/* ETAPA 7: QUESTIONÁRIO INTERATIVO DE ALTERNATIVAS (QUIZ) */}
                                 {/* ======================================================== */}
                                 {current === 6 ? (
-                                    <div className="my-4 flex-1 flex flex-col">
+                                    <div className="my-3 sm:my-4 flex-1 flex flex-col">
                                         {!showQuizResult ? (
                                             /* CARD DA PERGUNTA ATUAL */
-                                            <div className="bg-[#fbfaf5] border border-[#e4e0d7] rounded-3xl p-6 md:p-8 shadow-sm flex-1 flex flex-col justify-between">
+                                            <div className="bg-[#fbfaf5] border border-[#e4e0d7] rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-sm flex-1 flex flex-col justify-between">
                                                 <div>
                                                     {/* QUIZ HEADER & PROGRESS */}
                                                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-6 border-b border-[#e4e0d7]">

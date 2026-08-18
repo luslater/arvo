@@ -9,6 +9,7 @@ import {
 } from "lucide-react"
 import { useSession, signOut } from "next-auth/react"
 import { useState } from "react"
+import { MobileBottomNav } from "@/components/mobile-bottom-nav"
 
 interface NavItem {
     href: string
@@ -28,9 +29,9 @@ function NavLink({ href, icon, label, exact, locked, onLockedClick, onClick }: N
         return (
             <button
                 onClick={onLockedClick}
-                className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-[13px] transition-colors text-dash-text-muted hover:bg-dash-surface-active hover:text-dash-text font-normal"
+                className="w-full flex items-center justify-between px-3.5 py-3 md:py-2.5 rounded-xl md:rounded-lg text-sm md:text-[13px] transition-colors text-dash-text-muted hover:bg-dash-surface-active hover:text-dash-text font-normal"
             >
-                <div className="flex items-center gap-2.5">
+                <div className="flex items-center gap-3 md:gap-2.5">
                     <span className="opacity-60">{icon}</span>
                     {label}
                 </div>
@@ -43,8 +44,8 @@ function NavLink({ href, icon, label, exact, locked, onLockedClick, onClick }: N
         <Link
             href={href}
             onClick={onClick}
-            className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-[13px] transition-colors ${isActive
-                ? 'bg-dash-accent-light text-dash-accent font-semibold'
+            className={`flex items-center gap-3 md:gap-2.5 px-3.5 py-3 md:py-2.5 rounded-xl md:rounded-lg text-sm md:text-[13px] transition-all ${isActive
+                ? 'bg-dash-accent-light text-dash-accent font-semibold shadow-xs'
                 : 'text-dash-text-muted hover:bg-dash-surface-active hover:text-dash-text font-normal'
                 }`}
         >
@@ -64,27 +65,50 @@ export function DashboardSidebar() {
 
     return (
         <>
-        {/* Mobile Header */}
-        <div className="md:hidden fixed top-0 left-0 w-full h-16 bg-dash-surface border-b border-dash-border flex items-center justify-between px-4 z-30">
-            <Link href="/dashboard" onClick={closeMobileMenu}>
-                <Image src="/meu-arvo-logo.png" alt="meuARVO" width={100} height={28} className="object-contain" />
+        {/* Native-style Mobile Top Header */}
+        <header className="md:hidden fixed top-0 left-0 right-0 h-14 bg-[#fffdf8]/95 backdrop-blur-xl border-b border-[#e4e0d7] flex items-center justify-between px-4 z-30 shadow-[0_2px_10px_rgba(18,48,68,0.03)]">
+            <Link href="/dashboard" onClick={closeMobileMenu} className="flex items-center gap-2">
+                <Image src="/meu-arvo-logo.png" alt="ARVO" width={85} height={24} className="object-contain h-6 w-auto" />
             </Link>
-            <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-2 text-dash-text hover:bg-dash-surface-active rounded-lg">
-                {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-        </div>
+            <div className="flex items-center gap-2">
+                <Link
+                    href="/dashboard/assinatura"
+                    className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#f0ece1] text-[#1f674f] text-[11px] font-bold border border-[#e4e0d7]"
+                >
+                    <ShieldCheck className="w-3 h-3" />
+                    Fee-Only
+                </Link>
+                <button
+                    onClick={() => setIsMobileMenuOpen(true)}
+                    className="w-8 h-8 rounded-full bg-[#123044] text-white flex items-center justify-center text-xs font-bold shadow-xs active:scale-95 transition-transform"
+                    aria-label="Abrir Menu Completo"
+                >
+                    {session?.user?.name ? session.user.name.charAt(0).toUpperCase() : "A"}
+                </button>
+            </div>
+        </header>
 
         {/* Mobile Backdrop */}
         {isMobileMenuOpen && (
-            <div className="md:hidden fixed inset-0 bg-dash-border/60 backdrop-blur-sm z-40" onClick={closeMobileMenu} />
+            <div 
+                className="md:hidden fixed inset-0 bg-[#123044]/40 backdrop-blur-sm z-50 animate-in fade-in duration-200" 
+                onClick={closeMobileMenu} 
+            />
         )}
 
-        <aside className={`w-[232px] bg-dash-surface border-r border-dash-border flex flex-col shrink-0 fixed top-0 left-0 h-screen font-sans z-50 transition-transform duration-300 ease-in-out ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
-            {/* Logo */}
-            <div className="px-6 py-5 border-b border-dash-border">
-                <Link href="/dashboard">
-                    <Image src="/meu-arvo-logo.png" alt="meuARVO" width={110} height={32} className="object-contain" />
+        {/* Sidebar Drawer */}
+        <aside className={`w-[280px] md:w-[232px] bg-[#fffdf8] border-r border-dash-border flex flex-col shrink-0 fixed top-0 left-0 h-screen font-sans z-50 transition-transform duration-300 ease-out shadow-2xl md:shadow-none ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
+            {/* Logo & Close for Mobile */}
+            <div className="px-6 py-5 border-b border-dash-border flex items-center justify-between">
+                <Link href="/dashboard" onClick={closeMobileMenu}>
+                    <Image src="/meu-arvo-logo.png" alt="ARVO" width={110} height={32} className="object-contain h-7 w-auto" />
                 </Link>
+                <button 
+                    onClick={closeMobileMenu}
+                    className="md:hidden p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100"
+                >
+                    <X className="w-5 h-5" />
+                </button>
             </div>
 
             {/* Navigation */}
@@ -190,6 +214,8 @@ export function DashboardSidebar() {
                 </div>
             </div>
         )}
+        {/* Mobile Bottom Navigation Bar (Dock) */}
+        <MobileBottomNav onOpenMenu={() => setIsMobileMenuOpen(true)} />
         </>
     )
 }

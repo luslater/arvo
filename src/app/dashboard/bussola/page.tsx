@@ -587,15 +587,12 @@ export default function BussolaPage() {
                 </header>
 
                 {/* FEEDBACK DINÂMICO DE ALINHAMENTO DO VELOCÍMETRO */}
-                <motion.div 
-                    key={profileAlignment.status + riskPosition}
-                    initial={{ opacity: 0, y: -4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="p-4 rounded-2xl border flex flex-col md:flex-row items-start md:items-center justify-between gap-3 shadow-sm transition-all"
-                    style={{ 
-                        backgroundColor: profileAlignment.bg, 
-                        borderColor: profileAlignment.border 
-                    }}
+                <motion.div
+                    initial={{ opacity: 0, y: -8 }}
+                    animate={{ opacity: 0.95, y: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="flex flex-col sm:flex-row sm:items-center justify-between p-3.5 sm:p-4 rounded-2xl border shadow-xs gap-3"
+                    style={{ backgroundColor: profileAlignment.bg, borderColor: profileAlignment.border }}
                 >
                     <div className="flex items-center gap-3">
                         {profileAlignment.icon}
@@ -608,7 +605,7 @@ export default function BussolaPage() {
                             </div>
                         </div>
                     </div>
-                    <div className="shrink-0 text-right">
+                    <div className="shrink-0 text-left sm:text-right">
                         <span className="inline-flex px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-white/90 shadow-sm border border-black/5" style={{ color: profileAlignment.color }}>
                             Faixa Ideal: {profileAlignment.recommendedRange}
                         </span>
@@ -616,19 +613,19 @@ export default function BussolaPage() {
                 </motion.div>
 
                 {/* COCKPIT HERO: Bússola + Gráfico */}
-                <div className="grid lg:grid-cols-2 gap-6">
+                <div className="grid lg:grid-cols-2 gap-4 sm:gap-6">
                     
                     {/* CONTROLES E MEDIDOR */}
                     <aside className="bg-[#fffdf8]/90 border border-[#e4e0d7] rounded-[24px] shadow-[0_20px_50px_rgba(23,33,43,0.05)] overflow-hidden flex flex-col">
-                        <div className="p-6 space-y-5 border-b border-[#e4e0d7]/50">
+                        <div className="p-4 sm:p-6 space-y-4 sm:space-y-5 border-b border-[#e4e0d7]/50">
                             <div className="space-y-2">
                                 <div className="flex items-center justify-between">
                                     <label className="text-xs font-bold text-[#667085] uppercase tracking-wider">Carteira Oficial ARVO</label>
-                                    <span className="text-[11px] font-bold text-[#1f674f] bg-[#e8f1ed] px-2.5 py-0.5 rounded-full border border-[#d6e5de]">
+                                    <span className="text-[10px] sm:text-[11px] font-bold text-[#1f674f] bg-[#e8f1ed] px-2.5 py-0.5 rounded-full border border-[#d6e5de]">
                                         {CARTEIRA_TRACKS.find(t => t.tier === tier && t.itype === itype)?.badge || "Geral Light - IG"}
                                     </span>
                                 </div>
-                                <div className="grid grid-cols-3 gap-2 bg-[#f0ece1] p-1.5 rounded-2xl border border-[#e4e0d7]">
+                                <div className="grid grid-cols-3 gap-1.5 sm:gap-2 bg-[#f0ece1] p-1 sm:p-1.5 rounded-2xl border border-[#e4e0d7]">
                                     {CARTEIRA_TRACKS.map(t => {
                                         const isSelected = tier === t.tier && itype === t.itype
                                         return (
@@ -639,14 +636,14 @@ export default function BussolaPage() {
                                                     setTier(t.tier)
                                                     setItype(t.itype)
                                                 }}
-                                                className={`py-2.5 px-2 rounded-xl text-center transition-all duration-200 flex flex-col items-center justify-center ${
+                                                className={`py-2 sm:py-2.5 px-1 sm:px-2 rounded-xl text-center transition-all duration-200 flex flex-col items-center justify-center min-h-[44px] active:scale-95 ${
                                                     isSelected 
-                                                        ? "bg-white text-[#123044] font-extrabold shadow-sm scale-[1.02] border border-[#e4e0d7]" 
+                                                        ? "bg-white text-[#123044] font-extrabold shadow-sm border border-[#e4e0d7]" 
                                                         : "text-[#667085] hover:text-[#123044] font-semibold hover:bg-white/50"
                                                 }`}
                                             >
-                                                <span className="text-xs font-extrabold leading-tight">{t.label}</span>
-                                                <span className="text-[10px] font-medium text-[#8d97a5] mt-0.5">{t.sublabel}</span>
+                                                <span className="text-[11px] sm:text-xs font-extrabold leading-tight">{t.label}</span>
+                                                <span className="text-[9px] sm:text-[10px] font-medium text-[#8d97a5] mt-0.5">{t.sublabel}</span>
                                             </button>
                                         )
                                     })}

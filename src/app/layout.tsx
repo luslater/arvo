@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { DM_Sans, DM_Serif_Display } from "next/font/google";
 import { ClientProviders } from "@/components/client-providers";
@@ -15,8 +15,23 @@ const dmSerif = DM_Serif_Display({
     variable: "--font-dm-serif",
 });
 
+export const viewport: Viewport = {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false,
+    viewportFit: "cover",
+    themeColor: "#123044",
+};
+
 export const metadata: Metadata = {
     metadataBase: new URL("https://meuarvo.com.br"),
+    applicationName: "ARVO",
+    appleWebApp: {
+        capable: true,
+        statusBarStyle: "black-translucent",
+        title: "ARVO",
+    },
     title: {
         default: "ARVO | Orientação Financeira Independente",
         template: "%s | ARVO",

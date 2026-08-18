@@ -1492,34 +1492,34 @@ export default function MinhaCarteiraPage() {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-3.5">
-                <div className="bg-dash-surface border border-dash-border rounded-2xl p-5 shadow-sm">
-                    <div className="flex items-center gap-1.5 text-[11px] text-dash-text-light uppercase tracking-[0.06em] mb-1">
-                        <Wallet className="w-3 h-3" /> Patrimônio Total
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3.5">
+                <div className="bg-dash-surface border border-dash-border rounded-2xl p-3.5 sm:p-5 shadow-xs">
+                    <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] text-dash-text-light uppercase tracking-[0.06em] mb-1">
+                        <Wallet className="w-3 h-3 text-[#1f674f]" /> Patrimônio Total
                     </div>
                     <EditableMetric
                         label="Patrimônio Total"
                         value={data.totalCarteira}
                         onSave={v => saveProfile({ totalCarteira: v })}
                     />
-                    <div className="text-[11px] text-dash-text-light mt-1">Carteira + saldo + reserva</div>
+                    <div className="text-[10px] sm:text-[11px] text-dash-text-light mt-1 truncate">Carteira + saldo + reserva</div>
                 </div>
 
-                <div className="bg-dash-surface border border-dash-border rounded-2xl p-5 shadow-sm">
-                    <div className="flex items-center gap-1.5 text-[11px] text-dash-text-light uppercase tracking-[0.06em] mb-1">
-                        <PiggyBank className="w-3 h-3" /> Aporte Mensal
+                <div className="bg-dash-surface border border-dash-border rounded-2xl p-3.5 sm:p-5 shadow-xs">
+                    <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] text-dash-text-light uppercase tracking-[0.06em] mb-1">
+                        <PiggyBank className="w-3 h-3 text-[#1f674f]" /> Aporte Mensal
                     </div>
                     <EditableMetric
                         label="Aporte Mensal"
                         value={data.monthlyContribution}
                         onSave={v => savePlan({ monthlyContribution: v })}
                     />
-                    <div className="text-[11px] text-dash-text-light mt-1">Definido no Planejamento</div>
+                    <div className="text-[10px] sm:text-[11px] text-dash-text-light mt-1 truncate">Definido no Planejamento</div>
                 </div>
 
-                <div className="bg-dash-surface border border-dash-border rounded-2xl p-5 shadow-sm">
-                    <div className="flex items-center gap-1.5 text-[11px] text-dash-text-light uppercase tracking-[0.06em] mb-1">
-                        <TrendingUp className="w-3 h-3" /> Retorno Est.
+                <div className="bg-dash-surface border border-dash-border rounded-2xl p-3.5 sm:p-5 shadow-xs">
+                    <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] text-dash-text-light uppercase tracking-[0.06em] mb-1">
+                        <TrendingUp className="w-3 h-3 text-[#1f674f]" /> Retorno Est.
                     </div>
                     <EditableMetric
                         label="Retorno Estimado"
@@ -1528,19 +1528,19 @@ export default function MinhaCarteiraPage() {
                         prefix=""
                         suffix="% a.a."
                     />
-                    <div className="text-[11px] text-dash-text-light mt-1">Rentabilidade nominal</div>
+                    <div className="text-[10px] sm:text-[11px] text-dash-text-light mt-1 truncate">Rentabilidade nominal</div>
                 </div>
 
-                <div className="bg-dash-surface border border-dash-border rounded-2xl p-5 shadow-sm">
-                    <div className="flex items-center gap-1.5 text-[11px] text-dash-text-light uppercase tracking-[0.06em] mb-1">
-                        <BarChart3 className="w-3 h-3" /> Reserva de Emergência
+                <div className="bg-dash-surface border border-dash-border rounded-2xl p-3.5 sm:p-5 shadow-xs">
+                    <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] text-dash-text-light uppercase tracking-[0.06em] mb-1">
+                        <BarChart3 className="w-3 h-3 text-[#1f674f]" /> Reserva
                     </div>
                     <EditableMetric
                         label="Reserva de Emergência"
                         value={data.emergencyFund}
                         onSave={v => saveProfile({ emergencyFund: v })}
                     />
-                    <div className="text-[11px] text-dash-text-light mt-1">Fundo de liquidez</div>
+                    <div className="text-[10px] sm:text-[11px] text-dash-text-light mt-1 truncate">Fundo de liquidez</div>
                 </div>
             </div>
         </div>

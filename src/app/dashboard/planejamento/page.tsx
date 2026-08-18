@@ -349,8 +349,8 @@ export function PlanejamentoContent() {
                 </section>
 
                 <aside className="lg:col-span-5 space-y-6 sticky top-6">
-                    <div className="bg-slate-950 border-none shadow-[0_32px_64px_-12px_rgba(0,0,0,0.2)] rounded-[2.5rem] overflow-hidden" style={{ color: "#ffffff" }}>
-                        <div className="p-6 sm:p-8 space-y-7">
+                    <div className="bg-slate-950 border-none shadow-[0_32px_64px_-12px_rgba(0,0,0,0.2)] rounded-3xl sm:rounded-[2.5rem] overflow-hidden" style={{ color: "#ffffff" }}>
+                        <div className="p-5 sm:p-8 space-y-5 sm:space-y-7">
                             <div className="flex items-center justify-between">
                                 <p className="text-[10px] uppercase font-bold tracking-[0.2em]" style={{ color: "#94a3b8" }}>Visão</p>
                                 <div className="flex items-center gap-1 p-1 bg-slate-800 rounded-xl">
@@ -362,23 +362,23 @@ export function PlanejamentoContent() {
 
                             <div className="space-y-1">
                                 <p className="text-[10px] uppercase font-bold tracking-[0.2em]" style={{ color: "#94a3b8" }}>Patrimônio em {investmentPeriod} anos</p>
-                                <motion.h2 key={`${projection?.projectedValue}-${viewMode}`} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="text-3xl sm:text-4xl lg:text-[40px] font-light tracking-tight leading-tight text-white break-words">
+                                <motion.h2 key={`${projection?.projectedValue}-${viewMode}`} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="text-2xl sm:text-4xl lg:text-[40px] font-light tracking-tight leading-tight text-white break-words">
                                     {projection ? formatBRL(viewMode === "NOMINAL" ? projection.projectedValue : projection.projectedValueReal) : "R$ 0"}
                                 </motion.h2>
                             </div>
 
-                            <div className="pt-6 border-t border-slate-800 space-y-5">
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-start sm:items-end">
+                            <div className="pt-5 sm:pt-6 border-t border-slate-800 space-y-4 sm:space-y-5">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 items-start sm:items-end">
                                     <div className="space-y-1 min-w-0">
                                         <p className="text-[10px] uppercase font-bold tracking-widest" style={{ color: "#94a3b8" }}>Renda Mensal Passiva</p>
-                                        <motion.p key={monthlyPassiveIncome} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="text-2xl sm:text-3xl font-bold tracking-tight truncate leading-tight" style={{ color: "#34d399" }}>
+                                        <motion.p key={monthlyPassiveIncome} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="text-xl sm:text-3xl font-bold tracking-tight truncate leading-tight" style={{ color: "#34d399" }}>
                                             {formatBRL(monthlyPassiveIncome)}
                                         </motion.p>
                                         <p className="text-[10px]" style={{ color: "#64748b" }}>Regra dos 4% · retirada sustentável</p>
                                     </div>
                                     <div className="text-left sm:text-right space-y-1 min-w-0">
                                         <p className="text-[10px] uppercase font-bold" style={{ color: "#64748b" }}>Meta {viewMode === "NOMINAL" && "(Futura)"}</p>
-                                        <p className="text-xl sm:text-2xl font-light tracking-tight truncate leading-tight" style={{ color: "#cbd5e1" }}>{formatBRL(targetIncome)}</p>
+                                        <p className="text-lg sm:text-2xl font-light tracking-tight truncate leading-tight" style={{ color: "#cbd5e1" }}>{formatBRL(targetIncome)}</p>
                                     </div>
                                 </div>
 
@@ -403,8 +403,8 @@ export function PlanejamentoContent() {
                     </div>
 
                     {/* CARD GRÁFICO */}
-                    <Card className="border-slate-100 shadow-sm rounded-[2.5rem] bg-white">
-                        <CardContent className="p-10 space-y-5">
+                    <Card className="border-slate-100 shadow-sm rounded-3xl sm:rounded-[2.5rem] bg-white">
+                        <CardContent className="p-5 sm:p-8 space-y-4 sm:space-y-5">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2 text-slate-400 font-bold text-[10px] uppercase tracking-widest">
                                     <ChartIcon className="w-3 h-3" /> Evolução do Patrimônio
