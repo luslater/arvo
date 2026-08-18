@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Check, ArrowRight, ArrowRightCircle, Target, Wallet, ShieldCheck, HeartPulse, Building2, Landmark, Compass, Loader2, Sparkles } from "lucide-react"
+import { Check, ArrowRight, ArrowLeft, ArrowRightCircle, Target, Wallet, ShieldCheck, HeartPulse, Building2, Landmark, Compass, Loader2, Sparkles, CheckCircle2, RotateCcw } from "lucide-react"
 import PlanoArvoDashboard from "@/components/plano-arvo-dashboard"
 import { saveJornadaProgress, getJornadaProgress } from "./actions"
 import { calculateInvestorProfile } from "@/lib/profile-calculator"
@@ -15,6 +15,81 @@ type FieldDef = {
     options?: string[]
     placeholder?: string
 }
+
+const SUITABILITY_QUESTIONS = [
+    {
+        id: 0,
+        name: "perfil_experiencia",
+        title: "Qual a sua experiência com investimentos no mercado financeiro?",
+        subtitle: "Selecione a opção que melhor descreve seu histórico até hoje:",
+        options: [
+            { letter: "A", text: "Iniciante: Somente poupança ou ainda não comecei a investir" },
+            { letter: "B", text: "Básico: Invisto em Renda Fixa tradicional (CDB, Tesouro Selic, LCI/LCA)" },
+            { letter: "C", text: "Intermediário: Diversifico entre Renda Fixa, Fundos de Investimento e FIIs" },
+            { letter: "D", text: "Avançado: Invisto ativamente em Ações, FIIs, Criptoativos e Ativos Globais" }
+        ]
+    },
+    {
+        id: 1,
+        name: "perfil_reacao_queda",
+        title: "Se seus investimentos caíssem 15% em um mês de forte estresse no mercado, você:",
+        subtitle: "Avalie como você costuma reagir emocionalmente a oscilações:",
+        options: [
+            { letter: "A", text: "Ficaria desesperado e resgataria todo o dinheiro imediatamente" },
+            { letter: "B", text: "Ficaria desconfortável e transferiria uma parte para a renda fixa mais segura" },
+            { letter: "C", text: "Compreenderia que faz parte da oscilação do mercado e manteria o plano" },
+            { letter: "D", text: "Veria como grande oportunidade e aproveitaria para investir mais" }
+        ]
+    },
+    {
+        id: 2,
+        name: "perfil_objetivo",
+        title: "Qual é o principal objetivo para o seu patrimônio?",
+        subtitle: "Identifique sua prioridade de longo prazo:",
+        options: [
+            { letter: "A", text: "Preservação absoluta do capital e liquidez imediata (não tolero oscilação)" },
+            { letter: "B", text: "Superar a inflação com baixo risco e renda constante (estabilidade)" },
+            { letter: "C", text: "Crescimento patrimonial de longo prazo aceitando oscilações moderadas" },
+            { letter: "D", text: "Maximizar o retorno no longo prazo aceitando alta volatilidade" }
+        ]
+    },
+    {
+        id: 3,
+        name: "perfil_horizonte",
+        title: "Por quanto tempo você pretende manter a maior parte do seu patrimônio investida?",
+        subtitle: "O horizonte de tempo é fundamental para o nível de risco adequado:",
+        options: [
+            { letter: "A", text: "Menos de 1 ano (preciso do dinheiro no curto prazo)" },
+            { letter: "B", text: "De 1 a 3 anos (médio prazo curto)" },
+            { letter: "C", text: "De 3 a 7 anos (médio/longo prazo)" },
+            { letter: "D", text: "Mais de 7 a 10 anos (foco em aposentadoria e independência)" }
+        ]
+    },
+    {
+        id: 4,
+        name: "perfil_liquidez",
+        title: "Qual parcela do patrimônio você pode precisar resgatar nos próximos 12 meses?",
+        subtitle: "Isso define a necessidade de liquidez imediata versus ativos com carência:",
+        options: [
+            { letter: "A", text: "Mais de 50% do total investido" },
+            { letter: "B", text: "Entre 20% e 50% do total" },
+            { letter: "C", text: "Entre 10% e 20% do total" },
+            { letter: "D", text: "Menos de 10% (minha reserva de emergência já está 100% separada)" }
+        ]
+    },
+    {
+        id: 5,
+        name: "perfil_perdas",
+        title: "Qual frase melhor descreve sua tolerância a oscilações temporárias?",
+        subtitle: "Sua postura diante da relação risco vs. retorno:",
+        options: [
+            { letter: "A", text: "Não admito perdas nominais em hipótese alguma" },
+            { letter: "B", text: "Aceito pequenas variações temporárias se render acima do CDI" },
+            { letter: "C", text: "Aceito oscilações de médio prazo para buscar valorização expressiva" },
+            { letter: "D", text: "Busco rentabilidade máxima e tolero quedas severas sem mudar a rota" }
+        ]
+    }
+]
 
 const PLAN_DATA = [
     {
@@ -174,74 +249,7 @@ const PLAN_DATA = [
         delivery: "Classificação de Suitability e calibração da Bússola.",
         signal: "Sua carteira está perfeitamente alinhada ao seu estômago e metas.",
         icon: <Compass className="text-[#4fa080] shrink-0" size={24} />,
-        fields: [
-            {
-                name: "perfil_experiencia",
-                label: "Qual a sua experiência no mercado financeiro?",
-                type: "select",
-                options: [
-                    "Iniciante (Poupança ou nunca investi)",
-                    "Básico (Renda Fixa tradicional: CDB, Tesouro)",
-                    "Intermediário (Renda Fixa, Fundos e FIIs)",
-                    "Avançado (Ações, FIIs, Cripto e Ativos Globais)"
-                ]
-            },
-            {
-                name: "perfil_reacao_queda",
-                label: "Se seus investimentos caíssem 15% em um mês de estresse, você:",
-                type: "select",
-                options: [
-                    "Ficaria desesperado e resgataria tudo imediatamente",
-                    "Ficaria muito desconfortável e reduziria o risco para Renda Fixa",
-                    "Compreenderia que faz parte do plano e manteria a alocação",
-                    "Veria como oportunidade e aproveitaria para investir mais"
-                ]
-            },
-            {
-                name: "perfil_objetivo",
-                label: "Qual o objetivo prioritário para seus investimentos?",
-                type: "select",
-                options: [
-                    "Preservação absoluta do capital e liquidez imediata",
-                    "Proteger contra a inflação com baixo risco e estabilidade",
-                    "Crescimento patrimonial de longo prazo aceitando oscilações",
-                    "Maximizar retorno aceitando alta volatilidade"
-                ]
-            },
-            {
-                name: "perfil_horizonte",
-                label: "Por quanto tempo pretende manter a maior parte investida?",
-                type: "select",
-                options: [
-                    "Menos de 1 ano",
-                    "De 1 a 3 anos",
-                    "De 3 a 7 anos",
-                    "Mais de 7 a 10 anos"
-                ]
-            },
-            {
-                name: "perfil_liquidez",
-                label: "Quanto do patrimônio pode precisar nos próximos 12 meses?",
-                type: "select",
-                options: [
-                    "Mais de 50% do total",
-                    "Entre 20% e 50%",
-                    "Entre 10% e 20%",
-                    "Menos de 10% (Reserva de segurança já está separada)"
-                ]
-            },
-            {
-                name: "perfil_perdas",
-                label: "Qual frase melhor descreve sua tolerância a oscilações temporárias?",
-                type: "select",
-                options: [
-                    "Não admito perdas nominais em hipótese alguma",
-                    "Aceito pequenas oscilações temporárias se render mais que o CDI",
-                    "Aceito perdas temporárias de médio prazo para buscar retornos expressivos",
-                    "Busco rentabilidade máxima e tolero quedas severas sem mudar a rota"
-                ]
-            }
-        ],
+        fields: [] as FieldDef[],
         analysis: [
             "Cálculo do Score de Tolerância ao Risco",
             "Determinação do Perfil Oficial ARVO (Abrigo, Ritmo, Visão, Oceano)",
@@ -258,7 +266,7 @@ const PROGRESS_LABELS = [
     "Pilar 4: Futuro. Descubra o número exato para a independência financeira e calcule o gap.",
     "Pilar 5: Inteligência Fiscal. Dados sobre seu IR permitem encontrar atalhos legais para reter mais ganhos.",
     "Pilar 6: Legado. Organizar como o patrimônio passa para a próxima geração evita burocracia e custos.",
-    "Pilar 7: Perfil do Investidor. Responda o questionário de Suitability para calibrar sua Bússola de Carteiras."
+    "Pilar 7: Perfil do Investidor. Responda o questionário interativo para calibrar sua Bússola de Carteiras."
 ]
 
 export default function PlanejamentoJornadaPage() {
@@ -266,6 +274,8 @@ export default function PlanejamentoJornadaPage() {
     const [formData, setFormData] = useState<Record<string, string>>({})
     const [showDashboard, setShowDashboard] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
+    const [quizQuestionIndex, setQuizQuestionIndex] = useState(0)
+    const [showQuizResult, setShowQuizResult] = useState(false)
 
     useEffect(() => {
         async function loadProgress() {
@@ -297,6 +307,51 @@ export default function PlanejamentoJornadaPage() {
 
     const calculatedCurrentProfile = calculateInvestorProfile(formData)
 
+    const profileMetaMap: Record<string, { label: string; color: string; badgeBg: string; border: string; desc: string }> = {
+        ABRIGO: { 
+            label: "Abrigo (Conservador)", 
+            color: "#123044", 
+            badgeBg: "#e4efe8", 
+            border: "#9bcbb4",
+            desc: "Prioridade absoluta em liquidez e preservação do capital. Baixíssima tolerância a oscilações." 
+        },
+        RITMO: { 
+            label: "Ritmo (Moderado)", 
+            color: "#1f674f", 
+            badgeBg: "#e8f1ed", 
+            border: "#4fa080",
+            desc: "Equilíbrio entre segurança e proteção real contra a inflação (IPCA+), aceitando oscilações controladas." 
+        },
+        "VISÃO": { 
+            label: "Visão (Arrojado)", 
+            color: "#2b6e76", 
+            badgeBg: "#e8f2f4", 
+            border: "#2b6e76",
+            desc: "Foco em crescimento de longo prazo com ações, multimercados e ativos imobiliários, com boa tolerância ao risco." 
+        },
+        OCEANO: { 
+            label: "Oceano (Agressivo)", 
+            color: "#123044", 
+            badgeBg: "#f0f4f8", 
+            border: "#123044",
+            desc: "Máximo potencial de retorno com exposição global e total tolerância a alta volatilidade para horizontes longos." 
+        }
+    }
+
+    // Handle alternative selection in step 7
+    const handleSelectQuizOption = (questionName: string, optionText: string) => {
+        setFormData(prev => ({ ...prev, [questionName]: optionText }))
+        
+        // Advance to next question after small visual feedback
+        setTimeout(() => {
+            if (quizQuestionIndex < SUITABILITY_QUESTIONS.length - 1) {
+                setQuizQuestionIndex(prev => prev + 1)
+            } else {
+                setShowQuizResult(true)
+            }
+        }, 220)
+    }
+
     const goNext = async () => {
         if (current < PLAN_DATA.length - 1) {
             setCurrent((prev) => prev + 1)
@@ -323,13 +378,8 @@ export default function PlanejamentoJornadaPage() {
 
     const step = PLAN_DATA[current]
     const score = Math.round(((current + 1) / PLAN_DATA.length) * 100)
-
-    const profileMetaMap: Record<string, { label: string; color: string; desc: string }> = {
-        ABRIGO: { label: "Abrigo (Conservador)", color: "#9bcbb4", desc: "Prioridade absoluta em liquidez e preservação do capital." },
-        RITMO: { label: "Ritmo (Moderado)", color: "#4fa080", desc: "Equilíbrio entre segurança e proteção real contra a inflação (IPCA+)." },
-        "VISÃO": { label: "Visão (Arrojado)", color: "#2b6e76", desc: "Crescimento de longo prazo com ações, multimercados e ativos reais." },
-        OCEANO: { label: "Oceano (Agressivo)", color: "#123044", desc: "Máximo potencial de retorno com exposição global e tolerância a alta volatilidade." }
-    }
+    const currentQuizQ = SUITABILITY_QUESTIONS[quizQuestionIndex]
+    const allQuizAnswered = SUITABILITY_QUESTIONS.every(q => Boolean(formData[q.name]))
 
     return (
         <div className="min-h-screen text-slate-900 font-sans p-6 md:p-8 animate-in fade-in slide-in-from-bottom-2 duration-300 bg-[#f6f4ef]">
@@ -428,10 +478,10 @@ export default function PlanejamentoJornadaPage() {
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -10 }}
                                 transition={{ duration: 0.3 }}
-                                className="flex-1"
+                                className="flex-1 flex flex-col"
                             >
                                 {/* HEADER */}
-                                <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-8">
+                                <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-6">
                                     <div>
                                         <div className="text-[11px] font-extrabold text-[#4fa080] uppercase tracking-widest mb-2 flex items-center gap-2">
                                             {step.icon}
@@ -440,163 +490,322 @@ export default function PlanejamentoJornadaPage() {
                                         <h2 className="text-3xl md:text-4xl font-extralight tracking-tight text-[#123044]">
                                             {step.title}
                                         </h2>
-                                        <p className="text-sm text-[#667085] mt-2 max-w-2xl leading-relaxed">
+                                        <p className="text-sm text-[#667085] mt-1 max-w-2xl leading-relaxed">
                                             {step.desc}
                                         </p>
                                     </div>
                                 </div>
 
-                                {/* Se for a Etapa 7 (Análise de Perfil), mostramos o Badge de Perfil em tempo real */}
-                                {current === 6 && (
-                                    <div className="mb-8 p-6 rounded-2xl border border-[#2b6e76]/30 bg-[#e8f1ed]/50 flex flex-col sm:flex-row justify-between items-center gap-4">
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-12 h-12 rounded-xl bg-[#2b6e76] text-white flex items-center justify-center shrink-0">
-                                                <Compass size={24} />
-                                            </div>
-                                            <div>
-                                                <div className="text-xs font-bold text-[#2b6e76] uppercase tracking-wider flex items-center gap-1.5">
-                                                    <Sparkles size={14} />
-                                                    Perfil Calculado em Tempo Real
-                                                </div>
-                                                <div className="text-2xl font-extrabold text-[#123044]">
-                                                    {profileMetaMap[calculatedCurrentProfile]?.label || calculatedCurrentProfile}
-                                                </div>
-                                                <div className="text-xs text-[#667085] mt-0.5">
-                                                    {profileMetaMap[calculatedCurrentProfile]?.desc}
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="text-right shrink-0">
-                                            <span className="inline-flex px-3 py-1.5 rounded-full bg-white text-[#123044] text-xs font-bold border border-[#e4e0d7] shadow-sm">
-                                                Conectado à Bússola
-                                            </span>
-                                        </div>
-                                    </div>
-                                )}
+                                {/* ======================================================== */}
+                                {/* ETAPA 7: QUESTIONÁRIO INTERATIVO DE ALTERNATIVAS (QUIZ) */}
+                                {/* ======================================================== */}
+                                {current === 6 ? (
+                                    <div className="my-4 flex-1 flex flex-col">
+                                        {!showQuizResult ? (
+                                            /* CARD DA PERGUNTA ATUAL */
+                                            <div className="bg-[#fbfaf5] border border-[#e4e0d7] rounded-3xl p-6 md:p-8 shadow-sm flex-1 flex flex-col justify-between">
+                                                <div>
+                                                    {/* QUIZ HEADER & PROGRESS */}
+                                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-6 border-b border-[#e4e0d7]">
+                                                        <div>
+                                                            <div className="text-[11px] font-extrabold text-[#2b6e76] uppercase tracking-wider flex items-center gap-1.5">
+                                                                <Sparkles size={14} />
+                                                                Questionário de Suitability ARVO
+                                                            </div>
+                                                            <div className="text-xs font-bold text-[#667085] mt-0.5">
+                                                                Pergunta {quizQuestionIndex + 1} de {SUITABILITY_QUESTIONS.length}
+                                                            </div>
+                                                        </div>
 
-                                {/* FORM FIELDS */}
-                                <div className="grid md:grid-cols-2 gap-6 my-8">
-                                    {step.fields.map((field) => {
-                                        const val = formData[field.name] || ""
-                                        
-                                        return (
-                                            <div key={field.name} className={`space-y-2 ${field.type === 'radio' ? 'md:col-span-2' : ''}`}>
-                                                <label className="text-xs font-bold text-[#123044] flex items-center gap-1.5">
-                                                    {field.label}
-                                                </label>
-
-                                                {field.type === "currency" && (
-                                                    <div className="relative">
-                                                        <input 
-                                                            type="text" 
-                                                            placeholder={field.placeholder || "R$ 0,00"}
-                                                            value={val}
-                                                            onChange={(e) => handleInputChange(field.name, formatCurrency(e.target.value))}
-                                                            className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-4 py-3 text-sm text-[#123044] font-medium placeholder:text-[#a09e99] focus:outline-none focus:border-[#4fa080] focus:ring-1 focus:ring-[#4fa080] transition-all"
-                                                        />
+                                                        {/* DOTS DE PROGRESSO */}
+                                                        <div className="flex items-center gap-1.5">
+                                                            {SUITABILITY_QUESTIONS.map((q, idx) => {
+                                                                const isCurrent = idx === quizQuestionIndex
+                                                                const isAnswered = Boolean(formData[q.name])
+                                                                return (
+                                                                    <button
+                                                                        key={idx}
+                                                                        type="button"
+                                                                        onClick={() => setQuizQuestionIndex(idx)}
+                                                                        title={`Ir para pergunta ${idx + 1}`}
+                                                                        className={`h-2.5 rounded-full transition-all duration-300 ${
+                                                                            isCurrent 
+                                                                                ? "w-8 bg-[#2b6e76]" 
+                                                                                : isAnswered 
+                                                                                    ? "w-2.5 bg-[#4fa080]" 
+                                                                                    : "w-2.5 bg-[#e4e0d7]"
+                                                                        }`}
+                                                                    />
+                                                                )
+                                                            })}
+                                                        </div>
                                                     </div>
-                                                )}
 
-                                                {field.type === "number" && (
-                                                    <input 
-                                                        type="number" 
-                                                        placeholder={field.placeholder}
-                                                        value={val}
-                                                        onChange={(e) => handleInputChange(field.name, e.target.value)}
-                                                        className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-4 py-3 text-sm text-[#123044] font-medium placeholder:text-[#a09e99] focus:outline-none focus:border-[#4fa080] focus:ring-1 focus:ring-[#4fa080] transition-all"
-                                                    />
-                                                )}
+                                                    {/* PERGUNTA */}
+                                                    <div className="my-6">
+                                                        <h3 className="text-xl md:text-2xl font-bold text-[#123044] leading-snug">
+                                                            {currentQuizQ.title}
+                                                        </h3>
+                                                        <p className="text-xs text-[#667085] mt-1.5">
+                                                            {currentQuizQ.subtitle}
+                                                        </p>
+                                                    </div>
 
-                                                {field.type === "text" && (
-                                                    <input 
-                                                        type="text" 
-                                                        placeholder={field.placeholder}
-                                                        value={val}
-                                                        onChange={(e) => handleInputChange(field.name, e.target.value)}
-                                                        className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-4 py-3 text-sm text-[#123044] font-medium placeholder:text-[#a09e99] focus:outline-none focus:border-[#4fa080] focus:ring-1 focus:ring-[#4fa080] transition-all"
-                                                    />
-                                                )}
+                                                    {/* ALTERNATIVAS CLICÁVEIS */}
+                                                    <div className="grid gap-3 my-4">
+                                                        {currentQuizQ.options.map((opt) => {
+                                                            const isSelected = formData[currentQuizQ.name] === opt.text
+                                                            return (
+                                                                <button
+                                                                    key={opt.letter}
+                                                                    type="button"
+                                                                    onClick={() => handleSelectQuizOption(currentQuizQ.name, opt.text)}
+                                                                    className={`w-full p-4 rounded-2xl border text-left flex items-center justify-between gap-4 transition-all duration-200 ${
+                                                                        isSelected
+                                                                            ? "bg-[#123044] text-white border-[#123044] shadow-md transform scale-[1.01]"
+                                                                            : "bg-[#fffdf8] hover:bg-[#f2efe6] text-[#123044] border-[#e4e0d7] hover:border-[#2b6e76]"
+                                                                    }`}
+                                                                >
+                                                                    <div className="flex items-center gap-3.5">
+                                                                        <span className={`w-8 h-8 rounded-xl font-bold text-xs flex items-center justify-center shrink-0 transition-colors ${
+                                                                            isSelected
+                                                                                ? "bg-white text-[#123044]"
+                                                                                : "bg-[#e8f1ed] text-[#2b6e76]"
+                                                                        }`}>
+                                                                            {opt.letter}
+                                                                        </span>
+                                                                        <span className="text-sm font-semibold leading-relaxed">
+                                                                            {opt.text}
+                                                                        </span>
+                                                                    </div>
+                                                                    {isSelected && (
+                                                                        <CheckCircle2 size={20} className="text-[#4fa080] shrink-0" />
+                                                                    )}
+                                                                </button>
+                                                            )
+                                                        })}
+                                                    </div>
+                                                </div>
 
-                                                {field.type === "select" && (
-                                                    <select 
-                                                        value={val}
-                                                        onChange={(e) => handleInputChange(field.name, e.target.value)}
-                                                        className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-4 py-3 text-sm text-[#123044] font-medium focus:outline-none focus:border-[#4fa080] focus:ring-1 focus:ring-[#4fa080] transition-all"
+                                                {/* QUIZ CONTROLS */}
+                                                <div className="flex items-center justify-between pt-6 border-t border-[#e4e0d7] mt-4">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setQuizQuestionIndex(prev => Math.max(0, prev - 1))}
+                                                        disabled={quizQuestionIndex === 0}
+                                                        className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-[#667085] hover:text-[#123044] disabled:opacity-20 disabled:pointer-events-none transition-colors"
                                                     >
-                                                        <option value="">Selecione uma opção...</option>
-                                                        {field.options?.map(opt => (
-                                                            <option key={opt} value={opt}>{opt}</option>
-                                                        ))}
-                                                    </select>
-                                                )}
+                                                        <ArrowLeft size={14} />
+                                                        Pergunta Anterior
+                                                    </button>
 
-                                                {field.type === "radio" && (
-                                                    <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3 pt-1">
-                                                        {field.options?.map(opt => (
-                                                            <button
-                                                                type="button"
-                                                                key={opt}
-                                                                onClick={() => handleInputChange(field.name, opt)}
-                                                                className={`px-4 py-3 text-xs font-semibold rounded-xl border text-left transition-all ${
-                                                                    val === opt 
-                                                                        ? "bg-[#123044] text-white border-transparent shadow-sm" 
-                                                                        : "bg-[#f6f4ef] text-[#123044] border-[#e4e0d7] hover:bg-[#e4e0d7]/60"
-                                                                }`}
-                                                            >
-                                                                {opt}
-                                                            </button>
-                                                        ))}
+                                                    {quizQuestionIndex < SUITABILITY_QUESTIONS.length - 1 ? (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setQuizQuestionIndex(prev => prev + 1)}
+                                                            disabled={!formData[currentQuizQ.name]}
+                                                            className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-[#2b6e76] hover:bg-[#1f565d] disabled:opacity-40 disabled:pointer-events-none text-white text-xs font-bold rounded-xl transition-all shadow-sm"
+                                                        >
+                                                            Próxima Pergunta
+                                                            <ArrowRight size={14} />
+                                                        </button>
+                                                    ) : (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setShowQuizResult(true)}
+                                                            disabled={!formData[currentQuizQ.name]}
+                                                            className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-[#123044] hover:bg-[#1c4460] disabled:opacity-40 disabled:pointer-events-none text-white text-xs font-bold rounded-xl transition-all shadow-sm"
+                                                        >
+                                                            Ver Resultado do Perfil
+                                                            <Sparkles size={14} />
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            /* CARD DO RESULTADO DO PERFIL */
+                                            <div className="bg-[#fbfaf5] border border-[#e4e0d7] rounded-3xl p-8 shadow-sm flex-1 flex flex-col justify-between">
+                                                <div className="space-y-6">
+                                                    <div className="text-center max-w-xl mx-auto">
+                                                        <div className="w-16 h-16 rounded-2xl bg-[#2b6e76] text-white flex items-center justify-center mx-auto mb-4 shadow-md">
+                                                            <Compass size={32} />
+                                                        </div>
+                                                        <div className="text-xs font-bold text-[#2b6e76] uppercase tracking-widest mb-1">
+                                                            Perfil de Investidor Identificado
+                                                        </div>
+                                                        <h3 className="text-3xl md:text-4xl font-extrabold text-[#123044]">
+                                                            {profileMetaMap[calculatedCurrentProfile]?.label || calculatedCurrentProfile}
+                                                        </h3>
+                                                        <p className="text-sm text-[#667085] mt-2 leading-relaxed">
+                                                            {profileMetaMap[calculatedCurrentProfile]?.desc}
+                                                        </p>
                                                     </div>
-                                                )}
-                                            </div>
-                                        )
-                                    })}
-                                </div>
 
-                                {/* WHAT WE DELIVER / ANALYSIS */}
-                                <div className="mt-8 pt-6 border-t border-[#e4e0d7]">
-                                    <div className="text-[11px] font-extrabold text-[#667085] uppercase tracking-wider mb-3">
-                                        Entregáveis da Etapa {current + 1}
-                                    </div>
-                                    <div className="grid sm:grid-cols-2 gap-2.5">
-                                        {step.analysis.map((an, i) => (
-                                            <div key={i} className="flex items-center gap-2 text-xs font-medium text-[#123044] bg-[#f6f4ef]/80 p-2.5 rounded-xl border border-[#e4e0d7]/70">
-                                                <Check size={14} className="text-[#4fa080] shrink-0" />
-                                                <span>{an}</span>
+                                                    {/* RESUMO DAS RESPOSTAS */}
+                                                    <div className="bg-[#fffdf8] border border-[#e4e0d7] rounded-2xl p-5">
+                                                        <div className="flex items-center justify-between mb-3 border-b border-[#e4e0d7] pb-2">
+                                                            <span className="text-xs font-bold text-[#123044]">Suas 6 Respostas de Suitability</span>
+                                                            <button 
+                                                                type="button" 
+                                                                onClick={() => { setShowQuizResult(false); setQuizQuestionIndex(0); }}
+                                                                className="text-[11px] font-bold text-[#2b6e76] hover:underline flex items-center gap-1"
+                                                            >
+                                                                <RotateCcw size={12} /> Refazer Questionário
+                                                            </button>
+                                                        </div>
+                                                        <div className="grid sm:grid-cols-2 gap-2 text-xs">
+                                                            {SUITABILITY_QUESTIONS.map((q, idx) => (
+                                                                <div key={q.id} className="p-2.5 rounded-xl bg-[#f6f4ef] border border-[#e4e0d7]/70">
+                                                                    <div className="text-[10px] font-bold text-[#667085] truncate">{idx + 1}. {q.title}</div>
+                                                                    <div className="font-semibold text-[#123044] truncate mt-0.5">{formData[q.name] || "Não respondido"}</div>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div className="pt-6 border-t border-[#e4e0d7] flex flex-col sm:flex-row items-center justify-between gap-4 mt-6">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => { setShowQuizResult(false); setQuizQuestionIndex(0); }}
+                                                        className="px-4 py-2 text-xs font-bold text-[#667085] hover:text-[#123044] transition-colors"
+                                                    >
+                                                        ← Alterar Respostas
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={goNext}
+                                                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-[#123044] hover:bg-[#1d4b6b] text-white text-xs font-bold uppercase tracking-wider rounded-xl shadow-lg transition-all transform hover:-translate-y-0.5"
+                                                    >
+                                                        Finalizar Análise & Salvar Perfil
+                                                        <ArrowRightCircle size={18} />
+                                                    </button>
+                                                </div>
                                             </div>
-                                        ))}
+                                        )}
                                     </div>
-                                </div>
+                                ) : (
+                                    /* ======================================================== */
+                                    /* ETAPAS 1 A 6: FORMULÁRIO PADRÃO                         */
+                                    /* ======================================================== */
+                                    <>
+                                        <div className="grid md:grid-cols-2 gap-6 my-8">
+                                            {step.fields.map((field) => {
+                                                const val = formData[field.name] || ""
+                                                
+                                                return (
+                                                    <div key={field.name} className={`space-y-2 ${field.type === 'radio' ? 'md:col-span-2' : ''}`}>
+                                                        <label className="text-xs font-bold text-[#123044] flex items-center gap-1.5">
+                                                            {field.label}
+                                                        </label>
+
+                                                        {field.type === "currency" && (
+                                                            <div className="relative">
+                                                                <input 
+                                                                    type="text" 
+                                                                    placeholder={field.placeholder || "R$ 0,00"}
+                                                                    value={val}
+                                                                    onChange={(e) => handleInputChange(field.name, formatCurrency(e.target.value))}
+                                                                    className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-4 py-3 text-sm text-[#123044] font-medium placeholder:text-[#a09e99] focus:outline-none focus:border-[#4fa080] focus:ring-1 focus:ring-[#4fa080] transition-all"
+                                                                />
+                                                            </div>
+                                                        )}
+
+                                                        {field.type === "number" && (
+                                                            <input 
+                                                                type="number" 
+                                                                placeholder={field.placeholder}
+                                                                value={val}
+                                                                onChange={(e) => handleInputChange(field.name, e.target.value)}
+                                                                className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-4 py-3 text-sm text-[#123044] font-medium placeholder:text-[#a09e99] focus:outline-none focus:border-[#4fa080] focus:ring-1 focus:ring-[#4fa080] transition-all"
+                                                            />
+                                                        )}
+
+                                                        {field.type === "text" && (
+                                                            <input 
+                                                                type="text" 
+                                                                placeholder={field.placeholder}
+                                                                value={val}
+                                                                onChange={(e) => handleInputChange(field.name, e.target.value)}
+                                                                className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-4 py-3 text-sm text-[#123044] font-medium placeholder:text-[#a09e99] focus:outline-none focus:border-[#4fa080] focus:ring-1 focus:ring-[#4fa080] transition-all"
+                                                            />
+                                                        )}
+
+                                                        {field.type === "select" && (
+                                                            <select 
+                                                                value={val}
+                                                                onChange={(e) => handleInputChange(field.name, e.target.value)}
+                                                                className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-4 py-3 text-sm text-[#123044] font-medium focus:outline-none focus:border-[#4fa080] focus:ring-1 focus:ring-[#4fa080] transition-all"
+                                                            >
+                                                                <option value="">Selecione uma opção...</option>
+                                                                {field.options?.map(opt => (
+                                                                    <option key={opt} value={opt}>{opt}</option>
+                                                                ))}
+                                                            </select>
+                                                        )}
+
+                                                        {field.type === "radio" && (
+                                                            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3 pt-1">
+                                                                {field.options?.map(opt => (
+                                                                    <button
+                                                                        type="button"
+                                                                        key={opt}
+                                                                        onClick={() => handleInputChange(field.name, opt)}
+                                                                        className={`px-4 py-3 text-xs font-semibold rounded-xl border text-left transition-all ${
+                                                                            val === opt 
+                                                                                ? "bg-[#123044] text-white border-transparent shadow-sm" 
+                                                                                : "bg-[#f6f4ef] text-[#123044] border-[#e4e0d7] hover:bg-[#e4e0d7]/60"
+                                                                        }`}
+                                                                    >
+                                                                        {opt}
+                                                                    </button>
+                                                                ))}
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                )
+                                            })}
+                                        </div>
+
+                                        {/* WHAT WE DELIVER / ANALYSIS */}
+                                        <div className="mt-8 pt-6 border-t border-[#e4e0d7]">
+                                            <div className="text-[11px] font-extrabold text-[#667085] uppercase tracking-wider mb-3">
+                                                Entregáveis da Etapa {current + 1}
+                                            </div>
+                                            <div className="grid sm:grid-cols-2 gap-2.5">
+                                                {step.analysis.map((an, i) => (
+                                                    <div key={i} className="flex items-center gap-2 text-xs font-medium text-[#123044] bg-[#f6f4ef]/80 p-2.5 rounded-xl border border-[#e4e0d7]/70">
+                                                        <Check size={14} className="text-[#4fa080] shrink-0" />
+                                                        <span>{an}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </>
+                                )}
                             </motion.div>
                         </AnimatePresence>
 
-                        {/* BOTTOM ACTIONS */}
-                        <div className="flex items-center justify-between mt-auto pt-8 border-t border-[#e4e0d7]">
-                            <button
-                                onClick={() => setCurrent(prev => Math.max(0, prev - 1))}
-                                disabled={current === 0}
-                                className="px-5 py-2.5 text-xs font-bold text-[#667085] hover:text-[#123044] disabled:opacity-30 disabled:pointer-events-none transition-colors"
-                            >
-                                Voltar Etapa
-                            </button>
+                        {/* BOTTOM ACTIONS (PARA ETAPAS 1 A 6) */}
+                        {current < 6 && (
+                            <div className="flex items-center justify-between mt-auto pt-8 border-t border-[#e4e0d7]">
+                                <button
+                                    onClick={() => setCurrent(prev => Math.max(0, prev - 1))}
+                                    disabled={current === 0}
+                                    className="px-5 py-2.5 text-xs font-bold text-[#667085] hover:text-[#123044] disabled:opacity-30 disabled:pointer-events-none transition-colors"
+                                >
+                                    Voltar Etapa
+                                </button>
 
-                            <button
-                                onClick={goNext}
-                                className="inline-flex items-center gap-2 px-6 py-3 bg-[#123044] hover:bg-[#1e4866] text-white text-xs font-bold uppercase tracking-wider rounded-xl shadow-md transition-all transform hover:-translate-y-0.5"
-                            >
-                                {current < PLAN_DATA.length - 1 ? (
-                                    <>
-                                        Avançar para Etapa {current + 2}
-                                        <ArrowRight size={16} />
-                                    </>
-                                ) : (
-                                    <>
-                                        Finalizar Análise & Ver Plano
-                                        <ArrowRightCircle size={16} />
-                                    </>
-                                )}
-                            </button>
-                        </div>
+                                <button
+                                    onClick={goNext}
+                                    className="inline-flex items-center gap-2 px-6 py-3 bg-[#123044] hover:bg-[#1e4866] text-white text-xs font-bold uppercase tracking-wider rounded-xl shadow-md transition-all transform hover:-translate-y-0.5"
+                                >
+                                    Avançar para Etapa {current + 2}
+                                    <ArrowRight size={16} />
+                                </button>
+                            </div>
+                        )}
                     </main>
                 </section>
             </div>
