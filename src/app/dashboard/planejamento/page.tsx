@@ -154,8 +154,8 @@ function ArvoSliderControl({
 }
 
 
-// ─── Página Principal ──────────────────────────────────────────────────────────
-export default function PlanejamentoDashboardPage() {
+// ─── Componente Principal ──────────────────────────────────────────────────────────
+export function PlanejamentoContent() {
     const INFLATION_RATE = 4.87 // IPCA médio fixo
 
     const [currentValue, setCurrentValue] = useState(100000)
@@ -622,3 +622,6 @@ export default function PlanejamentoDashboardPage() {
         </div>
     )
 }
+
+export default PlanejamentoContent
+
