@@ -1,30 +1,12 @@
 "use client";
 
-import { useEffect } from "react";
+import { useState } from "react";
 import LandingSimulator from "@/components/landing-simulator";
 import { PerformanceChart } from "@/components/performance-chart";
 import Link from "next/link";
 
 export default function LandingPage() {
-  useEffect(() => {
-    const handleFaqClick = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const btn = target.closest(".ui-faq-btn");
-      if (!btn) return;
-
-      const item = btn.closest(".ui-faq-item");
-      if (!item) return;
-
-      const isOpen = item.classList.contains("open");
-      document.querySelectorAll(".ui-faq-item").forEach((i) => i.classList.remove("open"));
-      if (!isOpen) {
-        item.classList.add("open");
-      }
-    };
-
-    document.addEventListener("click", handleFaqClick);
-    return () => document.removeEventListener("click", handleFaqClick);
-  }, []);
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   return (
     <div className="ui-theme-root">
@@ -869,7 +851,6 @@ export default function LandingPage() {
                 {
                   q: "Preciso tirar meus investimentos do meu banco?",
                   a: "Não. Você continua investindo no banco ou corretora que preferir e mantém o controle do seu patrimônio. A ARVO ajuda a organizar a estratégia; você decide e executa seus investimentos onde quiser.",
-                  open: true,
                 },
                 {
                   q: "A ARVO investe o dinheiro por mim?",
@@ -878,6 +859,14 @@ export default function LandingPage() {
                 {
                   q: "Como a ARVO ganha dinheiro?",
                   a: "Pela assinatura dos nossos clientes. A ARVO não depende de comissão sobre os produtos que você investe. Isso permite construir nossa relação com um objetivo simples: ajudar você a tomar decisões financeiras melhores, sem precisar empurrar um produto.",
+                },
+                {
+                  q: "Qual a diferença entre a carteira Geral Light e a Investidor Geral (IG)?",
+                  a: "A carteira Geral Light foi desenvolvida especificamente para patrimônios de até R$ 100 mil, com produtos acessíveis e valores mínimos reduzidos. As carteiras Investidor Geral (acima de R$ 100k) e Investidor Qualificado (IQ) oferecem diversificação institucional mais profunda com múltiplos gestores e estratégias.",
+                },
+                {
+                  q: "Meus dados financeiros e bancários estão protegidos?",
+                  a: "Sim. A ARVO opera em estrita conformidade com a LGPD (Lei nº 13.709/2018). Seus dados trafegam com criptografia TLS 1.3 de ponta a ponta, senhas são hasheadas com Bcrypt e nós nunca vendemos nem compartilhamos suas informações financeiras com terceiros ou anunciantes.",
                 },
                 {
                   q: "Posso conhecer antes de pagar?",
@@ -892,12 +881,16 @@ export default function LandingPage() {
                   a: "A ARVO não é para quem procura dinheiro rápido, promessas de rentabilidade ou a “ação da vez”. Também não é para quem quer entregar o dinheiro para outra pessoa administrar. A ARVO é para quem quer construir patrimônio com planejamento, estratégia e visão de longo prazo — mantendo o controle das próprias decisões.",
                 },
               ].map((faq, idx) => (
-                <div key={idx} className={`ui-faq-item ${faq.open ? "open" : ""}`}>
-                  <button className="ui-faq-btn">
+                <div key={idx} className={`ui-faq-item ${openFaq === idx ? "open" : ""}`}>
+                  <button
+                    type="button"
+                    className="ui-faq-btn"
+                    onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
+                  >
                     <span>{faq.q}</span>
-                    <span className="ui-faq-icon">+</span>
+                    <span className="ui-faq-icon">{openFaq === idx ? "−" : "+"}</span>
                   </button>
-                  <div className="ui-faq-body">{faq.a}</div>
+                  {openFaq === idx && <div className="ui-faq-body">{faq.a}</div>}
                 </div>
               ))}
             </div>
