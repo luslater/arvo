@@ -17,12 +17,12 @@ const userData = {
 }
 
 const pillarData = [
-  { id: 1, name: "Sua Organização Financeira", score: 74, icon: Wallet, color: "#123044", badge: "Organizador Financeiro", status: "completed" },
-  { id: 2, name: "Sua Proteção e Segurança", score: 61, icon: Shield, color: "#2b6e76", badge: "Guardião", status: "completed" },
-  { id: 3, name: "Construção do Seu Patrimônio", score: 72, icon: TrendingUp, color: "#4fa080", badge: "Construtor de Patrimônio", status: "completed" },
-  { id: 4, name: "Seu Futuro e Aposentadoria", score: 65, icon: Sun, color: "#123044", badge: "Arquiteto do Futuro", status: "completed" },
-  { id: 5, name: "Sua Inteligência Tributária", score: 58, icon: Scale, color: "#2b6e76", badge: "Estrategista Tributário", status: "completed" },
-  { id: 6, name: "Seu Legado e Sucessão", score: 52, icon: TreePine, color: "#4fa080", badge: "Arquiteto do Legado", status: "completed" },
+  { id: 1, name: "Organização Financeira", score: 74, icon: Wallet, color: "#123044", badge: "Organizador Financeiro", status: "completed" },
+  { id: 2, name: "Proteção e Segurança", score: 61, icon: Shield, color: "#2b6e76", badge: "Guardião", status: "completed" },
+  { id: 3, name: "Construção de Patrimônio", score: 72, icon: TrendingUp, color: "#4fa080", badge: "Construtor de Patrimônio", status: "completed" },
+  { id: 4, name: "Futuro e Aposentadoria", score: 65, icon: Sun, color: "#123044", badge: "Arquiteto do Futuro", status: "completed" },
+  { id: 5, name: "Inteligência Tributária", score: 58, icon: Scale, color: "#2b6e76", badge: "Estrategista Tributário", status: "completed" },
+  { id: 6, name: "Legado e Sucessão", score: 52, icon: TreePine, color: "#4fa080", badge: "Arquiteto do Legado", status: "completed" },
   { id: 7, name: "Análise do Seu Perfil de Investimento", score: 85, icon: Compass, color: "#1f674f", badge: "Perfil de Investidor", status: "completed" },
 ]
 

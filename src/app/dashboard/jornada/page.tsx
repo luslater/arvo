@@ -93,13 +93,13 @@ const SUITABILITY_QUESTIONS = [
 
 const PLAN_DATA = [
     {
-        title: "Sua Organização Financeira",
-        short: "Seu Raio-X e Reserva",
-        status: "Base da sua jornada",
+        title: "Organização Financeira",
+        short: "Raio-X, Gastos e Reserva",
+        status: "Base da jornada",
         desc: "O Pilar 1 cria um retrato honesto da sua vida financeira. Entenda de onde vem seu dinheiro, para onde ele vai, sua capacidade de poupança e o tamanho ideal da sua reserva de emergência.",
         objective: "Criar clareza sobre sua vida financeira atual.",
-        delivery: "Diagnóstico do seu caixa e capacidade de aporte.",
-        signal: "Você sabe exatamente quanto pode investir com segurança.",
+        delivery: "Diagnóstico de caixa e capacidade de aporte.",
+        signal: "Você sabe quanto pode investir com segurança.",
         icon: <Wallet className="text-[#4fa080] shrink-0" size={24} />,
         fields: [
             { name: "salarioLiquido", label: "Salário Líquido Mensal", type: "currency", placeholder: "R$ 0,00" },
@@ -115,20 +115,20 @@ const PLAN_DATA = [
             { name: "parcelasDividas", label: "Parcela Mensal de Dívidas", type: "currency", placeholder: "R$ 0,00" }
         ],
         analysis: [
-            "Taxa de Comprometimento da Sua Renda",
-            "Cálculo exato da Meta da Sua Reserva de Emergência",
-            "Sua Capacidade Líquida de Investimento Mensal",
+            "Taxa de Comprometimento de Renda",
+            "Cálculo exato da Meta da Reserva de Emergência",
+            "Capacidade Líquida de Investimento",
             "Índice de Endividamento e Custo dos Juros"
         ]
     },
     {
-        title: "Sua Proteção e Segurança",
-        short: "Gestão dos Seus Riscos",
-        status: "Proteção do seu plano",
-        desc: "O Pilar 2 mapeia suas vulnerabilidades. Blindar seu patrimônio e proteger quem você ama contra imprevistos é o que garante a tranquilidade do seu futuro.",
-        objective: "Identificar vulnerabilidades e proteger sua família.",
-        delivery: "Matriz dos seus riscos e capital segurado ideal.",
-        signal: "Seus riscos mais graves estão mapeados e protegidos.",
+        title: "Proteção e Segurança",
+        short: "Gestão de Riscos Pessoais",
+        status: "Proteção do plano",
+        desc: "O Pilar 2 mapeia suas vulnerabilidades. Ninguém gosta de pensar nisso, mas proteger quem você ama e blindar seu patrimônio contra imprevistos é um ato de responsabilidade.",
+        objective: "Identificar vulnerabilidades e sugerir coberturas.",
+        delivery: "Matriz de riscos e capital segurado sugerido.",
+        signal: "Riscos graves estão isolados e tratados.",
         icon: <HeartPulse className="text-[#4fa080] shrink-0" size={24} />,
         fields: [
             { name: "idade", label: "Sua Idade", type: "number", placeholder: "Ex: 35" },
@@ -143,19 +143,19 @@ const PLAN_DATA = [
         ],
         analysis: [
             "Matriz de Vulnerabilidade (Morte, Invalidez, Saúde)",
-            "Cálculo do Capital Necessário para Sua Proteção",
+            "Cálculo de Capital Necessário (Seguro de Vida)",
             "Gaps e Excessos em proteções atuais",
-            "Adequação de Plano de Saúde e Coberturas Pessoais"
+            "Adequação de Plano de Saúde e Proteção DIT"
         ]
     },
     {
-        title: "Construção do Seu Patrimônio",
-        short: "Seus Objetivos e Aportes",
-        status: "Sua estratégia patrimonial",
-        desc: "O Pilar 3 organiza seus objetivos no tempo e a sua capacidade de poupança contínua para fazer o seu patrimônio trabalhar a seu favor.",
-        objective: "Conectar seus aportes aos seus objetivos de vida.",
-        delivery: "Plano estruturado para acumular seu patrimônio.",
-        signal: "Cada aporte seu possui meta e destino definidos.",
+        title: "Construção de Patrimônio",
+        short: "Objetivos e Aportes",
+        status: "Estratégia patrimonial",
+        desc: "O Pilar 3 organiza seus objetivos no tempo e a sua capacidade de poupança contínua para fazer o patrimônio trabalhar a seu favor.",
+        objective: "Conectar capacidade de aporte a objetivos de vida.",
+        delivery: "Plano de acumulação patrimonial estruturado.",
+        signal: "Cada aporte possui meta e destino definidos.",
         icon: <Target className="text-[#4fa080] shrink-0" size={24} />,
         fields: [
             { name: "patrimonioInvestido", label: "Patrimônio Atual Investido", type: "currency", placeholder: "R$ 0,00" },
@@ -165,20 +165,20 @@ const PLAN_DATA = [
             { name: "prioridadeAportes", label: "Prioridade dos próximos aportes", type: "select", options: ["Completar reserva de emergência", "Acelerar independência financeira", "Projetos de médio prazo", "Diversificar em ativos globais"] }
         ],
         analysis: [
-            "Classificação dos seus objetivos por horizonte de tempo",
-            "Sua Taxa de Poupança vs. Renda Líquida",
-            "Simulação do poder dos Juros Compostos no seu patrimônio",
-            "Mapeamento de prioridades para os seus próximos 12 meses"
+            "Classificação de objetivos por horizonte de tempo",
+            "Taxa de Poupança vs. Renda Líquida",
+            "Simulação do poder dos Juros Compostos no tempo",
+            "Mapeamento de prioridades para os próximos 12 meses"
         ]
     },
     {
-        title: "Seu Futuro e Aposentadoria",
-        short: "Sua Liberdade Financeira",
-        status: "Seu longo prazo",
-        desc: "O Pilar 4 situa você na curva da vida. Descubra o número exato de patrimônio necessário para manter seu padrão de vida e simule o impacto da previdência e do INSS.",
+        title: "Futuro e Aposentadoria",
+        short: "Independência Financeira",
+        status: "Longo prazo",
+        desc: "O Pilar 4 situa você na curva da vida. Descubra o 'número mágico' do patrimônio necessário para manter seu padrão de vida e simule o impacto da previdência e do INSS.",
         objective: "Descobrir o seu número de liberdade.",
-        delivery: "Plano de acumulação e projeção do seu padrão de vida.",
-        signal: "Você tem a meta exata da sua liberdade na mão.",
+        delivery: "Plano de acumulação e simulação do gap.",
+        signal: "Você tem uma meta patrimonial exata.",
         icon: <Landmark className="text-[#4fa080] shrink-0" size={24} />,
         fields: [
             { name: "idadeIf", label: "Idade desejada para Aposentadoria", type: "number", placeholder: "Ex: 60" },
@@ -188,20 +188,20 @@ const PLAN_DATA = [
             { name: "possuiPrevidencia", label: "Possui Previdência Privada?", type: "select", options: ["PGBL", "VGBL", "Ambos", "Não possuo"] }
         ],
         analysis: [
-            "Cálculo do Seu Patrimônio Necessário de Liberdade",
-            "Análise do Gap da Sua Aposentadoria",
-            "Aporte Mensal Ajustado para o Seu Cenário",
-            "Otimização Previdenciária Pessoal (PGBL vs VGBL)"
+            "Necessidade de Patrimônio (com/sem herança)",
+            "Análise do Gap de Aposentadoria",
+            "Aporte Mensal Ajustado (para fechar a conta)",
+            "Otimização Previdenciária (PGBL vs VGBL)"
         ]
     },
     {
-        title: "Sua Inteligência Tributária",
-        short: "Sua Otimização Fiscal",
-        status: "Sua eficiência",
-        desc: "O Pilar 5 mapeia como os impostos impactam seus ganhos. Avaliamos sua declaração de IR, come-cotas e isenções para maximizar seu rendimento líquido de forma 100% legal.",
-        objective: "Otimizar sua carga tributária sobre investimentos.",
-        delivery: "Mapa tributário e oportunidades para o seu IR.",
-        signal: "Você otimiza sua declaração e retém mais ganhos.",
+        title: "Inteligência Tributária",
+        short: "Otimização Fiscal",
+        status: "Eficiência",
+        desc: "O Pilar 5 mapeia como os impostos corroem seus ganhos. Avaliamos sua declaração de IR, come-cotas e isenções para maximizar seu rendimento líquido de forma 100% legal.",
+        objective: "Otimizar a carga tributária sobre investimentos.",
+        delivery: "Mapa de tributação e oportunidades fiscais.",
+        signal: "Você otimizou sua declaração.",
         icon: <ShieldCheck className="text-[#4fa080] shrink-0" size={24} />,
         fields: [
             { name: "declaracaoIr", label: "Tipo de Declaração do IR", type: "radio", options: ["Completa", "Simplificada", "Isento", "Não sei"] },
@@ -211,20 +211,20 @@ const PLAN_DATA = [
             { name: "gastosDedutiveis", label: "Gastos Dedutíveis Relevantes?", type: "radio", options: ["Sim (Saúde, Educação, etc)", "Não / Poucos"] }
         ],
         analysis: [
-            "Estimativa da Sua Alíquota Efetiva de IR",
-            "Identificação de Come-Cotas nos Seus Fundos",
+            "Estimativa da Alíquota Efetiva de IR",
+            "Identificação de Come-Cotas em Fundos",
             "Oportunidade de benefício fiscal via PGBL (até 12%)",
             "Vantagem de transição para ativos Isentos (LCI/LCA)"
         ]
     },
     {
-        title: "Seu Legado e Sucessão",
-        short: "Proteção da Sua Família",
-        status: "Continuidade familiar",
-        desc: "O Pilar 6 organiza a transmissão do seu patrimônio. Entenda o impacto do ITCMD, custos de inventário e crie um plano para proteger quem você ama de conflitos e burocracia.",
-        objective: "Organizar sua sucessão e blindar sua família.",
-        delivery: "Checklist sucessório e proteção do seu patrimônio.",
-        signal: "Clareza total sobre o futuro da sua família.",
+        title: "Legado e Sucessão",
+        short: "Herança e Continuidade",
+        status: "Proteção Familiar",
+        desc: "O Pilar 6 organiza a transmissão do seu patrimônio. Entenda o impacto do ITCMD, custos de inventário e crie um dossiê para proteger quem você ama de conflitos e burocracia.",
+        objective: "Organizar a sucessão e blindar a família.",
+        delivery: "Checklist sucessório e estimativa de inventário.",
+        signal: "Clareza sobre estruturas de herança.",
         icon: <Building2 className="text-[#4fa080] shrink-0" size={24} />,
         fields: [
             { name: "regimeBens", label: "Regime de Bens", type: "select", options: ["Comunhão Parcial", "Comunhão Universal", "Separação Total", "Participação Final", "Não sei / Não se aplica"] },
@@ -234,38 +234,38 @@ const PLAN_DATA = [
             { name: "possuiTestamento", label: "Possui Testamento?", type: "radio", options: ["Sim", "Não"] }
         ],
         analysis: [
-            "Mapeamento da Meação vs. Herança Familiar",
+            "Mapeamento de Meação vs. Herança",
             "Estimativa de Custo de Inventário e ITCMD",
             "Estruturas eficientes (Uso de VGBL, Doação)",
-            "Checklist do Seu Dossiê Financeiro Familiar"
+            "Checklist do Dossiê Financeiro Familiar"
         ]
     },
     {
         title: "Análise do Seu Perfil de Investimento",
-        short: "Sua Tolerância a Risco",
-        status: "Diretriz da sua Bússola",
-        desc: "O Pilar 7 avalia sua relação com o risco, sua capacidade de absorver oscilações e seu horizonte de tempo para calibrar sua Bússola de Carteiras (Abrigo, Ritmo, Visão ou Oceano) sob medida para você.",
-        objective: "Descobrir o seu perfil oficial de investidor na ARVO.",
-        delivery: "Classificação do seu perfil e calibração da sua Bússola.",
-        signal: "Sua carteira estará perfeitamente alinhada com o que você tolera.",
+        short: "Seu Perfil de Risco",
+        status: "Diretriz da Bússola",
+        desc: "O Pilar 7 avalia cientificamente sua tolerância ao risco, capacidade de absorver perdas e horizonte de investimento para calibrar sua Bússola de Carteiras (Abrigo, Ritmo, Visão ou Oceano) sob medida para você.",
+        objective: "Determinar seu perfil oficial de investidor ARVO.",
+        delivery: "Classificação do seu perfil e calibração da Bússola.",
+        signal: "Sua carteira está perfeitamente alinhada ao seu estômago e metas.",
         icon: <Compass className="text-[#4fa080] shrink-0" size={24} />,
         fields: [] as FieldDef[],
         analysis: [
-            "Cálculo do Seu Score de Tolerância ao Risco",
-            "Determinação do Seu Perfil Oficial ARVO (Abrigo, Ritmo, Visão, Oceano)",
-            "Calibração de Alertas Inteligentes na Sua Bússola de Investimentos",
-            "Validação de Adequação Regulatória do Seu Plano"
+            "Cálculo do Score de Tolerância ao Risco",
+            "Determinação do Perfil Oficial ARVO (Abrigo, Ritmo, Visão, Oceano)",
+            "Calibração de Alertas Inteligentes na Bússola de Investimentos",
+            "Validação de Adequação Regulatória (Suitability Fee-Only)"
         ]
     }
 ]
 
 const PROGRESS_LABELS = [
-    "Pilar 1: Preencha seus dados de renda e despesas. O Raio-X é o alicerce onde a ARVO constrói suas projeções.",
-    "Pilar 2: Proteção. Mapeie seus riscos e assegure que imprevistos não destruam sua estabilidade financeira.",
-    "Pilar 3: Construção. Defina seus objetivos patrimoniais e alinhe o ritmo ideal dos seus aportes mensais.",
-    "Pilar 4: Futuro. Descubra o número exato para a sua independência financeira e calcule o seu gap.",
-    "Pilar 5: Inteligência Fiscal. Seus dados de IR permitem encontrar caminhos legais para reter mais ganhos.",
-    "Pilar 6: Legado. Organizar como seu patrimônio passa para a próxima geração evita burocracia e custos familiares.",
+    "Pilar 1: Preencha seus dados de renda e despesa. O Raio-X é o alicerce onde a ARVO constrói suas projeções.",
+    "Pilar 2: Proteção. Mapeie seus riscos e assegure que acidentes de percurso não destruam sua estabilidade.",
+    "Pilar 3: Construção. Defina seus objetivos patrimoniais e alinhe o ritmo dos seus aportes.",
+    "Pilar 4: Futuro. Descubra o número exato para a independência financeira e calcule o gap.",
+    "Pilar 5: Inteligência Fiscal. Dados sobre seu IR permitem encontrar atalhos legais para reter mais ganhos.",
+    "Pilar 6: Legado. Organizar como o patrimônio passa para a próxima geração evita burocracia e custos.",
     "Pilar 7: Seu Perfil. Responda o questionário interativo para calibrar sua Bússola de Carteiras sob medida."
 ]
 
