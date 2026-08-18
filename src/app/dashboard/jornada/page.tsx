@@ -443,7 +443,7 @@ export default function PlanejamentoJornadaPage() {
     }
 
     if (showDashboard) {
-        return <PlanoArvoDashboard onBack={() => setShowDashboard(false)} />
+        return <PlanoArvoDashboard formData={formData} onBack={() => setShowDashboard(false)} />
     }
 
     const step = PLAN_DATA[current]

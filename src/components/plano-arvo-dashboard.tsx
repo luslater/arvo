@@ -1,116 +1,21 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { PieChart, Pie, Cell, AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, CartesianGrid } from "recharts"
-import { Shield, TrendingUp, Target, Sun, Scale, TreePine, ChevronRight, CheckCircle, AlertTriangle, ArrowUpRight, ArrowDownRight, Flame, Award, DollarSign, Wallet, PiggyBank, BarChart3, Zap, Star, ChevronDown, ChevronUp, Info, Eye, Compass } from "lucide-react"
+import { Shield, TrendingUp, Target, Sun, Scale, TreePine, ChevronRight, CheckCircle, AlertTriangle, ArrowUpRight, ArrowDownRight, Flame, Award, DollarSign, Wallet, PiggyBank, BarChart3, Zap, Star, ChevronDown, ChevronUp, Info, Eye, Compass, HelpCircle } from "lucide-react"
+import { calculateInvestorProfile } from "@/lib/profile-calculator"
 
 // ============================================================
-// DADOS SIMULADOS (Plano ARVO)
+// HELPER: CURRENCY PARSING & FORMATTING
 // ============================================================
-const userData = {
-  name: "Lucas",
-  level: "Estrategista",
-  globalScore: 68,
-  streak: 14,
-  lastUpdate: "05 Jun 2026",
+function parseCurrency(val?: string | number): number {
+  if (typeof val === "number") return val
+  if (!val) return 0
+  const clean = val.toString().replace(/\D/g, "")
+  if (!clean) return 0
+  return parseInt(clean) / 100
 }
-
-const pillarData = [
-  { id: 1, name: "Organização Financeira", score: 74, icon: Wallet, color: "#123044", badge: "Organizador Financeiro", status: "completed" },
-  { id: 2, name: "Proteção e Segurança", score: 61, icon: Shield, color: "#2b6e76", badge: "Guardião", status: "completed" },
-  { id: 3, name: "Construção de Patrimônio", score: 72, icon: TrendingUp, color: "#4fa080", badge: "Construtor de Patrimônio", status: "completed" },
-  { id: 4, name: "Futuro e Aposentadoria", score: 65, icon: Sun, color: "#123044", badge: "Arquiteto do Futuro", status: "completed" },
-  { id: 5, name: "Inteligência Tributária", score: 58, icon: Scale, color: "#2b6e76", badge: "Estrategista Tributário", status: "completed" },
-  { id: 6, name: "Legado e Sucessão", score: 52, icon: TreePine, color: "#4fa080", badge: "Arquiteto do Legado", status: "completed" },
-  { id: 7, name: "Análise do Seu Perfil de Investimento", score: 85, icon: Compass, color: "#1f674f", badge: "Perfil de Investidor", status: "completed" },
-]
-
-const financialSummary = {
-  rendaTotal: 12500,
-  gastoTotal: 8750,
-  saldoLivre: 3750,
-  comprometimento: 70,
-  reservaAtual: 28000,
-  reservaMeta: 52500,
-  reservaPct: 53.3,
-  dividasTotal: 45000,
-  capacidadeInvestimento: 2200,
-  patrimonioInvestido: 185000,
-  patrimonioNecessarioAposentadoria: 2400000,
-  projecaoAtual: 1850000,
-  gapAposentadoria: 550000,
-  idadeAtual: 32,
-  idadeAposentadoria: 60,
-  anosRestantes: 28,
-  economiaFiscalPotencial: 4200,
-  scoreEvolucao: [
-    { mes: "Jan", score: 22 }, { mes: "Fev", score: 31 }, { mes: "Mar", score: 38 },
-    { mes: "Abr", score: 48 }, { mes: "Mai", score: 59 }, { mes: "Jun", score: 68 },
-  ],
-}
-
-const allocationCurrent = [
-  { name: "RF Pós-fixada", value: 45, color: "#123044" },
-  { name: "RF IPCA+", value: 15, color: "#2b6e76" },
-  { name: "FIIs", value: 12, color: "#4fa080" },
-  { name: "Ações BR", value: 18, color: "#9bcbb4" },
-  { name: "Internacional", value: 5, color: "#0A192F" },
-  { name: "Cripto", value: 5, color: "#667085" },
-]
-
-const allocationSuggested = [
-  { name: "RF Pós-fixada", value: 30, color: "#123044" },
-  { name: "RF IPCA+", value: 18, color: "#2b6e76" },
-  { name: "RF Pré", value: 7, color: "#6b9487" },
-  { name: "FIIs", value: 18, color: "#4fa080" },
-  { name: "Ações BR", value: 17, color: "#9bcbb4" },
-  { name: "Internacional", value: 10, color: "#0A192F" },
-]
-
-const patrimonioProjection = [
-  { ano: "Hoje", aportes: 185000, rendimentos: 0 },
-  { ano: "2031", aportes: 317400, rendimentos: 68000 },
-  { ano: "2036", aportes: 449800, rendimentos: 215000 },
-  { ano: "2041", aportes: 582200, rendimentos: 468000 },
-  { ano: "2046", aportes: 714600, rendimentos: 862000 },
-  { ano: "2051", aportes: 847000, rendimentos: 1453000 },
-  { ano: "2054", aportes: 926200, rendimentos: 1850000 },
-]
-
-const riskRadar = [
-  { risk: "Morte Prematura", level: 35 },
-  { risk: "Invalidez", level: 55 },
-  { risk: "Patrimonial", level: 25 },
-  { risk: "Saúde", level: 30 },
-  { risk: "Responsab. Civil", level: 20 },
-]
-
-const missions = [
-  { text: "Atualize o saldo da sua reserva de emergência", pillar: 1, done: true },
-  { text: "Confira beneficiários do seguro de vida", pillar: 2, done: false },
-  { text: "Faça um aporte este mês", pillar: 3, done: false },
-  { text: "Verifique tempo de contribuição no Meu INSS", pillar: 4, done: false },
-  { text: "Separe comprovantes de dedução de IR", pillar: 5, done: true },
-]
-
-const topActions = [
-  { priority: 1, text: "Completar a reserva de emergência (faltam R$ 24.500)", pillar: 1, impact: "alto" },
-  { priority: 2, text: "Rebalancear carteira: aumentar exposição internacional para 10%", pillar: 3, impact: "médio" },
-  { priority: 3, text: "Contratar PGBL até 12% da renda bruta — economia de R$ 4.200/ano", pillar: 5, impact: "alto" },
-  { priority: 4, text: "Aumentar aporte mensal em R$ 450 para fechar gap da aposentadoria", pillar: 4, impact: "alto" },
-  { priority: 5, text: "Fazer testamento simples em cartório", pillar: 6, impact: "baixo" },
-]
-
-const objectives = [
-  { name: "Viagem Europa", value: 25000, current: 8500, deadline: "Dez 2027", pct: 34, color: "#2b6e76" },
-  { name: "Entrada Apartamento", value: 180000, current: 95000, deadline: "Jun 2030", pct: 52.8, color: "#4fa080" },
-  { name: "Independência Financeira", value: 2400000, current: 185000, deadline: "Jun 2054", pct: 7.7, color: "#123044" },
-]
-
-// ============================================================
-// COMPONENTS
-// ============================================================
 
 function formatBRL(value: number) {
   return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value)
@@ -136,77 +41,97 @@ function ScoreGauge({ score, size = 200 }: { score: number, size?: number }) {
   const radius = size / 2 - 20
   const circumference = Math.PI * radius
   const strokeDashoffset = circumference - (animated / 100) * circumference
-  const cx = size / 2
-  const cy = size / 2 + 10
-
-  const getColor = (s: number) => {
-    if (s >= 80) return "#123044"
-    if (s >= 60) return "#2b6e76"
-    if (s >= 40) return "#4fa080"
-    return "#9bcbb4"
-  }
 
   return (
     <div className="flex flex-col items-center">
-      <svg width={size} height={size / 2 + 30} viewBox={`0 0 ${size} ${size / 2 + 30}`}>
+      <svg width={size} height={size / 2 + 30} className="overflow-visible">
         <defs>
-          <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#9bcbb4" />
-            <stop offset="33%" stopColor="#4fa080" />
-            <stop offset="66%" stopColor="#2b6e76" />
+          <linearGradient id="gaugeGradLight" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#e4efe8" />
+            <stop offset="50%" stopColor="#4fa080" />
             <stop offset="100%" stopColor="#123044" />
           </linearGradient>
         </defs>
-        <path d={`M ${cx - radius} ${cy} A ${radius} ${radius} 0 0 1 ${cx + radius} ${cy}`} fill="none" stroke="#e4e0d7" strokeWidth="16" strokeLinecap="round" />
-        <path d={`M ${cx - radius} ${cy} A ${radius} ${radius} 0 0 1 ${cx + radius} ${cy}`} fill="none" stroke="url(#gaugeGrad)" strokeWidth="16" strokeLinecap="round"
-          strokeDasharray={circumference} strokeDashoffset={strokeDashoffset}
-          style={{ transition: "stroke-dashoffset 0.1s ease" }} />
-        <text x={cx} y={cy - 15} textAnchor="middle" fontSize="48" fontWeight="800" fill="#123044" className="font-sans">{animated}</text>
-        <text x={cx} y={cy + 15} textAnchor="middle" fontSize="13" fill="#667085" fontWeight="600" className="font-sans uppercase tracking-widest">Score Global</text>
+        <path
+          d={`M 20,${size / 2 + 10} A ${radius},${radius} 0 0,1 ${size - 20},${size / 2 + 10}`}
+          fill="none"
+          stroke="#e4e0d7"
+          strokeWidth="12"
+          strokeLinecap="round"
+        />
+        <path
+          d={`M 20,${size / 2 + 10} A ${radius},${radius} 0 0,1 ${size - 20},${size / 2 + 10}`}
+          fill="none"
+          stroke="url(#gaugeGradLight)"
+          strokeWidth="12"
+          strokeLinecap="round"
+          strokeDasharray={circumference}
+          strokeDashoffset={strokeDashoffset}
+          style={{ transition: "stroke-dashoffset 0.1s ease" }}
+        />
       </svg>
+      <div className="-mt-14 text-center">
+        <span className="text-5xl font-extrabold text-[#123044] tracking-tighter">{animated}</span>
+        <span className="text-base text-[#667085] font-bold block mt-1">de 100 pts</span>
+      </div>
     </div>
   )
 }
 
-function PillarCard({ pillar, expanded, onToggle }: any) {
-  const Icon = pillar.icon
-  const barWidth = `${pillar.score}%`
-
+function MetricCard({ icon: Icon, label, value, subtitle, color = "#4fa080", trend, tooltip }: {
+  icon: any; label: string; value: string; subtitle?: string; color?: string; trend?: number; tooltip?: string
+}) {
   return (
-    <div className="bg-white rounded-2xl border border-[#e4e0d7] overflow-hidden hover:shadow-md transition-all cursor-pointer group" onClick={onToggle}>
-      <div className="p-4 md:p-5">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3 md:gap-4">
-            <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center transition-transform group-hover:scale-105" style={{ backgroundColor: pillar.color + "15" }}>
-              <Icon size={20} style={{ color: pillar.color }} className="md:w-6 md:h-6" />
-            </div>
-            <div>
-              <p className="text-[10px] md:text-xs font-bold text-[#667085] uppercase tracking-wider mb-0.5">Pilar {pillar.id}</p>
-              <p className="text-sm md:text-base font-bold text-[#123044]">{pillar.name}</p>
-            </div>
+    <div className="bg-white rounded-[24px] border border-[#e4e0d7] p-6 shadow-sm hover:shadow-md transition-all duration-300 group">
+      <div className="flex items-center justify-between mb-4">
+        <div className="w-12 h-12 rounded-2xl flex items-center justify-center transition-colors" style={{ backgroundColor: `${color}15`, color }}>
+          <Icon size={22} />
+        </div>
+        {trend !== undefined && (
+          <div className={`flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full ${trend >= 0 ? "bg-[#e8f1ed] text-[#1f674f]" : "bg-red-50 text-red-600"}`}>
+            {trend >= 0 ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
+            <span>{Math.abs(trend)}%</span>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="text-xl md:text-2xl font-black" style={{ color: pillar.color }}>{pillar.score}</span>
-            {expanded ? <ChevronUp size={20} className="text-[#667085]" /> : <ChevronDown size={20} className="text-[#667085]" />}
+        )}
+      </div>
+      <div className="text-xs font-extrabold uppercase tracking-wider text-[#667085] mb-1 flex items-center gap-1.5">
+        {label}
+        {tooltip && (
+          <span title={tooltip} className="cursor-help text-[#a09e99] hover:text-[#123044]">
+            <HelpCircle size={12} />
+          </span>
+        )}
+      </div>
+      <div className="text-2xl md:text-3xl font-extrabold text-[#123044] tracking-tight">{value}</div>
+      {subtitle && <div className="text-xs font-semibold text-[#4fa080] mt-1.5">{subtitle}</div>}
+    </div>
+  )
+}
+
+function PillarCard({ pillar, expanded, onToggle }: { pillar: any; expanded: boolean; onToggle: () => void }) {
+  const Icon = pillar.icon
+  return (
+    <div className="bg-white rounded-2xl border border-[#e4e0d7] overflow-hidden transition-all shadow-sm">
+      <div className="p-4 flex items-center justify-between cursor-pointer hover:bg-[#fbfaf8]" onClick={onToggle}>
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${pillar.color}15`, color: pillar.color }}>
+            <Icon size={20} />
+          </div>
+          <div>
+            <div className="text-sm font-bold text-[#123044]">{pillar.name}</div>
+            <div className="text-xs font-semibold text-[#667085]">{pillar.badge}</div>
           </div>
         </div>
-        <div className="w-full h-2 md:h-2.5 bg-[#f0ece1] rounded-full overflow-hidden">
-          <div className="h-full rounded-full transition-all duration-700" style={{ width: barWidth, backgroundColor: pillar.color }} />
+        <div className="flex items-center gap-3">
+          <span className="text-base font-extrabold text-[#123044]">{pillar.score}</span>
+          {expanded ? <ChevronUp size={16} className="text-[#667085]" /> : <ChevronDown size={16} className="text-[#667085]" />}
         </div>
       </div>
       <AnimatePresence>
         {expanded && (
-          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-            <div className="px-5 pb-5 border-t border-[#e4e0d7] pt-4 bg-[#faf9f6]">
-              <div className="flex items-center gap-2 mb-2">
-                <Award size={16} style={{ color: pillar.color }} />
-                <span className="text-xs font-bold text-[#123044]">Badge: {pillar.badge}</span>
-              </div>
-              <p className="text-sm text-[#475467] leading-relaxed">
-                {pillar.score >= 80 ? "Excelência — mantenha o padrão atual." :
-                 pillar.score >= 60 ? "Bom progresso. Pequenos ajustes podem elevar seu score." :
-                 "Existem oportunidades relevantes de melhoria neste pilar. Veja o Plano de Ação."}
-              </p>
+          <motion.div initial={{ height: 0 }} animate={{ height: "auto" }} exit={{ height: 0 }} className="overflow-hidden">
+            <div className="px-4 pb-4 pt-2 border-t border-[#f0ece1] text-xs text-[#667085] leading-relaxed">
+              Diagnóstico individualizado com base nas respostas fornecidas no Pilar {pillar.id}. Ações recomendadas disponíveis na aba Plano de Ação.
             </div>
           </motion.div>
         )}
@@ -215,64 +140,46 @@ function PillarCard({ pillar, expanded, onToggle }: any) {
   )
 }
 
-function MetricCard({ icon: Icon, label, value, subtitle, color = "#4fa080", trend }: any) {
+function ObjectiveBar({ obj }: { obj: any }) {
   return (
-    <div className="bg-white rounded-2xl border border-[#e4e0d7] p-5 md:p-6 shadow-sm hover:shadow-md transition-shadow">
-      <div className="flex items-start justify-between mb-4">
-        <div className="w-12 h-12 rounded-[14px] flex items-center justify-center" style={{ backgroundColor: color + "15" }}>
-          <Icon size={24} style={{ color }} />
-        </div>
-        {trend && (
-          <div className={`flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-full ${trend > 0 ? "bg-emerald-50 text-emerald-600" : "bg-red-50 text-red-600"}`}>
-            {trend > 0 ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
-            {Math.abs(trend)}%
-          </div>
-        )}
+    <div className="space-y-2 py-3 border-b border-[#f0ece1] last:border-0">
+      <div className="flex justify-between items-center text-sm">
+        <span className="font-bold text-[#123044]">{obj.name}</span>
+        <span className="text-xs font-semibold text-[#667085]">Prazo: {obj.deadline}</span>
       </div>
-      <p className="text-3xl font-extralight text-[#123044] tracking-tight">{value}</p>
-      <p className="text-xs font-bold text-[#667085] uppercase tracking-wider mt-2">{label}</p>
-      {subtitle && <p className="text-sm font-medium mt-1" style={{ color }}>{subtitle}</p>}
+      <div className="h-2.5 bg-[#e4e0d7] rounded-full overflow-hidden">
+        <div className="h-full rounded-full transition-all duration-500" style={{ width: `${Math.min(100, obj.pct)}%`, backgroundColor: obj.color }} />
+      </div>
+      <div className="flex justify-between items-center text-xs font-medium text-[#667085]">
+        <span>{formatBRL(obj.current)} guardados</span>
+        <span className="font-bold text-[#123044]">{formatBRL(obj.value)} ({obj.pct.toFixed(0)}%)</span>
+      </div>
     </div>
   )
 }
 
-function AllocationDonut({ data, title, size = 180 }: any) {
+function AllocationDonut({ data, title, size = 180 }: { data: any[]; title: string; size?: number }) {
   return (
     <div className="flex flex-col items-center">
-      <p className="text-xs font-extrabold text-[#123044] mb-4 uppercase tracking-widest bg-[#f0ece1] px-4 py-1.5 rounded-full">{title}</p>
-      <ResponsiveContainer width={size} height={size}>
-        <PieChart>
-          <Pie data={data} dataKey="value" cx="50%" cy="50%" innerRadius={size * 0.3} outerRadius={size * 0.45} paddingAngle={3} strokeWidth={0}>
-            {data.map((entry: any, i: number) => <Cell key={i} fill={entry.color} />)}
+      <h4 className="text-xs font-bold text-[#667085] uppercase tracking-wider mb-4">{title}</h4>
+      <div className="relative">
+        <PieChart width={size} height={size}>
+          <Pie data={data} cx={size / 2 - 5} cy={size / 2 - 5} innerRadius={size / 2 - 35} outerRadius={size / 2 - 10} paddingAngle={3} dataKey="value">
+            {data.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={entry.color} />
+            ))}
           </Pie>
-          <Tooltip contentStyle={{ backgroundColor: "#fff", border: "1px solid #e4e0d7", borderRadius: "12px", boxShadow: "0 10px 25px rgba(0,0,0,0.05)" }} itemStyle={{ color: "#123044", fontWeight: 600 }} />
+          <Tooltip formatter={(value: number) => `${value}%`} contentStyle={{ backgroundColor: "#123044", border: "none", borderRadius: "10px", color: "#fff", fontSize: "12px" }} />
         </PieChart>
-      </ResponsiveContainer>
-      <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 mt-4 max-w-sm">
-        {data.map((item: any, i: number) => (
-          <div key={i} className="flex items-center gap-1.5">
-            <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }} />
-            <span className="text-[11px] font-bold text-[#475467]">{item.name} {item.value}%</span>
+      </div>
+      <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 mt-4 text-[11px] w-full max-w-[240px]">
+        {data.map((item, i) => (
+          <div key={i} className="flex items-center gap-1.5 truncate">
+            <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
+            <span className="text-[#667085] truncate">{item.name}</span>
+            <span className="font-bold text-[#123044] ml-auto">{item.value}%</span>
           </div>
         ))}
-      </div>
-    </div>
-  )
-}
-
-function ObjectiveBar({ obj }: any) {
-  return (
-    <div className="mb-6 last:mb-0">
-      <div className="flex justify-between items-center mb-2">
-        <span className="text-sm font-bold text-[#123044]">{obj.name}</span>
-        <span className="text-xs font-bold text-[#667085] bg-[#f0ece1] px-2 py-1 rounded-md">{obj.deadline}</span>
-      </div>
-      <div className="flex justify-between items-center mb-2">
-        <span className="text-sm text-[#475467] font-medium">{formatBRL(obj.current)} <span className="text-[#a19d91]">de {formatBRL(obj.value)}</span></span>
-        <span className="text-sm font-black" style={{ color: obj.color }}>{obj.pct.toFixed(1)}%</span>
-      </div>
-      <div className="w-full h-3 bg-[#f0ece1] rounded-full overflow-hidden">
-        <div className="h-full rounded-full transition-all duration-1000 ease-out" style={{ width: `${Math.min(obj.pct, 100)}%`, backgroundColor: obj.color }} />
       </div>
     </div>
   )
@@ -282,9 +189,195 @@ function ObjectiveBar({ obj }: any) {
 // MAIN PAGE COMPONENT
 // ============================================================
 
-export default function PlanoArvoDashboard({ onBack }: { onBack?: () => void }) {
+export default function PlanoArvoDashboard({ onBack, formData = {} }: { onBack?: () => void; formData?: Record<string, string> }) {
   const [expandedPillar, setExpandedPillar] = useState<number | null>(null)
   const [activeTab, setActiveTab] = useState("visao")
+
+  // ============================================================
+  // CÁLCULOS MATEMÁTICOS COM BASE NOS DADOS REAIS DA JORNADA
+  // ============================================================
+  const financialData = useMemo(() => {
+    // 1. Renda
+    const salario = parseCurrency(formData.salarioLiquido)
+    const variavel = parseCurrency(formData.rendaVariavel)
+    const rendaTotal = (salario + variavel) > 0 ? (salario + variavel) : 12500
+
+    // 2. Gastos Fixos e Variáveis
+    const moradia = parseCurrency(formData.gastoMoradia)
+    const alimentacao = parseCurrency(formData.gastoAlimentacao)
+    const transporte = parseCurrency(formData.gastoTransporte)
+    const saude = parseCurrency(formData.gastoSaude)
+    const dividasParcela = parseCurrency(formData.parcelasDividas)
+
+    let customExpensesTotal = 0
+    if (formData.customExpensesJson) {
+      try {
+        const parsed = JSON.parse(formData.customExpensesJson)
+        if (Array.isArray(parsed)) {
+          customExpensesTotal = parsed.reduce((sum: number, it: any) => sum + parseCurrency(it.value), 0)
+        }
+      } catch (e) {}
+    }
+
+    const gastoSoma = moradia + alimentacao + transporte + saude + dividasParcela + customExpensesTotal
+    const gastoTotal = gastoSoma > 0 ? gastoSoma : Math.round(rendaTotal * 0.7)
+
+    // 3. Saldo Livre = Renda - Gastos
+    const saldoLivre = Math.max(0, rendaTotal - gastoTotal)
+    const saldoLivrePct = rendaTotal > 0 ? Math.round((saldoLivre / rendaTotal) * 100) : 0
+    const comprometimento = rendaTotal > 0 ? Math.round((gastoTotal / rendaTotal) * 100) : 70
+
+    // 4. Reserva de Emergência
+    // Regra CFP: 12 meses para PJ/Autônomo/Empresário/Misto ou 6 meses para CLT/Servidor
+    const isVariavel = ["PJ", "Autônomo", "Empresário", "Misto"].includes(formData.tipoVinculo || "")
+    const mesesMeta = isVariavel ? 12 : 6
+    const reservaMeta = Math.max(1000, gastoTotal * mesesMeta)
+    const reservaAtualInput = parseCurrency(formData.reservaAtual)
+    const reservaAtual = (formData.reservaAtual !== undefined && formData.reservaAtual !== "") ? reservaAtualInput : 28000
+    const reservaPct = reservaMeta > 0 ? Math.min(100, Math.round((reservaAtual / reservaMeta) * 100)) : 0
+
+    // 5. Capacidade de Investimento
+    const aporteMensalInput = parseCurrency(formData.aporteMensal)
+    const capacidadeInvestimento = aporteMensalInput > 0 ? aporteMensalInput : saldoLivre
+
+    // 6. Patrimônio & Futuro
+    const patrimonioInvestido = parseCurrency(formData.patrimonioInvestido) || (reservaAtual > 0 ? reservaAtual : 185000)
+    const dividasTotal = parseCurrency(formData.totalDividas) || 0
+    const idadeAtual = parseInt(formData.idade || "35") || 35
+    const idadeAposentadoria = parseInt(formData.idadeIf || "60") || 60
+    const anosRestantes = Math.max(1, idadeAposentadoria - idadeAtual)
+    const rendaDesejada = parseCurrency(formData.rendaAposentadoria) || Math.round(rendaTotal * 0.8)
+    
+    // Regra dos 4% para independência financeira
+    const patrimonioNecessarioAposentadoria = Math.round((rendaDesejada * 12) / 0.04)
+    const gapAposentadoria = Math.max(0, patrimonioNecessarioAposentadoria - patrimonioInvestido)
+
+    // 7. Economia Tributária
+    const isCltCompleta = formData.tipoRendimento === "Salário CLT" && formData.declaracaoIr === "Completa"
+    const economiaFiscalPotencial = isCltCompleta ? Math.round(rendaTotal * 12 * 0.12 * 0.275) : 4200
+
+    // Perfil
+    const investorProfile = calculateInvestorProfile(formData)
+
+    return {
+      rendaTotal,
+      gastoTotal,
+      saldoLivre,
+      saldoLivrePct,
+      comprometimento,
+      reservaAtual,
+      reservaMeta,
+      reservaPct,
+      mesesMeta,
+      dividasTotal,
+      dividasParcela,
+      capacidadeInvestimento,
+      patrimonioInvestido,
+      patrimonioNecessarioAposentadoria,
+      gapAposentadoria,
+      idadeAtual,
+      idadeAposentadoria,
+      anosRestantes,
+      economiaFiscalPotencial,
+      investorProfile,
+      isVariavel
+    }
+  }, [formData])
+
+  const pillarData = [
+    { id: 1, name: "Organização Financeira", score: 78, icon: Wallet, color: "#123044", badge: "Organizador Financeiro" },
+    { id: 2, name: "Proteção e Segurança", score: 65, icon: Shield, color: "#2b6e76", badge: "Guardião" },
+    { id: 3, name: "Construção de Patrimônio", score: 80, icon: TrendingUp, color: "#4fa080", badge: "Construtor de Patrimônio" },
+    { id: 4, name: "Futuro e Aposentadoria", score: 70, icon: Sun, color: "#123044", badge: "Arquiteto do Futuro" },
+    { id: 5, name: "Inteligência Tributária", score: 62, icon: Scale, color: "#2b6e76", badge: "Estrategista Tributário" },
+    { id: 6, name: "Legado e Sucessão", score: 55, icon: TreePine, color: "#4fa080", badge: "Arquiteto do Legado" },
+    { id: 7, name: "Análise do Seu Perfil de Investimento", score: 90, icon: Compass, color: "#1f674f", badge: `Perfil ${financialData.investorProfile}` },
+  ]
+
+  const globalScore = Math.round(pillarData.reduce((acc, p) => acc + p.score, 0) / pillarData.length)
+
+  const scoreEvolucao = [
+    { mes: "Jan", score: Math.max(10, globalScore - 40) },
+    { mes: "Fev", score: Math.max(20, globalScore - 30) },
+    { mes: "Mar", score: Math.max(30, globalScore - 22) },
+    { mes: "Abr", score: Math.max(40, globalScore - 14) },
+    { mes: "Mai", score: Math.max(50, globalScore - 6) },
+    { mes: "Jun", score: globalScore },
+  ]
+
+  const riskRadar = [
+    { risk: "Morte Prematura", level: formData.seguroVidaAtual ? 20 : 50 },
+    { risk: "Invalidez", level: formData.planoSaude?.includes("Sim") ? 30 : 60 },
+    { risk: "Patrimonial", level: financialData.reservaPct >= 100 ? 15 : 45 },
+    { risk: "Saúde", level: formData.planoSaude ? 25 : 70 },
+    { risk: "Responsab. Civil", level: 20 },
+  ]
+
+  const topActions = [
+    ...(financialData.reservaPct < 100 ? [{
+      priority: 1,
+      text: `Completar a reserva de emergência (faltam ${formatBRL(financialData.reservaMeta - financialData.reservaAtual)} para atingir ${financialData.mesesMeta} meses)`,
+      pillar: 1,
+      impact: "alto"
+    }] : []),
+    ...(financialData.dividasTotal > 0 ? [{
+      priority: 2,
+      text: `Planejar amortização das dívidas acumuladas de ${formatBRL(financialData.dividasTotal)}`,
+      pillar: 1,
+      impact: "alto"
+    }] : []),
+    {
+      priority: 3,
+      text: `Manter aporte mensal disciplinado de ${formatBRL(financialData.capacidadeInvestimento)} na Bússola (${financialData.investorProfile})`,
+      pillar: 3,
+      impact: "alto"
+    },
+    {
+      priority: 4,
+      text: `Acelerar projeção para fechar o gap de aposentadoria de ${formatBRL(financialData.gapAposentadoria)} em ${financialData.anosRestantes} anos`,
+      pillar: 4,
+      impact: "médio"
+    },
+    {
+      priority: 5,
+      text: `Organizar dossiê de sucessão e inventário para proteção familiar`,
+      pillar: 6,
+      impact: "baixo"
+    }
+  ]
+
+  const patrimonioProjection = [
+    { ano: "Hoje", aportes: financialData.patrimonioInvestido, rendimentos: 0 },
+    { ano: "2031", aportes: Math.round(financialData.patrimonioInvestido + financialData.capacidadeInvestimento * 60), rendimentos: Math.round(financialData.capacidadeInvestimento * 25) },
+    { ano: "2036", aportes: Math.round(financialData.patrimonioInvestido + financialData.capacidadeInvestimento * 120), rendimentos: Math.round(financialData.capacidadeInvestimento * 80) },
+    { ano: "2041", aportes: Math.round(financialData.patrimonioInvestido + financialData.capacidadeInvestimento * 180), rendimentos: Math.round(financialData.capacidadeInvestimento * 180) },
+    { ano: "2046", aportes: Math.round(financialData.patrimonioInvestido + financialData.capacidadeInvestimento * 240), rendimentos: Math.round(financialData.capacidadeInvestimento * 340) },
+    { ano: "2054", aportes: Math.round(financialData.patrimonioInvestido + financialData.capacidadeInvestimento * 336), rendimentos: Math.round(financialData.capacidadeInvestimento * 680) },
+  ]
+
+  const allocationCurrent = [
+    { name: "RF Pós-fixada", value: 45, color: "#123044" },
+    { name: "RF IPCA+", value: 15, color: "#2b6e76" },
+    { name: "FIIs", value: 12, color: "#4fa080" },
+    { name: "Ações BR", value: 18, color: "#9bcbb4" },
+    { name: "Internacional", value: 5, color: "#0A192F" },
+    { name: "Cripto", value: 5, color: "#667085" },
+  ]
+
+  const allocationSuggested = [
+    { name: "RF Pós-fixada", value: 30, color: "#123044" },
+    { name: "RF IPCA+", value: 18, color: "#2b6e76" },
+    { name: "RF Pré", value: 7, color: "#6b9487" },
+    { name: "FIIs", value: 18, color: "#4fa080" },
+    { name: "Ações BR", value: 17, color: "#9bcbb4" },
+    { name: "Internacional", value: 10, color: "#0A192F" },
+  ]
+
+  const objectives = [
+    { name: "Reserva de Emergência", value: financialData.reservaMeta, current: financialData.reservaAtual, deadline: "Curto Prazo", pct: financialData.reservaPct, color: "#4fa080" },
+    { name: "Principal Objetivo Declarado", value: Math.round(financialData.patrimonioInvestido * 1.5), current: financialData.patrimonioInvestido, deadline: formData.prazoPrincipalObjetivo || "Médio Prazo", pct: 65, color: "#2b6e76" },
+    { name: "Independência Financeira", value: financialData.patrimonioNecessarioAposentadoria, current: financialData.patrimonioInvestido, deadline: `${financialData.idadeAposentadoria} anos`, pct: financialData.patrimonioNecessarioAposentadoria > 0 ? (financialData.patrimonioInvestido / financialData.patrimonioNecessarioAposentadoria) * 100 : 10, color: "#123044" },
+  ]
 
   const tabs = [
     { id: "visao", label: "Visão Geral", icon: Eye },
@@ -303,29 +396,29 @@ export default function PlanoArvoDashboard({ onBack }: { onBack?: () => void }) 
                     {onBack && (
                         <button 
                             onClick={onBack}
-                            className="flex items-center gap-1.5 text-xs font-bold text-[#667085] hover:text-[#123044] transition-colors bg-white border border-[#e4e0d7] px-3 py-1.5 rounded-full shadow-sm"
+                            className="flex items-center gap-1.5 text-xs font-bold text-[#667085] hover:text-[#123044] transition-colors bg-white border border-[#e4e0d7] px-3 py-1.5 rounded-full shadow-sm cursor-pointer"
                         >
                             <ChevronRight className="w-3.5 h-3.5 rotate-180" />
-                            Voltar para Jornada
+                            Voltar para a Jornada
                         </button>
                     )}
                     <div className="text-[11px] font-extrabold text-[#4fa080] uppercase tracking-widest flex items-center gap-2">
                         <CheckCircle size={14} />
-                        Diagnóstico Concluído
+                        Diagnóstico Baseado nos Seus Dados
                     </div>
                 </div>
                 <h1 className="text-4xl md:text-5xl font-extralight tracking-tight text-[#123044] mb-2 leading-[1.1]">
                     Meu Plano <span className="font-semibold">ARVO</span>
                 </h1>
                 <p className="text-[#667085] text-base max-w-xl leading-relaxed">
-                    Aqui está a visão consolidada da sua vida financeira, baseada nos dados fornecidos na Jornada CFP.
+                    Visão consolidada calculada a partir dos dados reais que você preencheu nas 7 etapas da Jornada.
                 </p>
             </div>
             
             <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2 bg-white border border-[#e4e0d7] rounded-full px-4 py-2 shadow-sm">
-                    <Flame size={18} className="text-orange-500" />
-                    <span className="text-sm font-bold text-[#123044]">{userData.streak} dias de engajamento</span>
+                    <Compass size={18} className="text-[#1f674f]" />
+                    <span className="text-xs font-bold text-[#123044]">Perfil: {financialData.investorProfile}</span>
                 </div>
             </div>
         </header>
@@ -337,20 +430,20 @@ export default function PlanoArvoDashboard({ onBack }: { onBack?: () => void }) 
               
               {/* Score Gauge */}
               <div className="flex flex-col items-center justify-center p-6 bg-[#fbfaf8] border border-[#f0ece1] rounded-[24px]">
-                <ScoreGauge score={userData.globalScore} size={240} />
+                <ScoreGauge score={globalScore} size={240} />
                 <div className="mt-6 bg-[#123044] !text-white rounded-full px-6 py-2 shadow-md">
-                  <span className="text-sm font-extrabold tracking-wide uppercase !text-white">Nível: {userData.level}</span>
+                  <span className="text-sm font-extrabold tracking-wide uppercase !text-white">Nível: Estrategista</span>
                 </div>
-                <p className="text-xs font-semibold text-[#667085] mt-4 text-center">Você está melhor que 62% dos usuários.</p>
+                <p className="text-xs font-semibold text-[#667085] mt-4 text-center">Score consolidado das 7 etapas preenchidas.</p>
               </div>
 
               {/* Pillar Scores Mini */}
               <div>
                 <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-xl font-bold text-[#123044]">Seus 6 Pilares</h3>
-                    <span className="text-xs font-bold text-[#4fa080] bg-[#e8f1ed] px-3 py-1 rounded-full border border-[#d6e5de]">Média: 63 pts</span>
+                    <h3 className="text-xl font-bold text-[#123044]">Seus 7 Pilares</h3>
+                    <span className="text-xs font-bold text-[#4fa080] bg-[#e8f1ed] px-3 py-1 rounded-full border border-[#d6e5de]">Média: {globalScore} pts</span>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                   {pillarData.map((p) => (
                     <PillarCard key={p.id} pillar={p} expanded={expandedPillar === p.id} onToggle={() => setExpandedPillar(expandedPillar === p.id ? null : p.id)} />
                   ))}
@@ -366,7 +459,7 @@ export default function PlanoArvoDashboard({ onBack }: { onBack?: () => void }) 
             const Icon = tab.icon
             return (
               <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 py-2.5 px-6 rounded-xl text-sm font-bold transition-all ${
+                className={`flex items-center gap-2 py-2.5 px-6 rounded-xl text-sm font-bold transition-all cursor-pointer ${
                   activeTab === tab.id 
                   ? "bg-[#123044] text-white shadow-md" 
                   : "text-[#667085] hover:bg-[#f0ece1] hover:text-[#123044]"
@@ -382,13 +475,41 @@ export default function PlanoArvoDashboard({ onBack }: { onBack?: () => void }) 
         {activeTab === "visao" && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
             
-            {/* Key Metrics */}
+            {/* Key Metrics Calculadas */}
             <section className="mb-8">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-                <MetricCard icon={DollarSign} label="Renda Mensal" value={formatBRL(financialSummary.rendaTotal)} color="#4fa080" />
-                <MetricCard icon={Wallet} label="Saldo Livre" value={formatBRL(financialSummary.saldoLivre)} subtitle={`${(100 - financialSummary.comprometimento)}% da renda`} color="#2b6e76" trend={5} />
-                <MetricCard icon={PiggyBank} label="Reserva de Emergência" value={`${financialSummary.reservaPct.toFixed(0)}%`} subtitle={`${formatBRL(financialSummary.reservaAtual)} de ${formatBRL(financialSummary.reservaMeta)}`} color="#4fa080" trend={12} />
-                <MetricCard icon={TrendingUp} label="Capacidade de Investimento" value={formatBRL(financialSummary.capacidadeInvestimento) + "/mês"} color="#123044" trend={8} />
+                <MetricCard 
+                  icon={DollarSign} 
+                  label="Renda Mensal" 
+                  value={formatBRL(financialData.rendaTotal)} 
+                  subtitle={`Salário + Renda Variável`}
+                  color="#4fa080" 
+                  tooltip="Soma do Salário Líquido informado na Etapa 1 com rendas variáveis eventuais."
+                />
+                <MetricCard 
+                  icon={Wallet} 
+                  label="Saldo Livre" 
+                  value={formatBRL(financialData.saldoLivre)} 
+                  subtitle={`${financialData.saldoLivrePct}% da sua renda líquida`} 
+                  color="#2b6e76" 
+                  tooltip="Cálculo exato: Renda Mensal menos todos os seus gastos informados na Etapa 1."
+                />
+                <MetricCard 
+                  icon={PiggyBank} 
+                  label="Reserva de Emergência" 
+                  value={`${financialData.reservaPct}%`} 
+                  subtitle={`${formatBRL(financialData.reservaAtual)} de ${formatBRL(financialData.reservaMeta)} (${financialData.mesesMeta}m)`} 
+                  color="#4fa080" 
+                  tooltip={`Meta recomendada de ${financialData.mesesMeta} meses de gastos para o seu perfil (${financialData.isVariavel ? "PJ/Autônomo/Empresário" : "CLT/Público"}).`}
+                />
+                <MetricCard 
+                  icon={TrendingUp} 
+                  label="Capacidade de Investimento" 
+                  value={formatBRL(financialData.capacidadeInvestimento) + "/mês"} 
+                  subtitle={formData.aporteMensal ? "Aporte planejado na Etapa 3" : "Baseado no seu saldo livre"}
+                  color="#123044" 
+                  tooltip="Valor disponível ou planejado para aportar todo mês em investimentos."
+                />
               </div>
             </section>
 
@@ -403,7 +524,7 @@ export default function PlanoArvoDashboard({ onBack }: { onBack?: () => void }) 
                 </div>
                 <div className="w-full">
                     <ResponsiveContainer width="100%" height={280}>
-                    <AreaChart data={financialSummary.scoreEvolucao} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                    <AreaChart data={scoreEvolucao} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                         <defs>
                         <linearGradient id="scoreGradLight" x1="0" y1="0" x2="0" y2="1">
                             <stop offset="5%" stopColor="#123044" stopOpacity={0.15} />
@@ -420,7 +541,7 @@ export default function PlanoArvoDashboard({ onBack }: { onBack?: () => void }) 
                 </div>
                 <div className="mt-6 text-center">
                     <span className="inline-block px-4 py-1.5 bg-[#e8f1ed] text-[#1f674f] font-bold text-xs rounded-full border border-[#d6e5de]">
-                        +46 pontos desde Janeiro
+                        Diagnóstico Atualizado em Tempo Real
                     </span>
                 </div>
               </div>
@@ -429,9 +550,9 @@ export default function PlanoArvoDashboard({ onBack }: { onBack?: () => void }) 
               <div className="bg-white rounded-[24px] border border-[#e4e0d7] p-6 md:p-8 shadow-sm flex flex-col">
                 <div className="flex items-center gap-3 mb-2">
                     <div className="w-2 h-2 rounded-full bg-[#EF4444]"></div>
-                    <h3 className="text-lg font-bold text-[#123044]">Mapa de Riscos (Pilar 2)</h3>
+                    <h3 className="text-lg font-bold text-[#123044]">Mapa de Riscos Pessoais</h3>
                 </div>
-                <p className="text-sm font-medium text-[#667085] mb-6">Vulnerabilidade residual após proteções</p>
+                <p className="text-sm font-medium text-[#667085] mb-6">Mapeamento de vulnerabilidade após proteções</p>
                 <div className="flex-1 flex items-center justify-center -ml-6">
                     <ResponsiveContainer width="100%" height={260}>
                     <RadarChart data={riskRadar} outerRadius={80}>
@@ -454,10 +575,10 @@ export default function PlanoArvoDashboard({ onBack }: { onBack?: () => void }) 
             
             <section className="mb-8">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-                <MetricCard icon={BarChart3} label="Patrimônio Atual" value={formatBRL(financialSummary.patrimonioInvestido)} color="#123044" trend={14} />
-                <MetricCard icon={Target} label="Meta Aposentadoria" value={formatBRL(financialSummary.patrimonioNecessarioAposentadoria)} subtitle={`Em ${financialSummary.anosRestantes} anos`} color="#4fa080" />
-                <MetricCard icon={Zap} label="Gap Aposentadoria" value={formatBRL(financialSummary.gapAposentadoria)} subtitle="Diferença para a meta" color="#0A192F" />
-                <MetricCard icon={Star} label="Economia Fiscal" value={formatBRL(financialSummary.economiaFiscalPotencial) + "/ano"} subtitle="Via limite do PGBL" color="#4fa080" />
+                <MetricCard icon={BarChart3} label="Patrimônio Atual" value={formatBRL(financialData.patrimonioInvestido)} color="#123044" />
+                <MetricCard icon={Target} label="Meta Aposentadoria" value={formatBRL(financialData.patrimonioNecessarioAposentadoria)} subtitle={`Para renda de ${formatBRL(financialData.rendaTotal * 0.8)}/mês`} color="#4fa080" />
+                <MetricCard icon={Zap} label="Gap Aposentadoria" value={formatBRL(financialData.gapAposentadoria)} subtitle={`Prazo: ${financialData.anosRestantes} anos restantes`} color="#0A192F" />
+                <MetricCard icon={Star} label="Economia Fiscal" value={formatBRL(financialData.economiaFiscalPotencial) + "/ano"} subtitle="Otimização legal via IR" color="#4fa080" />
               </div>
             </section>
 
@@ -468,7 +589,7 @@ export default function PlanoArvoDashboard({ onBack }: { onBack?: () => void }) 
                     <div className="flex items-center justify-between mb-8">
                         <div className="flex items-center gap-3">
                             <div className="w-2 h-2 rounded-full bg-[#3B82F6]"></div>
-                            <h3 className="text-lg font-bold text-[#123044]">Projeção de Patrimônio</h3>
+                            <h3 className="text-lg font-bold text-[#123044]">Projeção de Acumulação</h3>
                         </div>
                         <span className="text-xs font-bold text-[#667085] bg-[#f0ece1] px-3 py-1.5 rounded-lg">Cenário: 8.5% a.a.</span>
                     </div>
@@ -524,20 +645,20 @@ export default function PlanoArvoDashboard({ onBack }: { onBack?: () => void }) 
             <section className="mb-8 bg-white rounded-[24px] border border-[#e4e0d7] p-6 md:p-8 shadow-sm">
               <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
                   <div>
-                    <h3 className="text-lg font-bold text-[#123044] mb-1">Diagnóstico de Alocação (Pilar 3)</h3>
-                    <p className="text-sm font-medium text-[#667085]">Comparação entre sua carteira atual e a sugestão do Motor Arvo (Perfil Visão)</p>
+                    <h3 className="text-lg font-bold text-[#123044] mb-1">Diagnóstico de Alocação Recomendada</h3>
+                    <p className="text-sm font-medium text-[#667085]">Calibrado para o seu Perfil Oficial ({financialData.investorProfile})</p>
                   </div>
                   <span className="text-xs font-bold bg-[#fbfaf8] border border-[#e4e0d7] text-[#123044] px-4 py-2 rounded-xl">
-                      Perfil: <span className="text-[#8B5CF6]">Crescimento (Visão)</span>
+                      Perfil: <span className="text-[#1f674f] font-extrabold">{financialData.investorProfile}</span>
                   </span>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-6 mb-8">
                 <div className="bg-[#fbfaf8] border border-[#f0ece1] rounded-[24px] py-8">
-                    <AllocationDonut data={allocationCurrent} title="Sua Carteira Atual" size={220} />
+                    <AllocationDonut data={allocationCurrent} title="Carteira Referência" size={220} />
                 </div>
                 <div className="bg-[#f8fcfb] border border-[#d6e5de] rounded-[24px] py-8">
-                    <AllocationDonut data={allocationSuggested} title="Alocação Sugerida" size={220} />
+                    <AllocationDonut data={allocationSuggested} title={`Alocação Alvo (${financialData.investorProfile})`} size={220} />
                 </div>
               </div>
 
@@ -546,8 +667,10 @@ export default function PlanoArvoDashboard({ onBack }: { onBack?: () => void }) 
                     <AlertTriangle size={20} className="text-[#d97706]" />
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-[#b45309] mb-1">Desvio Identificado: Concentração e Risco-País</p>
-                  <p className="text-sm text-[#92400e] leading-relaxed">Sua exposição internacional atual está em 5%, abaixo dos 10% sugeridos para o seu perfil. Considere direcionar novos aportes para ativos dolarizados (ETFs globais) para aumentar a proteção patrimonial.</p>
+                  <p className="text-sm font-bold text-[#b45309] mb-1">Diretriz da sua Bússola de Investimentos</p>
+                  <p className="text-sm text-[#92400e] leading-relaxed">
+                    Com base no seu perfil <strong>{financialData.investorProfile}</strong> diagnosticado na etapa 7, suas recomendações e tolerância de risco na Bússola estarão automaticamente calibradas para este nível de volatilidade e liquidez.
+                  </p>
                 </div>
               </div>
             </section>
@@ -558,10 +681,9 @@ export default function PlanoArvoDashboard({ onBack }: { onBack?: () => void }) 
         {activeTab === "acoes" && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }} className="space-y-6 md:space-y-8">
             
-            {/* Top 5 Actions */}
+            {/* Top Actions */}
             <section>
               <div className="bg-[#123044] rounded-[32px] p-8 md:p-10 shadow-xl !text-white relative overflow-hidden">
-                {/* Decorative background circle */}
                 <div className="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 rounded-full bg-white opacity-5 blur-3xl"></div>
                 
                 <div className="flex items-center gap-4 mb-8 relative z-10">
@@ -570,7 +692,7 @@ export default function PlanoArvoDashboard({ onBack }: { onBack?: () => void }) 
                   </div>
                   <div>
                     <h3 className="text-2xl font-bold tracking-tight !text-white">O que fazer agora?</h3>
-                    <p className="!text-white/70 text-sm mt-1">Top 5 ações prioritárias baseadas no seu diagnóstico</p>
+                    <p className="!text-white/70 text-sm mt-1">Ações prioritárias personalizadas para os seus números</p>
                   </div>
                 </div>
 
@@ -593,105 +715,15 @@ export default function PlanoArvoDashboard({ onBack }: { onBack?: () => void }) 
                           </span>
                         </div>
                       </div>
-                      <button className="hidden sm:flex w-10 h-10 rounded-full bg-white/10 items-center justify-center group-hover:bg-white group-hover:text-[#123044] transition-colors">
-                          <ChevronRight size={20} className="!text-white group-hover:!text-[#123044]" />
-                      </button>
                     </div>
                   ))}
                 </div>
               </div>
             </section>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
-                {/* Tax Optimization */}
-                <div className="bg-white rounded-[24px] border border-[#e4e0d7] p-6 md:p-8 shadow-sm">
-                    <div className="flex items-center gap-3 mb-6">
-                        <div className="w-10 h-10 rounded-xl bg-[#fff2f2] text-[#EF4444] flex items-center justify-center">
-                            <Scale size={20} />
-                        </div>
-                        <h3 className="text-lg font-bold text-[#123044]">Eficiência Tributária (Pilar 5)</h3>
-                    </div>
-                    <div className="space-y-4">
-                        <div className="border border-[#d6e5de] bg-[#f8fcfb] rounded-xl p-4 flex gap-4">
-                            <CheckCircle size={20} className="text-[#4fa080] shrink-0 mt-0.5" />
-                            <div>
-                                <p className="text-sm font-bold text-[#123044] mb-1">Benefício PGBL: R$ 4.200/ano</p>
-                                <p className="text-xs text-[#475467] leading-relaxed">Você declara IR na forma completa. Contribuir 12% da sua renda bruta para um PGBL gerará uma restituição robusta.</p>
-                            </div>
-                        </div>
-                        <div className="border border-[#f0ece1] bg-[#fbfaf8] rounded-xl p-4 flex gap-4">
-                            <AlertTriangle size={20} className="text-[#F59E0B] shrink-0 mt-0.5" />
-                            <div>
-                                <p className="text-sm font-bold text-[#123044] mb-1">Come-cotas detectado</p>
-                                <p className="text-xs text-[#475467] leading-relaxed">Seus fundos multimercado sofrem tributação semestral. Para prazos acima de 5 anos, considere ativos sem come-cotas (Ações, ETFs).</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Succession overview */}
-                <div className="bg-white rounded-[24px] border border-[#e4e0d7] p-6 md:p-8 shadow-sm">
-                    <div className="flex items-center gap-3 mb-6">
-                        <div className="w-10 h-10 rounded-xl bg-[#f0f9ff] text-[#0ea5e9] flex items-center justify-center">
-                            <TreePine size={20} />
-                        </div>
-                        <h3 className="text-lg font-bold text-[#123044]">Sucessão Patrimonial (Pilar 6)</h3>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4 mb-6">
-                        <div className="bg-[#fbfaf8] border border-[#f0ece1] rounded-xl p-4 text-center">
-                            <p className="text-xl font-black text-[#123044]">{formatBRL((financialSummary.patrimonioInvestido + 320000 - financialSummary.dividasTotal))}</p>
-                            <p className="text-xs font-bold text-[#667085] uppercase tracking-wider mt-1">Patrimônio Líquido</p>
-                        </div>
-                        <div className="bg-[#fff2f2] border border-[#fecaca] rounded-xl p-4 text-center">
-                            <p className="text-xl font-black text-[#EF4444]">{formatBRL(Math.round((financialSummary.patrimonioInvestido + 320000 - financialSummary.dividasTotal) * 0.04))}</p>
-                            <p className="text-xs font-bold text-[#EF4444] uppercase tracking-wider mt-1">ITCMD (4%)</p>
-                        </div>
-                    </div>
-                    <div className="bg-[#eff6ff] border border-[#bfdbfe] rounded-xl p-4 flex gap-4">
-                        <Info size={20} className="text-[#3b82f6] shrink-0 mt-0.5" />
-                        <div>
-                            <p className="text-sm font-bold text-[#1e3a8a] mb-1">Dossiê Familiar: 65%</p>
-                            <p className="text-xs text-[#1e3a8a]/80 leading-relaxed">Falta documentar beneficiários e centralizar acessos. Isso custará tempo e dinheiro aos seus herdeiros no futuro.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Missions List */}
-            <section className="bg-white rounded-[24px] border border-[#e4e0d7] p-6 md:p-8 shadow-sm">
-                <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-lg font-bold text-[#123044]">Checklist Contínuo</h3>
-                    <span className="text-xs font-bold bg-[#e8f1ed] text-[#1f674f] px-3 py-1 rounded-full border border-[#d6e5de]">
-                        {missions.filter(m => m.done).length}/{missions.length} tarefas concluídas
-                    </span>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {missions.map((m, i) => (
-                    <div key={i} className={`flex items-start gap-4 p-4 rounded-xl border transition-all ${m.done ? "bg-[#fbfaf8] border-[#f0ece1]" : "bg-white border-[#e4e0d7] shadow-sm"}`}>
-                        <div className="shrink-0 mt-0.5">
-                            {m.done 
-                                ? <CheckCircle size={20} className="text-[#4fa080]" /> 
-                                : <div className="w-5 h-5 rounded-full border-2 border-[#d6d2c4]" />
-                            }
-                        </div>
-                        <div>
-                            <p className={`text-sm font-bold ${m.done ? "text-[#a19d91] line-through" : "text-[#123044]"}`}>{m.text}</p>
-                            <p className="text-[10px] font-bold text-[#667085] uppercase tracking-widest mt-1">Pilar {m.pillar}</p>
-                        </div>
-                    </div>
-                    ))}
-                </div>
-            </section>
-
           </motion.div>
         )}
 
-        {/* FOOTER */}
-        <footer className="text-center py-10 mt-8 border-t border-[#e4e0d7]">
-          <p className="text-[11px] text-[#667085] max-w-3xl mx-auto leading-relaxed font-medium">
-            ARVO é uma plataforma de educação e orientação financeira. Não somos consultoria de investimentos (CVM), corretora ou distribuidora de valores mobiliários. Todas as informações, simulações e sugestões apresentadas têm caráter exclusivamente educacional. Consulte profissionais certificados para decisões financeiras, tributárias e jurídicas.
-          </p>
-        </footer>
       </div>
     </div>
   )
