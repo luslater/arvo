@@ -118,7 +118,21 @@ function getAssetMetadata(assetName: string): { gestora: string; classe: string 
         }
     }
 
-    return { gestora: "Gestora Independente", classe: "Diversificado" }
+export function getMacroClass(classe: string): string {
+    const c = (classe || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    if (c.includes("caixa") || c.includes("selic") || c.includes("renda fixa") || c.includes("credito") || c.includes("infraestrutura") || c.includes("pre")) {
+        return "Renda Fixa & Caixa"
+    }
+    if (c.includes("multimercado") || c.includes("macro") || c.includes("long bias")) {
+        return "Multimercados"
+    }
+    if (c.includes("internacional") || c.includes("global") || c.includes("s&p") || c.includes("nasdaq") || c.includes("world")) {
+        return "Ações Globais"
+    }
+    if (c.includes("acoes") || c.includes("ações") || c.includes("dividendo")) {
+        return "Ações Brasil"
+    }
+    return "Outros"
 }
 
 export default function BussolaPage() {
@@ -195,9 +209,10 @@ export default function BussolaPage() {
         .filter(a => a.assetClass.includes("Caixa") || a.assetClass.includes("Selic"))
         .reduce((sum, a) => sum + a.applicableWeight, 0)
 
-    // Agrupamento por classe
+    // Agrupamento por macro classe consolidada (Renda Fixa & Caixa, Multimercados, Ações Brasil, Ações Globais)
     const classGroups = activeAssets.reduce((acc, a) => {
-        acc[a.assetClass] = (acc[a.assetClass] || 0) + a.applicableWeight
+        const macro = getMacroClass(a.assetClass)
+        acc[macro] = (acc[macro] || 0) + a.applicableWeight
         return acc
     }, {} as Record<string, number>)
 
@@ -746,20 +761,31 @@ export default function BussolaPage() {
                 {/* COMPOSIÇÃO E DESCRIÇÃO */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                     <section className="lg:col-span-4 bg-[#fffdf8]/90 border border-[#e4e0d7] rounded-[24px] p-6 shadow-sm min-w-0">
-                        <h2 className="text-lg font-bold text-[#123044] mb-4">Composição por classe</h2>
+                        <div className="flex items-center justify-between mb-5">
+                            <h2 className="text-lg font-bold text-[#123044]">Composição por classe</h2>
+                            <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#1f674f] bg-[#e8f1ed] px-2.5 py-1 rounded-full border border-[#d6e5de]">4 Classes</span>
+                        </div>
                         <div className="space-y-4">
-                            {sortedClasses.map(([cls, val]) => (
-                                <div key={cls} className="flex items-center gap-3 text-sm">
-                                    <div className="w-32 flex-shrink-0 font-bold text-[#344054] truncate text-xs sm:text-sm" title={cls}>{cls}</div>
-                                    <div className="flex-1 h-2.5 bg-[#eee9df] rounded-full overflow-hidden">
-                                        <div 
-                                            className="h-full rounded-full bg-gradient-to-r from-[#24556d] to-[#2d8a69] transition-all duration-300" 
-                                            style={{ width: `${val}%` }}
-                                        />
+                            {sortedClasses.map(([cls, val]) => {
+                                const gradient = 
+                                    cls.includes("Renda Fixa") ? "from-[#1f674f] to-[#4fa080]" :
+                                    cls.includes("Multimercado") ? "from-[#d97706] to-[#fbbf24]" :
+                                    cls.includes("Ações Brasil") ? "from-[#123044] to-[#2b6e76]" :
+                                    "from-[#4338ca] to-[#6366f1]"
+
+                                return (
+                                    <div key={cls} className="flex items-center gap-3 text-sm">
+                                        <div className="w-36 flex-shrink-0 font-bold text-[#123044] text-xs sm:text-sm">{cls}</div>
+                                        <div className="flex-1 h-3 bg-[#f0ece1] rounded-full overflow-hidden">
+                                            <div 
+                                                className={`h-full rounded-full bg-gradient-to-r ${gradient} transition-all duration-300`} 
+                                                style={{ width: `${val}%` }}
+                                            />
+                                        </div>
+                                        <div className="w-10 text-right font-extrabold text-[#123044] text-xs sm:text-sm">{formatPct(val)}</div>
                                     </div>
-                                    <div className="w-10 text-right font-extrabold text-[#667085] text-xs sm:text-sm">{formatPct(val)}</div>
-                                </div>
-                            ))}
+                                )
+                            })}
                         </div>
                     </section>
 
