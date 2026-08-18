@@ -744,26 +744,26 @@ export default function BussolaPage() {
                 </div>
 
                 {/* COMPOSIÇÃO E DESCRIÇÃO */}
-                <div className="grid lg:grid-cols-[1fr_2fr] gap-6">
-                    <section className="bg-[#fffdf8]/90 border border-[#e4e0d7] rounded-[24px] p-6 shadow-sm">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                    <section className="lg:col-span-4 bg-[#fffdf8]/90 border border-[#e4e0d7] rounded-[24px] p-6 shadow-sm min-w-0">
                         <h2 className="text-lg font-bold text-[#123044] mb-4">Composição por classe</h2>
                         <div className="space-y-4">
                             {sortedClasses.map(([cls, val]) => (
                                 <div key={cls} className="flex items-center gap-3 text-sm">
-                                    <div className="w-36 flex-shrink-0 font-bold text-[#344054] truncate" title={cls}>{cls}</div>
+                                    <div className="w-32 flex-shrink-0 font-bold text-[#344054] truncate text-xs sm:text-sm" title={cls}>{cls}</div>
                                     <div className="flex-1 h-2.5 bg-[#eee9df] rounded-full overflow-hidden">
                                         <div 
                                             className="h-full rounded-full bg-gradient-to-r from-[#24556d] to-[#2d8a69] transition-all duration-300" 
                                             style={{ width: `${val}%` }}
                                         />
                                     </div>
-                                    <div className="w-12 text-right font-extrabold text-[#667085]">{formatPct(val)}</div>
+                                    <div className="w-10 text-right font-extrabold text-[#667085] text-xs sm:text-sm">{formatPct(val)}</div>
                                 </div>
                             ))}
                         </div>
                     </section>
 
-                    <section className="bg-[#fffdf8]/90 border border-[#e4e0d7] rounded-[24px] p-6 shadow-sm overflow-hidden flex flex-col">
+                    <section className="lg:col-span-8 bg-[#fffdf8]/90 border border-[#e4e0d7] rounded-[24px] p-6 shadow-sm min-w-0 flex flex-col">
                         <div className="bg-gradient-to-br from-[#fffdf8] to-[#edf5f2] border border-[#e4e0d7] rounded-2xl p-5 mb-6">
                             <p className="text-sm text-[#475467] leading-relaxed">
                                 {isOfficial ? (
@@ -777,22 +777,22 @@ export default function BussolaPage() {
                         </div>
                         
                         <h2 className="text-lg font-bold text-[#123044] mb-4">Ativos na carteira</h2>
-                        <div className="overflow-x-auto flex-1 border border-[#e4e0d7] rounded-xl">
-                            <table className="w-full text-left text-sm whitespace-nowrap">
+                        <div className="overflow-x-auto w-full border border-[#e4e0d7] rounded-2xl bg-white shadow-xs">
+                            <table className="w-full text-left text-sm">
                                 <thead>
                                     <tr className="border-b border-[#e4e0d7] bg-[#faf8f2]">
-                                        <th className="py-3 px-3 text-[10px] font-bold text-[#667085] uppercase tracking-widest">Ativo</th>
-                                        <th className="py-3 px-3 text-[10px] font-bold text-[#667085] uppercase tracking-widest">Classe</th>
-                                        <th className="py-3 px-3 text-[10px] font-bold text-[#667085] uppercase tracking-widest">Gestora</th>
-                                        <th className="py-3 px-3 text-[10px] font-bold text-[#667085] uppercase tracking-widest">Peso</th>
+                                        <th className="py-3.5 pl-4 pr-3 text-[10px] font-extrabold text-[#667085] uppercase tracking-widest">Ativo</th>
+                                        <th className="py-3.5 px-3 text-[10px] font-extrabold text-[#667085] uppercase tracking-widest">Classe</th>
+                                        <th className="py-3.5 px-3 text-[10px] font-extrabold text-[#667085] uppercase tracking-widest">Gestora</th>
+                                        <th className="py-3.5 pr-4 pl-3 text-[10px] font-extrabold text-[#667085] uppercase tracking-widest text-right">Peso</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody className="divide-y divide-[#efebe2]">
                                     {activeAssets.map((asset) => (
-                                        <tr key={asset.assetName} className="border-b border-[#efebe2] hover:bg-[#fff] transition-colors">
-                                            <td className="py-3 px-3 font-extrabold text-[#22313f]">{asset.assetName}</td>
-                                            <td className="py-3 px-3">
-                                                <span className={`inline-flex px-2 py-0.5 rounded text-[10px] font-bold ${
+                                        <tr key={asset.assetName} className="hover:bg-[#fbfaf8] transition-colors">
+                                            <td className="py-3.5 pl-4 pr-3 font-bold text-[#123044] text-xs sm:text-sm">{asset.assetName}</td>
+                                            <td className="py-3.5 px-3">
+                                                <span className={`inline-flex px-2 py-0.5 rounded text-[10px] font-bold whitespace-nowrap ${
                                                     asset.assetClass.includes("Caixa") || asset.assetClass.includes("Selic") 
                                                         ? "bg-[#e8f1ed] text-[#1f674f]" 
                                                         : asset.assetClass.includes("Crédito") || asset.assetClass.includes("Infraestrutura") || asset.assetClass.includes("Pré")
@@ -804,8 +804,8 @@ export default function BussolaPage() {
                                                     {asset.assetClass}
                                                 </span>
                                             </td>
-                                            <td className="py-3 px-3 font-semibold text-[#475467]">{asset.manager || "-"}</td>
-                                            <td className="py-3 px-3 font-black text-[#123044]">{formatPct(asset.applicableWeight)}</td>
+                                            <td className="py-3.5 px-3 font-semibold text-[#475467] text-xs sm:text-sm whitespace-nowrap">{asset.manager || "-"}</td>
+                                            <td className="py-3.5 pr-4 pl-3 font-black text-[#123044] text-xs sm:text-sm text-right whitespace-nowrap">{formatPct(asset.applicableWeight)}</td>
                                         </tr>
                                     ))}
                                 </tbody>
