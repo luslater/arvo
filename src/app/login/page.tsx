@@ -62,7 +62,13 @@ function LoginForm() {
             })
 
             if (res?.error) {
-                setError("Credenciais inválidas. Tente novamente.")
+                if (res.error.toLowerCase().includes("bloqueada") || res.error.toLowerCase().includes("tentativas")) {
+                    setError("Muitas tentativas falhas. Conta temporariamente bloqueada por 15 minutos por segurança.")
+                } else if (res.error === "MFA_REQUIRED") {
+                    setError("Código MFA de dois fatores necessário.")
+                } else {
+                    setError("Credenciais inválidas. Verifique seu e-mail/CPF e senha.")
+                }
             } else {
                 router.push(callbackUrl)
             }
