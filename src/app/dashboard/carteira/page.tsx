@@ -68,13 +68,17 @@ function EditableMetric({
     }
 
     return (
-        <div className="flex items-center gap-1.5 group">
-            <div className="font-serif text-[26px] text-dash-text tracking-tight">{display}</div>
+        <div 
+            onClick={() => { setInput(value.toString()); setEditing(true) }}
+            className="flex items-center gap-1.5 group cursor-pointer"
+            title="Clique para editar"
+        >
+            <div className="font-serif text-[26px] text-dash-text tracking-tight group-hover:text-dash-accent transition-colors">{display}</div>
             <button
-                onClick={() => { setInput(value.toString()); setEditing(true) }}
-                className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-dash-surface-active rounded-md"
+                type="button"
+                className="opacity-40 group-hover:opacity-100 transition-opacity p-1 hover:bg-dash-surface-active rounded-md"
             >
-                <Pencil className="w-3 h-3 text-dash-text-muted" />
+                <Pencil className="w-3.5 h-3.5 text-dash-text-muted group-hover:text-dash-accent" />
             </button>
         </div>
     )
