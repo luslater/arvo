@@ -841,39 +841,21 @@ export default function BussolaPage() {
                         
                         <h2 className="text-lg font-bold text-[#123044] mb-4">Ativos na carteira</h2>
                         
-                        {/* Mobile Card List (< sm) */}
+                        {/* Mobile List (< sm) - Ativo e % */}
                         <div className="block sm:hidden divide-y divide-[#efebe2] border border-[#e4e0d7] rounded-2xl bg-white shadow-xs overflow-hidden">
                             {activeAssets.map((asset) => (
-                                <div key={asset.assetName} className="p-3.5 flex flex-col gap-2 hover:bg-[#fbfaf8] transition-colors">
-                                    <div className="flex items-start justify-between gap-3">
-                                        <div className="min-w-0 flex-1">
-                                            <div className="font-bold text-[#123044] text-[13px] leading-snug break-words">
-                                                {asset.assetName}
-                                            </div>
-                                            {asset.manager && asset.manager !== "-" && (
-                                                <div className="text-[11px] font-medium text-[#667085] mt-0.5">
-                                                    Gestora: {asset.manager}
-                                                </div>
-                                            )}
+                                <div key={asset.assetName} className="px-4 py-3.5 flex items-center justify-between gap-3 hover:bg-[#fbfaf8] transition-colors">
+                                    <div className="min-w-0 flex-1">
+                                        <div className="font-bold text-[#123044] text-[13.5px] leading-snug break-words">
+                                            {asset.assetName}
                                         </div>
-                                        <div className="text-right shrink-0">
-                                            <div className="text-sm font-black text-[#123044]">
-                                                {formatPct(asset.applicableWeight)}
-                                            </div>
-                                            <div className="text-[10px] text-[#667085] uppercase font-bold">peso</div>
+                                        <div className="text-[11px] text-[#667085] mt-0.5 font-medium">
+                                            {asset.assetClass}
                                         </div>
                                     </div>
-                                    <div>
-                                        <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold leading-normal ${
-                                            asset.assetClass.includes("Caixa") || asset.assetClass.includes("Selic") 
-                                                ? "bg-[#e8f1ed] text-[#1f674f]" 
-                                                : asset.assetClass.includes("Crédito") || asset.assetClass.includes("Infraestrutura") || asset.assetClass.includes("Pré")
-                                                ? "bg-[#eef3f5] text-[#24485b]"
-                                                : asset.assetClass.includes("Multimercado")
-                                                ? "bg-[#fef3c7] text-[#92400e]"
-                                                : "bg-[#e0e7ff] text-[#3730a3]"
-                                        }`}>
-                                            {asset.assetClass}
+                                    <div className="shrink-0 text-right">
+                                        <span className="inline-flex items-center justify-center min-w-[54px] px-2.5 py-1.5 rounded-lg bg-[#e8f1ed] text-[#1f674f] text-xs font-black shadow-2xs">
+                                            {formatPct(asset.applicableWeight)}
                                         </span>
                                     </div>
                                 </div>
