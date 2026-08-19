@@ -79,13 +79,13 @@ export function extractMetricsFromJornada(formData?: Record<string, any> | null)
     // 6. Perfil & Retorno Esperado
     const profile = calculateInvestorProfile(formData)
     const returnByProfile: Record<string, number> = {
-        "ABRIGO": 10.5,
-        "RITMO": 11.5,
-        "VISAO": 13.0,
-        "VISÃO": 13.0,
-        "OCEANO": 14.5,
+        "ABRIGO": 13.9,
+        "RITMO": 14.8,
+        "VISAO": 17.2,
+        "VISÃO": 17.2,
+        "OCEANO": 21.5,
     }
-    const expectedReturn = returnByProfile[profile] || 12
+    const expectedReturn = returnByProfile[profile] || 14.8
 
     // 7. Futuro & Aposentadoria
     const idadeAtual = parseInt(formData.idade || "35", 10) || 35

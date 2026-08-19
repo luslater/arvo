@@ -5,7 +5,7 @@ import Chart from 'chart.js/auto';
 import { useSession } from "next-auth/react"
 import { Pencil, Check, X, TrendingUp, Wallet, PiggyBank, BarChart3, Trophy, Download, Target, AlertTriangle, Info } from "lucide-react"
 import { HISTORICAL_DATA } from "@/data/historicalData"
-import { RECOMMENDED_PORTFOLIOS, TIER_ORDER, TIER_LABEL, TIER_DEFAULT_VALUE, ITYPE_ORDER, ITYPE_LABEL, PERFIL_ORDER } from "@/data/portfoliosData"
+import { RECOMMENDED_PORTFOLIOS, ASSET_METRICS, TIER_ORDER, TIER_LABEL, TIER_DEFAULT_VALUE, ITYPE_ORDER, ITYPE_LABEL, PERFIL_ORDER } from "@/data/portfoliosData"
 
 const formatBRL = (val: number) =>
     new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 }).format(val)
@@ -24,7 +24,67 @@ interface DashboardData {
     desiredLifestyleCost: number
     investmentPeriod: number
     expectedReturn: number
+    returnSource?: string
     userName: string
+}
+
+function computeBussolaReturn(portfolioType?: string | null): number {
+    const normalized = (portfolioType || "RITMO").toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    const p = RECOMMENDED_PORTFOLIOS.find(rp => 
+        rp.perfil.toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === normalized
+    );
+
+    if (p && p.weights) {
+        let ret = 0, weightTotal = 0;
+        const metricKeys = Object.keys(ASSET_METRICS);
+        Object.entries(p.weights).forEach(([assetName, weight]) => {
+            let metrics = ASSET_METRICS[assetName];
+            if (!metrics) {
+                const key = metricKeys.find(k => k.includes(assetName) || assetName.includes(k.split(' (')[0]));
+                if (key) metrics = ASSET_METRICS[key];
+            }
+            if (metrics) {
+                ret += metrics.expectedReturn * (weight * 100) / 100;
+                weightTotal += (weight * 100);
+            }
+        });
+        if (weightTotal > 0) {
+            return parseFloat((ret * (100 / weightTotal)).toFixed(1));
+        }
+    }
+
+    const defaults: Record<string, number> = {
+        "ABRIGO": 13.9,
+        "RITMO": 14.8,
+        "VISAO": 17.2,
+        "OCEANO": 21.5
+    };
+    return defaults[normalized] || 14.8;
+}
+
+function computeInformedReturnFromHoldings(holdings?: Array<{ name: string; weight: number }>): number | null {
+    if (!holdings || holdings.length === 0) return null;
+    const DATA = HISTORICAL_DATA;
+    const FUND_BY_NAME: Record<string, any> = {};
+    DATA.funds.forEach(f => FUND_BY_NAME[f.name] = f);
+    const N = DATA.months.length;
+
+    const monthly = new Array(N).fill(0);
+    let sumWeight = 0;
+    holdings.forEach(h => {
+        const f = FUND_BY_NAME[h.name];
+        if (!f) return;
+        const w = (h.weight || 0) / 100;
+        sumWeight += (h.weight || 0);
+        for (let t = 0; t < N; t++) monthly[t] += w * (f.values[t] || 0);
+    });
+
+    if (sumWeight <= 0) return null;
+    let w = 1;
+    for (const r of monthly) { w *= (1 + (r || 0)); }
+    const annRet = (Math.pow(w, 12 / N) - 1) * 100;
+    if (isNaN(annRet) || annRet <= 0) return null;
+    return parseFloat(annRet.toFixed(1));
 }
 
 function EditableMetric({
@@ -104,6 +164,35 @@ export default function MinhaCarteiraPage() {
           if (!profileRes.ok) return;
           const profile = await profileRes.json()
           const plan = planRes.ok ? await planRes.json() : null
+
+          // Priority 1: Check informed portfolio from localStorage state
+          let savedState: any = null;
+          try {
+              if (typeof window !== "undefined" && window.localStorage) {
+                  savedState = JSON.parse(localStorage.getItem("minha_carteira_state_v1") || "null");
+              }
+          } catch (e) {}
+
+          const activeInformed = savedState?.portfolios?.find((p: any) => p.holdings && p.holdings.length > 0);
+          let calcReturn: number = 0;
+          let returnSourceLabel: string = "Rentabilidade nominal";
+
+          if (activeInformed) {
+              const informedRet = computeInformedReturnFromHoldings(activeInformed.holdings);
+              if (informedRet && informedRet > 0) {
+                  calcReturn = informedRet;
+                  returnSourceLabel = activeInformed.name ? `Carteira: ${activeInformed.name}` : "Carteira informada";
+              }
+          }
+
+          // Priority 2: If no informed portfolio, get the return of his selected portfolio in Bússola
+          if (!calcReturn || calcReturn <= 0) {
+              const bussolaReturn = computeBussolaReturn(profile?.portfolioType || "RITMO");
+              calcReturn = plan?.expectedReturn && plan.expectedReturn > 0 ? plan.expectedReturn : bussolaReturn;
+              const profName = profile?.portfolioType || "Bússola";
+              returnSourceLabel = `Carteira ${profName} (Bússola)`;
+          }
+
           setData({
               totalCarteira: profile?.totalCarteira ?? 0,
               saldo: profile?.saldo ?? 0,
@@ -112,7 +201,8 @@ export default function MinhaCarteiraPage() {
               monthlyContribution: plan?.monthlyContribution ?? 0,
               desiredLifestyleCost: plan?.desiredLifestyleCost ?? 0,
               investmentPeriod: plan?.investmentPeriod ?? 20,
-              expectedReturn: plan?.expectedReturn ?? 12,
+              expectedReturn: calcReturn,
+              returnSource: returnSourceLabel,
               userName: session?.user?.name?.split(" ")[0] ?? "Olá",
           })
       } catch (e) {
@@ -520,6 +610,20 @@ export default function MinhaCarteiraPage() {
         renderChart();
         renderBeforeAfterSummary();
         saveState();
+
+        // Dynamically sync informed portfolio return to top metric card
+        const activeP = portfolios.find((p: any) => p.id === targetPortfolioId && p.holdings && p.holdings.length > 0) || portfolios.find((p: any) => p.holdings && p.holdings.length > 0);
+        if (activeP) {
+          const m = computeMetrics(activeP);
+          const annPct = parseFloat((m.annRet * 100).toFixed(1));
+          if (!isNaN(annPct) && annPct > 0) {
+            setData((prev: any) => prev ? {
+              ...prev,
+              expectedReturn: annPct,
+              returnSource: activeP.name ? `Carteira: ${activeP.name}` : "Carteira informada"
+            } : prev);
+          }
+        }
       }
 
       function renderBeforeAfterSummary(){
@@ -1519,7 +1623,9 @@ export default function MinhaCarteiraPage() {
                         prefix=""
                         suffix="% a.a."
                     />
-                    <div className="text-[10px] sm:text-[11px] text-dash-text-light mt-1 truncate">Rentabilidade nominal</div>
+                    <div className="text-[10px] sm:text-[11px] text-dash-text-light mt-1 truncate" title={data.returnSource || "Rentabilidade nominal"}>
+                        {data.returnSource || "Rentabilidade nominal"}
+                    </div>
                 </div>
 
                 <div className="bg-dash-surface border border-dash-border rounded-2xl p-3.5 sm:p-5 shadow-xs">
