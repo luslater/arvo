@@ -484,7 +484,7 @@ export default function PreviewUserInterviewsPage() {
         <div className="ui-wrap ui-stat-strip-inner">
           <div><strong>100% FEE-ONLY</strong> SEM COMISSÃO OCULTA</div>
           <span className="ui-stat-divider">|</span>
-          <div><strong>4 CARTEIRAS</strong> ESTRATÉGIAS ACOMPANHADAS</div>
+          <div><strong>CARTEIRA SOB MEDIDA</strong> PARA O SEU MOMENTO E PERFIL</div>
           <span className="ui-stat-divider">|</span>
           <div><strong>CUSTÓDIA PRÓPRIA</strong> NO SEU BANCO OU CORRETORA</div>
           <span className="ui-stat-divider">|</span>
