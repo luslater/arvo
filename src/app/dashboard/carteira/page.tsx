@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useEffect, useRef, useState } from 'react';
-import Script from 'next/script';
+import Chart from 'chart.js/auto';
 import { useSession } from "next-auth/react"
 import { Pencil, Check, X, TrendingUp, Wallet, PiggyBank, BarChart3, Trophy, Download, Target, AlertTriangle, Info } from "lucide-react"
 import { HISTORICAL_DATA } from "@/data/historicalData"
@@ -164,15 +164,11 @@ export default function MinhaCarteiraPage() {
   }); // Run on EVERY render to ensure it re-attaches if DOM is wiped
 
   const initApp = () => {
-    // Wait for Chart.js to be available on window
-    if (typeof window === 'undefined' || !(window as any).Chart) {
-      setTimeout(initApp, 100);
-      return;
-    }
+    if (typeof window === 'undefined') return;
 
     const canvas = document.getElementById('chart') as HTMLCanvasElement;
     if (!canvas) {
-      setTimeout(initApp, 100);
+      setTimeout(initApp, 60);
       return;
     }
 
@@ -1082,7 +1078,7 @@ export default function MinhaCarteiraPage() {
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
         if (chart){ chart.data.labels = labels; chart.data.datasets = datasets; chart.update(); return; }
-        chart = new (window as any).Chart(ctx, {
+        chart = new Chart(ctx as any, {
           type: 'line',
           data: { labels, datasets },
           options: {
@@ -1475,11 +1471,6 @@ export default function MinhaCarteiraPage() {
   return (
     <div className="minha-carteira-app">
 
-      <Script 
-        src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js" 
-        onLoad={initApp}
-      />
-
       <div className={data ? "block" : "hidden"} style={{ minHeight: data ? 'auto' : '0px' }}>
       {data && (
         <div className="max-w-[1400px] mx-auto px-4 md:px-8 pt-8 pb-4">
@@ -1587,7 +1578,10 @@ export default function MinhaCarteiraPage() {
         .minha-carteira-app .bench-chip.active { background:#f4f5fb; color:var(--text); border-color:transparent; }
         .minha-carteira-app .bench-chip .dot { width:8px; height:8px; border-radius:50%; background:var(--c); }
 
-        .minha-carteira-app #chartBox { height:360px; position:relative; }
+        .minha-carteira-app #chartBox { height:360px; position:relative; width:100%; min-height:260px; }
+        @media (max-width:640px) {
+          .minha-carteira-app #chartBox { height:280px; }
+        }
 
         .minha-carteira-app .leaderboard { display:flex; gap:10px; flex-wrap:wrap; }
         .minha-carteira-app .lb-item { display:flex; align-items:center; gap:10px; background:var(--panel2); border:1px solid var(--border); border-radius:12px; padding:10px 14px; min-width:220px; }

@@ -66,13 +66,13 @@ export function AIChatWidget() {
     }
 
     return (
-        <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end pointer-events-none">
+        <div className="fixed bottom-20 right-4 md:bottom-6 md:right-6 z-30 flex flex-col items-end pointer-events-none">
             {/* Chat Window */}
             <div className={cn(
                 "pointer-events-auto transition-all duration-300 ease-in-out transform origin-bottom-right mb-4",
                 isOpen ? "scale-100 opacity-100 translate-y-0" : "scale-95 opacity-0 translate-y-10 pointer-events-none hidden"
             )}>
-                <Card className="w-[350px] md:w-[400px] h-[500px] shadow-2xl border-gray-200 flex flex-col overflow-hidden">
+                <Card className="w-[calc(100vw-32px)] max-w-[380px] md:w-[400px] h-[460px] md:h-[500px] shadow-2xl border-gray-200 flex flex-col overflow-hidden">
                     <CardHeader className="bg-gradient-to-r from-gray-900 to-gray-800 text-white p-4 flex flex-row items-center justify-between space-y-0">
                         <div className="flex items-center gap-2">
                             <div className="p-1.5 bg-white/10 rounded-full">
