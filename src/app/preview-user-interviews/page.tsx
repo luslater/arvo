@@ -440,7 +440,7 @@ export default function PreviewUserInterviewsPage() {
           <div>
             <div className="ui-eyebrow">
               <span className="ui-eyebrow-dot"></span>
-              PLANEJAMENTO INDEPENDENTE · SEM COMISSÃO
+              PLANEJAMENTO FINANCEIRO · ORIENTAÇÃO DE INVESTIMENTOS
             </div>
 
             <h1 className="ui-serif" style={{ fontSize: "clamp(36px, 4.5vw, 58px)", lineHeight: "1.12", color: "var(--ink-navy)", margin: "0 0 18px 0" }}>
@@ -448,8 +448,8 @@ export default function PreviewUserInterviewsPage() {
               <i style={{ color: "var(--deep-teal)", fontStyle: "italic" }}>É preciso ter um plano.</i>
             </h1>
 
-            <p style={{ fontSize: "17px", color: "var(--text-secondary)", lineHeight: "1.65", margin: "0 0 28px 0", maxWidth: "44ch" }}>
-              A ARVO transforma seus investimentos em uma estratégia clara para você saber quanto investir, como organizar seu patrimônio e se está no caminho dos seus objetivos.
+            <p style={{ fontSize: "17px", color: "var(--text-secondary)", lineHeight: "1.65", margin: "0 0 28px 0", maxWidth: "46ch" }}>
+              Organizamos sua vida financeira em um plano: calculamos quanto você precisa investir, indicamos a carteira adequada ao seu momento e acompanhamos sua evolução até seus objetivos. Sem comissão, sem tirar seu dinheiro do banco ou da corretora.
             </p>
 
             <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "10px" }}>
