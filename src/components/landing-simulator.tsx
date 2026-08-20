@@ -247,15 +247,15 @@ export default function ArvoSimulador() {
             value={patrimonio}
             onChange={setPatrimonio}
             min={0}
-            max={2000000}
-            step={5000}
+            max={5000000}
+            step={10000}
           />
           <SliderInput
             label="Quanto investe por mês?"
             value={aporte}
             onChange={setAporte}
             min={500}
-            max={20000}
+            max={50000}
             step={500}
           />
           <SliderInput
@@ -263,7 +263,7 @@ export default function ArvoSimulador() {
             value={gasto}
             onChange={setGasto}
             min={2000}
-            max={30000}
+            max={60000}
             step={500}
           />
 

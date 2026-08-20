@@ -273,7 +273,7 @@ export function PlanejamentoContent() {
                         <ArvoSliderControl
                             label="Patrimônio Atual"
                             value={currentValue}
-                            min={0} max={2000000} step={5000}
+                            min={0} max={5000000} step={10000}
                             onChange={setCurrentValue}
                             isCurrency
                             icon={<Wallet className="w-4 h-4" />}
@@ -281,7 +281,7 @@ export function PlanejamentoContent() {
                         <ArvoSliderControl
                             label="Aporte Mensal"
                             value={monthlyContribution}
-                            min={0} max={50000} step={100}
+                            min={0} max={50000} step={500}
                             onChange={setMonthlyContribution}
                             isCurrency
                             icon={<PiggyBank className="w-4 h-4" />}
@@ -335,7 +335,7 @@ export function PlanejamentoContent() {
                         </div>
                         <Slider
                             value={[desiredLifestyleCost]}
-                            min={1000} max={50000} step={100}
+                            min={1000} max={60000} step={500}
                             onValueChange={(v: number[]) => setDesiredLifestyleCost(v[0])}
                             className="[&_[role=slider]]:bg-emerald-600 [&_[role=slider]]:border-emerald-600"
                         />
