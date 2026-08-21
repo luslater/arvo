@@ -6,8 +6,8 @@ import { ArrowRight, Check, Info } from "lucide-react";
 const fmt = (v: any) => v.toLocaleString("pt-BR", { maximumFractionDigits: 0 });
 const fmtCurrency = (v: any) => `R$ ${fmt(v)}`;
 
-// ─── Cálculo: projeção com juros compostos ───
-function calcProjection(patrimonio: any, aporteMensal: any, gastoMensal: any, taxaAnualReal = 0.08) {
+// ─── Cálculo: projeção com juros compostos (IPCA + 6% a.a. real) ───
+function calcProjection(patrimonio: any, aporteMensal: any, gastoMensal: any, taxaAnualReal = 0.06) {
   const taxaMensal = Math.pow(1 + taxaAnualReal, 1 / 12) - 1;
   const metaPatrimonio = gastoMensal * 12 * 25; // Regra dos 4%
   const maxMeses = 40 * 12; // 40 anos máximo
@@ -217,8 +217,8 @@ export default function ArvoSimulador() {
       `}} />
       {/* Header do card */}
           <div style={{
-            display: "flex", justifyContent: "space-between", alignItems: "center",
-            marginBottom: 16
+            display: "flex", justifyContent: "space-between", alignItems: "flex-start",
+            marginBottom: 16, gap: 8
           }}>
             <div>
               <span style={{
@@ -235,9 +235,11 @@ export default function ArvoSimulador() {
             </div>
             <div style={{
               display: "flex", alignItems: "center", gap: 4,
-              fontSize: 11, color: "#888",
+              fontSize: 11, color: "#1f674f", background: "#e8f1ed",
+              padding: "4px 8px", borderRadius: 8, fontWeight: 600,
+              whiteSpace: "nowrap", flexShrink: 0
             }}>
-              <Info size={12} /> Projeção
+              IPCA + 6% a.a. real
             </div>
           </div>
 
@@ -344,10 +346,10 @@ export default function ArvoSimulador() {
           <div style={{
             display: "flex", justifyContent: "space-between", alignItems: "center",
             padding: "8px 0", borderTop: "1px solid #f0f0f0",
-            fontSize: 12, color: "#999", marginBottom: 12,
+            fontSize: 12, color: "#667085", marginBottom: 12,
           }}>
-            <span>Patrimônio necessário (regra dos 4%)</span>
-            <span style={{ fontWeight: 600, color: "#666" }}>
+            <span>Patrimônio necessário (regra dos 4% · valores de hoje)</span>
+            <span style={{ fontWeight: 600, color: "#123044" }}>
               {fmtCurrency(proj.metaPatrimonio)}
             </span>
           </div>
@@ -365,10 +367,10 @@ export default function ArvoSimulador() {
           </a>
 
           <p style={{
-            fontSize: 10.5, color: "#9aa0a6", textAlign: "center", marginTop: 10, marginBottom: 0,
-            lineHeight: 1.4
+            fontSize: 10.5, color: "#667085", textAlign: "center", marginTop: 10, marginBottom: 0,
+            lineHeight: 1.45
           }}>
-            Projeção ilustrativa baseada nas premissas apresentadas. Rentabilidade passada não representa garantia de resultados futuros.
+            💡 Projeção com <strong>IPCA + 6,0% a.a. de rendimento real</strong>. Todos os valores já são <strong>descontados da inflação (valores de hoje em poder de compra)</strong>. Rentabilidade passada não representa garantia de resultados futuros.
           </p>
         </div>
   );
