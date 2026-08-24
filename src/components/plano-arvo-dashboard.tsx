@@ -285,16 +285,49 @@ export default function PlanoArvoDashboard({ onBack, formData = {} }: { onBack?:
     const anosRestantes = Math.max(1, idadeAposentadoria - idadeAtual)
     const rendaDesejada = parseCurrency(formData.rendaAposentadoria) || Math.round(rendaTotal * 0.8)
     
-    // Regra dos 4% para independência financeira
+    // Perfil e Rentabilidade Nominal da Carteira Escolhida
+    const investorProfile = calculateInvestorProfile(formData)
+    const returnByProfile: Record<string, number> = {
+      "ABRIGO": 13.9,
+      "RITMO": 14.8,
+      "VISÃO": 17.2,
+      "VISAO": 17.2,
+      "OCEANO": 21.5,
+    }
+    const taxaNominal = parseCurrency(formData.expectedReturn) || returnByProfile[investorProfile.toUpperCase()] || 14.8
+    const rMensal = Math.pow(1 + taxaNominal / 100, 1 / 12) - 1
+    const totalMeses = anosRestantes * 12
+
+    // Projeção do Patrimônio com Juros Compostos (Patrimônio Atual + Aportes Mensais)
+    let patrimonioProjetado = patrimonioInvestido
+    if (totalMeses > 0 && rMensal > 0) {
+      const pvPart = patrimonioInvestido * Math.pow(1 + rMensal, totalMeses)
+      const pmtPart = capacidadeInvestimento * ((Math.pow(1 + rMensal, totalMeses) - 1) / rMensal)
+      patrimonioProjetado = Math.round(pvPart + pmtPart)
+    }
+
+    // Regra dos 4% para independência financeira (Patrimônio necessário para renda perpétua)
     const patrimonioNecessarioAposentadoria = Math.round((rendaDesejada * 12) / 0.04)
-    const gapAposentadoria = Math.max(0, patrimonioNecessarioAposentadoria - patrimonioInvestido)
+    
+    // Gap Projetado Real (Meta menos o que o usuário efetivamente acumulará no prazo)
+    const gapProjetado = Math.max(0, patrimonioNecessarioAposentadoria - patrimonioProjetado)
+    const coberturaMetaPct = patrimonioNecessarioAposentadoria > 0 
+      ? Math.min(100, Math.round((patrimonioProjetado / patrimonioNecessarioAposentadoria) * 100))
+      : 100
+
+    // Aporte Mensal Ideal para atingir 100% da Meta no prazo
+    let aporteIdeal = capacidadeInvestimento
+    if (patrimonioNecessarioAposentadoria > 0 && totalMeses > 0 && rMensal > 0) {
+      const pvFinal = patrimonioInvestido * Math.pow(1 + rMensal, totalMeses)
+      const pmtFactor = (Math.pow(1 + rMensal, totalMeses) - 1) / rMensal
+      if (pmtFactor > 0) {
+        aporteIdeal = Math.max(0, Math.round((patrimonioNecessarioAposentadoria - pvFinal) / pmtFactor))
+      }
+    }
 
     // 7. Economia Tributária
     const isCltCompleta = formData.tipoRendimento === "Salário CLT" && formData.declaracaoIr === "Completa"
     const economiaFiscalPotencial = isCltCompleta ? Math.round(rendaTotal * 12 * 0.12 * 0.275) : 4200
-
-    // Perfil
-    const investorProfile = calculateInvestorProfile(formData)
 
     return {
       rendaTotal,
@@ -311,7 +344,12 @@ export default function PlanoArvoDashboard({ onBack, formData = {} }: { onBack?:
       capacidadeInvestimento,
       patrimonioInvestido,
       patrimonioNecessarioAposentadoria,
-      gapAposentadoria,
+      patrimonioProjetado,
+      gapProjetado,
+      coberturaMetaPct,
+      aporteIdeal,
+      taxaNominal,
+      rendaDesejada,
       idadeAtual,
       idadeAposentadoria,
       anosRestantes,
@@ -369,12 +407,17 @@ export default function PlanoArvoDashboard({ onBack, formData = {} }: { onBack?:
       pillar: 3,
       impact: "alto"
     },
-    {
+    ...(financialData.gapProjetado > 0 ? [{
       priority: 4,
-      text: `Acelerar projeção para fechar o gap de aposentadoria de ${formatBRL(financialData.gapAposentadoria)} em ${financialData.anosRestantes} anos`,
+      text: `Elevar aportes para ${formatBRL(financialData.aporteIdeal)}/mês para fechar o gap projetado de ${formatBRL(financialData.gapProjetado)} em ${financialData.anosRestantes} anos`,
       pillar: 4,
       impact: "médio"
-    },
+    }] : [{
+      priority: 4,
+      text: `Manter a disciplina: sua projeção cobre 100% da meta de ${formatBRL(financialData.patrimonioNecessarioAposentadoria)} em ${financialData.anosRestantes} anos`,
+      pillar: 4,
+      impact: "médio"
+    }]),
     {
       priority: 5,
       text: `Organizar dossiê de sucessão e inventário para proteção familiar`,
@@ -383,14 +426,31 @@ export default function PlanoArvoDashboard({ onBack, formData = {} }: { onBack?:
     }
   ]
 
-  const patrimonioProjection = [
-    { ano: "Hoje", aportes: financialData.patrimonioInvestido, rendimentos: 0 },
-    { ano: "2031", aportes: Math.round(financialData.patrimonioInvestido + financialData.capacidadeInvestimento * 60), rendimentos: Math.round(financialData.capacidadeInvestimento * 25) },
-    { ano: "2036", aportes: Math.round(financialData.patrimonioInvestido + financialData.capacidadeInvestimento * 120), rendimentos: Math.round(financialData.capacidadeInvestimento * 80) },
-    { ano: "2041", aportes: Math.round(financialData.patrimonioInvestido + financialData.capacidadeInvestimento * 180), rendimentos: Math.round(financialData.capacidadeInvestimento * 180) },
-    { ano: "2046", aportes: Math.round(financialData.patrimonioInvestido + financialData.capacidadeInvestimento * 240), rendimentos: Math.round(financialData.capacidadeInvestimento * 340) },
-    { ano: "2054", aportes: Math.round(financialData.patrimonioInvestido + financialData.capacidadeInvestimento * 336), rendimentos: Math.round(financialData.capacidadeInvestimento * 680) },
-  ]
+  const currentYear = new Date().getFullYear()
+  const rMensal = Math.pow(1 + financialData.taxaNominal / 100, 1 / 12) - 1
+  const numSteps = Math.min(6, Math.max(3, financialData.anosRestantes))
+  const stepYears = Math.max(1, Math.floor(financialData.anosRestantes / (numSteps - 1)))
+
+  const patrimonioProjection = []
+  for (let i = 0; i < numSteps; i++) {
+    const y = i === numSteps - 1 ? financialData.anosRestantes : i * stepYears
+    const m = y * 12
+    const yearLabel = i === 0 ? "Hoje" : String(currentYear + y)
+    const aportesAcumulados = Math.round(financialData.patrimonioInvestido + financialData.capacidadeInvestimento * m)
+    
+    let totalAcumulado = financialData.patrimonioInvestido
+    if (m > 0 && rMensal > 0) {
+      const pvPart = financialData.patrimonioInvestido * Math.pow(1 + rMensal, m)
+      const pmtPart = financialData.capacidadeInvestimento * ((Math.pow(1 + rMensal, m) - 1) / rMensal)
+      totalAcumulado = Math.round(pvPart + pmtPart)
+    }
+    const rendimentos = Math.max(0, totalAcumulado - aportesAcumulados)
+    patrimonioProjection.push({
+      ano: yearLabel,
+      aportes: aportesAcumulados,
+      rendimentos: rendimentos
+    })
+  }
 
   const allocationCurrent = [
     { name: "RF Pós-fixada", value: 45, color: "#123044" },
@@ -413,7 +473,7 @@ export default function PlanoArvoDashboard({ onBack, formData = {} }: { onBack?:
   const objectives = [
     { name: "Reserva de Emergência", value: financialData.reservaMeta, current: financialData.reservaAtual, deadline: "Curto Prazo", pct: financialData.reservaPct, color: "#4fa080" },
     { name: "Principal Objetivo Declarado", value: Math.round(financialData.patrimonioInvestido * 1.5), current: financialData.patrimonioInvestido, deadline: formData.prazoPrincipalObjetivo || "Médio Prazo", pct: 65, color: "#2b6e76" },
-    { name: "Independência Financeira", value: financialData.patrimonioNecessarioAposentadoria, current: financialData.patrimonioInvestido, deadline: `${financialData.idadeAposentadoria} anos`, pct: financialData.patrimonioNecessarioAposentadoria > 0 ? (financialData.patrimonioInvestido / financialData.patrimonioNecessarioAposentadoria) * 100 : 10, color: "#123044" },
+    { name: "Independência Financeira (Meta)", value: financialData.patrimonioNecessarioAposentadoria, current: financialData.patrimonioProjetado, deadline: `${financialData.idadeAposentadoria} anos (${financialData.anosRestantes}a)`, pct: financialData.coberturaMetaPct, color: "#123044" },
   ]
 
   const tabs = [
@@ -614,12 +674,84 @@ export default function PlanoArvoDashboard({ onBack, formData = {} }: { onBack?:
         {activeTab === "patrimonio" && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
             
-            <section className="mb-8">
+            <section className="mb-6">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-                <MetricCard icon={BarChart3} label="Patrimônio Atual" value={formatBRL(financialData.patrimonioInvestido)} color="#123044" />
-                <MetricCard icon={Target} label="Meta Aposentadoria" value={formatBRL(financialData.patrimonioNecessarioAposentadoria)} subtitle={`Para renda de ${formatBRL(financialData.rendaTotal * 0.8)}/mês`} color="#4fa080" />
-                <MetricCard icon={Zap} label="Gap Aposentadoria" value={formatBRL(financialData.gapAposentadoria)} subtitle={`Prazo: ${financialData.anosRestantes} anos restantes`} color="#0A192F" />
-                <MetricCard icon={Star} label="Economia Fiscal" value={formatBRL(financialData.economiaFiscalPotencial) + "/ano"} subtitle="Otimização legal via IR" color="#4fa080" />
+                <MetricCard 
+                  icon={BarChart3} 
+                  label="Patrimônio Atual" 
+                  value={formatBRL(financialData.patrimonioInvestido)} 
+                  subtitle={`Aporte: ${formatBRL(financialData.capacidadeInvestimento)}/mês`} 
+                  color="#123044" 
+                  tooltip="Patrimônio inicial informado disponível para a construção do plano."
+                />
+                <MetricCard 
+                  icon={Target} 
+                  label="Meta Aposentadoria (4%)" 
+                  value={formatBRL(financialData.patrimonioNecessarioAposentadoria)} 
+                  subtitle={`Para renda de ${formatBRL(financialData.rendaDesejada)}/mês`} 
+                  color="#4fa080" 
+                  tooltip="Patrimônio necessário pela regra dos 4% (300x o custo mensal) para gerar renda passiva perpétua."
+                />
+                <MetricCard 
+                  icon={TrendingUp} 
+                  label="Patrimônio Projetado" 
+                  value={formatBRL(financialData.patrimonioProjetado)} 
+                  subtitle={`Em ${financialData.anosRestantes} anos (${financialData.taxaNominal}% a.a.)`} 
+                  color="#2b6e76" 
+                  tooltip={`Total acumulado aos ${financialData.idadeAposentadoria} anos com aportes de ${formatBRL(financialData.capacidadeInvestimento)}/mês e retorno composto da Carteira ${financialData.investorProfile} (${financialData.taxaNominal}% a.a.).`}
+                  progress={{
+                    pct: financialData.coberturaMetaPct,
+                    currentFormatted: `${financialData.coberturaMetaPct}% da meta`,
+                    targetFormatted: formatBRL(financialData.patrimonioNecessarioAposentadoria),
+                  }}
+                />
+                <MetricCard 
+                  icon={Zap} 
+                  label="Gap Projetado" 
+                  value={financialData.gapProjetado > 0 ? formatBRL(financialData.gapProjetado) : "R$ 0 (Meta Coberta)"} 
+                  subtitle={financialData.gapProjetado > 0 ? `Aporte ideal: ${formatBRL(financialData.aporteIdeal)}/mês` : `Superávit: +${formatBRL(financialData.patrimonioProjetado - financialData.patrimonioNecessarioAposentadoria)}`} 
+                  color={financialData.gapProjetado > 0 ? "#0A192F" : "#1f674f"} 
+                  tooltip={financialData.gapProjetado > 0 ? `Diferença projetada até a meta. Ajustando o aporte para ${formatBRL(financialData.aporteIdeal)}/mês você alcança 100% da meta em ${financialData.anosRestantes} anos.` : "Sua estratégia e aportes cobrem integralmente a meta de aposentadoria!"}
+                />
+              </div>
+            </section>
+
+            {/* Diagnostic Box explaining the dynamic compound retirement calculation */}
+            <section className="mb-8">
+              <div className="bg-[#f8fcfb] border border-[#d6e5de] rounded-2xl p-5 md:p-6 shadow-sm">
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-[#e8f1ed] text-[#1f674f] flex items-center justify-center shrink-0 mt-0.5">
+                    <Compass size={22} />
+                  </div>
+                  <div className="flex-1 space-y-2.5">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <h4 className="font-bold text-[#123044] text-base">
+                        Como o Gap de Aposentadoria é Projetado
+                      </h4>
+                      <span className="text-xs font-extrabold px-3 py-1 bg-white border border-[#d6e5de] text-[#1f674f] rounded-full">
+                        Carteira {financialData.investorProfile} · {financialData.taxaNominal}% a.a. nominal
+                      </span>
+                    </div>
+                    <p className="text-sm text-[#475467] leading-relaxed">
+                      Sua meta para aposentadoria sustentável (regra dos 4%) é de <strong>{formatBRL(financialData.patrimonioNecessarioAposentadoria)}</strong>, gerando <strong>{formatBRL(financialData.rendaDesejada)}/mês</strong> perpétuos. Com seu <strong>patrimônio atual de {formatBRL(financialData.patrimonioInvestido)}</strong> e mantendo <strong>aportes de {formatBRL(financialData.capacidadeInvestimento)}/mês</strong> na <strong>Carteira {financialData.investorProfile} ({financialData.taxaNominal}% a.a.)</strong>, você acumulará <strong>{formatBRL(financialData.patrimonioProjetado)}</strong> em <strong>{financialData.anosRestantes} anos</strong> ({financialData.coberturaMetaPct}% da meta).
+                    </p>
+                    {financialData.gapProjetado > 0 ? (
+                      <div className="p-3.5 bg-[#fff9e6] border border-[#fce49c] rounded-xl text-xs text-[#92400e] leading-relaxed flex items-start gap-2.5">
+                        <Info size={16} className="text-[#d97706] shrink-0 mt-0.5" />
+                        <div>
+                          <strong>Como zerar o Gap Projetado de {formatBRL(financialData.gapProjetado)}:</strong> Para atingir 100% da meta no prazo de {financialData.anosRestantes} anos, o plano recomenda ajustar seu aporte mensal para <strong>{formatBRL(financialData.aporteIdeal)}/mês</strong> (um acréscimo de {formatBRL(Math.max(0, financialData.aporteIdeal - financialData.capacidadeInvestimento))}/mês) ou estender o prazo da aposentadoria.
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-900 leading-relaxed flex items-start gap-2.5">
+                        <CheckCircle size={16} className="text-emerald-600 shrink-0 mt-0.5" />
+                        <div>
+                          <strong>Meta Plenamente Coberta:</strong> Sua capacidade de aporte atual combinada aos juros compostos da Carteira {financialData.investorProfile} cobrirá 100% da meta no prazo, gerando um superávit projetado de <strong>{formatBRL(financialData.patrimonioProjetado - financialData.patrimonioNecessarioAposentadoria)}</strong>.
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
             </section>
 
@@ -632,7 +764,7 @@ export default function PlanoArvoDashboard({ onBack, formData = {} }: { onBack?:
                             <div className="w-2 h-2 rounded-full bg-[#3B82F6]"></div>
                             <h3 className="text-lg font-bold text-[#123044]">Projeção de Acumulação</h3>
                         </div>
-                        <span className="text-xs font-bold text-[#667085] bg-[#f0ece1] px-3 py-1.5 rounded-lg">Cenário: 8.5% a.a.</span>
+                        <span className="text-xs font-bold text-[#1f674f] bg-[#e8f1ed] px-3 py-1.5 rounded-lg border border-[#d6e5de]">Carteira {financialData.investorProfile} · {financialData.taxaNominal}% a.a.</span>
                     </div>
                     
                     <div className="w-full">
