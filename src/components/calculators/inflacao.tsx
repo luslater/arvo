@@ -11,7 +11,7 @@ import {
   Legend,
   ResponsiveContainer
 } from "recharts";
-import { TrendingUp, RotateCcw, ShieldCheck, Copy, Check, Info } from "lucide-react";
+import { TrendingUp, RotateCcw, ShieldCheck, Copy, Check, Calendar } from "lucide-react";
 
 type CalcMode = "forward" | "backward";
 type IndexKey = "ipca" | "inpc" | "igpm";
@@ -67,6 +67,21 @@ const INDEXES: PriceIndex[] = [
   },
 ];
 
+const MONTHS = [
+  { value: "01", label: "Janeiro", short: "Jan" },
+  { value: "02", label: "Fevereiro", short: "Fev" },
+  { value: "03", label: "Março", short: "Mar" },
+  { value: "04", label: "Abril", short: "Abr" },
+  { value: "05", label: "Maio", short: "Mai" },
+  { value: "06", label: "Junho", short: "Jun" },
+  { value: "07", label: "Julho", short: "Jul" },
+  { value: "08", label: "Agosto", short: "Ago" },
+  { value: "09", label: "Setembro", short: "Set" },
+  { value: "10", label: "Outubro", short: "Out" },
+  { value: "11", label: "Novembro", short: "Nov" },
+  { value: "12", label: "Dezembro", short: "Dez" },
+];
+
 const money = new Intl.NumberFormat("pt-BR", {
   style: "currency",
   currency: "BRL",
@@ -88,6 +103,14 @@ function previousMonth(): string {
   const now = new Date();
   const date = new Date(Date.UTC(now.getFullYear(), now.getMonth() - 1, 1));
   return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}`;
+}
+
+function getPastMonth(yearsAgo: number): string {
+  const now = new Date();
+  const target = new Date(Date.UTC(now.getFullYear() - yearsAgo, now.getMonth() - 1, 1));
+  const minDate = new Date(Date.UTC(1994, 6, 1));
+  const finalDate = target < minDate ? minDate : target;
+  return `${finalDate.getUTCFullYear()}-${String(finalDate.getUTCMonth() + 1).padStart(2, "0")}`;
 }
 
 function monthToApi(value: string, lastDay = false) {
@@ -130,6 +153,94 @@ const formatBRLCompact = (v: number) => {
   if (v >= 1_000) return `R$ ${(v / 1_000).toFixed(0)}k`;
   return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(v);
 };
+
+function MonthYearPicker({
+  label,
+  value,
+  onChange,
+  min = "1994-07",
+  max,
+}: {
+  label: string;
+  value: string;
+  onChange: (val: string) => void;
+  min?: string;
+  max?: string;
+}) {
+  const parts = value ? value.split("-") : ["2015", "01"];
+  const currentYear = parts[0] || "2015";
+  const currentMonth = parts[1] || "01";
+
+  const maxYear = max ? parseInt(max.split("-")[0], 10) : new Date().getFullYear();
+  const minYear = min ? parseInt(min.split("-")[0], 10) : 1994;
+
+  const years: number[] = [];
+  for (let y = maxYear; y >= minYear; y--) {
+    years.push(y);
+  }
+
+  const handleMonthChange = (newMonth: string) => {
+    const newVal = `${currentYear}-${newMonth}`;
+    if (min && newVal < min) onChange(min);
+    else if (max && newVal > max) onChange(max);
+    else onChange(newVal);
+  };
+
+  const handleYearChange = (newYear: string) => {
+    let newVal = `${newYear}-${currentMonth}`;
+    if (min && newVal < min) {
+      newVal = min;
+    } else if (max && newVal > max) {
+      newVal = max;
+    }
+    onChange(newVal);
+  };
+
+  return (
+    <div className="space-y-1.5">
+      <label className="block text-dash-text-light text-xs font-semibold uppercase tracking-wider">{label}</label>
+      <div className="grid grid-cols-5 gap-2">
+        <div className="col-span-3 relative">
+          <select
+            value={currentMonth}
+            onChange={(e) => handleMonthChange(e.target.value)}
+            className="w-full bg-dash-surface-active border border-dash-border rounded-xl px-3 py-2.5 text-dash-text text-sm font-medium focus:outline-none focus:ring-1 focus:ring-dash-accent focus:border-dash-accent cursor-pointer transition appearance-none pr-7 truncate shadow-xs"
+          >
+            {MONTHS.map((m) => (
+              <option key={m.value} value={m.value}>
+                {m.label} ({m.value})
+              </option>
+            ))}
+          </select>
+          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-dash-text-muted">
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
+        </div>
+
+        <div className="col-span-2 relative">
+          <select
+            value={currentYear}
+            onChange={(e) => handleYearChange(e.target.value)}
+            className="w-full bg-dash-surface-active border border-dash-border rounded-xl px-3 py-2.5 text-dash-text text-sm font-medium focus:outline-none focus:ring-1 focus:ring-dash-accent focus:border-dash-accent cursor-pointer transition appearance-none pr-7 shadow-xs"
+          >
+            {years.map((y) => (
+              <option key={y} value={String(y)}>
+                {y}
+              </option>
+            ))}
+          </select>
+          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-dash-text-muted">
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function TrendChart({ points, mode }: { points: ChartPoint[]; mode: CalcMode }) {
   if (!points || points.length === 0) return null;
@@ -225,12 +336,12 @@ export default function CalculadoraInflacao() {
     }
 
     if (!startMonth || !endMonth || startMonth > endMonth) {
-      setError("Confira o período: a data final deve ser igual ou posterior à inicial.");
+      setError("Confira o período: a data final deve ser igual ou posterior à data inicial.");
       return;
     }
 
     if (startMonth < "1994-07") {
-      setError("Para preservar a unidade monetária em reais, escolha uma data a partir de julho de 1994.");
+      setError("Para preservar a unidade monetária em reais, escolha uma data a partir de julho de 1994 (Plano Real).");
       return;
     }
 
@@ -244,10 +355,10 @@ export default function CalculadoraInflacao() {
       const response = await fetch(
         `https://api.bcb.gov.br/dados/serie/bcdata.sgs.${currentIndex.series}/dados?${params}`,
       );
-      if (!response.ok) throw new Error("Fonte oficial indisponível");
+      if (!response.ok) throw new Error("Fonte oficial do BACEN indisponível no momento");
       const data = (await response.json()) as ApiPoint[];
       if (!Array.isArray(data) || data.length === 0) {
-        throw new Error("O índice ainda não possui dados para esse período.");
+        throw new Error("O índice ainda não possui dados divulgados para esse período.");
       }
 
       let totalFactor = 1;
@@ -279,7 +390,7 @@ export default function CalculadoraInflacao() {
         // Modo 2: Valor de hoje -> valor equivalente no passado
         // Valor no passado = Valor atual / fator de inflação acumulada
         corrected = amount / totalFactor;
-        increase = amount - corrected; // Diferença nominal em reais que a inflação corroeu
+        increase = amount - corrected;
 
         let runningFactor = 1;
         chart = data.map((point) => {
@@ -347,8 +458,8 @@ export default function CalculadoraInflacao() {
     setTimeout(() => setCopied(false), 2500);
   }
 
-  const inputClass = "w-full bg-dash-surface-active border border-dash-border rounded-xl px-4 py-3 text-dash-text text-lg focus:outline-none focus:ring-1 focus:ring-dash-accent focus:border-dash-accent transition";
-  const labelClass = "block text-dash-text-light text-sm font-medium mb-1.5";
+  const inputClass = "w-full bg-dash-surface-active border border-dash-border rounded-xl px-4 py-3 text-dash-text text-lg focus:outline-none focus:ring-1 focus:ring-dash-accent focus:border-dash-accent transition shadow-xs";
+  const labelClass = "block text-dash-text-light text-xs font-semibold uppercase tracking-wider mb-1.5";
 
   return (
     <div className="w-full">
@@ -468,39 +579,61 @@ export default function CalculadoraInflacao() {
                   />
                 </div>
 
-                {/* Datas */}
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className={labelClass}>
-                      {mode === "forward" ? "Mês inicial (passado)" : "Data no passado"}
-                    </label>
-                    <input
-                      type="month"
-                      className="w-full bg-dash-surface-active border border-dash-border rounded-xl px-3 py-2.5 text-dash-text text-sm focus:outline-none focus:ring-1 focus:ring-dash-accent"
-                      min="1994-07"
-                      max={previousMonth()}
-                      value={startMonth}
-                      onChange={(event) => {
-                        setStartMonth(event.target.value);
-                        setResult(null);
-                      }}
-                    />
+                {/* Datas usando MonthYearPicker formatado e elegante */}
+                <div className="space-y-3.5">
+                  <MonthYearPicker
+                    label={mode === "forward" ? "Data inicial no passado" : "Data no passado de referência"}
+                    value={startMonth}
+                    onChange={(val) => {
+                      setStartMonth(val);
+                      setResult(null);
+                    }}
+                    min="1994-07"
+                    max={endMonth}
+                  />
+
+                  <MonthYearPicker
+                    label={mode === "forward" ? "Data final de referência (hoje)" : "Data de hoje (referência atual)"}
+                    value={endMonth}
+                    onChange={(val) => {
+                      setEndMonth(val);
+                      setResult(null);
+                    }}
+                    min={startMonth}
+                    max={previousMonth()}
+                  />
+                </div>
+
+                {/* Atalhos Rápidos */}
+                <div className="pt-1">
+                  <div className="flex items-center gap-1 text-[11px] text-dash-text-muted mb-1.5 font-medium">
+                    <Calendar className="w-3 h-3 text-[#1f674f]" /> Atalhos de período:
                   </div>
-                  <div>
-                    <label className={labelClass}>
-                      {mode === "forward" ? "Mês final (hoje)" : "Referência (hoje)"}
-                    </label>
-                    <input
-                      type="month"
-                      className="w-full bg-dash-surface-active border border-dash-border rounded-xl px-3 py-2.5 text-dash-text text-sm focus:outline-none focus:ring-1 focus:ring-dash-accent"
-                      min="1994-07"
-                      max={previousMonth()}
-                      value={endMonth}
-                      onChange={(event) => {
-                        setEndMonth(event.target.value);
-                        setResult(null);
-                      }}
-                    />
+                  <div className="flex flex-wrap gap-1.5">
+                    {[
+                      { label: "1 ano", years: 1 },
+                      { label: "3 anos", years: 3 },
+                      { label: "5 anos", years: 5 },
+                      { label: "10 anos", years: 10 },
+                      { label: "Plano Real (1994)", years: -1 },
+                    ].map((preset) => (
+                      <button
+                        key={preset.label}
+                        type="button"
+                        onClick={() => {
+                          if (preset.years === -1) {
+                            setStartMonth("1994-07");
+                          } else {
+                            setStartMonth(getPastMonth(preset.years));
+                          }
+                          setEndMonth(previousMonth());
+                          setResult(null);
+                        }}
+                        className="px-2.5 py-1 text-xs rounded-lg bg-dash-surface border border-dash-border hover:bg-dash-surface-active hover:border-dash-accent/40 text-dash-text font-medium transition-colors"
+                      >
+                        {preset.label}
+                      </button>
+                    ))}
                   </div>
                 </div>
 
