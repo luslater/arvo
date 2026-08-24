@@ -19,6 +19,7 @@ import { useSession } from "next-auth/react"
 import {
     projectFinancialPlan,
     getAlignmentLabel,
+    calculateRealReturn,
 } from "@/lib/financial-planning"
 
 // ─── Formatação ────────────────────────────────────────────────────────────────
@@ -303,9 +304,14 @@ export function PlanejamentoContent() {
                             icon={<TrendingUp className="w-4 h-4" />}
                             subtext={
                                 <div className="mt-4 p-2.5 rounded-lg bg-emerald-50/50 border border-emerald-100 flex items-center justify-between">
-                                    <span className="text-[11px] font-semibold text-emerald-700 uppercase tracking-wide">Taxa Mensal</span>
+                                    <span className="text-[11px] font-semibold text-emerald-700 uppercase tracking-wide">
+                                        {viewMode === "REAL" ? `Retorno Real (IPCA ${INFLATION_RATE.toFixed(2).replace(".", ",")}%)` : "Taxa Mensal Nominal"}
+                                    </span>
                                     <span className="text-xs font-bold text-emerald-800">
-                                        {((Math.pow(1 + nominalReturn / 100, 1 / 12) - 1) * 100).toFixed(2).replace(".", ",")}% a.m.
+                                        {viewMode === "REAL"
+                                            ? `${calculateRealReturn(nominalReturn, INFLATION_RATE).toFixed(2).replace(".", ",")}% a.a. real`
+                                            : `${((Math.pow(1 + nominalReturn / 100, 1 / 12) - 1) * 100).toFixed(2).replace(".", ",")}% a.m.`
+                                        }
                                     </span>
                                 </div>
                             }
@@ -350,7 +356,7 @@ export function PlanejamentoContent() {
 
                 <aside className="lg:col-span-5 space-y-6 sticky top-6">
                     <div className="bg-slate-950 border-none shadow-[0_32px_64px_-12px_rgba(0,0,0,0.2)] rounded-3xl sm:rounded-[2.5rem] overflow-hidden" style={{ color: "#ffffff" }}>
-                        <div className="p-5 sm:p-8 space-y-5 sm:space-y-7">
+                        <div className="p-5 sm:p-8 space-y-5 sm:space-y-6">
                             <div className="flex items-center justify-between">
                                 <p className="text-[10px] uppercase font-bold tracking-[0.2em]" style={{ color: "#94a3b8" }}>Visão</p>
                                 <div className="flex items-center gap-1 p-1 bg-slate-800 rounded-xl">
@@ -360,8 +366,31 @@ export function PlanejamentoContent() {
                                 </div>
                             </div>
 
+                            {/* Aviso explicativo quando estiver no modo Real vs Nominal */}
+                            {viewMode === "REAL" ? (
+                                <motion.div
+                                    initial={{ opacity: 0, y: -4 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="p-3.5 rounded-2xl bg-emerald-950/60 border border-emerald-500/30 text-xs space-y-1"
+                                >
+                                    <div className="flex items-center gap-1.5 font-semibold text-emerald-300 text-[11px]">
+                                        <Info className="w-3.5 h-3.5 text-emerald-400" /> Valores Reais (Descontada a Inflação)
+                                    </div>
+                                    <p className="text-[11px] text-slate-300 leading-relaxed">
+                                        Projeção expressa em <strong>poder de compra de hoje</strong>, considerando uma <strong>inflação média estimada de {INFLATION_RATE.toFixed(2).replace(".", ",")}% a.a. (IPCA)</strong>.
+                                        Rentabilidade real líquida: <strong className="text-emerald-300">{calculateRealReturn(nominalReturn, INFLATION_RATE).toFixed(2).replace(".", ",")}% a.a.</strong>
+                                    </p>
+                                </motion.div>
+                            ) : (
+                                <div className="text-[10px] text-slate-500 font-medium">
+                                    Valores futuros nominais (sem desconto da inflação).
+                                </div>
+                            )}
+
                             <div className="space-y-1">
-                                <p className="text-[10px] uppercase font-bold tracking-[0.2em]" style={{ color: "#94a3b8" }}>Patrimônio em {investmentPeriod} anos</p>
+                                <p className="text-[10px] uppercase font-bold tracking-[0.2em]" style={{ color: "#94a3b8" }}>
+                                    Patrimônio em {investmentPeriod} anos {viewMode === "REAL" ? "(Poder de Compra de Hoje)" : "(Nominal)"}
+                                </p>
                                 <motion.h2 key={`${projection?.projectedValue}-${viewMode}`} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="text-2xl sm:text-4xl lg:text-[40px] font-light tracking-tight leading-tight text-white break-words">
                                     {projection ? formatBRL(viewMode === "NOMINAL" ? projection.projectedValue : projection.projectedValueReal) : "R$ 0"}
                                 </motion.h2>
@@ -377,7 +406,7 @@ export function PlanejamentoContent() {
                                         <p className="text-[10px]" style={{ color: "#64748b" }}>Regra dos 4% · retirada sustentável</p>
                                     </div>
                                     <div className="text-left sm:text-right space-y-1 min-w-0">
-                                        <p className="text-[10px] uppercase font-bold" style={{ color: "#64748b" }}>Meta {viewMode === "NOMINAL" && "(Futura)"}</p>
+                                        <p className="text-[10px] uppercase font-bold" style={{ color: "#64748b" }}>Meta {viewMode === "NOMINAL" ? "(Futura Nominal)" : "(Poder de Compra)"}</p>
                                         <p className="text-lg sm:text-2xl font-light tracking-tight truncate leading-tight" style={{ color: "#cbd5e1" }}>{formatBRL(targetIncome)}</p>
                                     </div>
                                 </div>
@@ -406,10 +435,18 @@ export function PlanejamentoContent() {
                     <Card className="border-slate-100 shadow-sm rounded-3xl sm:rounded-[2.5rem] bg-white">
                         <CardContent className="p-5 sm:p-8 space-y-4 sm:space-y-5">
                             <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2 text-slate-400 font-bold text-[10px] uppercase tracking-widest">
-                                    <ChartIcon className="w-3 h-3" /> Evolução do Patrimônio
+                                <div className="space-y-0.5">
+                                    <div className="flex items-center gap-2 text-slate-400 font-bold text-[10px] uppercase tracking-widest">
+                                        <ChartIcon className="w-3 h-3" /> Evolução do Patrimônio
+                                    </div>
+                                    <p className="text-[11px] text-slate-400 font-normal">
+                                        {viewMode === "REAL"
+                                            ? `Valores reais (descontando inflação média de ${INFLATION_RATE.toFixed(2).replace(".", ",")}%)`
+                                            : "Valores nominais projetados no tempo"
+                                        }
+                                    </p>
                                 </div>
-                                <ArrowUpRight className="w-4 h-4 text-emerald-500" />
+                                <ArrowUpRight className="w-4 h-4 text-emerald-500 shrink-0" />
                             </div>
 
                             <div className="h-[200px] w-full">
