@@ -1,10 +1,19 @@
 "use client"
 
-import { useState, useEffect, useMemo } from "react"
+import { useState, useMemo } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { PieChart, Pie, Cell, AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, CartesianGrid } from "recharts"
-import { Shield, TrendingUp, Target, Sun, Scale, TreePine, ChevronRight, CheckCircle, AlertTriangle, ArrowUpRight, ArrowDownRight, Flame, Award, DollarSign, Wallet, PiggyBank, BarChart3, Zap, Star, ChevronDown, ChevronUp, Info, Eye, Compass, HelpCircle } from "lucide-react"
-import { calculateInvestorProfile } from "@/lib/profile-calculator"
+import { 
+  PieChart, Pie, Cell, AreaChart, Area, XAxis, YAxis, Tooltip, 
+  ResponsiveContainer, CartesianGrid 
+} from "recharts"
+import { 
+  Shield, TrendingUp, Target, Sun, Scale, TreePine, ChevronRight, 
+  CheckCircle2, AlertTriangle, AlertCircle, ArrowUpRight, ArrowDownRight, 
+  ArrowRight, DollarSign, Wallet, PiggyBank, BarChart3, Zap, Star, ChevronDown, 
+  ChevronUp, Info, Eye, Compass, HelpCircle, X, Check, Lock, 
+  Calendar, FileText, CheckCircle, ExternalLink, RefreshCw
+} from "lucide-react"
+import { calculateInvestorProfile, PROFILE_ALLOCATIONS, getSuitabilityDiagnostic, InvestorProfileType } from "@/lib/profile-calculator"
 
 // ============================================================
 // HELPER: CURRENCY PARSING & FORMATTING
@@ -14,238 +23,272 @@ function parseCurrency(val?: string | number): number {
   if (!val) return 0
   const clean = val.toString().replace(/\D/g, "")
   if (!clean) return 0
-  return parseInt(clean) / 100
+  return parseInt(clean, 10) / 100
 }
 
-function formatBRL(value: number) {
-  return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value)
+function formatBRL(value: number): string {
+  return new Intl.NumberFormat("pt-BR", { 
+    style: "currency", 
+    currency: "BRL", 
+    minimumFractionDigits: 0, 
+    maximumFractionDigits: 0 
+  }).format(value)
 }
 
-function ScoreGauge({ score, size = 200 }: { score: number, size?: number }) {
-  const [animated, setAnimated] = useState(0)
+function formatPct(value: number): string {
+  return `${value.toFixed(1)}%`
+}
 
-  useEffect(() => {
-    let start = 0
-    const duration = 1500
-    const startTime = Date.now()
-    const animate = () => {
-      const elapsed = Date.now() - startTime
-      const progress = Math.min(elapsed / duration, 1)
-      const eased = 1 - Math.pow(1 - progress, 3)
-      setAnimated(Math.round(eased * score))
-      if (progress < 1) requestAnimationFrame(animate)
-    }
-    animate()
-  }, [score])
+// ============================================================
+// CALCULATION MEMORY MODAL
+// ============================================================
+interface CalcMemoryInfo {
+  title: string
+  metricValue: string
+  inputs: { label: string; value: string }[]
+  formula: string
+  assumptions: string[]
+  caveats: string[]
+  stepId: number
+}
 
-  const radius = size / 2 - 20
-  const circumference = Math.PI * radius
-  const strokeDashoffset = circumference - (animated / 100) * circumference
+function CalcMemoryModal({ 
+  info, 
+  onClose, 
+  onGoToStep 
+}: { 
+  info: CalcMemoryInfo | null; 
+  onClose: () => void; 
+  onGoToStep?: (stepIndex: number) => void 
+}) {
+  if (!info) return null
 
   return (
-    <div className="flex flex-col items-center">
-      <svg width={size} height={size / 2 + 30} className="overflow-visible">
-        <defs>
-          <linearGradient id="gaugeGradLight" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#e4efe8" />
-            <stop offset="50%" stopColor="#4fa080" />
-            <stop offset="100%" stopColor="#123044" />
-          </linearGradient>
-        </defs>
-        <path
-          d={`M 20,${size / 2 + 10} A ${radius},${radius} 0 0,1 ${size - 20},${size / 2 + 10}`}
-          fill="none"
-          stroke="#e4e0d7"
-          strokeWidth="12"
-          strokeLinecap="round"
-        />
-        <path
-          d={`M 20,${size / 2 + 10} A ${radius},${radius} 0 0,1 ${size - 20},${size / 2 + 10}`}
-          fill="none"
-          stroke="url(#gaugeGradLight)"
-          strokeWidth="12"
-          strokeLinecap="round"
-          strokeDasharray={circumference}
-          strokeDashoffset={strokeDashoffset}
-          style={{ transition: "stroke-dashoffset 0.1s ease" }}
-        />
-      </svg>
-      <div className="-mt-14 text-center">
-        <span className="text-5xl font-extrabold text-[#123044] tracking-tighter">{animated}</span>
-        <span className="text-base text-[#667085] font-bold block mt-1">de 100 pts</span>
-      </div>
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#123044]/60 backdrop-blur-xs"
+      onClick={onClose}
+    >
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.95, y: 10 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 10 }}
+        onClick={(e) => e.stopPropagation()}
+        className="bg-white rounded-3xl border border-[#e4e0d7] shadow-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 space-y-6"
+      >
+        <div className="flex items-start justify-between gap-4 pb-4 border-b border-[#e4e0d7]">
+          <div>
+            <span className="text-[11px] font-extrabold text-[#1f674f] uppercase tracking-wider block mb-1">
+              Memória de Cálculo Técnica
+            </span>
+            <h3 className="text-xl sm:text-2xl font-bold text-[#123044]">
+              {info.title}
+            </h3>
+            <div className="text-2xl font-extrabold text-[#1f674f] mt-1">
+              {info.metricValue}
+            </div>
+          </div>
+          <button 
+            type="button"
+            onClick={onClose}
+            aria-label="Fechar memória de cálculo"
+            className="w-9 h-9 rounded-full bg-[#f6f4ef] hover:bg-[#e4e0d7] text-[#123044] flex items-center justify-center transition-colors cursor-pointer"
+          >
+            <X size={18} />
+          </button>
+        </div>
+
+        {/* Inputs Utilizados */}
+        <div className="space-y-2">
+          <h4 className="text-xs font-bold text-[#123044] uppercase tracking-wider">
+            1. Dados do seu formulário utilizados
+          </h4>
+          <div className="grid sm:grid-cols-2 gap-2 bg-[#f6f4ef] p-3.5 rounded-2xl border border-[#e4e0d7]">
+            {info.inputs.map((inp, i) => (
+              <div key={i} className="text-xs">
+                <span className="text-[#667085] block">{inp.label}:</span>
+                <span className="font-bold text-[#123044]">{inp.value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Fórmula Aplicada */}
+        <div className="space-y-2">
+          <h4 className="text-xs font-bold text-[#123044] uppercase tracking-wider">
+            2. Fórmula Matemática Aplicada
+          </h4>
+          <div className="bg-[#123044] text-[#4fa080] font-mono text-xs p-3.5 rounded-2xl border border-[#123044] leading-relaxed">
+            {info.formula}
+          </div>
+        </div>
+
+        {/* Premissas Adotadas */}
+        <div className="space-y-2">
+          <h4 className="text-xs font-bold text-[#123044] uppercase tracking-wider">
+            3. Premissas de Planejamento Adotadas
+          </h4>
+          <ul className="space-y-1.5 text-xs text-[#667085]">
+            {info.assumptions.map((ass, i) => (
+              <li key={i} className="flex items-start gap-2">
+                <Check size={14} className="text-[#1f674f] shrink-0 mt-0.5" />
+                <span>{ass}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Ressalvas e Limitações */}
+        <div className="space-y-2">
+          <h4 className="text-xs font-bold text-[#123044] uppercase tracking-wider">
+            4. Ressalvas e Limitações
+          </h4>
+          <div className="p-3 bg-[#fff9e6] border border-[#fce49c] rounded-2xl text-xs text-[#92400e] space-y-1">
+            {info.caveats.map((cav, i) => (
+              <p key={i}>• {cav}</p>
+            ))}
+          </div>
+        </div>
+
+        {/* Action button to edit data */}
+        <div className="pt-4 border-t border-[#e4e0d7] flex items-center justify-between gap-3">
+          <span className="text-[11px] text-[#667085]">
+            Origem: Marco {info.stepId} da Rota ARVO
+          </span>
+          {onGoToStep && (
+            <button
+              type="button"
+              onClick={() => {
+                onClose()
+                onGoToStep(info.stepId - 1)
+              }}
+              className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#123044] hover:bg-[#1e4866] text-white text-xs font-bold rounded-xl transition-all cursor-pointer"
+            >
+              Revisar Dados no Marco {info.stepId}
+              <ExternalLink size={12} />
+            </button>
+          )}
+        </div>
+      </motion.div>
     </div>
   )
 }
 
-function MetricCard({ icon: Icon, label, value, subtitle, color = "#4fa080", trend, tooltip, progress }: {
+// ============================================================
+// METRIC CARD COMPONENT
+// ============================================================
+function MetricCard({ 
+  icon: Icon, 
+  label, 
+  value, 
+  subtitle, 
+  status = "info",
+  onOpenCalc,
+  progress 
+}: {
   icon: any
   label: string
   value: string
   subtitle?: string
-  color?: string
-  trend?: number
-  tooltip?: string
+  status?: "good" | "warning" | "alert" | "info"
+  onOpenCalc?: () => void
   progress?: {
     pct: number
     currentFormatted: string
     targetFormatted: string
-    targetLabel?: string
   }
 }) {
+  const statusColors = {
+    good: "bg-[#e8f1ed] text-[#1f674f] border-[#d6e5de]",
+    warning: "bg-[#fff9e6] text-[#b45309] border-[#fce49c]",
+    alert: "bg-red-50 text-red-700 border-red-200",
+    info: "bg-[#f6f4ef] text-[#123044] border-[#e4e0d7]"
+  }
+
   return (
-    <div className="bg-white rounded-[24px] border border-[#e4e0d7] p-6 shadow-sm hover:shadow-md transition-all duration-300 group flex flex-col justify-between">
+    <div className="bg-white rounded-3xl border border-[#e4e0d7] p-5 sm:p-6 shadow-sm flex flex-col justify-between hover:border-[#1f674f]/40 transition-colors">
       <div>
-        <div className="flex items-center justify-between mb-4">
-          <div className="w-12 h-12 rounded-2xl flex items-center justify-center transition-colors" style={{ backgroundColor: `${color}15`, color }}>
-            <Icon size={22} />
+        <div className="flex items-center justify-between mb-3">
+          <div className="w-10 h-10 rounded-xl bg-[#e8f1ed] text-[#1f674f] flex items-center justify-center">
+            <Icon size={20} />
           </div>
-          {progress ? (
-            <div className="flex items-center gap-1.5 px-3 py-1 bg-[#e8f1ed] text-[#1f674f] rounded-full text-xs font-extrabold">
-              <span>{progress.pct}% atingido</span>
-            </div>
-          ) : trend !== undefined ? (
-            <div className={`flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full ${trend >= 0 ? "bg-[#e8f1ed] text-[#1f674f]" : "bg-red-50 text-red-600"}`}>
-              {trend >= 0 ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
-              <span>{Math.abs(trend)}%</span>
-            </div>
-          ) : null}
-        </div>
-        <div className="text-xs font-extrabold uppercase tracking-wider text-[#667085] mb-1 flex items-center gap-1.5">
-          {label}
-          {tooltip && (
-            <span title={tooltip} className="cursor-help text-[#a09e99] hover:text-[#123044]">
+          {onOpenCalc && (
+            <button
+              type="button"
+              onClick={onOpenCalc}
+              className="inline-flex items-center gap-1 text-[11px] font-bold text-[#1f674f] hover:text-[#123044] bg-[#f6f4ef] hover:bg-[#e4e0d7] px-2.5 py-1 rounded-lg transition-colors cursor-pointer"
+              title="Ver memória de cálculo detalhada"
+            >
               <HelpCircle size={12} />
-            </span>
+              Como calculamos
+            </button>
           )}
         </div>
-        <div className="text-xl sm:text-2xl font-extrabold text-[#123044] tracking-tight leading-tight truncate mt-1" title={value}>
+
+        <div className="text-xs font-bold uppercase tracking-wider text-[#667085] mb-1">
+          {label}
+        </div>
+        <div className="text-xl sm:text-2xl font-extrabold text-[#123044] tracking-tight truncate">
           {value}
         </div>
       </div>
 
       {progress ? (
         <div className="mt-4 pt-3 border-t border-[#f0ece1] space-y-2">
-          <div className="h-2.5 bg-[#e4e0d7] rounded-full overflow-hidden">
+          <div className="h-2 bg-[#e4e0d7] rounded-full overflow-hidden">
             <motion.div 
-              className="h-full bg-gradient-to-r from-[#1f674f] to-[#4fa080] rounded-full"
+              className="h-full bg-[#1f674f] rounded-full"
               initial={{ width: 0 }}
               animate={{ width: `${Math.min(100, Math.max(0, progress.pct))}%` }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
             />
           </div>
           <div className="flex justify-between items-center text-[11px] text-[#667085] font-semibold">
-            <span>{progress.currentFormatted}</span>
+            <span>{progress.currentFormatted} ({progress.pct}%)</span>
             <span className="text-[#123044] font-bold">Meta: {progress.targetFormatted}</span>
           </div>
         </div>
-      ) : (
-        subtitle && <div className="text-xs font-semibold text-[#4fa080] mt-2 truncate">{subtitle}</div>
-      )}
-    </div>
-  )
-}
-
-function PillarCard({ pillar, expanded, onToggle }: { pillar: any; expanded: boolean; onToggle: () => void }) {
-  const Icon = pillar.icon
-  return (
-    <div className="bg-white rounded-2xl border border-[#e4e0d7] overflow-hidden transition-all shadow-sm">
-      <div className="p-4 flex items-center justify-between cursor-pointer hover:bg-[#fbfaf8]" onClick={onToggle}>
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${pillar.color}15`, color: pillar.color }}>
-            <Icon size={20} />
-          </div>
-          <div>
-            <div className="text-sm font-bold text-[#123044]">{pillar.name}</div>
-            <div className="text-xs font-semibold text-[#667085]">{pillar.badge}</div>
-          </div>
+      ) : subtitle ? (
+        <div className="text-xs text-[#667085] mt-3 pt-2 border-t border-[#f0ece1] font-medium truncate">
+          {subtitle}
         </div>
-        <div className="flex items-center gap-3">
-          <span className="text-base font-extrabold text-[#123044]">{pillar.score}</span>
-          {expanded ? <ChevronUp size={16} className="text-[#667085]" /> : <ChevronDown size={16} className="text-[#667085]" />}
-        </div>
-      </div>
-      <AnimatePresence>
-        {expanded && (
-          <motion.div initial={{ height: 0 }} animate={{ height: "auto" }} exit={{ height: 0 }} className="overflow-hidden">
-            <div className="px-4 pb-4 pt-2 border-t border-[#f0ece1] text-xs text-[#667085] leading-relaxed">
-              Diagnóstico individualizado com base nas respostas fornecidas no Pilar {pillar.id}. Ações recomendadas disponíveis na aba Plano de Ação.
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  )
-}
-
-function ObjectiveBar({ obj }: { obj: any }) {
-  return (
-    <div className="space-y-2 py-3 border-b border-[#f0ece1] last:border-0">
-      <div className="flex justify-between items-center text-sm">
-        <span className="font-bold text-[#123044]">{obj.name}</span>
-        <span className="text-xs font-semibold text-[#667085]">Prazo: {obj.deadline}</span>
-      </div>
-      <div className="h-2.5 bg-[#e4e0d7] rounded-full overflow-hidden">
-        <div className="h-full rounded-full transition-all duration-500" style={{ width: `${Math.min(100, obj.pct)}%`, backgroundColor: obj.color }} />
-      </div>
-      <div className="flex justify-between items-center text-xs font-medium text-[#667085]">
-        <span>{formatBRL(obj.current)} guardados</span>
-        <span className="font-bold text-[#123044]">{formatBRL(obj.value)} ({obj.pct.toFixed(0)}%)</span>
-      </div>
-    </div>
-  )
-}
-
-function AllocationDonut({ data, title, size = 180 }: { data: any[]; title: string; size?: number }) {
-  return (
-    <div className="flex flex-col items-center">
-      <h4 className="text-xs font-bold text-[#667085] uppercase tracking-wider mb-4">{title}</h4>
-      <div className="relative">
-        <PieChart width={size} height={size}>
-          <Pie data={data} cx={size / 2 - 5} cy={size / 2 - 5} innerRadius={size / 2 - 35} outerRadius={size / 2 - 10} paddingAngle={3} dataKey="value">
-            {data.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={entry.color} />
-            ))}
-          </Pie>
-          <Tooltip formatter={(value: number) => `${value}%`} contentStyle={{ backgroundColor: "#123044", border: "none", borderRadius: "10px", color: "#fff", fontSize: "12px" }} />
-        </PieChart>
-      </div>
-      <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 mt-4 text-[11px] w-full max-w-[240px]">
-        {data.map((item, i) => (
-          <div key={i} className="flex items-center gap-1.5 truncate">
-            <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
-            <span className="text-[#667085] truncate">{item.name}</span>
-            <span className="font-bold text-[#123044] ml-auto">{item.value}%</span>
-          </div>
-        ))}
-      </div>
+      ) : null}
     </div>
   )
 }
 
 // ============================================================
-// MAIN PAGE COMPONENT
+// MAIN COMPONENT
 // ============================================================
+export default function PlanoArvoDashboard({ 
+  onBack, 
+  formData = {} 
+}: { 
+  onBack?: () => void; 
+  formData?: Record<string, string> 
+}) {
+  const [activeTab, setActiveTab] = useState<"diagnostico" | "patrimonio" | "acoes">("diagnostico")
+  const [selectedCalcMemory, setSelectedCalcMemory] = useState<CalcMemoryInfo | null>(null)
+  const [completedActions, setCompletedActions] = useState<Record<string, boolean>>({})
 
-export default function PlanoArvoDashboard({ onBack, formData = {} }: { onBack?: () => void; formData?: Record<string, string> }) {
-  const [expandedPillar, setExpandedPillar] = useState<number | null>(null)
-  const [activeTab, setActiveTab] = useState("visao")
+  const toggleAction = (id: string) => {
+    setCompletedActions(prev => ({ ...prev, [id]: !prev[id] }))
+  }
 
-  // ============================================================
-  // CÁLCULOS MATEMÁTICOS COM BASE NOS DADOS REAIS DA JORNADA
-  // ============================================================
+  // ─── FINANCIAL CALCULATIONS ENGINE ──────────────────────────────────────────
   const financialData = useMemo(() => {
     // 1. Renda
     const salario = parseCurrency(formData.salarioLiquido)
     const variavel = parseCurrency(formData.rendaVariavel)
-    const rendaTotal = (salario + variavel) > 0 ? (salario + variavel) : 12500
+    const rendaTotal = salario + variavel
 
-    // 2. Gastos Fixos e Variáveis
+    // 2. Gastos
     const moradia = parseCurrency(formData.gastoMoradia)
     const alimentacao = parseCurrency(formData.gastoAlimentacao)
     const transporte = parseCurrency(formData.gastoTransporte)
     const saude = parseCurrency(formData.gastoSaude)
-    const dividasParcela = parseCurrency(formData.parcelasDividas)
+    const possuiDividas = formData.possuiDividas === "Sim, possuo"
+    const dividasParcela = possuiDividas ? parseCurrency(formData.parcelasDividas) : 0
+    const dividasTotal = possuiDividas ? parseCurrency(formData.totalDividas) : 0
 
     let customExpensesTotal = 0
     if (formData.customExpensesJson) {
@@ -257,645 +300,963 @@ export default function PlanoArvoDashboard({ onBack, formData = {} }: { onBack?:
       } catch (e) {}
     }
 
-    const gastoSoma = moradia + alimentacao + transporte + saude + dividasParcela + customExpensesTotal
-    const gastoTotal = gastoSoma > 0 ? gastoSoma : Math.round(rendaTotal * 0.7)
+    const gastoTotal = moradia + alimentacao + transporte + saude + dividasParcela + customExpensesTotal
 
-    // 3. Saldo Livre = Renda - Gastos
+    // 3. Saldo Livre & Capacidade de Investimento
     const saldoLivre = Math.max(0, rendaTotal - gastoTotal)
     const saldoLivrePct = rendaTotal > 0 ? Math.round((saldoLivre / rendaTotal) * 100) : 0
-    const comprometimento = rendaTotal > 0 ? Math.round((gastoTotal / rendaTotal) * 100) : 70
+    const taxaComprometimento = rendaTotal > 0 ? Math.round((gastoTotal / rendaTotal) * 100) : 0
 
-    // 4. Reserva de Emergência
-    // Regra CFP: 12 meses para PJ/Autônomo/Empresário/Misto ou 6 meses para CLT/Servidor
+    // 4. Reserva de Emergência (CFP Rule)
     const isVariavel = ["PJ", "Autônomo", "Empresário", "Misto"].includes(formData.tipoVinculo || "")
     const mesesMeta = isVariavel ? 12 : 6
     const reservaMeta = Math.max(1000, gastoTotal * mesesMeta)
-    const reservaAtualInput = parseCurrency(formData.reservaAtual)
-    const reservaAtual = (formData.reservaAtual !== undefined && formData.reservaAtual !== "") ? reservaAtualInput : 28000
+    const reservaAtual = parseCurrency(formData.reservaAtual)
     const reservaPct = reservaMeta > 0 ? Math.min(100, Math.round((reservaAtual / reservaMeta) * 100)) : 0
+    const reservaFaltante = Math.max(0, reservaMeta - reservaAtual)
 
-    // 5. Capacidade de Investimento: Entradas menos Saídas (Fluxo de caixa real)
-    const capacidadeInvestimento = Math.max(0, rendaTotal - gastoTotal)
+    // 5. Patrimônio Investido & Capacidade de Aporte
+    const aporteDeclarado = parseCurrency(formData.aporteMensal)
+    const capacidadeAporteReal = aporteDeclarado > 0 ? aporteDeclarado : saldoLivre
+    const patrimonioInvestido = parseCurrency(formData.patrimonioInvestido)
+    const patrimonioLiquidoTotal = patrimonioInvestido + reservaAtual - dividasTotal
 
-    // 6. Patrimônio & Futuro
-    const patrimonioInvestido = parseCurrency(formData.patrimonioInvestido) || (reservaAtual > 0 ? reservaAtual : 185000)
-    const dividasTotal = parseCurrency(formData.totalDividas) || 0
-    const idadeAtual = parseInt(formData.idade || "35") || 35
-    const idadeAposentadoria = parseInt(formData.idadeIf || "60") || 60
+    // 6. Suitability & Carteira Bússola
+    const suitabilityDiagnostic = getSuitabilityDiagnostic(formData)
+    const investorProfile = suitabilityDiagnostic.profile
+    const profileAllocation = PROFILE_ALLOCATIONS[investorProfile]
+    const taxaNominal = profileAllocation.expectedNominalReturn // ex: 14.8% a.a.
+    const inflacaoMediaIpca = 4.87 // IPCA médio histórico
+    const taxaReal = Math.round(((1 + taxaNominal / 100) / (1 + inflacaoMediaIpca / 100) - 1) * 1000) / 10 // ~9.5% a.a.
+
+    // 7. Futuro & Aposentadoria (Regra dos 4%)
+    const idadeAtual = parseInt(formData.idade || "35", 10) || 35
+    const idadeAposentadoria = parseInt(formData.idadeIf || "60", 10) || 60
     const anosRestantes = Math.max(1, idadeAposentadoria - idadeAtual)
-    const rendaDesejada = parseCurrency(formData.rendaAposentadoria) || Math.round(rendaTotal * 0.8)
-    
-    // Perfil e Rentabilidade Nominal da Carteira Escolhida
-    const investorProfile = calculateInvestorProfile(formData)
-    const returnByProfile: Record<string, number> = {
-      "ABRIGO": 13.9,
-      "RITMO": 14.8,
-      "VISÃO": 17.2,
-      "VISAO": 17.2,
-      "OCEANO": 21.5,
-    }
-    const taxaNominal = parseCurrency(formData.expectedReturn) || returnByProfile[investorProfile.toUpperCase()] || 14.8
-    const rMensal = Math.pow(1 + taxaNominal / 100, 1 / 12) - 1
+    const rendaDesejada = parseCurrency(formData.rendaAposentadoria) || Math.round((rendaTotal > 0 ? rendaTotal : 10000) * 0.8)
+
+    // Meta Regra dos 4% (300 vezes a renda mensal desejada em poder de compra de hoje)
+    const metaAposentadoria4Pct = Math.round((rendaDesejada * 12) / 0.04)
+
+    // Projeção com juros compostos em termos REAIS (Poder de compra de hoje)
+    const rMensalReal = Math.pow(1 + taxaReal / 100, 1 / 12) - 1
     const totalMeses = anosRestantes * 12
 
-    // Projeção do Patrimônio com Juros Compostos (Patrimônio Atual + Aportes Mensais)
-    let patrimonioProjetado = patrimonioInvestido
-    if (totalMeses > 0 && rMensal > 0) {
-      const pvPart = patrimonioInvestido * Math.pow(1 + rMensal, totalMeses)
-      const pmtPart = capacidadeInvestimento * ((Math.pow(1 + rMensal, totalMeses) - 1) / rMensal)
-      patrimonioProjetado = Math.round(pvPart + pmtPart)
+    let patrimonioProjetadoReal = patrimonioInvestido
+    if (totalMeses > 0 && rMensalReal > 0) {
+      const pvPart = patrimonioInvestido * Math.pow(1 + rMensalReal, totalMeses)
+      const pmtPart = capacidadeAporteReal * ((Math.pow(1 + rMensalReal, totalMeses) - 1) / rMensalReal)
+      patrimonioProjetadoReal = Math.round(pvPart + pmtPart)
     }
 
-    // Regra dos 4% para independência financeira (Patrimônio necessário para renda perpétua)
-    const patrimonioNecessarioAposentadoria = Math.round((rendaDesejada * 12) / 0.04)
-    
-    // Gap Projetado Real (Meta menos o que o usuário efetivamente acumulará no prazo)
-    const gapProjetado = Math.max(0, patrimonioNecessarioAposentadoria - patrimonioProjetado)
-    const coberturaMetaPct = patrimonioNecessarioAposentadoria > 0 
-      ? Math.min(100, Math.round((patrimonioProjetado / patrimonioNecessarioAposentadoria) * 100))
+    // Gap Projetado Real
+    const gapProjetado = Math.max(0, metaAposentadoria4Pct - patrimonioProjetadoReal)
+    const coberturaMetaPct = metaAposentadoria4Pct > 0 
+      ? Math.min(100, Math.round((patrimonioProjetadoReal / metaAposentadoria4Pct) * 100)) 
       : 100
 
-    // Aporte Mensal Ideal para atingir 100% da Meta no prazo
-    let aporteIdeal = capacidadeInvestimento
-    if (patrimonioNecessarioAposentadoria > 0 && totalMeses > 0 && rMensal > 0) {
-      const pvFinal = patrimonioInvestido * Math.pow(1 + rMensal, totalMeses)
-      const pmtFactor = (Math.pow(1 + rMensal, totalMeses) - 1) / rMensal
+    // Aporte Mensal Ideal para zerar o gap no prazo estipulado
+    let aporteIdeal = capacidadeAporteReal
+    if (metaAposentadoria4Pct > 0 && totalMeses > 0 && rMensalReal > 0) {
+      const pvFinal = patrimonioInvestido * Math.pow(1 + rMensalReal, totalMeses)
+      const pmtFactor = (Math.pow(1 + rMensalReal, totalMeses) - 1) / rMensalReal
       if (pmtFactor > 0) {
-        aporteIdeal = Math.max(0, Math.round((patrimonioNecessarioAposentadoria - pvFinal) / pmtFactor))
+        aporteIdeal = Math.max(0, Math.round((metaAposentadoria4Pct - pvFinal) / pmtFactor))
       }
     }
 
-    // 7. Economia Tributária
-    const isCltCompleta = formData.tipoRendimento === "Salário CLT" && formData.declaracaoIr === "Completa"
-    const economiaFiscalPotencial = isCltCompleta ? Math.round(rendaTotal * 12 * 0.12 * 0.275) : 4200
+    // 8. Otimização Tributária PGBL
+    const isCltCompleta = formData.tipoRendimento?.includes("CLT") && formData.declaracaoIr?.includes("Completa")
+    const rendaBrutaEstimada = rendaTotal * 12 * 1.33 // estimativa bruta com 13º e férias
+    const tetoDeducaoPgbl = Math.round(rendaBrutaEstimada * 0.12)
+    const economiaFiscalAnual = isCltCompleta ? Math.round(tetoDeducaoPgbl * 0.275) : 0
 
     return {
       rendaTotal,
       gastoTotal,
       saldoLivre,
       saldoLivrePct,
-      comprometimento,
+      taxaComprometimento,
       reservaAtual,
       reservaMeta,
       reservaPct,
+      reservaFaltante,
       mesesMeta,
+      isVariavel,
+      possuiDividas,
       dividasTotal,
       dividasParcela,
-      capacidadeInvestimento,
       patrimonioInvestido,
-      patrimonioNecessarioAposentadoria,
-      patrimonioProjetado,
-      gapProjetado,
-      coberturaMetaPct,
-      aporteIdeal,
+      patrimonioLiquidoTotal,
+      capacidadeAporteReal,
+      investorProfile,
       taxaNominal,
-      rendaDesejada,
+      taxaReal,
+      inflacaoMediaIpca,
       idadeAtual,
       idadeAposentadoria,
       anosRestantes,
-      economiaFiscalPotencial,
-      investorProfile,
-      isVariavel
+      rendaDesejada,
+      metaAposentadoria4Pct,
+      patrimonioProjetadoReal,
+      gapProjetado,
+      coberturaMetaPct,
+      aporteIdeal,
+      isCltCompleta,
+      economiaFiscalAnual,
+      tetoDeducaoPgbl,
+      suitabilityDiagnostic
     }
   }, [formData])
 
-  const pillarData = [
-    { id: 1, name: "Organização Financeira", score: 78, icon: Wallet, color: "#123044", badge: "Organizador Financeiro" },
-    { id: 2, name: "Proteção e Segurança", score: 65, icon: Shield, color: "#2b6e76", badge: "Guardião" },
-    { id: 3, name: "Construção de Patrimônio", score: 80, icon: TrendingUp, color: "#4fa080", badge: "Construtor de Patrimônio" },
-    { id: 4, name: "Futuro e Aposentadoria", score: 70, icon: Sun, color: "#123044", badge: "Arquiteto do Futuro" },
-    { id: 5, name: "Inteligência Tributária", score: 62, icon: Scale, color: "#2b6e76", badge: "Estrategista Tributário" },
-    { id: 6, name: "Legado e Sucessão", score: 55, icon: TreePine, color: "#4fa080", badge: "Arquiteto do Legado" },
-    { id: 7, name: "Análise do Seu Perfil de Investimento", score: 90, icon: Compass, color: "#1f674f", badge: `Perfil ${financialData.investorProfile}` },
-  ]
-
-  const globalScore = Math.round(pillarData.reduce((acc, p) => acc + p.score, 0) / pillarData.length)
-
-  const scoreEvolucao = [
-    { mes: "Jan", score: Math.max(10, globalScore - 40) },
-    { mes: "Fev", score: Math.max(20, globalScore - 30) },
-    { mes: "Mar", score: Math.max(30, globalScore - 22) },
-    { mes: "Abr", score: Math.max(40, globalScore - 14) },
-    { mes: "Mai", score: Math.max(50, globalScore - 6) },
-    { mes: "Jun", score: globalScore },
-  ]
-
-  const riskRadar = [
-    { risk: "Morte Prematura", level: formData.seguroVidaAtual ? 20 : 50 },
-    { risk: "Invalidez", level: formData.planoSaude?.includes("Sim") ? 30 : 60 },
-    { risk: "Patrimonial", level: financialData.reservaPct >= 100 ? 15 : 45 },
-    { risk: "Saúde", level: formData.planoSaude ? 25 : 70 },
-    { risk: "Responsab. Civil", level: 20 },
-  ]
-
-  const topActions = [
-    ...(financialData.reservaPct < 100 ? [{
-      priority: 1,
-      text: `Completar a reserva de emergência (faltam ${formatBRL(financialData.reservaMeta - financialData.reservaAtual)} para atingir ${financialData.mesesMeta} meses)`,
-      pillar: 1,
-      impact: "alto"
-    }] : []),
-    ...(financialData.dividasTotal > 0 ? [{
-      priority: 2,
-      text: `Planejar amortização das dívidas acumuladas de ${formatBRL(financialData.dividasTotal)}`,
-      pillar: 1,
-      impact: "alto"
-    }] : []),
-    {
-      priority: 3,
-      text: `Manter aporte mensal disciplinado de ${formatBRL(financialData.capacidadeInvestimento)} na Bússola (${financialData.investorProfile})`,
-      pillar: 3,
-      impact: "alto"
+  // ─── MEMÓRIA DE CÁLCULO DEFINITIONS ─────────────────────────────────────────
+  const calcMemories: Record<string, CalcMemoryInfo> = {
+    reserva: {
+      title: "Reserva de Emergência Ideal",
+      metricValue: `${formatBRL(financialData.reservaMeta)} (${financialData.mesesMeta} meses)`,
+      stepId: 1,
+      inputs: [
+        { label: "Gastos Mensais Declarados", value: formatBRL(financialData.gastoTotal) },
+        { label: "Vínculo Profissional", value: formData.tipoVinculo || "Não informado" },
+        { label: "Reserva Atual Informada", value: formatBRL(financialData.reservaAtual) },
+        { label: "Onde está aplicada", value: formData.localReserva || "Não informado" }
+      ],
+      formula: `Meta = Gastos Mensais Totais (${formatBRL(financialData.gastoTotal)}) × ${financialData.mesesMeta} meses de segurança`,
+      assumptions: [
+        "Metodologia da Planejar (CFP): 6 meses para profissionais com estabilidade (CLT / Servidores) e 12 meses para renda variável (PJ / Autônomo / Empresário).",
+        "A reserva deve ser alocada exclusivamente em instrumentos com liquidez diária (D+0 ou D+1) e baixo risco de crédito (Tesouro Selic ou CDB 100% CDI com FGC)."
+      ],
+      caveats: [
+        "Gastos sazonais ou parcelas de dívidas que se encerram em breve podem alterar o cálculo fino.",
+        "Não considere limites de cheque especial ou cartão de crédito como reserva."
+      ]
     },
-    ...(financialData.gapProjetado > 0 ? [{
-      priority: 4,
-      text: `Elevar aportes para ${formatBRL(financialData.aporteIdeal)}/mês para fechar o gap projetado de ${formatBRL(financialData.gapProjetado)} em ${financialData.anosRestantes} anos`,
-      pillar: 4,
-      impact: "médio"
-    }] : [{
-      priority: 4,
-      text: `Manter a disciplina: sua projeção cobre 100% da meta de ${formatBRL(financialData.patrimonioNecessarioAposentadoria)} em ${financialData.anosRestantes} anos`,
-      pillar: 4,
-      impact: "médio"
-    }]),
-    {
-      priority: 5,
-      text: `Organizar dossiê de sucessão e inventário para proteção familiar`,
-      pillar: 6,
-      impact: "baixo"
+    capacidadeAporte: {
+      title: "Capacidade de Investimento Mensal",
+      metricValue: `${formatBRL(financialData.capacidadeAporteReal)}/mês`,
+      stepId: 1,
+      inputs: [
+        { label: "Renda Líquida Total", value: formatBRL(financialData.rendaTotal) },
+        { label: "Gastos Fixos e Variáveis", value: formatBRL(financialData.gastoTotal) },
+        { label: "Aporte Pretendido Declarado", value: formatBRL(parseCurrency(formData.aporteMensal)) }
+      ],
+      formula: `Saldo Livre = Renda Líquida (${formatBRL(financialData.rendaTotal)}) - Gastos Declarados (${formatBRL(financialData.gastoTotal)}) = ${formatBRL(financialData.saldoLivre)}/mês`,
+      assumptions: [
+        "O saldo livre mensal representa o potencial máximo sustentável de investimento sem endividamento.",
+        "Se o aporte declarado for superior ao saldo livre, priorizamos a capacidade real de fluxo de caixa para evitar projeções irreais."
+      ],
+      caveats: [
+        "Oscilações na renda variável ou despesas imprevistas devem ser amortecidas pela reserva de emergência antes de suspender os aportes."
+      ]
+    },
+    aposentadoria: {
+      title: "Meta de Independência Financeira (Regra dos 4%)",
+      metricValue: formatBRL(financialData.metaAposentadoria4Pct),
+      stepId: 4,
+      inputs: [
+        { label: "Renda Mensal Pretendida", value: `${formatBRL(financialData.rendaDesejada)}/mês` },
+        { label: "Idade Atual", value: `${financialData.idadeAtual} anos` },
+        { label: "Idade de Aposentadoria", value: `${financialData.idadeAposentadoria} anos (${financialData.anosRestantes} anos de acúmulo)` }
+      ],
+      formula: `Meta = (Renda Mensal Desejada × 12) ÷ 0,04 = ${formatBRL(financialData.rendaDesejada)} × 300 = ${formatBRL(financialData.metaAposentadoria4Pct)}`,
+      assumptions: [
+        "A Regra dos 4% (Trinity Study) é uma premissa empírica clássica de planejamento: um portfólio diversificado permite retirar 4% no primeiro ano e corrigir pela inflação nos seguintes com taxa histórica de sobrevivência de 30 anos.",
+        "Os valores estão expressos a Poder de Compra de Hoje (em termos reais)."
+      ],
+      caveats: [
+        "A regra dos 4% não é garantia contratual de rentabilidade e sim uma métrica de dimensionamento patrimonial.",
+        "Longevidade superior a 30 anos ou volatilidade extrema inicial (risco de sequência de retornos) podem exigir taxas de retirada mais conservadoras (ex: 3,5%)."
+      ]
+    },
+    gapProjetado: {
+      title: "Projeção de Acumulação & Gap de Aposentadoria",
+      metricValue: financialData.gapProjetado > 0 ? `Gap: ${formatBRL(financialData.gapProjetado)}` : "Meta Plenamente Coberta",
+      stepId: 4,
+      inputs: [
+        { label: "Patrimônio Atual Investido", value: formatBRL(financialData.patrimonioInvestido) },
+        { label: "Aporte Mensal Aplicado", value: `${formatBRL(financialData.capacidadeAporteReal)}/mês` },
+        { label: "Carteira da Bússola", value: `${financialData.investorProfile} (${financialData.taxaNominal}% nominal / ${financialData.taxaReal}% real)` },
+        { label: "Prazo de Acumulação", value: `${financialData.anosRestantes} anos (${financialData.anosRestantes * 12} meses)` }
+      ],
+      formula: `FV = PV × (1 + r)^n + PMT × [((1 + r)^n - 1) ÷ r], onde r = ${(financialData.taxaReal / 12).toFixed(2)}% a.m. real`,
+      assumptions: [
+        `Considera a rentabilidade real líquida da Carteira ${financialData.investorProfile} descontada a inflação média histórica do IPCA (${financialData.inflacaoMediaIpca}% a.a.).`,
+        `Patrimônio projetado aos ${financialData.idadeAposentadoria} anos: ${formatBRL(financialData.patrimonioProjetadoReal)}.`
+      ],
+      caveats: [
+        "Projeções futuras dependem da disciplina dos aportes mensais e do reinvestimento contínuo de proventos.",
+        "Eventuais tributações no resgate foram consideradas nas alíquotas regressivas das classes da Bússola."
+      ]
     }
-  ]
-
-  const currentYear = new Date().getFullYear()
-  const rMensal = Math.pow(1 + financialData.taxaNominal / 100, 1 / 12) - 1
-  const numSteps = Math.min(6, Math.max(3, financialData.anosRestantes))
-  const stepYears = Math.max(1, Math.floor(financialData.anosRestantes / (numSteps - 1)))
-
-  const patrimonioProjection = []
-  for (let i = 0; i < numSteps; i++) {
-    const y = i === numSteps - 1 ? financialData.anosRestantes : i * stepYears
-    const m = y * 12
-    const yearLabel = i === 0 ? "Hoje" : String(currentYear + y)
-    const aportesAcumulados = Math.round(financialData.patrimonioInvestido + financialData.capacidadeInvestimento * m)
-    
-    let totalAcumulado = financialData.patrimonioInvestido
-    if (m > 0 && rMensal > 0) {
-      const pvPart = financialData.patrimonioInvestido * Math.pow(1 + rMensal, m)
-      const pmtPart = financialData.capacidadeInvestimento * ((Math.pow(1 + rMensal, m) - 1) / rMensal)
-      totalAcumulado = Math.round(pvPart + pmtPart)
-    }
-    const rendimentos = Math.max(0, totalAcumulado - aportesAcumulados)
-    patrimonioProjection.push({
-      ano: yearLabel,
-      aportes: aportesAcumulados,
-      rendimentos: rendimentos
-    })
   }
 
-  const allocationCurrent = [
-    { name: "RF Pós-fixada", value: 45, color: "#123044" },
-    { name: "RF IPCA+", value: 15, color: "#2b6e76" },
-    { name: "FIIs", value: 12, color: "#4fa080" },
-    { name: "Ações BR", value: 18, color: "#9bcbb4" },
-    { name: "Internacional", value: 5, color: "#0A192F" },
-    { name: "Cripto", value: 5, color: "#667085" },
+  // ─── MARCOS STATUS DIAGNOSTICS (7 MARCOS OBJETIVOS) ─────────────────────────
+  const marcosDiagnostics = [
+    {
+      id: 1,
+      name: "Raio-X & Fluxo de Caixa",
+      status: financialData.taxaComprometimento > 80 ? "Atenção" : financialData.reservaPct < 50 ? "Prioritário" : "Adequado",
+      statusColor: financialData.taxaComprometimento > 80 ? "amber" : financialData.reservaPct < 50 ? "blue" : "green",
+      summary: `Gastos consom ${financialData.taxaComprometimento}% da renda. Reserva atual cobre ${financialData.reservaPct}% da meta técnica.`,
+      icon: Wallet,
+      stepId: 1
+    },
+    {
+      id: 2,
+      name: "Proteção & Riscos Pessoais",
+      status: (parseInt(formData.dependentes || "0", 10) > 0 && formData.possuiSeguroVida !== "Sim, possuo") ? "Prioritário" : "Adequado",
+      statusColor: (parseInt(formData.dependentes || "0", 10) > 0 && formData.possuiSeguroVida !== "Sim, possuo") ? "blue" : "green",
+      summary: parseInt(formData.dependentes || "0", 10) > 0 
+        ? `${formData.dependentes} dependentes declarados. ${formData.possuiSeguroVida === "Sim, possuo" ? "Cobertura de vida ativa." : "Sem proteção de vida estruturada."}`
+        : "Sem dependentes financeiros imediatos. Foco em proteção de invalidez e saúde.",
+      icon: Shield,
+      stepId: 2
+    },
+    {
+      id: 3,
+      name: "Construção de Patrimônio",
+      status: financialData.capacidadeAporteReal > 0 ? "Adequado" : "Atenção",
+      statusColor: financialData.capacidadeAporteReal > 0 ? "green" : "amber",
+      summary: `Capacidade de poupança de ${formatBRL(financialData.capacidadeAporteReal)}/mês (${financialData.saldoLivrePct}% da renda). Meta: ${formData.objetivoPrincipal || "Acumulação"}.`,
+      icon: Target,
+      stepId: 3
+    },
+    {
+      id: 4,
+      name: "Futuro & Aposentadoria",
+      status: financialData.gapProjetado > 0 ? "Atenção" : "Adequado",
+      statusColor: financialData.gapProjetado > 0 ? "amber" : "green",
+      summary: financialData.gapProjetado > 0 
+        ? `Cobertura de ${financialData.coberturaMetaPct}% da meta aos ${financialData.idadeAposentadoria} anos. Gap projetado de ${formatBRL(financialData.gapProjetado)}.`
+        : `Projeção cobre 100% da meta de ${formatBRL(financialData.metaAposentadoria4Pct)} aos ${financialData.idadeAposentadoria} anos.`,
+      icon: Sun,
+      stepId: 4
+    },
+    {
+      id: 5,
+      name: "Inteligência Fiscal",
+      status: financialData.isCltCompleta ? "Oportunidade" : "Adequado",
+      statusColor: financialData.isCltCompleta ? "blue" : "green",
+      summary: financialData.isCltCompleta 
+        ? `Elegível ao benefício fiscal PGBL (até ${formatBRL(financialData.tetoDeducaoPgbl)}/ano). Economia potencial de ${formatBRL(financialData.economiaFiscalAnual)}/ano.`
+        : "Estrutura tributária mapeada. Sem pendências críticas de deduções.",
+      icon: Scale,
+      stepId: 5
+    },
+    {
+      id: 6,
+      name: "Legado & Sucessão",
+      status: formData.filhosMenores === "Sim, possuo" && formData.possuiTestamento !== "Sim" ? "Atenção" : "Adequado",
+      statusColor: formData.filhosMenores === "Sim, possuo" && formData.possuiTestamento !== "Sim" ? "amber" : "green",
+      summary: `Regime: ${formData.regimeBens || "Não informado"}. ${formData.filhosMenores === "Sim, possuo" ? "Herdeiros menores exigem atenção em liquidez e tutela." : "Estrutura simples de sucessão."}`,
+      icon: TreePine,
+      stepId: 6
+    },
+    {
+      id: 7,
+      name: "Perfil de Investidor (Bússola)",
+      status: "Adequado",
+      statusColor: "green",
+      summary: `Perfil Oficial: ${financialData.investorProfile} (${financialData.taxaNominal}% nominal / ~${financialData.taxaReal}% real). 6 perguntas calibradas.`,
+      icon: Compass,
+      stepId: 7
+    }
   ]
 
-  const allocationSuggested = [
-    { name: "RF Pós-fixada", value: 30, color: "#123044" },
-    { name: "RF IPCA+", value: 18, color: "#2b6e76" },
-    { name: "RF Pré", value: 7, color: "#6b9487" },
-    { name: "FIIs", value: 18, color: "#4fa080" },
-    { name: "Ações BR", value: 17, color: "#9bcbb4" },
-    { name: "Internacional", value: 10, color: "#0A192F" },
+  // ─── PRIORITIZED CFP ACTION PLAN ───────────────────────────────────────────
+  const actionPlan = [
+    // 1. High Interest Debt
+    ...(financialData.possuiDividas && financialData.dividasTotal > 0 ? [{
+      id: "act-dividas",
+      priority: 1,
+      title: "Eliminar Dívidas com Custo Elevado",
+      reason: `Você declarou ${formatBRL(financialData.dividasTotal)} em dívidas ativas com parcela de ${formatBRL(financialData.dividasParcela)}/mês. Juros de empréstimos e rotativos superam o retorno de qualquer investimento.`,
+      action: "Priorizar amortização extraordinária antes de alocar em ativos de risco.",
+      pillar: "Marco 1: Raio-X Financeiro",
+      impact: "Alto",
+      status: "Pendente"
+    }] : []),
+
+    // 2. Emergency Fund
+    ...(financialData.reservaPct < 100 ? [{
+      id: "act-reserva",
+      priority: 2,
+      title: `Completar a Reserva de Emergência (${financialData.mesesMeta} meses)`,
+      reason: `Sua reserva atual de ${formatBRL(financialData.reservaAtual)} cobre ${financialData.reservaPct}% da meta recomendada (${formatBRL(financialData.reservaMeta)} para perfil ${financialData.isVariavel ? "PJ/Autônomo" : "CLT"}). Faltam ${formatBRL(financialData.reservaFaltante)}.`,
+      action: `Destinar os próximos aportes de ${formatBRL(financialData.capacidadeAporteReal)}/mês integralmente para Tesouro Selic ou CDB 100% CDI com liquidez diária.`,
+      pillar: "Marco 1: Raio-X Financeiro",
+      impact: "Alto",
+      status: "Pendente"
+    }] : []),
+
+    // 3. Life & Income Protection
+    ...(parseInt(formData.dependentes || "0", 10) > 0 && formData.possuiSeguroVida !== "Sim, possuo" ? [{
+      id: "act-protecao",
+      priority: 3,
+      title: "Contratar Seguro de Vida Temporário e Proteção de Renda",
+      reason: `Você declarou ${formData.dependentes} dependentes e papel de sustentação familiar. Em caso de evento biológico precoce, a família fica desassistida até a maturação do patrimônio.`,
+      action: "Cotar apólice temporária (ex: cobertura nivelada de 5 a 10 anos) sem vincular a produtos bancários embutidos.",
+      pillar: "Marco 2: Proteção e Riscos",
+      impact: "Alto",
+      status: "Pendente"
+    }] : []),
+
+    // 4. Bússola Monthly Contribution
+    {
+      id: "act-bussola",
+      priority: 4,
+      title: `Aportar ${formatBRL(financialData.capacidadeAporteReal)}/mês na Carteira ${financialData.investorProfile}`,
+      reason: `Manter consistência nos aportes e reinvestir proventos é o motor dos juros compostos para alcançar ${formatBRL(financialData.metaAposentadoria4Pct)}.`,
+      action: `Seguir as recomendações de ativos da Bússola ARVO com rebalanceamento periódico.`,
+      pillar: "Marco 3: Construção de Patrimônio",
+      impact: "Alto",
+      status: "Em Andamento"
+    },
+
+    // 5. Gap Reduction
+    ...(financialData.gapProjetado > 0 ? [{
+      id: "act-gap",
+      priority: 5,
+      title: `Ajustar Aporte Ideal para ${formatBRL(financialData.aporteIdeal)}/mês para Cobrir o Gap`,
+      reason: `Com o aporte atual, sua projeção aos ${financialData.idadeAposentadoria} anos atinge ${financialData.coberturaMetaPct}% da meta. Há um gap projetado de ${formatBRL(financialData.gapProjetado)}.`,
+      action: `Elevar os aportes mensais gradualmente em ${formatBRL(Math.max(0, financialData.aporteIdeal - financialData.capacidadeAporteReal))}/mês ou estender o prazo de transição.`,
+      pillar: "Marco 4: Futuro & Aposentadoria",
+      impact: "Médio",
+      status: "Pendente"
+    }] : []),
+
+    // 6. Tax Optimization (PGBL)
+    ...(financialData.isCltCompleta ? [{
+      id: "act-fiscal",
+      priority: 6,
+      title: "Utilizar o Benefício Fiscal do PGBL (Dedução de até 12% da Renda Bruta)",
+      reason: `Como você é CLT e faz Declaração Completa, pode diferir até ${formatBRL(financialData.tetoDeducaoPgbl)}/ano da base do IRPF, economizando até ${formatBRL(financialData.economiaFiscalAnual)} anuais.`,
+      action: "Alocar em fundo de previdência PGBL com taxa zero de carregamento e tabela regressiva.",
+      pillar: "Marco 5: Inteligência Fiscal",
+      impact: "Médio",
+      status: "Pendente"
+    }] : []),
+
+    // 7. Estate & Succession Dossier
+    {
+      id: "act-legado",
+      priority: 7,
+      title: "Montar Dossiê de Continuidade Patrimonial Familiar",
+      reason: `Regime de bens declarado: ${formData.regimeBens || "Não informado"}. Centralizar contas, contratos e diretrizes protege a família de burocracias de inventário.`,
+      action: "Catalogar bens, apólices e beneficiários em documento seguro e acessível ao cônjuge/herdeiros.",
+      pillar: "Marco 6: Legado & Sucessão",
+      impact: "Preventivo",
+      status: "Pendente"
+    }
   ]
 
-  const objectives = [
-    { name: "Reserva de Emergência", value: financialData.reservaMeta, current: financialData.reservaAtual, deadline: "Curto Prazo", pct: financialData.reservaPct, color: "#4fa080" },
-    { name: "Principal Objetivo Declarado", value: Math.round(financialData.patrimonioInvestido * 1.5), current: financialData.patrimonioInvestido, deadline: formData.prazoPrincipalObjetivo || "Médio Prazo", pct: 65, color: "#2b6e76" },
-    { name: "Independência Financeira (Meta)", value: financialData.patrimonioNecessarioAposentadoria, current: financialData.patrimonioProjetado, deadline: `${financialData.idadeAposentadoria} anos (${financialData.anosRestantes}a)`, pct: financialData.coberturaMetaPct, color: "#123044" },
-  ]
+  // ─── ACCUMULATION SCENARIOS (3 CENÁRIOS DE LONGO PRAZO) ─────────────────────
+  const currentYear = new Date().getFullYear()
+  const projectionSteps = Math.min(6, Math.max(3, financialData.anosRestantes))
+  const stepInterval = Math.max(1, Math.floor(financialData.anosRestantes / (projectionSteps - 1)))
 
-  const tabs = [
-    { id: "visao", label: "Visão Geral", icon: Eye },
-    { id: "patrimonio", label: "Patrimônio & Futuro", icon: TrendingUp },
-    { id: "acoes", label: "Plano de Ação", icon: Zap },
-  ]
+  const scenariosData = useMemo(() => {
+    const data = []
+    const rBase = Math.pow(1 + financialData.taxaReal / 100, 1 / 12) - 1
+    const rConservador = Math.pow(1 + 0.04, 1 / 12) - 1 // 4% real
+    const rOtimista = Math.pow(1 + 0.08, 1 / 12) - 1 // 8% real
+
+    for (let i = 0; i < projectionSteps; i++) {
+      const y = i === projectionSteps - 1 ? financialData.anosRestantes : i * stepInterval
+      const m = y * 12
+      const yearLabel = i === 0 ? "Hoje" : String(currentYear + y)
+
+      const aportesAcum = Math.round(financialData.patrimonioInvestido + financialData.capacidadeAporteReal * m)
+
+      // Base
+      let fvBase = financialData.patrimonioInvestido
+      if (m > 0 && rBase > 0) {
+        fvBase = Math.round(financialData.patrimonioInvestido * Math.pow(1 + rBase, m) + financialData.capacidadeAporteReal * ((Math.pow(1 + rBase, m) - 1) / rBase))
+      }
+
+      // Conservador
+      let fvCons = financialData.patrimonioInvestido
+      if (m > 0 && rConservador > 0) {
+        fvCons = Math.round(financialData.patrimonioInvestido * Math.pow(1 + rConservador, m) + financialData.capacidadeAporteReal * ((Math.pow(1 + rConservador, m) - 1) / rConservador))
+      }
+
+      // Otimista
+      let fvOti = financialData.patrimonioInvestido
+      if (m > 0 && rOtimista > 0) {
+        fvOti = Math.round(financialData.patrimonioInvestido * Math.pow(1 + rOtimista, m) + financialData.capacidadeAporteReal * ((Math.pow(1 + rOtimista, m) - 1) / rOtimista))
+      }
+
+      data.push({
+        ano: yearLabel,
+        anosDecorrido: y,
+        aportes: aportesAcum,
+        conservador: fvCons,
+        base: fvBase,
+        otimista: fvOti,
+        rendimentosBase: Math.max(0, fvBase - aportesAcum)
+      })
+    }
+    return data
+  }, [financialData, currentYear, projectionSteps, stepInterval])
+
+  // Asset allocation charts data
+  const allocationData = useMemo(() => {
+    const alloc = financialData.suitabilityDiagnostic.recommendedAssetAllocation
+    return [
+      { name: "RF Pós-Fixada", value: alloc.rfPosFixada, color: "#123044" },
+      { name: "RF IPCA+ (Real)", value: alloc.rfIpca, color: "#1f674f" },
+      { name: "RF Pré-fixada", value: alloc.rfPre, color: "#2b6e76" },
+      { name: "Fundos Imobiliários", value: alloc.fiis, color: "#4fa080" },
+      { name: "Ações Brasil", value: alloc.acoesBrasil, color: "#9bcbb4" },
+      { name: "Ativos Globais", value: alloc.internacional, color: "#0A192F" },
+    ].filter(a => a.value > 0)
+  }, [financialData])
 
   return (
-    <div className="min-h-screen font-sans p-4 md:p-6 lg:p-8 animate-in fade-in slide-in-from-bottom-4 duration-500 bg-[#f6f4ef]">
-      <div className="max-w-[1200px] mx-auto space-y-8">
+    <div className="min-h-screen font-sans p-4 sm:p-6 md:p-8 bg-[#f6f4ef] text-[#123044]">
+      <div className="max-w-[1200px] mx-auto space-y-6 sm:space-y-8">
         
-        {/* HEADER */}
-        <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-[#e4e0d7]">
-            <div>
-                <div className="flex items-center gap-4 mb-3">
-                    {onBack && (
-                        <button 
-                            onClick={onBack}
-                            className="flex items-center gap-1.5 text-xs font-bold text-[#667085] hover:text-[#123044] transition-colors bg-white border border-[#e4e0d7] px-3 py-1.5 rounded-full shadow-sm cursor-pointer"
-                        >
-                            <ChevronRight className="w-3.5 h-3.5 rotate-180" />
-                            Voltar para a Jornada
-                        </button>
-                    )}
-                    <div className="text-[11px] font-extrabold text-[#4fa080] uppercase tracking-widest flex items-center gap-2">
-                        <CheckCircle size={14} />
-                        Diagnóstico Baseado nos Seus Dados
-                    </div>
-                </div>
-                <h1 className="text-4xl md:text-5xl font-extralight tracking-tight text-[#123044] mb-2 leading-[1.1]">
-                    Meu Plano <span className="font-semibold">ARVO</span>
-                </h1>
-                <p className="text-[#667085] text-base max-w-xl leading-relaxed">
-                    Visão consolidada calculada a partir dos dados reais que você preencheu nas 7 etapas da Jornada.
-                </p>
+        {/* ─── TOP HEADER ──────────────────────────────────────────────────────── */}
+        <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 border-b border-[#e4e0d7]">
+          <div>
+            <div className="flex flex-wrap items-center gap-3 mb-2">
+              {onBack && (
+                <button 
+                  type="button"
+                  onClick={onBack}
+                  className="flex items-center gap-1.5 text-xs font-bold text-[#667085] hover:text-[#123044] bg-white border border-[#e4e0d7] px-3.5 py-1.5 rounded-full shadow-xs cursor-pointer transition-colors"
+                >
+                  <ChevronRight className="w-3.5 h-3.5 rotate-180" />
+                  Voltar para os 7 Marcos
+                </button>
+              )}
+              <span className="text-[11px] font-extrabold text-[#1f674f] uppercase tracking-wider flex items-center gap-1.5">
+                <CheckCircle2 size={14} />
+                Diagnóstico Consolidado
+              </span>
             </div>
-            
-            <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2 bg-white border border-[#e4e0d7] rounded-full px-4 py-2 shadow-sm">
-                    <Compass size={18} className="text-[#1f674f]" />
-                    <span className="text-xs font-bold text-[#123044]">Perfil: {financialData.investorProfile}</span>
-                </div>
-            </div>
-        </header>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-light tracking-tight text-[#123044]">
+              Meu Plano <span className="font-semibold text-[#123044]">ARVO</span>
+            </h1>
+            <p className="text-[#667085] text-sm sm:text-base mt-1 max-w-xl leading-relaxed">
+              Relatório financeiro transparente calculado a partir dos seus dados reais, premissas de mercado e metas de independência.
+            </p>
+          </div>
 
-        {/* HERO — Score + Level */}
-        <section>
-          <div className="bg-white rounded-[32px] border border-[#e4e0d7] p-8 md:p-10 shadow-[0_20px_50px_rgba(23,33,43,0.03)]">
-            <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-10 lg:gap-16 items-center">
-              
-              {/* Score Gauge */}
-              <div className="flex flex-col items-center justify-center p-6 bg-[#fbfaf8] border border-[#f0ece1] rounded-[24px]">
-                <ScoreGauge score={globalScore} size={240} />
-                <div className="mt-6 bg-[#123044] !text-white rounded-full px-6 py-2 shadow-md">
-                  <span className="text-sm font-extrabold tracking-wide uppercase !text-white">Nível: Estrategista</span>
-                </div>
-                <p className="text-xs font-semibold text-[#667085] mt-4 text-center">Score consolidado das 7 etapas preenchidas.</p>
-              </div>
-
-              {/* Pillar Scores Mini */}
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 bg-white border border-[#e4e0d7] rounded-2xl px-4 py-2.5 shadow-xs">
+              <Compass size={18} className="text-[#1f674f]" />
               <div>
-                <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-xl font-bold text-[#123044]">Seus 7 Pilares</h3>
-                    <span className="text-xs font-bold text-[#4fa080] bg-[#e8f1ed] px-3 py-1 rounded-full border border-[#d6e5de]">Média: {globalScore} pts</span>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-                  {pillarData.map((p) => (
-                    <PillarCard key={p.id} pillar={p} expanded={expandedPillar === p.id} onToggle={() => setExpandedPillar(expandedPillar === p.id ? null : p.id)} />
-                  ))}
-                </div>
+                <span className="text-[10px] uppercase font-bold text-[#667085] block leading-none">Perfil Oficial</span>
+                <span className="text-xs font-extrabold text-[#123044]">{financialData.investorProfile}</span>
               </div>
             </div>
           </div>
-        </section>
+        </header>
 
-        {/* TAB NAV */}
-        <div className="flex overflow-x-auto hide-scrollbar gap-2 bg-white border border-[#e4e0d7] rounded-2xl p-1.5 shadow-sm max-w-fit">
-          {tabs.map((tab) => {
-            const Icon = tab.icon
-            return (
-              <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 py-2.5 px-6 rounded-xl text-sm font-bold transition-all cursor-pointer ${
-                  activeTab === tab.id 
-                  ? "bg-[#123044] text-white shadow-md" 
-                  : "text-[#667085] hover:bg-[#f0ece1] hover:text-[#123044]"
-                }`}>
-                <Icon size={16} />
-                {tab.label}
-              </button>
-            )
-          })}
-        </div>
+        {/* ─── TAB NAVIGATION ─────────────────────────────────────────────────── */}
+        <nav aria-label="Navegação do Relatório" className="flex overflow-x-auto no-scrollbar gap-2 bg-white border border-[#e4e0d7] rounded-2xl p-1.5 shadow-xs max-w-fit">
+          <button 
+            type="button"
+            onClick={() => setActiveTab("diagnostico")}
+            className={`flex items-center gap-2 py-2 px-5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+              activeTab === "diagnostico" 
+                ? "bg-[#123044] text-white shadow-sm" 
+                : "text-[#667085] hover:bg-[#f6f4ef] hover:text-[#123044]"
+            }`}
+          >
+            <Eye size={15} />
+            1. Diagnóstico dos 7 Marcos
+          </button>
+          
+          <button 
+            type="button"
+            onClick={() => setActiveTab("patrimonio")}
+            className={`flex items-center gap-2 py-2 px-5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+              activeTab === "patrimonio" 
+                ? "bg-[#123044] text-white shadow-sm" 
+                : "text-[#667085] hover:bg-[#f6f4ef] hover:text-[#123044]"
+            }`}
+          >
+            <TrendingUp size={15} />
+            2. Patrimônio & Futuro
+          </button>
 
-        {/* TAB: VISÃO GERAL */}
-        {activeTab === "visao" && (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
-            
-            {/* Key Metrics Calculadas */}
-            <section className="mb-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+          <button 
+            type="button"
+            onClick={() => setActiveTab("acoes")}
+            className={`flex items-center gap-2 py-2 px-5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+              activeTab === "acoes" 
+                ? "bg-[#123044] text-white shadow-sm" 
+                : "text-[#667085] hover:bg-[#f6f4ef] hover:text-[#123044]"
+            }`}
+          >
+            <Zap size={15} />
+            3. Plano de Ação ({actionPlan.length})
+          </button>
+        </nav>
+
+        {/* ─── TAB 1: DIAGNÓSTICO DOS 7 MARCOS ────────────────────────────────── */}
+        {activeTab === "diagnostico" && (
+          <motion.div 
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.25 }}
+            className="space-y-6 sm:space-y-8"
+          >
+            {/* Resumo da Rota Atual (Metric Cards) */}
+            <section>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <MetricCard 
-                  icon={DollarSign} 
-                  label="Renda Mensal" 
-                  value={formatBRL(financialData.rendaTotal)} 
-                  subtitle="Entradas"
-                  color="#4fa080" 
-                  tooltip="Soma total das entradas declaradas na Jornada."
+                  icon={DollarSign}
+                  label="Renda Líquida Mensal"
+                  value={formatBRL(financialData.rendaTotal)}
+                  subtitle={`Gastos: ${formatBRL(financialData.gastoTotal)} (${financialData.taxaComprometimento}%)`}
+                  onOpenCalc={() => setSelectedCalcMemory(calcMemories.capacidadeAporte)}
                 />
+
                 <MetricCard 
-                  icon={Wallet} 
-                  label="Saldo Livre" 
-                  value={formatBRL(financialData.saldoLivre)} 
-                  subtitle={`${financialData.saldoLivrePct}% da sua renda líquida`} 
-                  color="#2b6e76" 
-                  tooltip="Cálculo exato: Entradas menos Saídas informadas na Etapa 1."
+                  icon={Wallet}
+                  label="Saldo Livre Mensal"
+                  value={formatBRL(financialData.saldoLivre)}
+                  subtitle={`${financialData.saldoLivrePct}% de taxa de poupança`}
+                  onOpenCalc={() => setSelectedCalcMemory(calcMemories.capacidadeAporte)}
                 />
+
                 <MetricCard 
-                  icon={PiggyBank} 
-                  label="Reserva de Emergência" 
-                  value={formatBRL(financialData.reservaAtual)} 
-                  color="#4fa080" 
-                  tooltip={`Meta recomendada de ${financialData.mesesMeta} meses de gastos (${formatBRL(financialData.reservaMeta)}) para o seu perfil (${financialData.isVariavel ? "PJ/Autônomo/Empresário" : "CLT/Servidor"}).`}
+                  icon={PiggyBank}
+                  label="Reserva de Emergência"
+                  value={formatBRL(financialData.reservaAtual)}
+                  onOpenCalc={() => setSelectedCalcMemory(calcMemories.reserva)}
                   progress={{
                     pct: financialData.reservaPct,
-                    currentFormatted: `${formatBRL(financialData.reservaAtual)} atual`,
-                    targetFormatted: `${formatBRL(financialData.reservaMeta)} (${financialData.mesesMeta}m)`,
+                    currentFormatted: formatBRL(financialData.reservaAtual),
+                    targetFormatted: `${formatBRL(financialData.reservaMeta)} (${financialData.mesesMeta}m)`
                   }}
                 />
+
                 <MetricCard 
-                  icon={TrendingUp} 
-                  label="Capacidade de Investimento" 
-                  value={formatBRL(financialData.capacidadeInvestimento) + "/mês"} 
-                  subtitle="Entradas menos saídas"
-                  color="#123044" 
-                  tooltip="Saldo líquido real disponível mensalmente para investir (Entradas menos Saídas)."
+                  icon={BarChart3}
+                  label="Patrimônio Líquido Total"
+                  value={formatBRL(financialData.patrimonioLiquidoTotal)}
+                  subtitle={`Investido: ${formatBRL(financialData.patrimonioInvestido)}${financialData.possuiDividas ? ` · Dívidas: -${formatBRL(financialData.dividasTotal)}` : ""}`}
                 />
               </div>
             </section>
 
-            {/* Row: Score Evolution + Risk Radar */}
-            <section className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-6 lg:gap-8 mb-8">
-              
-              {/* Score Evolution */}
-              <div className="bg-white rounded-[24px] border border-[#e4e0d7] p-6 md:p-8 shadow-sm">
-                <div className="flex items-center gap-3 mb-8">
-                    <div className="w-2 h-2 rounded-full bg-[#123044]"></div>
-                    <h3 className="text-lg font-bold text-[#123044]">Evolução do Score Global</h3>
+            {/* Diagnóstico dos 7 Marcos da Rota ARVO */}
+            <section className="bg-white rounded-3xl border border-[#e4e0d7] p-6 sm:p-8 shadow-sm">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
+                <div>
+                  <h3 className="text-xl font-bold text-[#123044]">
+                    Status Técnico dos 7 Marcos da Rota
+                  </h3>
+                  <p className="text-xs text-[#667085] mt-0.5">
+                    Avaliação individualizada baseada exclusivamente nas suas respostas registradas na Jornada.
+                  </p>
                 </div>
-                <div className="w-full">
-                    <ResponsiveContainer width="100%" height={280}>
-                    <AreaChart data={scoreEvolucao} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                        <defs>
-                        <linearGradient id="scoreGradLight" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="#123044" stopOpacity={0.15} />
-                            <stop offset="95%" stopColor="#123044" stopOpacity={0} />
-                        </linearGradient>
-                        </defs>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#f0ece1" vertical={false} />
-                        <XAxis dataKey="mes" tick={{ fill: "#667085", fontSize: 12, fontWeight: 600 }} axisLine={false} tickLine={false} dy={10} />
-                        <YAxis domain={[0, 100]} tick={{ fill: "#667085", fontSize: 12, fontWeight: 600 }} axisLine={false} tickLine={false} />
-                        <Tooltip contentStyle={{ backgroundColor: "#123044", border: "none", borderRadius: "12px", color: "#fff", fontSize: "13px", fontWeight: 600, padding: "10px 16px" }} itemStyle={{ color: "#fff" }} />
-                        <Area type="monotone" dataKey="score" stroke="#123044" strokeWidth={3} fill="url(#scoreGradLight)" dot={{ fill: "#fff", stroke: "#123044", strokeWidth: 3, r: 5 }} activeDot={{ r: 7 }} />
-                    </AreaChart>
-                    </ResponsiveContainer>
-                </div>
-                <div className="mt-6 text-center">
-                    <span className="inline-block px-4 py-1.5 bg-[#e8f1ed] text-[#1f674f] font-bold text-xs rounded-full border border-[#d6e5de]">
-                        Diagnóstico Atualizado em Tempo Real
-                    </span>
-                </div>
+                <span className="text-xs font-bold text-[#1f674f] bg-[#e8f1ed] px-3.5 py-1.5 rounded-full border border-[#d6e5de]">
+                  7 de 7 Marcos Analisados
+                </span>
               </div>
 
-              {/* Risk Radar */}
-              <div className="bg-white rounded-[24px] border border-[#e4e0d7] p-6 md:p-8 shadow-sm flex flex-col">
-                <div className="flex items-center gap-3 mb-2">
-                    <div className="w-2 h-2 rounded-full bg-[#EF4444]"></div>
-                    <h3 className="text-lg font-bold text-[#123044]">Mapa de Riscos Pessoais</h3>
-                </div>
-                <p className="text-sm font-medium text-[#667085] mb-6">Mapeamento de vulnerabilidade após proteções</p>
-                <div className="flex-1 flex items-center justify-center -ml-6">
-                    <ResponsiveContainer width="100%" height={260}>
-                    <RadarChart data={riskRadar} outerRadius={80}>
-                        <PolarGrid stroke="#e4e0d7" />
-                        <PolarAngleAxis dataKey="risk" tick={{ fill: "#475467", fontSize: 11, fontWeight: 600 }} />
-                        <PolarRadiusAxis domain={[0, 100]} tick={false} axisLine={false} />
-                        <Radar dataKey="level" stroke="#EF4444" fill="#EF4444" fillOpacity={0.2} strokeWidth={2} dot={{ r: 4, fill: "#EF4444", stroke: "#fff", strokeWidth: 1 }} />
-                    </RadarChart>
-                    </ResponsiveContainer>
-                </div>
-              </div>
-            </section>
+              <div className="grid md:grid-cols-2 gap-3.5">
+                {marcosDiagnostics.map((marco) => {
+                  const Icon = marco.icon
+                  const statusBg = {
+                    green: "bg-[#e8f1ed] text-[#1f674f] border-[#d6e5de]",
+                    amber: "bg-[#fff9e6] text-[#b45309] border-[#fce49c]",
+                    blue: "bg-[#e8f2f4] text-[#2b6e76] border-[#2b6e76]/30"
+                  }[marco.statusColor]
 
-          </motion.div>
-        )}
-
-        {/* TAB: PATRIMÔNIO & FUTURO */}
-        {activeTab === "patrimonio" && (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
-            
-            <section className="mb-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-                <MetricCard 
-                  icon={BarChart3} 
-                  label="Patrimônio Atual" 
-                  value={formatBRL(financialData.patrimonioInvestido)} 
-                  subtitle={`Aporte: ${formatBRL(financialData.capacidadeInvestimento)}/mês`} 
-                  color="#123044" 
-                  tooltip="Patrimônio inicial informado disponível para a construção do plano."
-                />
-                <MetricCard 
-                  icon={Target} 
-                  label="Meta Aposentadoria (4%)" 
-                  value={formatBRL(financialData.patrimonioNecessarioAposentadoria)} 
-                  subtitle={`Para renda de ${formatBRL(financialData.rendaDesejada)}/mês`} 
-                  color="#4fa080" 
-                  tooltip="Patrimônio necessário pela regra dos 4% (300x o custo mensal) para gerar renda passiva perpétua."
-                />
-                <MetricCard 
-                  icon={TrendingUp} 
-                  label="Patrimônio Projetado" 
-                  value={formatBRL(financialData.patrimonioProjetado)} 
-                  subtitle={`Em ${financialData.anosRestantes} anos (${financialData.taxaNominal}% a.a.)`} 
-                  color="#2b6e76" 
-                  tooltip={`Total acumulado aos ${financialData.idadeAposentadoria} anos com aportes de ${formatBRL(financialData.capacidadeInvestimento)}/mês e retorno composto da Carteira ${financialData.investorProfile} (${financialData.taxaNominal}% a.a.).`}
-                  progress={{
-                    pct: financialData.coberturaMetaPct,
-                    currentFormatted: `${financialData.coberturaMetaPct}% da meta`,
-                    targetFormatted: formatBRL(financialData.patrimonioNecessarioAposentadoria),
-                  }}
-                />
-                <MetricCard 
-                  icon={Zap} 
-                  label="Gap Projetado" 
-                  value={financialData.gapProjetado > 0 ? formatBRL(financialData.gapProjetado) : "R$ 0 (Meta Coberta)"} 
-                  subtitle={financialData.gapProjetado > 0 ? `Aporte ideal: ${formatBRL(financialData.aporteIdeal)}/mês` : `Superávit: +${formatBRL(financialData.patrimonioProjetado - financialData.patrimonioNecessarioAposentadoria)}`} 
-                  color={financialData.gapProjetado > 0 ? "#0A192F" : "#1f674f"} 
-                  tooltip={financialData.gapProjetado > 0 ? `Diferença projetada até a meta. Ajustando o aporte para ${formatBRL(financialData.aporteIdeal)}/mês você alcança 100% da meta em ${financialData.anosRestantes} anos.` : "Sua estratégia e aportes cobrem integralmente a meta de aposentadoria!"}
-                />
-              </div>
-            </section>
-
-            {/* Diagnostic Box explaining the dynamic compound retirement calculation */}
-            <section className="mb-8">
-              <div className="bg-[#f8fcfb] border border-[#d6e5de] rounded-2xl p-5 md:p-6 shadow-sm">
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-[#e8f1ed] text-[#1f674f] flex items-center justify-center shrink-0 mt-0.5">
-                    <Compass size={22} />
-                  </div>
-                  <div className="flex-1 space-y-2.5">
-                    <div className="flex flex-wrap items-center justify-between gap-2">
-                      <h4 className="font-bold text-[#123044] text-base">
-                        Como o Gap de Aposentadoria é Projetado
-                      </h4>
-                      <span className="text-xs font-extrabold px-3 py-1 bg-white border border-[#d6e5de] text-[#1f674f] rounded-full">
-                        Carteira {financialData.investorProfile} · {financialData.taxaNominal}% a.a. nominal
-                      </span>
-                    </div>
-                    <p className="text-sm text-[#475467] leading-relaxed">
-                      Sua meta para aposentadoria sustentável (regra dos 4%) é de <strong>{formatBRL(financialData.patrimonioNecessarioAposentadoria)}</strong>, gerando <strong>{formatBRL(financialData.rendaDesejada)}/mês</strong> perpétuos. Com seu <strong>patrimônio atual de {formatBRL(financialData.patrimonioInvestido)}</strong> e mantendo <strong>aportes de {formatBRL(financialData.capacidadeInvestimento)}/mês</strong> na <strong>Carteira {financialData.investorProfile} ({financialData.taxaNominal}% a.a.)</strong>, você acumulará <strong>{formatBRL(financialData.patrimonioProjetado)}</strong> em <strong>{financialData.anosRestantes} anos</strong> ({financialData.coberturaMetaPct}% da meta).
-                    </p>
-                    {financialData.gapProjetado > 0 ? (
-                      <div className="p-3.5 bg-[#fff9e6] border border-[#fce49c] rounded-xl text-xs text-[#92400e] leading-relaxed flex items-start gap-2.5">
-                        <Info size={16} className="text-[#d97706] shrink-0 mt-0.5" />
-                        <div>
-                          <strong>Como zerar o Gap Projetado de {formatBRL(financialData.gapProjetado)}:</strong> Para atingir 100% da meta no prazo de {financialData.anosRestantes} anos, o plano recomenda ajustar seu aporte mensal para <strong>{formatBRL(financialData.aporteIdeal)}/mês</strong> (um acréscimo de {formatBRL(Math.max(0, financialData.aporteIdeal - financialData.capacidadeInvestimento))}/mês) ou estender o prazo da aposentadoria.
-                        </div>
+                  return (
+                    <div 
+                      key={marco.id} 
+                      className="p-4 rounded-2xl border border-[#e4e0d7] hover:border-[#1f674f]/40 transition-colors flex items-start gap-3.5 bg-[#fbfaf8]"
+                    >
+                      <div className="w-10 h-10 rounded-xl bg-white border border-[#e4e0d7] text-[#123044] flex items-center justify-center shrink-0 shadow-xs">
+                        <Icon size={18} />
                       </div>
-                    ) : (
-                      <div className="p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-900 leading-relaxed flex items-start gap-2.5">
-                        <CheckCircle size={16} className="text-emerald-600 shrink-0 mt-0.5" />
-                        <div>
-                          <strong>Meta Plenamente Coberta:</strong> Sua capacidade de aporte atual combinada aos juros compostos da Carteira {financialData.investorProfile} cobrirá 100% da meta no prazo, gerando um superávit projetado de <strong>{formatBRL(financialData.patrimonioProjetado - financialData.patrimonioNecessarioAposentadoria)}</strong>.
+
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-2 mb-1">
+                          <span className="text-xs font-bold text-[#123044] truncate">
+                            Marco {marco.id}: {marco.name}
+                          </span>
+                          <span className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md border shrink-0 ${statusBg}`}>
+                            {marco.status}
+                          </span>
                         </div>
+                        <p className="text-xs text-[#667085] leading-relaxed">
+                          {marco.summary}
+                        </p>
                       </div>
-                    )}
-                  </div>
-                </div>
+                    </div>
+                  )
+                })}
               </div>
             </section>
 
-            <section className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-6 lg:gap-8 mb-8">
-                
-                {/* Projection Chart */}
-                <div className="bg-white rounded-[24px] border border-[#e4e0d7] p-6 md:p-8 shadow-sm">
-                    <div className="flex items-center justify-between mb-8">
-                        <div className="flex items-center gap-3">
-                            <div className="w-2 h-2 rounded-full bg-[#3B82F6]"></div>
-                            <h3 className="text-lg font-bold text-[#123044]">Projeção de Acumulação</h3>
-                        </div>
-                        <span className="text-xs font-bold text-[#1f674f] bg-[#e8f1ed] px-3 py-1.5 rounded-lg border border-[#d6e5de]">Carteira {financialData.investorProfile} · {financialData.taxaNominal}% a.a.</span>
-                    </div>
-                    
-                    <div className="w-full">
-                        <ResponsiveContainer width="100%" height={300}>
-                        <AreaChart data={patrimonioProjection} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
-                            <defs>
-                                <linearGradient id="aportesGradL" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#123044" stopOpacity={0.8} />
-                                    <stop offset="95%" stopColor="#123044" stopOpacity={0.2} />
-                                </linearGradient>
-                                <linearGradient id="rendGradL" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#4fa080" stopOpacity={0.8} />
-                                    <stop offset="95%" stopColor="#4fa080" stopOpacity={0.2} />
-                                </linearGradient>
-                            </defs>
-                            <CartesianGrid strokeDasharray="3 3" stroke="#f0ece1" vertical={false} />
-                            <XAxis dataKey="ano" tick={{ fill: "#667085", fontSize: 12, fontWeight: 600 }} axisLine={false} tickLine={false} dy={10} />
-                            <YAxis tickFormatter={(v) => `${(v / 1000000).toFixed(1)}M`} tick={{ fill: "#667085", fontSize: 11, fontWeight: 600 }} axisLine={false} tickLine={false} dx={-10} />
-                            <Tooltip formatter={(value: number) => formatBRL(value)} contentStyle={{ backgroundColor: "#123044", border: "none", borderRadius: "12px", color: "#fff", fontSize: "13px", fontWeight: 600 }} itemStyle={{ color: "#fff" }} />
-                            <Area type="monotone" dataKey="aportes" stackId="1" stroke="#123044" fill="url(#aportesGradL)" strokeWidth={2} name="Aportes" />
-                            <Area type="monotone" dataKey="rendimentos" stackId="1" stroke="#4fa080" fill="url(#rendGradL)" strokeWidth={2} name="Rendimentos" />
-                        </AreaChart>
-                        </ResponsiveContainer>
-                    </div>
-                    
-                    <div className="flex flex-wrap justify-center gap-6 mt-6">
-                        <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-md bg-[#123044]" />
-                        <span className="text-sm font-semibold text-[#475467]">Aportes Acumulados</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-md bg-[#4fa080]" />
-                        <span className="text-sm font-semibold text-[#475467]">Efeito Juros Compostos</span>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Objectives */}
-                <div className="bg-white rounded-[24px] border border-[#e4e0d7] p-6 md:p-8 shadow-sm">
-                    <div className="flex items-center gap-3 mb-8">
-                        <div className="w-2 h-2 rounded-full bg-[#8B5CF6]"></div>
-                        <h3 className="text-lg font-bold text-[#123044]">Metas & Objetivos</h3>
-                    </div>
-                    <div>
-                        {objectives.map((obj, i) => <ObjectiveBar key={i} obj={obj} />)}
-                    </div>
-                </div>
-            </section>
-
-            {/* Allocation comparison */}
-            <section className="mb-8 bg-white rounded-[24px] border border-[#e4e0d7] p-6 md:p-8 shadow-sm">
-              <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
-                  <div>
-                    <h3 className="text-lg font-bold text-[#123044] mb-1">Diagnóstico de Alocação Recomendada</h3>
-                    <p className="text-sm font-medium text-[#667085]">Calibrado para o seu Perfil Oficial ({financialData.investorProfile})</p>
-                  </div>
-                  <span className="text-xs font-bold bg-[#fbfaf8] border border-[#e4e0d7] text-[#123044] px-4 py-2 rounded-xl">
-                      Perfil: <span className="text-[#1f674f] font-extrabold">{financialData.investorProfile}</span>
-                  </span>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-6 mb-8">
-                <div className="bg-[#fbfaf8] border border-[#f0ece1] rounded-[24px] py-8">
-                    <AllocationDonut data={allocationCurrent} title="Carteira Referência" size={220} />
-                </div>
-                <div className="bg-[#f8fcfb] border border-[#d6e5de] rounded-[24px] py-8">
-                    <AllocationDonut data={allocationSuggested} title={`Alocação Alvo (${financialData.investorProfile})`} size={220} />
-                </div>
-              </div>
-
-              <div className="bg-[#fff9e6] border border-[#fce49c] rounded-2xl p-5 flex items-start gap-4 shadow-sm">
-                <div className="w-10 h-10 rounded-full bg-[#fdeca6] flex items-center justify-center shrink-0">
-                    <AlertTriangle size={20} className="text-[#d97706]" />
+            {/* Top 3 Decisões Prioritárias Imediatas */}
+            <section className="bg-[#123044] rounded-3xl p-6 sm:p-8 text-white space-y-6">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-white/10 text-white flex items-center justify-center">
+                  <Zap size={20} />
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-[#b45309] mb-1">Diretriz da sua Bússola de Investimentos</p>
-                  <p className="text-sm text-[#92400e] leading-relaxed">
-                    Com base no seu perfil <strong>{financialData.investorProfile}</strong> diagnosticado na etapa 7, suas recomendações e tolerância de risco na Bússola estarão automaticamente calibradas para este nível de volatilidade e liquidez.
+                  <h3 className="text-lg sm:text-xl font-bold text-white">
+                    Top 3 Decisões Prioritárias Imediatas
+                  </h3>
+                  <p className="text-xs text-white/70">
+                    Os passos que geram maior impacto na sua segurança e crescimento neste momento.
                   </p>
                 </div>
               </div>
+
+              <div className="grid md:grid-cols-3 gap-4">
+                {actionPlan.slice(0, 3).map((act, i) => (
+                  <div key={act.id} className="bg-white/10 rounded-2xl p-4 border border-white/10 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="w-6 h-6 rounded-md bg-[#1f674f] text-white font-extrabold text-xs flex items-center justify-center">
+                          {i + 1}
+                        </span>
+                        <span className="text-[10px] font-extrabold uppercase text-[#4fa080]">
+                          {act.pillar}
+                        </span>
+                      </div>
+                      <h4 className="text-sm font-bold text-white leading-snug mb-1.5">
+                        {act.title}
+                      </h4>
+                      <p className="text-xs text-white/70 leading-relaxed line-clamp-3">
+                        {act.reason}
+                      </p>
+                    </div>
+
+                    <div className="mt-4 pt-3 border-t border-white/10 flex justify-between items-center text-[11px] text-[#4fa080] font-semibold">
+                      <span>Impacto {act.impact}</span>
+                      <button 
+                        type="button" 
+                        onClick={() => setActiveTab("acoes")}
+                        className="hover:underline flex items-center gap-1 cursor-pointer"
+                      >
+                        Ver no Plano <ArrowRight size={11} />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </section>
           </motion.div>
         )}
 
-        {/* TAB: PLANO DE AÇÃO */}
-        {activeTab === "acoes" && (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }} className="space-y-6 md:space-y-8">
-            
-            {/* Top Actions */}
+        {/* ─── TAB 2: PATRIMÔNIO & FUTURO ─────────────────────────────────────── */}
+        {activeTab === "patrimonio" && (
+          <motion.div 
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.25 }}
+            className="space-y-6 sm:space-y-8"
+          >
+            {/* Metas & Projeção Cards */}
             <section>
-              <div className="bg-[#123044] rounded-[32px] p-8 md:p-10 shadow-xl !text-white relative overflow-hidden">
-                <div className="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 rounded-full bg-white opacity-5 blur-3xl"></div>
-                
-                <div className="flex items-center gap-4 mb-8 relative z-10">
-                  <div className="w-12 h-12 rounded-2xl bg-white text-[#123044] flex items-center justify-center shadow-md">
-                    <Zap size={24} />
-                  </div>
-                  <div>
-                    <h3 className="text-2xl font-bold tracking-tight !text-white">O que fazer agora?</h3>
-                    <p className="!text-white/70 text-sm mt-1">Ações prioritárias personalizadas para os seus números</p>
-                  </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <MetricCard 
+                  icon={BarChart3}
+                  label="Patrimônio Atual"
+                  value={formatBRL(financialData.patrimonioInvestido)}
+                  subtitle={`Aporte planejado: ${formatBRL(financialData.capacidadeAporteReal)}/mês`}
+                />
+
+                <MetricCard 
+                  icon={Target}
+                  label="Meta Aposentadoria (4%)"
+                  value={formatBRL(financialData.metaAposentadoria4Pct)}
+                  subtitle={`Renda desejada: ${formatBRL(financialData.rendaDesejada)}/mês perpétua`}
+                  onOpenCalc={() => setSelectedCalcMemory(calcMemories.aposentadoria)}
+                />
+
+                <MetricCard 
+                  icon={TrendingUp}
+                  label="Patrimônio Projetado"
+                  value={formatBRL(financialData.patrimonioProjetadoReal)}
+                  onOpenCalc={() => setSelectedCalcMemory(calcMemories.gapProjetado)}
+                  progress={{
+                    pct: financialData.coberturaMetaPct,
+                    currentFormatted: `${financialData.coberturaMetaPct}% da meta`,
+                    targetFormatted: formatBRL(financialData.metaAposentadoria4Pct)
+                  }}
+                />
+
+                <MetricCard 
+                  icon={Zap}
+                  label="Gap Projetado"
+                  value={financialData.gapProjetado > 0 ? formatBRL(financialData.gapProjetado) : "R$ 0 (Meta Coberta)"}
+                  subtitle={financialData.gapProjetado > 0 ? `Aporte ideal: ${formatBRL(financialData.aporteIdeal)}/mês` : "Sua estratégia cobre 100% da meta!"}
+                  onOpenCalc={() => setSelectedCalcMemory(calcMemories.gapProjetado)}
+                />
+              </div>
+            </section>
+
+            {/* Projeção Gráfica em 3 Cenários Reais */}
+            <section className="bg-white rounded-3xl border border-[#e4e0d7] p-6 sm:p-8 shadow-sm">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
+                <div>
+                  <h3 className="text-xl font-bold text-[#123044]">
+                    Projeção de Acumulação em Cenários Reais
+                  </h3>
+                  <p className="text-xs text-[#667085] mt-0.5">
+                    Valores em <strong>Poder de Compra de Hoje</strong> (descontada a inflação média histórica do IPCA de {financialData.inflacaoMediaIpca}% a.a.).
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold text-[#1f674f] bg-[#e8f1ed] px-3.5 py-1 rounded-full border border-[#d6e5de]">
+                    Carteira {financialData.investorProfile} ({financialData.taxaReal}% real a.a.)
+                  </span>
+                </div>
+              </div>
+
+              {/* Chart */}
+              <div className="w-full h-[300px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={scenariosData} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
+                    <defs>
+                      <linearGradient id="colorAportes" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#123044" stopOpacity={0.8} />
+                        <stop offset="95%" stopColor="#123044" stopOpacity={0.2} />
+                      </linearGradient>
+                      <linearGradient id="colorRend" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#1f674f" stopOpacity={0.8} />
+                        <stop offset="95%" stopColor="#1f674f" stopOpacity={0.2} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f0ece1" vertical={false} />
+                    <XAxis dataKey="ano" tick={{ fill: "#667085", fontSize: 12, fontWeight: 600 }} axisLine={false} tickLine={false} dy={8} />
+                    <YAxis 
+                      tickFormatter={(v) => `${(v / 1000000).toFixed(1)}M`} 
+                      tick={{ fill: "#667085", fontSize: 11, fontWeight: 600 }} 
+                      axisLine={false} 
+                      tickLine={false} 
+                      dx={-8} 
+                    />
+                    <Tooltip 
+                      formatter={(val: number) => formatBRL(val)} 
+                      contentStyle={{ backgroundColor: "#123044", border: "none", borderRadius: "12px", color: "#fff", fontSize: "12px", fontWeight: 600 }} 
+                      itemStyle={{ color: "#fff" }} 
+                    />
+                    <Area type="monotone" dataKey="aportes" stackId="1" stroke="#123044" fill="url(#colorAportes)" name="Aportes Acumulados" />
+                    <Area type="monotone" dataKey="rendimentosBase" stackId="1" stroke="#1f674f" fill="url(#colorRend)" name="Juros Compostos Reais" />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+
+              {/* Tabela de Cenários Comparativos */}
+              <div className="mt-8 overflow-x-auto">
+                <table className="w-full text-left text-xs border-collapse">
+                  <thead>
+                    <tr className="border-b border-[#e4e0d7] text-[#667085]">
+                      <th className="py-2.5 font-bold">Ano / Marco</th>
+                      <th className="py-2.5 font-bold">Aportes Acumulados</th>
+                      <th className="py-2.5 font-bold">Cenário Conservador (IPCA+4%)</th>
+                      <th className="py-2.5 font-bold text-[#1f674f]">Cenário Base (Bússola {financialData.investorProfile})</th>
+                      <th className="py-2.5 font-bold">Cenário Otimista (IPCA+8%)</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#f0ece1]">
+                    {scenariosData.map((row, i) => (
+                      <tr key={i} className="hover:bg-[#fbfaf8]">
+                        <td className="py-2.5 font-bold text-[#123044]">{row.ano} ({row.anosDecorrido} anos)</td>
+                        <td className="py-2.5 text-[#667085]">{formatBRL(row.aportes)}</td>
+                        <td className="py-2.5 text-[#667085]">{formatBRL(row.conservador)}</td>
+                        <td className="py-2.5 font-bold text-[#1f674f] bg-[#e8f1ed]/40 px-2 rounded-md">{formatBRL(row.base)}</td>
+                        <td className="py-2.5 text-[#667085]">{formatBRL(row.otimista)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            {/* Alocação Alvo da Bússola ARVO */}
+            <section className="bg-white rounded-3xl border border-[#e4e0d7] p-6 sm:p-8 shadow-sm">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
+                <div>
+                  <h3 className="text-xl font-bold text-[#123044]">
+                    Alocação Estratégica Recomendada pela Bússola
+                  </h3>
+                  <p className="text-xs text-[#667085] mt-0.5">
+                    Calibrada exclusivamente para o seu perfil <strong>{financialData.investorProfile}</strong> diagnosticado na etapa de suitability.
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-[280px_1fr] gap-8 items-center">
+                <div className="flex flex-col items-center justify-center">
+                  <PieChart width={220} height={220}>
+                    <Pie 
+                      data={allocationData} 
+                      cx={105} 
+                      cy={105} 
+                      innerRadius={60} 
+                      outerRadius={95} 
+                      paddingAngle={3} 
+                      dataKey="value"
+                    >
+                      {allocationData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip 
+                      formatter={(val: number) => `${val}%`} 
+                      contentStyle={{ backgroundColor: "#123044", border: "none", borderRadius: "10px", color: "#fff", fontSize: "12px" }} 
+                    />
+                  </PieChart>
+                  <span className="text-xs font-bold text-[#123044] mt-2">
+                    Retorno Nominal Esperado: {financialData.taxaNominal}% a.a.
+                  </span>
                 </div>
 
-                <div className="space-y-4 relative z-10">
-                  {topActions.map((action, i) => (
-                    <div key={i} className="group flex flex-col sm:flex-row sm:items-center gap-4 bg-white/10 rounded-2xl p-5 border border-white/10 hover:bg-white/15 transition-all">
-                      <div className="w-8 h-8 rounded-full bg-[#4fa080] !text-white flex items-center justify-center shrink-0 font-black shadow-inner">
-                        {action.priority}
+                <div className="grid sm:grid-cols-2 gap-3">
+                  {allocationData.map((item, i) => (
+                    <div key={i} className="p-3.5 bg-[#fbfaf8] border border-[#e4e0d7] rounded-2xl flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <span className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
+                        <span className="text-xs font-bold text-[#123044]">{item.name}</span>
                       </div>
-                      <div className="flex-1">
-                        <p className="text-base font-bold leading-snug !text-white">{action.text}</p>
-                        <div className="flex items-center gap-3 mt-2.5">
-                          <span className="text-xs font-semibold !text-white/60 bg-white/5 px-2 py-1 rounded-md">Pilar {action.pillar}</span>
-                          <span className={`text-[10px] font-black uppercase tracking-wider px-2 py-1 rounded-md ${
-                            action.impact === "alto" ? "bg-red-500/20 text-red-300" :
-                            action.impact === "médio" ? "bg-yellow-500/20 text-yellow-300" :
-                            "bg-white/10 !text-white/60"
-                          }`}>
-                            Impacto {action.impact}
-                          </span>
-                        </div>
-                      </div>
+                      <span className="text-xs font-extrabold text-[#1f674f]">{item.value}%</span>
                     </div>
                   ))}
                 </div>
               </div>
             </section>
-
           </motion.div>
         )}
+
+        {/* ─── TAB 3: PLANO DE AÇÃO ESTRUTURADO ──────────────────────────────── */}
+        {activeTab === "acoes" && (
+          <motion.div 
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.25 }}
+            className="space-y-6 sm:space-y-8"
+          >
+            <section className="bg-white rounded-3xl border border-[#e4e0d7] p-6 sm:p-8 shadow-sm">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-6 border-b border-[#e4e0d7]">
+                <div>
+                  <h3 className="text-xl font-bold text-[#123044]">
+                    Plano de Ação Sequenciado (Hierarquia CFP)
+                  </h3>
+                  <p className="text-xs text-[#667085] mt-0.5">
+                    Ações ordenadas pela prioridade técnica de proteção, liquidez, disciplina de aportes e otimização fiscal.
+                  </p>
+                </div>
+                <span className="text-xs font-bold text-[#1f674f] bg-[#e8f1ed] px-3.5 py-1.5 rounded-full border border-[#d6e5de]">
+                  {Object.values(completedActions).filter(Boolean).length} de {actionPlan.length} concluídas
+                </span>
+              </div>
+
+              <div className="space-y-4 mt-6">
+                {actionPlan.map((act) => {
+                  const isDone = Boolean(completedActions[act.id])
+
+                  return (
+                    <div 
+                      key={act.id} 
+                      className={`p-5 rounded-2xl border transition-all ${
+                        isDone 
+                          ? "bg-[#f8fcfb] border-[#d6e5de] opacity-75" 
+                          : "bg-white border-[#e4e0d7] hover:border-[#1f674f]/40 shadow-xs"
+                      }`}
+                    >
+                      <div className="flex items-start gap-4">
+                        {/* Checkbox button */}
+                        <button
+                          type="button"
+                          onClick={() => toggleAction(act.id)}
+                          aria-label={`Marcar ação "${act.title}" como ${isDone ? "pendente" : "concluída"}`}
+                          className={`w-6 h-6 rounded-lg border flex items-center justify-center shrink-0 mt-0.5 transition-colors cursor-pointer ${
+                            isDone 
+                              ? "bg-[#1f674f] border-[#1f674f] text-white" 
+                              : "border-[#e4e0d7] bg-[#f6f4ef] hover:border-[#1f674f]"
+                          }`}
+                        >
+                          {isDone && <Check size={14} strokeWidth={3} />}
+                        </button>
+
+                        <div className="flex-1 min-w-0 space-y-1.5">
+                          <div className="flex flex-wrap items-center justify-between gap-2">
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs font-extrabold text-[#123044] px-2 py-0.5 rounded-md bg-[#f6f4ef]">
+                                Prioridade {act.priority}
+                              </span>
+                              <h4 className={`text-sm font-bold ${isDone ? "line-through text-[#667085]" : "text-[#123044]"}`}>
+                                {act.title}
+                              </h4>
+                            </div>
+                            <span className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md ${
+                              act.impact === "Alto" ? "bg-red-50 text-red-700 border border-red-200" :
+                              act.impact === "Médio" ? "bg-[#fff9e6] text-[#b45309] border border-[#fce49c]" :
+                              "bg-[#e8f1ed] text-[#1f674f] border border-[#d6e5de]"
+                            }`}>
+                              Impacto {act.impact}
+                            </span>
+                          </div>
+
+                          <p className="text-xs text-[#667085] leading-relaxed">
+                            {act.reason}
+                          </p>
+
+                          <div className="pt-2 flex flex-wrap items-center justify-between gap-2 text-xs border-t border-[#f0ece1]">
+                            <span className="font-semibold text-[#1f674f]">
+                              👉 {act.action}
+                            </span>
+                            <span className="text-[11px] text-[#a09e99]">
+                              {act.pillar}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </section>
+          </motion.div>
+        )}
+
+        {/* ─── PRIVACY & GOVERNANCE FOOTER ────────────────────────────────────── */}
+        <footer className="pt-6 border-t border-[#e4e0d7] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#667085]">
+          <div className="flex items-center gap-2">
+            <Lock size={14} className="text-[#1f674f]" />
+            <span>Dados protegidos por criptografia e conformidade LGPD. Planejamento 100% Fee-Only sem comissões ocultas.</span>
+          </div>
+
+          <div className="flex items-center gap-4 font-semibold text-[#123044]">
+            <button 
+              type="button"
+              onClick={() => setSelectedCalcMemory(calcMemories.reserva)}
+              className="hover:underline cursor-pointer"
+            >
+              Glossário & Metodologia
+            </button>
+            {onBack && (
+              <button 
+                type="button"
+                onClick={onBack}
+                className="hover:underline text-[#1f674f] cursor-pointer"
+              >
+                Revisar os 7 Marcos
+              </button>
+            )}
+          </div>
+        </footer>
+
+        {/* ─── CALCULATION MEMORY MODAL ───────────────────────────────────────── */}
+        <CalcMemoryModal 
+          info={selectedCalcMemory}
+          onClose={() => setSelectedCalcMemory(null)}
+          onGoToStep={onBack ? (stepIdx) => onBack() : undefined}
+        />
 
       </div>
     </div>
