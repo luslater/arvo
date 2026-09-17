@@ -1,4 +1,5 @@
 // src/config/portfolios.ts
+// ALIGNED WITH PLANILHA OFICIAL & RECOMMENDED_PORTFOLIOS
 
 export type StepKey = "reserva" | "abrigo" | "ritmo" | "visao" | "oceano";
 
@@ -14,188 +15,726 @@ export interface FundCard {
     description: string;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// FUNDS LIBRARY
-// Você pode adicionar, remover ou re-categorizar fundos nesta lista central.
-// O "category" define em qual carteira do Motor de Alocação ele aparecerá.
-// ─────────────────────────────────────────────────────────────────────────────
 export const FUNDS_LIBRARY: FundCard[] = [
-    // ─── RENDA FIXA (Reserva, Abrigo, Ritmo) ───
-    { id: "tesouro_selic", name: "Tesouro Selic", shortName: "Tesouro Selic", type: "Renda Fixa", category: "reserva", color: "blue", yield12m: "CDI", risk: 1, description: "Título Público" },
-    { id: "di_simples", name: "Fundo DI Simples", shortName: "DI Simples", type: "Renda Fixa", category: "reserva", color: "blue", yield12m: "CDI", risk: 1, description: "DI Puro" },
-    { id: "blft11", name: "BLFT11", shortName: "BLFT11", type: "Renda Fixa", category: "reserva", color: "blue", yield12m: "CDI", risk: 1, description: "ETF LFT" },
-    { id: "arx_fuji", name: "ARX Fuji (XP, BTG, Safra)", shortName: "ARX Fuji", type: "Renda Fixa", category: "abrigo", color: "indigo", yield12m: "CDI + α", risk: 2, description: "Caixa Premium" },
-    { id: "valora_guardian_a", name: "Valora Guardian A", shortName: "Valora G. A", type: "Renda Fixa", category: "abrigo", color: "indigo", yield12m: "CDI + α", risk: 2, description: "DI Crédito Prêmium" },
-    { id: "valora_guardian_b", name: "Valora Guardian B", shortName: "Valora G. B", type: "Renda Fixa", category: "abrigo", color: "indigo", yield12m: "CDI + α", risk: 2, description: "DI Crédito Prêmium" },
-    { id: "valora_guardian", name: "Valora Guardian II", shortName: "Valora G. II", type: "Renda Fixa", category: "abrigo", color: "indigo", yield12m: "CDI + α", risk: 2, description: "DI Crédito" },
-    { id: "sparta_kinea", name: "Sparta/Kinea Deb Incentivadas", shortName: "Sparta Deb", type: "Renda Fixa", category: "ritmo", color: "violet", yield12m: "IPCA + α", risk: 3, description: "Crédito Isento" },
-    { id: "jgp_corporate", name: "JGP Corporate FIC FIF RF CP", shortName: "JGP Corp.", type: "Renda Fixa", category: "abrigo", color: "indigo", yield12m: "CDI + α", risk: 2, description: "Crédito Privado" },
-    { id: "spx_seahawk", name: "SPX Seahawk Crédito Privado", shortName: "SPX Seahawk", type: "Renda Fixa", category: "abrigo", color: "indigo", yield12m: "CDI + α", risk: 2, description: "Baixo Risco Crédito" },
-    { id: "bnp_rubi", name: "BNP Paribas Rubi", shortName: "BNP Rubi", type: "Renda Fixa", category: "abrigo", color: "indigo", yield12m: "CDI + α", risk: 2, description: "Crédito High Grade" },
-    { id: "mapfre_rf", name: "MAPFRE RF FIF", shortName: "MAPFRE RF", type: "Renda Fixa", category: "abrigo", color: "indigo", yield12m: "CDI", risk: 2, description: "Liquidez Alternativa" },
-    { id: "augme_30", name: "Augme 30 CIC", shortName: "Augme 30", type: "Renda Fixa", category: "abrigo", color: "indigo", yield12m: "CDI + α", risk: 2, description: "Crédito Curto Prazo" },
-    { id: "augme_180", name: "Augme 180 FIF", shortName: "Augme 180", type: "Renda Fixa", category: "ritmo", color: "violet", yield12m: "CDI + α", risk: 3, description: "Crédito Estruturado" },
-    { id: "capitania_premium_45", name: "Capitânia Premium 45", shortName: "Capitânia 45", type: "Renda Fixa", category: "abrigo", color: "indigo", yield12m: "CDI + α", risk: 2, description: "Crédito Intermediário" },
-    { id: "capitania_radar_90", name: "Capitânia Radar 90", shortName: "Capitânia 90", type: "Renda Fixa", category: "ritmo", color: "violet", yield12m: "CDI + α", risk: 3, description: "Crédito Médio Prazo" },
-    { id: "capitania_yield_120", name: "Capitânia Yield 120", shortName: "Capitânia 120", type: "Renda Fixa", category: "ritmo", color: "violet", yield12m: "CDI + α", risk: 3, description: "High Yield / Estruturado" },
-    { id: "ibiuna_credit", name: "Ibiuna Credit", shortName: "Ibiuna C.", type: "Renda Fixa", category: "abrigo", color: "indigo", yield12m: "CDI + α", risk: 2, description: "DI Crédito" },
-    { id: "jgp_select", name: "JGP Select Premium", shortName: "JGP Select", type: "Renda Fixa", category: "ritmo", color: "violet", yield12m: "CDI + α", risk: 3, description: "Crédito Estruturado" },
-    { id: "genoa_radar", name: "Genoa Capital Radar", shortName: "Genoa Radar", type: "Renda Fixa", category: "ritmo", color: "violet", yield12m: "CDI + α", risk: 3, description: "Crédito Ativo" },
-    { id: "legacy_compound", name: "Legacy Compound", shortName: "Legacy C.", type: "Renda Fixa", category: "ritmo", color: "violet", yield12m: "IPCA / CDI + α", risk: 3, description: "Crédito Premium" },
-    { id: "bahia_am", name: "Bahia AM DI", shortName: "Bahia AM", type: "Renda Fixa", category: "abrigo", color: "indigo", yield12m: "CDI + 0,5%", risk: 2, description: "Reserva DI Plus" },
-    { id: "arx_hedge", name: "ARX Hedge Infra", shortName: "ARX Infra", type: "Renda Fixa", category: "ritmo", color: "violet", yield12m: "IPCA + α", risk: 3, description: "IPCA+ Isento" },
-    { id: "itau_deb", name: "Itaú Deb Incentivadas", shortName: "Itaú Debs", type: "Renda Fixa", category: "ritmo", color: "violet", yield12m: "IPCA + α", risk: 3, description: "Debêntures IPCA+" },
-    { id: "trend_pre", name: "Trend Pré Fixado", shortName: "Trend Pré", type: "Renda Fixa", category: "ritmo", color: "violet", yield12m: "Pré", risk: 3, description: "Prefixado" },
-    { id: "jgp_eco", name: "JGP Ecossistema", shortName: "JGP Eco.", type: "Renda Fixa", category: "ritmo", color: "violet", yield12m: "IPCA + α", risk: 3, description: "IPCA+ Infra" },
-    { id: "btg_credito", name: "BTG Crédito Estruturado", shortName: "BTG Crédito", type: "Renda Fixa", category: "ritmo", color: "violet", yield12m: "CDI + α", risk: 3, description: "DI Crédito" },
-
-    // ─── MULTIMERCADOS (Visão, Oceano) ───
-    { id: "kinea_oportunidade", name: "Kinea Oportunidade FIM", shortName: "Kinea Oport.", type: "Multimercado", category: "visao", color: "amber", yield12m: "CDI + α", risk: 4, description: "Multi conserv" },
-    { id: "kinea_oportunidade_fif", name: "Kinea Oportunidade FIF", shortName: "Kinea FIF", type: "Multimercado", category: "visao", color: "amber", yield12m: "CDI + α", risk: 4, description: "Multimercado FIF" },
-    { id: "kinea_atlas", name: "Kinea Atlas", shortName: "Kinea Atlas", type: "Multimercado", category: "oceano", color: "cyan", yield12m: "Macro Global", risk: 5, description: "Macro Diversificado" },
-    { id: "gavea_macro", name: "Gavea Macro", shortName: "Gavea Macro", type: "Multimercado", category: "visao", color: "amber", yield12m: "Macro", risk: 4, description: "Estratégia Direcional" },
-    { id: "gavea_macro_plus", name: "Gavea Macro Plus", shortName: "Gavea Plus", type: "Multimercado", category: "oceano", color: "cyan", yield12m: "Macro", risk: 5, description: "Macro Alavancado" },
-    { id: "ibiuna_hedge", name: "Ibiuna Hedge ST", shortName: "Ibiuna Hedge", type: "Multimercado", category: "visao", color: "amber", yield12m: "Macro", risk: 4, description: "Multimercado Juros/Moedas" },
-    { id: "kapitalo_zeta", name: "Kapitalo Zeta", shortName: "Kap. Zeta", type: "Multimercado", category: "oceano", color: "cyan", yield12m: "Macro", risk: 5, description: "Macro Volatilidade" },
-    { id: "kapitalo_kappa", name: "Kapitalo Kappa", shortName: "Kapitalo K.", type: "Multimercado", category: "oceano", color: "cyan", yield12m: "Macro", risk: 5, description: "Multi macro" },
-    { id: "mar_absoluto", name: "Mar Absoluto", shortName: "Mar Abs.", type: "Multimercado", category: "visao", color: "amber", yield12m: "CDI + α", risk: 4, description: "Estratégia Absoluta" },
-    { id: "spx_nimitz", name: "SPX Nimitz", shortName: "SPX Nimitz", type: "Multimercado", category: "oceano", color: "cyan", yield12m: "Macro Global", risk: 5, description: "Macro Internacional" },
-    { id: "spx_raptor", name: "SPX Raptor", shortName: "SPX Raptor", type: "Multimercado", category: "oceano", color: "cyan", yield12m: "Macro Alt.", risk: 5, description: "Macro Alta Volatilidade" },
-    { id: "legacy_v10", name: "Legacy V10", shortName: "Legacy V10", type: "Multimercado", category: "oceano", color: "cyan", yield12m: "Macro", risk: 5, description: "Estratégia Direcional" },
-    { id: "verde_am_x60", name: "Verde AM X60", shortName: "Verde X60", type: "Multimercado", category: "visao", color: "amber", yield12m: "Macro", risk: 4, description: "Fundo Lendário" },
-    { id: "vista_hedge", name: "Vista Hedge", shortName: "Vista Hedge", type: "Multimercado", category: "visao", color: "amber", yield12m: "Macro", risk: 4, description: "Foco em assimetrias" },
-    { id: "dahlia_total", name: "Dahlia Total Return", shortName: "Dahlia TR", type: "Multimercado", category: "visao", color: "amber", yield12m: "Ações + RF", risk: 4, description: "Estratégia Mista" },
-    { id: "encore_long_bias", name: "Encore Long Bias", shortName: "Encore LB", type: "Multimercado", category: "visao", color: "amber", yield12m: "Ibov / Macro", risk: 4, description: "Multimercado/Ações" },
-    { id: "truxt_long_bias", name: "Truxt Long Bias", shortName: "Truxt LB", type: "Multimercado", category: "visao", color: "amber", yield12m: "Ibov / Macro", risk: 4, description: "Multimercado/Ações" },
-
-    // ─── AÇÕES (Visão, Oceano) ───
-    { id: "spx_falcon", name: "SPX Falcon", shortName: "SPX Falcon", type: "Ações", category: "oceano", color: "cyan", yield12m: "Ibov + α", risk: 5, description: "Ações / Macro" },
-    { id: "atmos_acoes", name: "Atmos Ações", shortName: "Atmos", type: "Ações", category: "oceano", color: "cyan", yield12m: "Ibov + α", risk: 5, description: "Value Investing" },
-    { id: "bogari_value", name: "Bogari Value", shortName: "Bogari V.", type: "Ações", category: "oceano", color: "cyan", yield12m: "Ibov + α", risk: 5, description: "Deep Value" },
-    { id: "bogari_value_q", name: "Bogari Value Q FIC FIA", shortName: "Bogari Q", type: "Ações", category: "oceano", color: "cyan", yield12m: "Ibov + α", risk: 5, description: "Ações Alavancado" },
-    { id: "brasil_capital", name: "Brasil Capital", shortName: "Brasil Cap.", type: "Ações", category: "visao", color: "amber", yield12m: "Ibov + α", risk: 4, description: "Ações Qualidade" },
-    { id: "brasil_cap_inst", name: "Brasil Capital Institucional 30", shortName: "Brasil Inst.", type: "Ações", category: "oceano", color: "cyan", yield12m: "Ibov + α", risk: 5, description: "Fundo Institucional" },
-    { id: "hix_capital", name: "Hix Capital FIC FIA", shortName: "Hix FIC", type: "Ações", category: "visao", color: "amber", yield12m: "Ibov + α", risk: 4, description: "Ações Ibov+" },
-    { id: "hix_hs", name: "Hix HS FIC FIA", shortName: "Hix HS", type: "Ações", category: "oceano", color: "cyan", yield12m: "Ibov + α", risk: 5, description: "Ações Alta Convicção" },
-    { id: "real_investor", name: "Real Investor FIC FIA", shortName: "Real Inv.", type: "Ações", category: "visao", color: "amber", yield12m: "Ibov + α", risk: 4, description: "Fundo de Ações Value" },
-    { id: "ip_participacoes", name: "IP Participações", shortName: "IP Part.", type: "Ações", category: "visao", color: "amber", yield12m: "IPCA + α Global", risk: 4, description: "Ações Globais" },
-    { id: "dynamo_cougar", name: "Dynamo Cougar", shortName: "Dynamo", type: "Ações", category: "oceano", color: "cyan", yield12m: "Ibov + α", risk: 5, description: "Fundo Seleto de Ações" },
-    { id: "forpus_acoes", name: "Forpus Ações", shortName: "Forpus", type: "Ações", category: "oceano", color: "cyan", yield12m: "Ibov + α", risk: 5, description: "Foco em Growth" },
-    { id: "alaska_black", name: "Alaska Black", shortName: "Alaska", type: "Ações", category: "oceano", color: "cyan", yield12m: "Ibov + α / Câmbio", risk: 5, description: "Ações / Câmbio Ativo" },
-    { id: "velt_acoes", name: "Velt Ações", shortName: "Velt", type: "Ações", category: "oceano", color: "cyan", yield12m: "Ibov + α", risk: 5, description: "Gestão Ativa Fundamentalista" }
+    {
+        "id": "tesouro_selic_fundo_simples",
+        "name": "Tesouro Selic / Fundo Simples",
+        "shortName": "Tesouro Selic",
+        "type": "Renda Fixa",
+        "category": "reserva",
+        "color": "blue",
+        "yield12m": "CDI",
+        "risk": 1,
+        "description": "Título Público / Caixa"
+    },
+    {
+        "id": "arx_fuji",
+        "name": "ARX Fuji",
+        "shortName": "ARX Fuji",
+        "type": "Renda Fixa",
+        "category": "abrigo",
+        "color": "indigo",
+        "yield12m": "CDI + α",
+        "risk": 2,
+        "description": "Caixa Premium"
+    },
+    {
+        "id": "valora_guardian_advisory_fidc_rl",
+        "name": "VALORA GUARDIAN ADVISORY FIDC – RL",
+        "shortName": "Valora Guardian",
+        "type": "Renda Fixa",
+        "category": "abrigo",
+        "color": "indigo",
+        "yield12m": "CDI + α",
+        "risk": 2,
+        "description": "Crédito Privado FIDC"
+    },
+    {
+        "id": "bnp_paribas_rubi",
+        "name": "BNP Paribas Rubi",
+        "shortName": "BNP Rubi",
+        "type": "Renda Fixa",
+        "category": "abrigo",
+        "color": "indigo",
+        "yield12m": "CDI + α",
+        "risk": 2,
+        "description": "Crédito High Grade"
+    },
+    {
+        "id": "jgp_corporate",
+        "name": "JGP Corporate",
+        "shortName": "JGP Corporate",
+        "type": "Renda Fixa",
+        "category": "abrigo",
+        "color": "indigo",
+        "yield12m": "CDI + α",
+        "risk": 2,
+        "description": "Crédito Privado"
+    },
+    {
+        "id": "ibiuna_credit",
+        "name": "Ibiuna Credit",
+        "shortName": "Ibiuna Credit",
+        "type": "Renda Fixa",
+        "category": "abrigo",
+        "color": "indigo",
+        "yield12m": "CDI + α",
+        "risk": 2,
+        "description": "Crédito Privado"
+    },
+    {
+        "id": "augme_30_cic",
+        "name": "Augme 30 CIC",
+        "shortName": "Augme 30",
+        "type": "Renda Fixa",
+        "category": "abrigo",
+        "color": "indigo",
+        "yield12m": "CDI + α",
+        "risk": 2,
+        "description": "Crédito Estruturado"
+    },
+    {
+        "id": "sparta_deb_inc_fic_incentivados",
+        "name": "Sparta Deb Inc FIC Incentivados",
+        "shortName": "Sparta Deb",
+        "type": "Renda Fixa",
+        "category": "ritmo",
+        "color": "violet",
+        "yield12m": "IPCA + α",
+        "risk": 3,
+        "description": "Debêntures Incentivadas"
+    },
+    {
+        "id": "kinea_deb_incentivadas",
+        "name": "Kinea Deb Incentivadas",
+        "shortName": "Kinea Debs",
+        "type": "Renda Fixa",
+        "category": "ritmo",
+        "color": "violet",
+        "yield12m": "IPCA + α",
+        "risk": 3,
+        "description": "Debêntures Incentivadas"
+    },
+    {
+        "id": "arx_hedge_infra",
+        "name": "ARX Hedge Infra",
+        "shortName": "ARX Infra",
+        "type": "Renda Fixa",
+        "category": "ritmo",
+        "color": "violet",
+        "yield12m": "IPCA + α",
+        "risk": 3,
+        "description": "Infraestrutura IPCA+"
+    },
+    {
+        "id": "trend_pre_fixado",
+        "name": "Trend Pre Fixado",
+        "shortName": "Trend Pré",
+        "type": "Renda Fixa",
+        "category": "ritmo",
+        "color": "violet",
+        "yield12m": "Pré",
+        "risk": 3,
+        "description": "Prefixado"
+    },
+    {
+        "id": "kinea_oportunidade_fim",
+        "name": "Kinea Oportunidade FIM",
+        "shortName": "Kinea Oport. FIM",
+        "type": "Multimercado",
+        "category": "visao",
+        "color": "amber",
+        "yield12m": "CDI + α",
+        "risk": 3,
+        "description": "Multimercado Conservador"
+    },
+    {
+        "id": "kinea_oportunidade_fif",
+        "name": "Kinea Oportunidade FIF",
+        "shortName": "Kinea Oport. FIF",
+        "type": "Multimercado",
+        "category": "visao",
+        "color": "amber",
+        "yield12m": "CDI + α",
+        "risk": 4,
+        "description": "Multimercado FIF"
+    },
+    {
+        "id": "verde_am_x60",
+        "name": "Verde AM X60",
+        "shortName": "Verde X60",
+        "type": "Multimercado",
+        "category": "visao",
+        "color": "amber",
+        "yield12m": "Macro",
+        "risk": 4,
+        "description": "Multimercado Macro"
+    },
+    {
+        "id": "dahlia_total_return",
+        "name": "Dahlia Total Return",
+        "shortName": "Dahlia TR",
+        "type": "Multimercado",
+        "category": "visao",
+        "color": "amber",
+        "yield12m": "Ações + RF",
+        "risk": 4,
+        "description": "Multimercado Long Bias"
+    },
+    {
+        "id": "truxt_long_bias",
+        "name": "Truxt Long Bias",
+        "shortName": "Truxt LB",
+        "type": "Multimercado",
+        "category": "visao",
+        "color": "amber",
+        "yield12m": "Ibov / Macro",
+        "risk": 4,
+        "description": "Multimercado Long Bias"
+    },
+    {
+        "id": "kapitalo_kappa",
+        "name": "Kapitalo Kappa",
+        "shortName": "Kapitalo K.",
+        "type": "Multimercado",
+        "category": "oceano",
+        "color": "cyan",
+        "yield12m": "Macro Global",
+        "risk": 5,
+        "description": "Multimercado Macro"
+    },
+    {
+        "id": "kinea_atlas",
+        "name": "Kinea Atlas",
+        "shortName": "Kinea Atlas",
+        "type": "Multimercado",
+        "category": "oceano",
+        "color": "cyan",
+        "yield12m": "Macro Global",
+        "risk": 5,
+        "description": "Multimercado Macro"
+    },
+    {
+        "id": "spx_patriot_fif_cic_a_es_rl",
+        "name": "SPX Patriot FIF CIC Ações RL",
+        "shortName": "SPX Patriot",
+        "type": "Ações",
+        "category": "oceano",
+        "color": "cyan",
+        "yield12m": "Ibov + α",
+        "risk": 5,
+        "description": "Ações Brasil"
+    },
+    {
+        "id": "hix_capital_hs_fia",
+        "name": "Hix Capital HS FIA",
+        "shortName": "Hix HS",
+        "type": "Ações",
+        "category": "oceano",
+        "color": "cyan",
+        "yield12m": "Ibov + α",
+        "risk": 5,
+        "description": "Ações Brasil"
+    },
+    {
+        "id": "ivvb11",
+        "name": "IVVB11",
+        "shortName": "IVVB11",
+        "type": "Ações",
+        "category": "oceano",
+        "color": "cyan",
+        "yield12m": "S&P 500",
+        "risk": 5,
+        "description": "ETF S&P 500 em BRL"
+    },
+    {
+        "id": "nasd11",
+        "name": "NASD11",
+        "shortName": "NASD11",
+        "type": "Ações",
+        "category": "oceano",
+        "color": "cyan",
+        "yield12m": "Nasdaq 100",
+        "risk": 5,
+        "description": "ETF Nasdaq 100 em BRL"
+    },
+    {
+        "id": "divo11",
+        "name": "DIVO11",
+        "shortName": "DIVO11",
+        "type": "Ações",
+        "category": "oceano",
+        "color": "cyan",
+        "yield12m": "Dividendos",
+        "risk": 5,
+        "description": "ETF Índice Dividendos"
+    },
+    {
+        "id": "wellington_ventura_advisory",
+        "name": "Wellington Ventura Advisory",
+        "shortName": "Wellington Ventura",
+        "type": "Ações",
+        "category": "oceano",
+        "color": "cyan",
+        "yield12m": "Global",
+        "risk": 5,
+        "description": "Ações Internacionais"
+    },
+    {
+        "id": "wrld11",
+        "name": "WRLD11",
+        "shortName": "WRLD11",
+        "type": "Ações",
+        "category": "oceano",
+        "color": "cyan",
+        "yield12m": "Global",
+        "risk": 5,
+        "description": "ETF Ações Globais"
+    },
+    {
+        "id": "tesouro_selic",
+        "name": "Tesouro Selic",
+        "shortName": "Tesouro Selic",
+        "type": "Renda Fixa",
+        "category": "reserva",
+        "color": "blue",
+        "yield12m": "CDI",
+        "risk": 1,
+        "description": "Título Público"
+    },
+    {
+        "id": "di_simples",
+        "name": "Fundo DI Simples",
+        "shortName": "DI Simples",
+        "type": "Renda Fixa",
+        "category": "reserva",
+        "color": "blue",
+        "yield12m": "CDI",
+        "risk": 1,
+        "description": "DI Puro"
+    },
+    {
+        "id": "valora_guardian",
+        "name": "Valora Guardian II",
+        "shortName": "Valora G. II",
+        "type": "Renda Fixa",
+        "category": "abrigo",
+        "color": "indigo",
+        "yield12m": "CDI + α",
+        "risk": 2,
+        "description": "DI Crédito"
+    },
+    {
+        "id": "sparta_kinea",
+        "name": "Sparta/Kinea Deb Incentivadas",
+        "shortName": "Sparta Deb",
+        "type": "Renda Fixa",
+        "category": "ritmo",
+        "color": "violet",
+        "yield12m": "IPCA + α",
+        "risk": 3,
+        "description": "Crédito Isento"
+    },
+    {
+        "id": "trend_pre",
+        "name": "Trend Pré Fixado",
+        "shortName": "Trend Pré",
+        "type": "Renda Fixa",
+        "category": "ritmo",
+        "color": "violet",
+        "yield12m": "Pré",
+        "risk": 3,
+        "description": "Prefixado"
+    },
+    {
+        "id": "hix_hs",
+        "name": "Hix HS FIC FIA",
+        "shortName": "Hix HS",
+        "type": "Ações",
+        "category": "oceano",
+        "color": "cyan",
+        "yield12m": "Ibov + α",
+        "risk": 5,
+        "description": "Ações Alta Convicção"
+    }
 ];
 
-
-// ─────────────────────────────────────────────────────────────────────────────
-// PROPORÇÕES SUGERIDAS (CARTEIRA "MODELO")
-// Altere as proporções aqui para que a opção "Sugerir Carteira" ou "Autopreencher"
-// use os novos pesos baseados no perfil de Investidor Qualificado ou Geral.
-// ─────────────────────────────────────────────────────────────────────────────
-
 export const SUGGESTED_ALLOCATIONS_GERAL: Record<StepKey, { fundId: string; weight: number }[]> = {
-    reserva: [
-        { fundId: "tesouro_selic", weight: 100 }
+    "reserva": [
+        {
+            "fundId": "tesouro_selic_fundo_simples",
+            "weight": 100
+        }
     ],
-    abrigo: [
-        { fundId: "tesouro_selic", weight: 80 },
-        { fundId: "arx_fuji", weight: 3 },
-        { fundId: "bnp_rubi", weight: 5 },
-        { fundId: "ibiuna_credit", weight: 5 },
-        { fundId: "arx_hedge", weight: 7 },
+    "abrigo": [
+        {
+            "fundId": "tesouro_selic_fundo_simples",
+            "weight": 80
+        },
+        {
+            "fundId": "arx_fuji",
+            "weight": 3
+        },
+        {
+            "fundId": "jgp_corporate",
+            "weight": 3
+        },
+        {
+            "fundId": "bnp_paribas_rubi",
+            "weight": 8
+        },
+        {
+            "fundId": "augme_30_cic",
+            "weight": 3
+        },
+        {
+            "fundId": "ibiuna_credit",
+            "weight": 3
+        }
     ],
-    ritmo: [
-        { fundId: "tesouro_selic", weight: 50 },
-        { fundId: "arx_fuji", weight: 4 },
-        { fundId: "bnp_rubi", weight: 8 },
-        { fundId: "ibiuna_credit", weight: 7 },
-        { fundId: "arx_hedge", weight: 9 },
-        { fundId: "kinea_atlas", weight: 6 },
-        { fundId: "dahlia_total", weight: 8 },
-        { fundId: "hix_hs", weight: 8 },
+    "ritmo": [
+        {
+            "fundId": "tesouro_selic_fundo_simples",
+            "weight": 60
+        },
+        {
+            "fundId": "arx_fuji",
+            "weight": 3
+        },
+        {
+            "fundId": "sparta_deb_inc_fic_incentivados",
+            "weight": 4
+        },
+        {
+            "fundId": "bnp_paribas_rubi",
+            "weight": 4
+        },
+        {
+            "fundId": "ibiuna_credit",
+            "weight": 4
+        },
+        {
+            "fundId": "arx_hedge_infra",
+            "weight": 7
+        },
+        {
+            "fundId": "verde_am_x60",
+            "weight": 5
+        },
+        {
+            "fundId": "ivvb11",
+            "weight": 4
+        },
+        {
+            "fundId": "wellington_ventura_advisory",
+            "weight": 3
+        },
+        {
+            "fundId": "divo11",
+            "weight": 3
+        },
+        {
+            "fundId": "spx_patriot_fif_cic_a_es_rl",
+            "weight": 3
+        }
     ],
-    visao: [
-        { fundId: "tesouro_selic", weight: 25 },
-        { fundId: "arx_fuji", weight: 4 },
-        { fundId: "sparta_kinea", weight: 6 },
-        { fundId: "bnp_rubi", weight: 8 },
-        { fundId: "ibiuna_credit", weight: 7 },
-        { fundId: "arx_hedge", weight: 9 },
-        { fundId: "kinea_atlas", weight: 6 },
-        { fundId: "dahlia_total", weight: 9 },
-        { fundId: "hix_hs", weight: 10 },
-        { fundId: "forpus_acoes", weight: 8 },
-        { fundId: "real_investor", weight: 8 },
+    "visao": [
+        {
+            "fundId": "tesouro_selic_fundo_simples",
+            "weight": 40
+        },
+        {
+            "fundId": "arx_fuji",
+            "weight": 6
+        },
+        {
+            "fundId": "sparta_deb_inc_fic_incentivados",
+            "weight": 5
+        },
+        {
+            "fundId": "bnp_paribas_rubi",
+            "weight": 5
+        },
+        {
+            "fundId": "ibiuna_credit",
+            "weight": 4
+        },
+        {
+            "fundId": "arx_hedge_infra",
+            "weight": 8
+        },
+        {
+            "fundId": "verde_am_x60",
+            "weight": 5
+        },
+        {
+            "fundId": "spx_patriot_fif_cic_a_es_rl",
+            "weight": 5
+        },
+        {
+            "fundId": "ivvb11",
+            "weight": 5
+        },
+        {
+            "fundId": "nasd11",
+            "weight": 5
+        },
+        {
+            "fundId": "wellington_ventura_advisory",
+            "weight": 7
+        },
+        {
+            "fundId": "divo11",
+            "weight": 5
+        }
     ],
-    oceano: [
-        { fundId: "tesouro_selic", weight: 15 },
-        { fundId: "arx_fuji", weight: 5 },
-        { fundId: "sparta_kinea", weight: 7 },
-        { fundId: "bnp_rubi", weight: 7 },
-        { fundId: "ibiuna_credit", weight: 8 },
-        { fundId: "arx_hedge", weight: 10 },
-        { fundId: "kinea_atlas", weight: 8 },
-        { fundId: "dahlia_total", weight: 10 },
-        { fundId: "hix_hs", weight: 10 },
-        { fundId: "forpus_acoes", weight: 10 },
-        { fundId: "real_investor", weight: 10 },
-    ],
+    "oceano": [
+        {
+            "fundId": "tesouro_selic_fundo_simples",
+            "weight": 20
+        },
+        {
+            "fundId": "arx_fuji",
+            "weight": 4
+        },
+        {
+            "fundId": "sparta_deb_inc_fic_incentivados",
+            "weight": 4
+        },
+        {
+            "fundId": "bnp_paribas_rubi",
+            "weight": 5
+        },
+        {
+            "fundId": "ibiuna_credit",
+            "weight": 4
+        },
+        {
+            "fundId": "arx_hedge_infra",
+            "weight": 6
+        },
+        {
+            "fundId": "kapitalo_kappa",
+            "weight": 4
+        },
+        {
+            "fundId": "kinea_atlas",
+            "weight": 4
+        },
+        {
+            "fundId": "spx_patriot_fif_cic_a_es_rl",
+            "weight": 10
+        },
+        {
+            "fundId": "ivvb11",
+            "weight": 10
+        },
+        {
+            "fundId": "nasd11",
+            "weight": 9
+        },
+        {
+            "fundId": "wellington_ventura_advisory",
+            "weight": 10
+        },
+        {
+            "fundId": "divo11",
+            "weight": 10
+        }
+    ]
 };
 
 export const SUGGESTED_ALLOCATIONS_IQ: Record<StepKey, { fundId: string; weight: number }[]> = {
-    reserva: [
-        { fundId: "tesouro_selic", weight: 100 }
+    "reserva": [
+        {
+            "fundId": "tesouro_selic_fundo_simples",
+            "weight": 100
+        }
     ],
-    abrigo: [
-        { fundId: "tesouro_selic", weight: 80 },
-        { fundId: "arx_fuji", weight: 3 },
-        { fundId: "valora_guardian_a", weight: 5 },
-        { fundId: "capitania_yield_120", weight: 5 },
-        { fundId: "arx_hedge", weight: 7 },
+    "abrigo": [
+        {
+            "fundId": "tesouro_selic_fundo_simples",
+            "weight": 80
+        },
+        {
+            "fundId": "arx_fuji",
+            "weight": 3
+        },
+        {
+            "fundId": "valora_guardian_advisory_fidc_rl",
+            "weight": 8
+        },
+        {
+            "fundId": "kinea_oportunidade_fim",
+            "weight": 3
+        },
+        {
+            "fundId": "augme_30_cic",
+            "weight": 3
+        },
+        {
+            "fundId": "ibiuna_credit",
+            "weight": 3
+        }
     ],
-    ritmo: [
-        { fundId: "tesouro_selic", weight: 50 },
-        { fundId: "arx_fuji", weight: 4 },
-        { fundId: "valora_guardian_a", weight: 7 },
-        { fundId: "capitania_yield_120", weight: 6 },
-        { fundId: "arx_hedge", weight: 9 },
-        { fundId: "jgp_eco", weight: 6 },
-        { fundId: "kinea_atlas", weight: 4 },
-        { fundId: "dahlia_total", weight: 5 },
-        { fundId: "truxt_long_bias", weight: 5 },
-        { fundId: "spx_falcon", weight: 4 },
+    "ritmo": [
+        {
+            "fundId": "tesouro_selic_fundo_simples",
+            "weight": 60
+        },
+        {
+            "fundId": "arx_hedge_infra",
+            "weight": 4
+        },
+        {
+            "fundId": "kinea_oportunidade_fif",
+            "weight": 4
+        },
+        {
+            "fundId": "valora_guardian_advisory_fidc_rl",
+            "weight": 5
+        },
+        {
+            "fundId": "arx_fuji",
+            "weight": 3
+        },
+        {
+            "fundId": "ibiuna_credit",
+            "weight": 3
+        },
+        {
+            "fundId": "verde_am_x60",
+            "weight": 3
+        },
+        {
+            "fundId": "wellington_ventura_advisory",
+            "weight": 4
+        },
+        {
+            "fundId": "spx_patriot_fif_cic_a_es_rl",
+            "weight": 6
+        },
+        {
+            "fundId": "ivvb11",
+            "weight": 5
+        },
+        {
+            "fundId": "divo11",
+            "weight": 3
+        }
     ],
-    visao: [
-        { fundId: "tesouro_selic", weight: 25 },
-        { fundId: "arx_fuji", weight: 4 },
-        { fundId: "valora_guardian_a", weight: 10 },
-        { fundId: "kinea_oportunidade_fif", weight: 3 },
-        { fundId: "capitania_yield_120", weight: 6 },
-        { fundId: "arx_hedge", weight: 9 },
-        { fundId: "jgp_eco", weight: 5 },
-        { fundId: "kinea_atlas", weight: 6 },
-        { fundId: "dahlia_total", weight: 6 },
-        { fundId: "truxt_long_bias", weight: 6 },
-        { fundId: "brasil_capital", weight: 5 },
-        { fundId: "hix_hs", weight: 5 },
-        { fundId: "real_investor", weight: 5 },
-        { fundId: "spx_falcon", weight: 5 },
+    "visao": [
+        {
+            "fundId": "tesouro_selic_fundo_simples",
+            "weight": 40
+        },
+        {
+            "fundId": "valora_guardian_advisory_fidc_rl",
+            "weight": 4
+        },
+        {
+            "fundId": "sparta_deb_inc_fic_incentivados",
+            "weight": 4
+        },
+        {
+            "fundId": "bnp_paribas_rubi",
+            "weight": 4
+        },
+        {
+            "fundId": "ibiuna_credit",
+            "weight": 4
+        },
+        {
+            "fundId": "arx_hedge_infra",
+            "weight": 6
+        },
+        {
+            "fundId": "kinea_oportunidade_fif",
+            "weight": 5
+        },
+        {
+            "fundId": "truxt_long_bias",
+            "weight": 4
+        },
+        {
+            "fundId": "verde_am_x60",
+            "weight": 6
+        },
+        {
+            "fundId": "spx_patriot_fif_cic_a_es_rl",
+            "weight": 6
+        },
+        {
+            "fundId": "ivvb11",
+            "weight": 4
+        },
+        {
+            "fundId": "nasd11",
+            "weight": 4
+        },
+        {
+            "fundId": "wellington_ventura_advisory",
+            "weight": 5
+        },
+        {
+            "fundId": "divo11",
+            "weight": 4
+        }
     ],
-    oceano: [
-        { fundId: "tesouro_selic", weight: 12 },
-        { fundId: "arx_fuji", weight: 4 },
-        { fundId: "valora_guardian_a", weight: 10 },
-        { fundId: "kinea_oportunidade_fif", weight: 3 },
-        { fundId: "capitania_yield_120", weight: 6 },
-        { fundId: "arx_hedge", weight: 9 },
-        { fundId: "jgp_eco", weight: 8 },
-        { fundId: "kinea_atlas", weight: 4 },
-        { fundId: "dahlia_total", weight: 6 },
-        { fundId: "truxt_long_bias", weight: 7 },
-        { fundId: "brasil_capital", weight: 10 },
-        { fundId: "hix_hs", weight: 7 },
-        { fundId: "real_investor", weight: 7 },
-        { fundId: "spx_falcon", weight: 7 },
-    ],
+    "oceano": [
+        {
+            "fundId": "tesouro_selic_fundo_simples",
+            "weight": 20
+        },
+        {
+            "fundId": "valora_guardian_advisory_fidc_rl",
+            "weight": 3
+        },
+        {
+            "fundId": "arx_hedge_infra",
+            "weight": 4
+        },
+        {
+            "fundId": "bnp_paribas_rubi",
+            "weight": 2
+        },
+        {
+            "fundId": "kinea_oportunidade_fif",
+            "weight": 5
+        },
+        {
+            "fundId": "truxt_long_bias",
+            "weight": 5
+        },
+        {
+            "fundId": "verde_am_x60",
+            "weight": 8
+        },
+        {
+            "fundId": "ivvb11",
+            "weight": 10
+        },
+        {
+            "fundId": "nasd11",
+            "weight": 8
+        },
+        {
+            "fundId": "wellington_ventura_advisory",
+            "weight": 10
+        },
+        {
+            "fundId": "divo11",
+            "weight": 10
+        },
+        {
+            "fundId": "spx_patriot_fif_cic_a_es_rl",
+            "weight": 10
+        },
+        {
+            "fundId": "wrld11",
+            "weight": 5
+        }
+    ]
 };
 
 export function getSuggestedAllocations(isQualificado: boolean): Record<StepKey, { fundId: string; weight: number }[]> {

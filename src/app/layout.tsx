@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
-import { DM_Sans, DM_Serif_Display } from "next/font/google";
+import { DM_Sans } from "next/font/google";
 import { ClientProviders } from "@/components/client-providers";
 
 const dmSans = DM_Sans({
@@ -9,8 +9,8 @@ const dmSans = DM_Sans({
     weight: ["300", "400", "500", "600", "700"],
 });
 
-const dmSerif = DM_Serif_Display({
-    weight: "400",
+const dmSerif = DM_Sans({
+    weight: ["400", "600", "700"],
     subsets: ["latin"],
     variable: "--font-dm-serif",
 });
@@ -124,7 +124,7 @@ export default function RootLayout({
                 <link rel="preconnect" href="https://fonts.googleapis.com" />
                 <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
                 <link
-                    href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+                    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
                     rel="stylesheet"
                 />
                 <script

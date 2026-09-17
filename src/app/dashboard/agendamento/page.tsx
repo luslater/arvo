@@ -2,10 +2,10 @@ import { CalendarDays, Clock, Video } from "lucide-react"
 
 export default function DashboardAgendamentoPage() {
     return (
-        <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
-            <div className="mb-7">
-                <div className="font-serif text-[28px] text-dash-text tracking-tight mb-1">Agendamento</div>
-                <div className="text-[13px] text-dash-text-muted">Marque uma conversa com nossa equipe para revisar sua estratégia.</div>
+        <div className="animate-in fade-in slide-in-from-bottom-2 duration-300 space-y-6">
+            <div className="space-y-1">
+                <div className="text-2xl sm:text-3xl font-bold text-dash-text tracking-tight">Agendamento</div>
+                <div className="text-sm text-dash-text-muted">Marque uma conversa com nossa equipe de planejadores CFP® para calibrar sua estratégia.</div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -14,7 +14,7 @@ export default function DashboardAgendamentoPage() {
                         <div>
                             <div className="w-16 h-16 rounded-full bg-dash-surface-active border border-dash-border flex items-center justify-center mb-4 overflow-hidden">
                                 {/* Placeholder for Advisor Image */}
-                                <div className="text-xl font-serif text-dash-accent">ARVO</div>
+                                <div className="text-lg font-bold text-dash-accent">ARVO</div>
                             </div>
                             <h2 className="text-lg font-bold text-dash-text">Equipe ARVO</h2>
                             <p className="text-sm text-dash-text-muted mb-6">Responsável: Lucas Matos, CFP®</p>

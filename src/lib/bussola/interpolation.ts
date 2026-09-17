@@ -23,15 +23,24 @@ export interface InterpolatedAsset {
 }
 
 export function getRiskInterval(position: number, basePortfolios: any[]) {
-    if (position <= 0) return { from: basePortfolios[0], to: basePortfolios[0], factorFrom: 1, factorTo: 0 };
-    if (position >= 100) return { from: basePortfolios[basePortfolios.length - 1], to: basePortfolios[basePortfolios.length - 1], factorFrom: 1, factorTo: 0 };
+    if (!basePortfolios || basePortfolios.length === 0) {
+        return { from: null, to: null, factorFrom: 1, factorTo: 0 };
+    }
+    if (position <= basePortfolios[0].position) {
+        return { from: basePortfolios[0], to: basePortfolios[0], factorFrom: 1, factorTo: 0 };
+    }
+    const last = basePortfolios[basePortfolios.length - 1];
+    if (position >= last.position) {
+        return { from: last, to: last, factorFrom: 1, factorTo: 0 };
+    }
 
     for (let i = 0; i < basePortfolios.length - 1; i++) {
         const current = basePortfolios[i];
         const next = basePortfolios[i + 1];
 
         if (position >= current.position && position <= next.position) {
-            const factorTo = (position - current.position) / (next.position - current.position);
+            const range = next.position - current.position;
+            const factorTo = range > 0 ? (position - current.position) / range : 0;
             const factorFrom = 1 - factorTo;
 
             return {

@@ -12,18 +12,17 @@ import Link from "next/link"
 
 const MIN_WEIGHT_THRESHOLD = 3
 
-export const ASSET_CATALOG: Record<string, { gestora: string; classe: string }> = {
-    // 1. Renda Fixa / Caixa (Zaga)
+const ASSET_CATALOG: Record<string, { gestora: string; classe: string }> = {
+    // 1. Renda Fixa / Caixa & Pós-Fixado (Zaga)
     "Tesouro Selic / Fundo Simples": { gestora: "Tesouro Nacional", classe: "Renda Fixa / Caixa" },
     "ARX Fuji": { gestora: "ARX Investimentos", classe: "Renda Fixa / Caixa" },
     "BNP Paribas Rubi": { gestora: "BNP Paribas", classe: "Renda Fixa / Caixa" },
     "Bahia AM DI": { gestora: "Bahia Asset", classe: "Renda Fixa / Caixa" },
     "MAPFRE RF FIF": { gestora: "MAPFRE Investimentos", classe: "Renda Fixa / Caixa" },
     "Kinea Oportunidade FIM": { gestora: "Kinea Investimentos", classe: "Renda Fixa / Caixa" },
-    "Kinea Oportunidade FIF": { gestora: "Kinea Investimentos", classe: "Renda Fixa / Caixa" },
 
     // 2. Renda Fixa / Crédito Privado & FIDC & Debêntures (Zaga)
-    "VALORA GUARDIAN ADVISORY FIDC – RL": { gestora: "Valora Investimentos", classe: "Renda Fixa / Crédito Privado" },
+    "VALORA GUARDIAN ADVISORY FIDC – RL": { gestora: "Valora Investimentos", classe: "Renda Fixa / Crédito Privado (FIDC)" },
     "Sparta Deb Inc FIC Incentivados": { gestora: "Sparta Fundos", classe: "Renda Fixa / Crédito Privado" },
     "JGP Corporate": { gestora: "JGP Asset Management", classe: "Renda Fixa / Crédito Privado" },
     "JGP Select Premium": { gestora: "JGP Asset Management", classe: "Renda Fixa / Crédito Privado" },
@@ -46,6 +45,7 @@ export const ASSET_CATALOG: Record<string, { gestora: string; classe: string }> 
     "Kapitalo Kappa": { gestora: "Kapitalo Investimentos", classe: "Multimercado / Macro" },
     "Kapitalo Zeta": { gestora: "Kapitalo Investimentos", classe: "Multimercado / Macro" },
     "Kinea Atlas": { gestora: "Kinea Investimentos", classe: "Multimercado / Macro" },
+    "Kinea Oportunidade FIF": { gestora: "Kinea Investimentos", classe: "Multimercado / Macro" },
     "Genoa Capital Radar": { gestora: "Genoa Capital", classe: "Multimercado / Macro" },
     "Legacy Compound": { gestora: "Legacy Capital", classe: "Multimercado / Macro" },
     "Legacy V10": { gestora: "Legacy Capital", classe: "Multimercado / Macro" },
@@ -58,14 +58,13 @@ export const ASSET_CATALOG: Record<string, { gestora: string; classe: string }> 
     "Verde AM X60": { gestora: "Verde Asset", classe: "Multimercado / Macro" },
     "Vista Multiestrategia": { gestora: "Vista Capital", classe: "Multimercado / Macro" },
     "Vista Hedge": { gestora: "Vista Capital", classe: "Multimercado / Macro" },
-    "Dahlia Total Return": { gestora: "Dahlia Capital", classe: "Multimercado / Ações" },
+    "Dahlia Total Return": { gestora: "Dahlia Capital", classe: "Multimercado / Long Bias" },
     "Encore Long Bias": { gestora: "Encore Asset", classe: "Multimercado / Long Bias" },
     "Truxt Long Bias": { gestora: "Truxt Investimentos", classe: "Multimercado / Long Bias" },
     "JGP Ecossistema": { gestora: "JGP Asset Management", classe: "Multimercado / ESG" },
 
     // 5. Ações Brasil (Ataque)
     "SPX Patriot FIF CIC Ações RL": { gestora: "SPX Capital", classe: "Ações / Brasil" },
-    "SPX Patriot FIF CIC Acoes RL": { gestora: "SPX Capital", classe: "Ações / Brasil" },
     "Hix Capital HS FIA": { gestora: "Hix Capital", classe: "Ações / Brasil" },
     "Hix Capital FIC FIA": { gestora: "Hix Capital", classe: "Ações / Brasil" },
     "DIVO11": { gestora: "Itaú Asset (IT NOW)", classe: "Ações / Dividendos" },
@@ -85,8 +84,7 @@ export const ASSET_CATALOG: Record<string, { gestora: string; classe: string }> 
     "IVVB11": { gestora: "BlackRock (iShares)", classe: "Ações / Internacional (S&P 500)" },
     "NASD11": { gestora: "Itaú Asset (IT NOW)", classe: "Ações / Internacional (Nasdaq 100)" },
     "WRLD11": { gestora: "Investo / Vanguard", classe: "Ações / Internacional (Global)" },
-    "Wellington Ventura Advisory": { gestora: "Wellington Management", classe: "Ações / Internacional (Global)" },
-    "WELLINGTON VENTURA ADVISORY": { gestora: "Wellington Management", classe: "Ações / Internacional (Global)" },
+    "Wellington Ventura Advisory": { gestora: "Wellington Management", classe: "Ações / Internacional (Global)" }
 }
 
 function getAssetMetadata(assetName: string): { gestora: string; classe: string } {
@@ -110,7 +108,7 @@ function getAssetMetadata(assetName: string): { gestora: string; classe: string 
     if (fund) {
         let classe = fund.classe || "Renda Fixa"
         if (classe === "Zaga") classe = "Renda Fixa / Caixa"
-        else if (classe === "Meio") classe = "Multimercado / Inflação"
+        else if (classe === "Meio") classe = "Multimercado / Macro"
         else if (classe === "Ataque") classe = "Ações / Internacional"
         return {
             gestora: fund.gestora || "Gestora Independente",
@@ -121,12 +119,12 @@ function getAssetMetadata(assetName: string): { gestora: string; classe: string 
     return { gestora: "Gestora Independente", classe: "Diversificado" }
 }
 
-export function getMacroClass(classe: string): string {
+function getMacroClass(classe: string): string {
     const c = (classe || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-    if (c.includes("caixa") || c.includes("selic") || c.includes("renda fixa") || c.includes("credito") || c.includes("infraestrutura") || c.includes("pre")) {
+    if (c.includes("caixa") || c.includes("selic") || c.includes("renda fixa") || c.includes("credito") || c.includes("infraestrutura") || c.includes("pre") || c.includes("fidc") || c.includes("debenture")) {
         return "Renda Fixa & Caixa"
     }
-    if (c.includes("multimercado") || c.includes("macro") || c.includes("long bias")) {
+    if (c.includes("multimercado") || c.includes("macro") || c.includes("long bias") || c.includes("esg")) {
         return "Multimercados"
     }
     if (c.includes("internacional") || c.includes("global") || c.includes("s&p") || c.includes("nasdaq") || c.includes("world")) {
@@ -138,7 +136,7 @@ export function getMacroClass(classe: string): string {
     return "Outros"
 }
 
-export const CARTEIRA_TRACKS = [
+const CARTEIRA_TRACKS = [
     {
         id: "geral_light",
         label: "Geral Light",
@@ -168,7 +166,7 @@ export const CARTEIRA_TRACKS = [
 export default function BussolaPage() {
     const [tier, setTier] = useState<string>("Light")
     const [itype, setItype] = useState<string>("Geral")
-    const [riskPosition, setRiskPosition] = useState(50) // 0 to 100
+    const [riskPosition, setRiskPosition] = useState(50) // 0 to 100 (50 is Ritmo, exact center)
     const [clientProfile, setClientProfile] = useState<string>("RITMO")
     const [hasDiagnosedProfile, setHasDiagnosedProfile] = useState<boolean>(false)
 
@@ -184,9 +182,10 @@ export default function BussolaPage() {
                         setHasDiagnosedProfile(true)
                         
                         // Default position aligned to profile if first load
-                        if (normalized === "ABRIGO") setRiskPosition(0)
-                        else if (normalized === "RITMO") setRiskPosition(33)
-                        else if (normalized === "VISÃO") setRiskPosition(66)
+                        if (normalized === "RESERVA") setRiskPosition(0)
+                        else if (normalized === "ABRIGO") setRiskPosition(25)
+                        else if (normalized === "RITMO") setRiskPosition(50)
+                        else if (normalized === "VISÃO" || normalized === "VISAO") setRiskPosition(75)
                         else if (normalized === "OCEANO") setRiskPosition(100)
                     }
                 }
@@ -197,7 +196,7 @@ export default function BussolaPage() {
         fetchProfile()
     }, [])
 
-    // Calcs
+    // Calcs - 9 Official levels from Planilha Oficial
     const getMockLevel = (perfilName: string) => {
         const p = RECOMMENDED_PORTFOLIOS.find(p => p.itype === itype && p.tier === tier && p.perfil === perfilName)
         if (p) {
@@ -211,7 +210,7 @@ export default function BussolaPage() {
                         manager: meta.gestora,
                         asset: assetName,
                         weight: weight * 100,
-                        eligibility: "Geral"
+                        eligibility: itype
                     }
                 })
             }
@@ -220,15 +219,53 @@ export default function BussolaPage() {
     }
 
     const basePortfolios = [
-        { ...getMockLevel("Abrigo"), position: 0 },
-        { ...getMockLevel("Ritmo"), position: 33 },
-        { ...getMockLevel("Visão"), position: 66 },
+        { ...getMockLevel("Reserva"), position: 0 },
+        { ...getMockLevel("90% Conservador"), position: 12.5 },
+        { ...getMockLevel("Abrigo"), position: 25 },
+        { ...getMockLevel("Abrigo-Ritmo"), position: 37.5 },
+        { ...getMockLevel("Ritmo"), position: 50 },
+        { ...getMockLevel("Ritmo-Visão"), position: 62.5 },
+        { ...getMockLevel("Visão"), position: 75 },
+        { ...getMockLevel("Visão-Oceano"), position: 87.5 },
         { ...getMockLevel("Oceano"), position: 100 }
     ]
     const { from, to, factorFrom, factorTo } = getRiskInterval(riskPosition, basePortfolios)
-    const isOfficial = factorFrom === 1 || factorTo === 1
-    const currentName = isOfficial ? (factorFrom === 1 ? from.name : to.name) : "Transição"
-    const currentHeadline = isOfficial ? (factorFrom === 1 ? from.headline : to.headline) : "Nível intermediário entre carteiras oficiais."
+    
+    // Detecção de pontos oficiais da planilha com margem de tolerância
+    const isOfficial = riskPosition <= 4 
+        || (riskPosition >= 11 && riskPosition <= 14) 
+        || (riskPosition >= 23 && riskPosition <= 27) 
+        || (riskPosition >= 36 && riskPosition <= 39) 
+        || (riskPosition >= 48 && riskPosition <= 52) 
+        || (riskPosition >= 61 && riskPosition <= 64) 
+        || (riskPosition >= 73 && riskPosition <= 77) 
+        || (riskPosition >= 86 && riskPosition <= 89) 
+        || riskPosition >= 98
+
+    // Nomenclatura baseada nas 9 carteiras oficiais e interpolações:
+    const currentName = riskPosition <= 4
+        ? "Reserva"
+        : (riskPosition >= 11 && riskPosition <= 14)
+            ? "90% Conservador"
+            : (riskPosition >= 23 && riskPosition <= 27)
+                ? "Abrigo"
+                : (riskPosition >= 36 && riskPosition <= 39)
+                    ? "Abrigo-Ritmo"
+                    : (riskPosition >= 48 && riskPosition <= 52)
+                        ? "Ritmo"
+                        : (riskPosition >= 61 && riskPosition <= 64)
+                            ? "Ritmo-Visão"
+                            : (riskPosition >= 73 && riskPosition <= 77)
+                                ? "Visão"
+                                : (riskPosition >= 86 && riskPosition <= 89)
+                                    ? "Visão-Oceano"
+                                    : riskPosition >= 98
+                                        ? "Oceano"
+                                        : `${from.name} / ${to.name}`
+
+    const currentHeadline = isOfficial
+        ? `Carteira ${currentName}`
+        : `Alocação combinada entre ${from.name} e ${to.name}.`
     
     const rawAssets = interpolatePortfolio(from.assets, to.assets, factorFrom, factorTo)
     const applicableAssets = applyMinimumThreshold(rawAssets, MIN_WEIGHT_THRESHOLD, isOfficial)
@@ -282,9 +319,9 @@ export default function BussolaPage() {
     const projectedVolatility = volFrom * factorFrom + volTo * factorTo;
 
     const getSliderColor = (val: number) => {
-        if (val < 33) return "#9bcbb4"
-        if (val < 66) return "#4fa080"
-        if (val < 100) return "#2b6e76"
+        if (val < 25) return "#9bcbb4"
+        if (val < 50) return "#4fa080"
+        if (val < 75) return "#2b6e76"
         return "#123044"
     }
     const currentColor = getSliderColor(riskPosition)
@@ -293,8 +330,8 @@ export default function BussolaPage() {
     const profileAlignment = useMemo(() => {
         const norm = clientProfile.toUpperCase().replace("VISAO", "VISÃO")
         
-        if (norm === "ABRIGO") {
-            if (riskPosition <= 25) {
+        if (norm === "RESERVA") {
+            if (riskPosition <= 4) {
                 return {
                     status: "aligned",
                     badge: "100% Alinhado ao Perfil",
@@ -302,11 +339,51 @@ export default function BussolaPage() {
                     color: "#1f674f",
                     bg: "#e8f1ed",
                     border: "#4fa080",
-                    title: "Carteira Alinhada ao seu Perfil (Abrigo / Conservador)",
-                    message: "Esta alocação prioriza preservação e liquidez imediata, perfeitamente em linha com sua tolerância de risco diagnosticada na Jornada.",
-                    recommendedRange: "0 – 25 (Abrigo)"
+                    title: "Carteira Alinhada ao seu Perfil (Reserva / 100% Liquidez)",
+                    message: "Foco absoluto em liquidez diária e segurança com Tesouro Selic e fundos simples.",
+                    recommendedRange: "0 – 4 (Reserva)"
                 }
-            } else if (riskPosition <= 55) {
+            } else {
+                return {
+                    status: "warning",
+                    badge: "Atenção: Acima do Perfil",
+                    icon: <AlertTriangle size={18} className="text-[#b45309] shrink-0" />,
+                    color: "#b45309",
+                    bg: "#fef3c7",
+                    border: "#f59e0b",
+                    title: "Nível de Risco Superior à sua Reserva",
+                    message: "Você está adicionando ativos com risco ou oscilação de mercado à sua carteira.",
+                    recommendedRange: "0 – 4 (Reserva)"
+                }
+            }
+        }
+
+        if (norm === "ABRIGO") {
+            if (riskPosition >= 23 && riskPosition <= 27) {
+                return {
+                    status: "aligned",
+                    badge: "100% Alinhado ao Perfil",
+                    icon: <CheckCircle size={18} className="text-[#1f674f] shrink-0" />,
+                    color: "#1f674f",
+                    bg: "#e8f1ed",
+                    border: "#4fa080",
+                    title: "Carteira Alinhada ao seu Perfil (Abrigo)",
+                    message: "Esta alocação prioriza preservação e liquidez imediata, perfeitamente em linha com sua tolerância de risco diagnosticada na Jornada.",
+                    recommendedRange: "23 – 27 (Abrigo)"
+                }
+            } else if (riskPosition < 23) {
+                return {
+                    status: "below",
+                    badge: "Abaixo da Capacidade de Risco",
+                    icon: <Info size={18} className="text-[#123044] shrink-0" />,
+                    color: "#123044",
+                    bg: "#e9edf1",
+                    border: "#123044",
+                    title: "Alocação em Reserva (Abaixo do Perfil Abrigo)",
+                    message: "Você está com alocação concentrada apenas em liquidez de curto prazo.",
+                    recommendedRange: "23 – 27 (Abrigo)"
+                }
+            } else if (riskPosition <= 52) {
                 return {
                     status: "warning",
                     badge: "Atenção: Acima do Perfil",
@@ -316,7 +393,7 @@ export default function BussolaPage() {
                     border: "#f59e0b",
                     title: "Nível de Risco Superior ao seu Perfil (Abrigo)",
                     message: "Você está adicionando exposição a risco moderado e indexadores IPCA+. Verifique se sua reserva de segurança está completa antes de assumir oscilações de mercado.",
-                    recommendedRange: "0 – 25 (Abrigo)"
+                    recommendedRange: "23 – 27 (Abrigo)"
                 }
             } else {
                 return {
@@ -328,13 +405,13 @@ export default function BussolaPage() {
                     border: "#ef4444",
                     title: "Alocação Muito Superior à sua Tolerância (Abrigo)",
                     message: "Esta carteira possui forte exposição a renda variável, ações e ativos globais. O nível de volatilidade esperado pode ultrapassar o que você tolera segundo seu diagnóstico.",
-                    recommendedRange: "0 – 25 (Abrigo)"
+                    recommendedRange: "23 – 27 (Abrigo)"
                 }
             }
         }
 
         if (norm === "RITMO") {
-            if (riskPosition < 20) {
+            if (riskPosition < 48) {
                 return {
                     status: "below",
                     badge: "Abaixo da Tolerância de Risco",
@@ -343,10 +420,10 @@ export default function BussolaPage() {
                     bg: "#e9edf1",
                     border: "#123044",
                     title: "Alocação Mais Defensiva que o seu Perfil (Ritmo)",
-                    message: "Esta posição é ultra-conservadora (foco em liquidez/caixa). Seu patrimônio terá menor oscilação, mas pode ter retorno real inferior à inflação no longo prazo.",
-                    recommendedRange: "20 – 55 (Ritmo)"
+                    message: "Esta posição é mais conservadora do que seu diagnóstico na Jornada.",
+                    recommendedRange: "48 – 52 (Ritmo)"
                 }
-            } else if (riskPosition <= 55) {
+            } else if (riskPosition <= 52) {
                 return {
                     status: "aligned",
                     badge: "100% Alinhado ao Perfil",
@@ -354,11 +431,11 @@ export default function BussolaPage() {
                     color: "#1f674f",
                     bg: "#e8f1ed",
                     border: "#4fa080",
-                    title: "Carteira Alinhada ao seu Perfil (Ritmo / Moderado)",
+                    title: "Carteira Alinhada ao seu Perfil (Ritmo)",
                     message: "Equilíbrio ideal entre liquidez de segurança e proteção do poder de compra via títulos IPCA+, perfeitamente calibrado para o seu perfil.",
-                    recommendedRange: "20 – 55 (Ritmo)"
+                    recommendedRange: "48 – 52 (Ritmo)"
                 }
-            } else if (riskPosition <= 80) {
+            } else if (riskPosition <= 77) {
                 return {
                     status: "warning",
                     badge: "Atenção: Acima do Perfil",
@@ -368,7 +445,7 @@ export default function BussolaPage() {
                     border: "#f59e0b",
                     title: "Nível de Risco Superior ao seu Perfil (Ritmo)",
                     message: "Você está adicionando exposição relevante a renda variável e fundos multimercados. Pode gerar oscilações maiores em momentos de estresse de mercado.",
-                    recommendedRange: "20 – 55 (Ritmo)"
+                    recommendedRange: "48 – 52 (Ritmo)"
                 }
             } else {
                 return {
@@ -380,13 +457,13 @@ export default function BussolaPage() {
                     border: "#ef4444",
                     title: "Alocação Agressiva Acima do seu Perfil (Ritmo)",
                     message: "Exposição máxima a ações globais e risco sistemático. Indicada prioritariamente para horizontes muito longos e investidores arrojados.",
-                    recommendedRange: "20 – 55 (Ritmo)"
+                    recommendedRange: "48 – 52 (Ritmo)"
                 }
             }
         }
 
         if (norm === "VISÃO" || norm === "VISAO") {
-            if (riskPosition < 45) {
+            if (riskPosition < 73) {
                 return {
                     status: "below",
                     badge: "Abaixo da Capacidade de Risco",
@@ -396,9 +473,9 @@ export default function BussolaPage() {
                     border: "#123044",
                     title: "Alocação Conservadora para o seu Perfil (Visão)",
                     message: "Você está com alocação conservadora para a sua capacidade de absorver oscilações. Isso pode desacelerar o crescimento do seu patrimônio no longo prazo.",
-                    recommendedRange: "45 – 80 (Visão)"
+                    recommendedRange: "73 – 77 (Visão)"
                 }
-            } else if (riskPosition <= 80) {
+            } else if (riskPosition <= 77) {
                 return {
                     status: "aligned",
                     badge: "100% Alinhado ao Perfil",
@@ -406,9 +483,9 @@ export default function BussolaPage() {
                     color: "#1f674f",
                     bg: "#e8f1ed",
                     border: "#4fa080",
-                    title: "Carteira Alinhada ao seu Perfil (Visão / Arrojado)",
+                    title: "Carteira Alinhada ao seu Perfil (Visão)",
                     message: "Excelente combinação entre núcleo de proteção e motor de crescimento com ações, multimercados e ativos imobiliários.",
-                    recommendedRange: "45 – 80 (Visão)"
+                    recommendedRange: "73 – 77 (Visão)"
                 }
             } else {
                 return {
@@ -419,14 +496,14 @@ export default function BussolaPage() {
                     bg: "#fef3c7",
                     border: "#f59e0b",
                     title: "Exposição Máxima a Ativos Globais (Oceano)",
-                    message: "Você está no nível máximo de risco da plataforma. Assegure-se de que não precisará desses recursos nos próximos 5 anos.",
-                    recommendedRange: "45 – 80 (Visão)"
+                    message: "Você está no nível de risco Oceano. Assegure-se de que não precisará desses recursos no curto e médio prazo.",
+                    recommendedRange: "73 – 77 (Visão)"
                 }
             }
         }
 
         // OCEANO (Agressivo)
-        if (riskPosition < 65) {
+        if (riskPosition < 98) {
             return {
                 status: "below",
                 badge: "Abaixo da Tolerância ao Risco",
@@ -436,7 +513,7 @@ export default function BussolaPage() {
                 border: "#123044",
                 title: "Alocação Abaixo da sua Tolerância ao Risco (Oceano)",
                 message: "Como investidor agressivo, alocações defensivas podem subutilizar seu horizonte longo e capacidade de suportar volatilidade para maximizar retornos.",
-                recommendedRange: "70 – 100 (Oceano)"
+                recommendedRange: "98 – 100 (Oceano)"
             }
         } else {
             return {
@@ -446,38 +523,26 @@ export default function BussolaPage() {
                 color: "#1f674f",
                 bg: "#e8f1ed",
                 border: "#4fa080",
-                title: "Carteira Alinhada ao seu Perfil (Oceano / Agressivo)",
+                title: "Carteira Alinhada ao seu Perfil (Oceano)",
                 message: "Foco total na maximização de retornos e multiplicação patrimonial no longo prazo, com plena tolerância a oscilações de mercado.",
-                recommendedRange: "70 – 100 (Oceano)"
+                recommendedRange: "98 – 100 (Oceano)"
             }
         }
     }, [riskPosition, clientProfile])
 
     const getFundReturns = (assetName: string) => {
-        const findFund = (name: string) => HISTORICAL_DATA.funds.find((f: any) => f.name === name)?.values;
+        const direct = HISTORICAL_DATA.funds.find((f: any) => f.name === assetName)?.values;
+        if (direct) return direct;
         
-        let res = findFund(assetName);
-        if (res) return res;
-        
-        const cleanName = assetName.split('(')[0].trim();
-        res = findFund(cleanName);
-        if (res) return res;
-
-        if (assetName.includes("Sparta/Kinea")) return findFund("Sparta Deb Inc FIC Incentivados") || findFund("Kinea Deb Incentivadas") || [];
-        if (cleanName.includes("Capitânia")) return findFund(cleanName.replace("Capitânia", "Capitania")) || [];
-        if (cleanName.includes("Dahlia")) return findFund("Dahlia Total Return") || [];
-        if (cleanName.includes("Truxt")) return findFund("Truxt Long Bias") || [];
-        if (cleanName.includes("Hix")) return findFund("Hix Capital HS FIA") || findFund("Hix Capital FIC FIA") || [];
-        if (cleanName.includes("Forpus")) return findFund("Forpus Acoes FIC FIF Acoes RL") || findFund("Forpus Ações FIC FIF Ações RL") || [];
-        if (cleanName.includes("Real Investor")) return findFund("Real Investor FIC FIF Acoes RL") || findFund("Real Investor FIC FIF Ações RL") || [];
-        
-        const possibleFund = HISTORICAL_DATA.funds.find((f: any) => assetName.includes(f.name) || cleanName.includes(f.name));
-        if (possibleFund) return possibleFund.values;
-
-        return [];
+        const cleanName = assetName.split('(')[0].trim().toLowerCase();
+        const found = HISTORICAL_DATA.funds.find((f: any) => {
+            const fName = (f.name || "").toLowerCase();
+            return fName === cleanName || fName.includes(cleanName) || cleanName.includes(fName);
+        });
+        return found?.values || [];
     }
 
-    const { chartData, realAnual, realMes, pctCdi } = useMemo(() => {
+    const { chartData, realAnual, realMes, pctCdi, calculatedVolatility } = useMemo(() => {
         const data = []
         let portfolioValue = 10000
         let cdiValue = 10000
@@ -494,6 +559,8 @@ export default function BussolaPage() {
             portfolio: portfolioValue, 
             cdi: cdiValue 
         })
+
+        const monthlyReturns: number[] = []
 
         for (let i = historyLength - months; i < historyLength; i++) {
             const date = new Date(today.getFullYear(), today.getMonth() - (historyLength - 1 - i), 1)
@@ -514,6 +581,8 @@ export default function BussolaPage() {
                 actualMonthReturn = actualMonthReturn * (100 / totalWeightWithData);
             }
 
+            monthlyReturns.push(actualMonthReturn)
+
             const cdiReturn = HISTORICAL_DATA.cdi && HISTORICAL_DATA.cdi[i] !== undefined ? HISTORICAL_DATA.cdi[i] : 0.009;
             
             portfolioValue = portfolioValue * (1 + actualMonthReturn)
@@ -533,8 +602,17 @@ export default function BussolaPage() {
         const mes = (Math.pow(portfolioValue / 10000, 1 / months) - 1) * 100;
         const pct = cdiAccum > 0 ? (portfolioAccum / cdiAccum) * 100 : 0;
 
-        return { chartData: data, realAnual: anual, realMes: mes, pctCdi: pct }
-    }, [activeAssets])
+        // Volatilidade anualizada calculada:
+        // Tesouro Selic / Fundo Simples (Reserva / 100% Caixa) possui 0,0% de risco de oscilação de mercado.
+        let vol = 0;
+        if (riskPosition > 4 && cashTotal < 99.9 && monthlyReturns.length > 1) {
+            const mean = monthlyReturns.reduce((acc, r) => acc + r, 0) / monthlyReturns.length;
+            const variance = monthlyReturns.reduce((acc, r) => acc + Math.pow(r - mean, 2), 0) / (monthlyReturns.length - 1);
+            vol = Math.sqrt(Math.max(0, variance)) * Math.sqrt(12) * 100;
+        }
+
+        return { chartData: data, realAnual: anual, realMes: mes, pctCdi: pct, calculatedVolatility: vol }
+    }, [activeAssets, riskPosition, cashTotal])
 
     // Needle Angle: -90 (0%) to +90 (100%)
     const needleAngle = -90 + (riskPosition / 100) * 180
@@ -663,56 +741,63 @@ export default function BussolaPage() {
                                     onValueChange={v => setRiskPosition(v[0])}
                                     className="arvo-slider"
                                 />
-                                <div className="flex justify-between text-[11px] font-bold text-[#8d97a5] uppercase tracking-widest px-1">
-                                    <span className={riskPosition <= 25 ? "text-[#123044] font-black" : ""}>Abrigo</span>
-                                    <span className={riskPosition > 25 && riskPosition <= 55 ? "text-[#123044] font-black" : ""}>Ritmo</span>
-                                    <span className={riskPosition > 55 && riskPosition <= 80 ? "text-[#123044] font-black" : ""}>Visão</span>
-                                    <span className={riskPosition > 80 ? "text-[#123044] font-black" : ""}>Oceano</span>
+                                <div className="flex justify-between text-[11px] font-bold text-[#8d97a5] uppercase tracking-wider px-1">
+                                    <span className={riskPosition <= 4 ? "text-[#123044] font-black" : ""}>Reserva</span>
+                                    <span className={riskPosition >= 23 && riskPosition <= 27 ? "text-[#123044] font-black" : ""}>Abrigo</span>
+                                    <span className={riskPosition >= 48 && riskPosition <= 52 ? "text-[#123044] font-black" : ""}>Ritmo</span>
+                                    <span className={riskPosition >= 73 && riskPosition <= 77 ? "text-[#123044] font-black" : ""}>Visão</span>
+                                    <span className={riskPosition >= 98 ? "text-[#123044] font-black" : ""}>Oceano</span>
                                 </div>
                             </div>
                         </div>
 
                         {/* GAUGE SVG */}
-                        <div className="relative h-[220px] flex items-center justify-center pt-8">
-                            <svg viewBox="0 0 400 220" className="w-[340px] h-full overflow-visible">
+                        <div className="relative h-[230px] flex items-center justify-center pt-4 pb-2">
+                            <svg viewBox="0 0 400 240" className="w-[340px] h-full overflow-visible">
                                 <defs>
                                     <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
                                         <stop offset="0%" stopColor="#9bcbb4" />
-                                        <stop offset="33%" stopColor="#4fa080" />
-                                        <stop offset="66%" stopColor="#2b6e76" />
+                                        <stop offset="25%" stopColor="#4fa080" />
+                                        <stop offset="50%" stopColor="#368779" />
+                                        <stop offset="75%" stopColor="#225868" />
                                         <stop offset="100%" stopColor="#123044" />
                                     </linearGradient>
                                 </defs>
-                                <path d="M 36 184 A 164 164 0 0 1 364 184" fill="none" stroke="#e4e0d7" strokeWidth="28" strokeLinecap="round" opacity="0.5"/>
-                                <path d="M 36 184 A 164 164 0 0 1 364 184" fill="none" stroke="url(#gaugeGradient)" strokeWidth="28" strokeLinecap="round"/>
-                                <line x1="111" y1="30" x2="125" y2="54" stroke="#fffdf8" strokeWidth="4" strokeLinecap="round"/>
-                                <line x1="289" y1="30" x2="275" y2="54" stroke="#fffdf8" strokeWidth="4" strokeLinecap="round"/>
-                                <g fontSize="10" fontWeight="800" fill="#8d97a5" letterSpacing="0.5">
-                                    <text x="36" y="215" textAnchor="middle">ABRIGO</text>
-                                    <text x="118" y="20" textAnchor="middle">RITMO</text>
-                                    <text x="282" y="20" textAnchor="middle">VISÃO</text>
-                                    <text x="364" y="215" textAnchor="middle">OCEANO</text>
+                                <path d="M 54 195 A 146 146 0 0 1 346 195" fill="none" stroke="#e4e0d7" strokeWidth="24" strokeLinecap="round" opacity="0.5"/>
+                                <path d="M 54 195 A 146 146 0 0 1 346 195" fill="none" stroke="url(#gaugeGradient)" strokeWidth="24" strokeLinecap="round"/>
+                                
+                                {/* Radial White Ticks at 25% (Abrigo), 50% (Ritmo), 75% (Visão) */}
+                                <line x1="105" y1="100" x2="88" y2="83" stroke="#fffdf8" strokeWidth="3" strokeLinecap="round"/>
+                                <line x1="200" y1="61" x2="200" y2="37" stroke="#fffdf8" strokeWidth="3" strokeLinecap="round"/>
+                                <line x1="295" y1="100" x2="312" y2="83" stroke="#fffdf8" strokeWidth="3" strokeLinecap="round"/>
+                                
+                                {/* High-Contrast Profile Labels - Placed cleanly OUTSIDE the arc stroke */}
+                                <g fontSize="10.5" fontWeight="800" fill="#475467" letterSpacing="0.5">
+                                    <text x="36" y="222" textAnchor="start">RESERVA</text>
+                                    <text x="60" y="80" textAnchor="middle">ABRIGO</text>
+                                    <text x="200" y="24" textAnchor="middle">RITMO</text>
+                                    <text x="340" y="80" textAnchor="middle">VISÃO</text>
+                                    <text x="364" y="222" textAnchor="end">OCEANO</text>
                                 </g>
-                                <g transform="translate(200, 184)">
-                                    <motion.g 
+                                <g transform="translate(200, 195)">
+                                    <g 
                                         className="needle"
-                                        animate={{ rotate: needleAngle }}
-                                        transition={{ type: "spring", stiffness: 60, damping: 15 }}
+                                        transform={`rotate(${needleAngle})`}
                                     >
-                                        <circle cx="0" cy="0" r="132" fill="transparent" />
-                                        <line x1="0" y1="0" x2="0" y2="-132" stroke="#17212b" strokeWidth="5" strokeLinecap="round"/>
-                                        <circle cx="0" cy="0" r="13" fill="#17212b" style={{ filter: "drop-shadow(0 2px 3px rgba(0,0,0,0.18))" }}/>
+                                        <circle cx="0" cy="0" r="118" fill="transparent" />
+                                        <line x1="0" y1="0" x2="0" y2="-118" stroke="#123044" strokeWidth="5" strokeLinecap="round"/>
+                                        <circle cx="0" cy="0" r="12" fill="#123044" style={{ filter: "drop-shadow(0 2px 3px rgba(0,0,0,0.18))" }}/>
                                         <circle cx="0" cy="0" r="4" fill="#fffdf8"/>
-                                    </motion.g>
+                                    </g>
                                 </g>
                             </svg>
                         </div>
 
                         <div className="text-center pb-6 flex-1 flex flex-col justify-end">
-                            <div className="text-5xl font-extrabold tracking-tighter leading-none mb-2 transition-colors duration-300" style={{ color: currentColor }}>
+                            <div className="text-5xl font-extrabold tabular-nums tracking-tighter leading-none mb-2 text-[#123044]">
                                 {riskPosition}
                             </div>
-                            <div className="text-lg font-bold text-[#17384d] flex justify-center items-center gap-2">
+                            <div className="text-lg font-bold text-[#123044] flex justify-center items-center gap-2">
                                 {currentName}
                                 {!isOfficial && (
                                     <span className="px-2 py-0.5 rounded border border-[#e4e0d7] bg-white text-[9px] text-[#667085] uppercase tracking-widest font-extrabold">
@@ -737,17 +822,17 @@ export default function BussolaPage() {
                         <div className="flex flex-wrap gap-4 mb-6 p-4 bg-white border border-[#e4e0d7] rounded-2xl">
                             <div>
                                 <div className="text-[10px] font-bold text-[#667085] uppercase tracking-wider">Retorno Anual</div>
-                                <div className="text-xl font-extrabold text-[#123044] mt-1">{realAnual.toFixed(1)}%</div>
+                                <div className="text-xl font-extrabold tabular-nums text-[#123044] mt-1">{realAnual.toFixed(1)}%</div>
                             </div>
                             <div className="w-px bg-[#e4e0d7] hidden md:block"></div>
                             <div>
                                 <div className="text-[10px] font-bold text-[#667085] uppercase tracking-wider">Média Mensal</div>
-                                <div className="text-xl font-extrabold text-[#123044] mt-1">{realMes.toFixed(2)}%</div>
+                                <div className="text-xl font-extrabold tabular-nums text-[#123044] mt-1">{realMes.toFixed(2)}%</div>
                             </div>
                             <div className="w-px bg-[#e4e0d7] hidden md:block"></div>
                             <div>
                                 <div className="text-[10px] font-bold text-[#667085] uppercase tracking-wider">% do CDI</div>
-                                <div className="text-xl font-extrabold text-[#1f674f] mt-1">{pctCdi.toFixed(0)}%</div>
+                                <div className="text-xl font-extrabold tabular-nums text-[#1f674f] mt-1">{pctCdi.toFixed(0)}%</div>
                             </div>
                         </div>
 
@@ -758,7 +843,7 @@ export default function BussolaPage() {
                                     <XAxis dataKey="month" tick={{ fontSize: 10, fill: '#8d97a5' }} tickLine={false} axisLine={false} minTickGap={30} />
                                     <YAxis tickFormatter={(val) => `R$ ${(val/1000).toFixed(1)}k`} tick={{ fontSize: 10, fill: '#8d97a5' }} tickLine={false} axisLine={false} domain={['dataMin - 500', 'auto']} />
                                     <Tooltip 
-                                        formatter={(value) => [`R$ ${value.toLocaleString('pt-BR')}`, '']}
+                                        formatter={(value) => [`R$ ${Number(value).toLocaleString('pt-BR')}`, '']}
                                         labelFormatter={(label) => label}
                                         contentStyle={{ borderRadius: '12px', border: '1px solid #e4e0d7', boxShadow: '0 10px 20px rgba(0,0,0,0.05)', backgroundColor: '#fffdf8' }}
                                         labelStyle={{ color: '#123044', fontWeight: 'bold', marginBottom: '4px' }}
@@ -784,14 +869,14 @@ export default function BussolaPage() {
                         <div className="text-[11px] text-[#667085] mt-0.5">liquidez e defesa</div>
                     </div>
                     <div className="border border-[#e4e0d7] rounded-2xl p-4 bg-white shadow-sm">
-                        <div className="text-[10px] font-bold text-[#667085] uppercase tracking-wider">Retorno Alvo (a.a.)</div>
-                        <div className="text-2xl font-extrabold text-[#123044] mt-1">{formatDecimalPct(projectedReturn)}</div>
-                        <div className="text-[11px] text-[#667085] mt-0.5">projeção teórica</div>
+                        <div className="text-[10px] font-bold text-[#667085] uppercase tracking-wider">Retorno Anual (a.a.)</div>
+                        <div className="text-2xl font-extrabold text-[#123044] mt-1">{formatDecimalPct(realAnual)}</div>
+                        <div className="text-[11px] text-[#667085] mt-0.5">histórico 36 meses</div>
                     </div>
                     <div className="border border-[#e4e0d7] rounded-2xl p-4 bg-white shadow-sm">
                         <div className="text-[10px] font-bold text-[#667085] uppercase tracking-wider">Volatilidade (Risco)</div>
-                        <div className="text-2xl font-extrabold text-[#123044] mt-1">{formatDecimalPct(projectedVolatility)}</div>
-                        <div className="text-[11px] text-[#667085] mt-0.5">variação esperada</div>
+                        <div className="text-2xl font-extrabold text-[#123044] mt-1">{formatDecimalPct(calculatedVolatility)}</div>
+                        <div className="text-[11px] text-[#667085] mt-0.5">desvio anualizado</div>
                     </div>
                 </div>
 
@@ -832,7 +917,7 @@ export default function BussolaPage() {
                                 {isOfficial ? (
                                     <>Este é um ponto oficial da metodologia ARVO: <strong>{currentName}</strong>. </>
                                 ) : (
-                                    <>Você está simulando uma transição entre <strong>{from.name}</strong> e <strong>{to.name}</strong>. </>
+                                    <>Você está simulando uma alocação combinada entre <strong>{from.name}</strong> e <strong>{to.name}</strong>. </>
                                 )}
                                 Neste nível, a carteira mantém {formatPct(cashTotal)} em caixa para liquidez, 
                                 buscando a diversificação através das outras classes na proporção indicada.
@@ -881,7 +966,7 @@ export default function BussolaPage() {
                                                 <span className={`inline-flex px-2 py-0.5 rounded text-[10px] font-bold whitespace-nowrap ${
                                                     asset.assetClass.includes("Caixa") || asset.assetClass.includes("Selic") 
                                                         ? "bg-[#e8f1ed] text-[#1f674f]" 
-                                                        : asset.assetClass.includes("Crédito") || asset.assetClass.includes("Infraestrutura") || asset.assetClass.includes("Pré")
+                                                        : asset.assetClass.includes("Crédito") || asset.assetClass.includes("Infraestrutura") || asset.assetClass.includes("Pré") || asset.assetClass.includes("FIDC")
                                                         ? "bg-[#eef3f5] text-[#24485b]"
                                                         : asset.assetClass.includes("Multimercado")
                                                         ? "bg-[#fef3c7] text-[#92400e]"

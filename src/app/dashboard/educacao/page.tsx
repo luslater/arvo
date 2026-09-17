@@ -4,10 +4,10 @@ import { Play, PiggyBank, BarChart3, TrendingUp, Globe2, Home, FileText, Lock } 
 
 export default function EducacaoPage() {
     return (
-        <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
-            <div className="mb-7">
-                <div className="font-serif text-[28px] text-dash-text tracking-tight mb-1">Sua jornada de aprendizado.</div>
-                <div className="text-[13px] text-dash-text-muted">Trilhas curadas para o seu perfil · 2 vídeos particulares da equipe disponíveis.</div>
+        <div className="animate-in fade-in slide-in-from-bottom-2 duration-300 space-y-6">
+            <div className="space-y-1">
+                <div className="text-2xl sm:text-3xl font-bold text-dash-text tracking-tight">Trilhas de Aprendizado</div>
+                <div className="text-sm text-dash-text-light">Conteúdos curados para o seu perfil e vídeos exclusivos da equipe ARVO.</div>
             </div>
 
             <div className="grid grid-cols-3 gap-3.5 mb-6">

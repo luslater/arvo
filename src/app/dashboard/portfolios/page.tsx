@@ -80,8 +80,8 @@ export default function DashboardPortfoliosPage() {
         <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
             <div className="mb-7 flex items-end justify-between">
                 <div>
-                    <div className="font-serif text-[28px] text-dash-text tracking-tight mb-1">Portfólios ARVO</div>
-                    <div className="text-[13px] text-dash-text-muted">4 carteiras elaboradas pela nossa equipe de especialistas certificados.</div>
+                    <div className="text-2xl sm:text-3xl font-bold text-dash-text tracking-tight mb-1">Portfólios ARVO</div>
+                    <div className="text-sm text-dash-text-muted">4 carteiras elaboradas pela nossa equipe de especialistas certificados.</div>
                 </div>
 
                 {/* IQ / Geral Toggle */}
@@ -116,7 +116,7 @@ export default function DashboardPortfoliosPage() {
                             <div className="flex items-center gap-3">
                                 <div className="w-9 h-9 rounded-full shrink-0" style={{ backgroundColor: p.color }} />
                                 <div>
-                                    <div className="font-serif text-[18px] text-dash-text leading-tight">{p.name}</div>
+                                    <div className="font-bold text-[18px] text-dash-text leading-tight">{p.name}</div>
                                     <div className="text-[11px] text-dash-text-muted">{p.subtitle}</div>
                                 </div>
                             </div>

@@ -1,9 +1,20 @@
+export interface HistoricalFund {
+  name: string;
+  gestora: string;
+  classe: "Zaga" | "Meio" | "Ataque" | string;
+  macroClass?: string;
+  values: number[];
+  [key: string]: any;
+}
+
 export interface HistoricalData {
   months: string[];
   cdi: number[];
   ipca: number[];
+  selic: number[];
   ibov: number[];
-  funds: { name: string; values: number[]; [key: string]: any }[];
+  dolar: number[];
+  funds: HistoricalFund[];
   abrigo?: number[];
   ritmo?: number[];
   visao?: number[];
@@ -54,97 +65,8 @@ export const HISTORICAL_DATA: HistoricalData = {
     "2026-04",
     "2026-05",
     "2026-06",
-    "2026-07"
-  ],
-  "ipca": [
-    0.0053,
-    0.0084,
-    0.0071,
-    0.0061,
-    0.0023,
-    -0.0008,
-    0.0012,
-    0.0023,
-    0.0026,
-    0.0024,
-    0.0028,
-    0.0056,
-    0.0042,
-    0.0083,
-    0.0016,
-    0.0038,
-    0.0046,
-    0.0021,
-    0.0038,
-    -0.0002,
-    0.0044,
-    0.0056,
-    0.0039,
-    0.0052,
-    0.0016,
-    0.0131,
-    0.0056,
-    0.0043,
-    0.0026,
-    0.0024,
-    0.0026,
-    -0.0011,
-    0.0048,
-    0.0009,
-    0.0018,
-    0.0033,
-    0.0033,
-    0.007,
-    0.0071,
-    0.0067,
-    0.005,
-    0.0041,
-    0.0005
-  ],
-  "ibov": [
-    0.0337,
-    -0.0749,
-    -0.0291,
-    0.025,
-    0.0374,
-    0.09,
-    0.0327,
-    -0.0509,
-    0.0071,
-    -0.0294,
-    0.1254,
-    0.0538,
-    -0.0479,
-    0.0099,
-    -0.0071,
-    -0.017,
-    -0.0304,
-    0.0148,
-    0.0302,
-    0.0654,
-    -0.0308,
-    -0.016,
-    -0.0312,
-    -0.0428,
-    0.0486,
-    -0.0264,
-    0.0608,
-    0.0369,
-    0.0145,
-    0.0133,
-    -0.0417,
-    0.0628,
-    0.034,
-    0.0226,
-    0.0637,
-    0.0129,
-    0.1256,
-    0.0409,
-    -0.007,
-    -0.0008,
-    -0.0722,
-    -0.0101,
-    0.0347
+    "2026-07",
+    "2026-08"
   ],
   "cdi": [
     0.0112,
@@ -189,19 +111,199 @@ export const HISTORICAL_DATA: HistoricalData = {
     0.0109,
     0.0107,
     0.0112,
-    0.0122
+    0.0122,
+    0.0109
   ],
-  "abrigo": [],
-  "ritmo": [],
-  "visao": [],
-  "oceano": [],
+  "ipca": [
+    0.0053,
+    0.0084,
+    0.0071,
+    0.0061,
+    0.0023,
+    -0.0008,
+    0.0012,
+    0.0023,
+    0.0026,
+    0.0024,
+    0.0028,
+    0.0056,
+    0.0042,
+    0.0083,
+    0.0016,
+    0.0038,
+    0.0046,
+    0.0021,
+    0.0038,
+    -0.0002,
+    0.0044,
+    0.0056,
+    0.0039,
+    0.0052,
+    0.0016,
+    0.0131,
+    0.0056,
+    0.0043,
+    0.0026,
+    0.0024,
+    0.0026,
+    -0.0011,
+    0.0048,
+    0.0009,
+    0.0018,
+    0.0033,
+    0.0033,
+    0.007,
+    0.0071,
+    0.0067,
+    0.005,
+    0.0041,
+    0.0005,
+    -0.0028
+  ],
+  "selic": [
+    0.0112,
+    0.0092,
+    0.0117,
+    0.0092,
+    0.0112,
+    0.0107,
+    0.0107,
+    0.0114,
+    0.0097,
+    0.01,
+    0.0092,
+    0.0089,
+    0.0097,
+    0.008,
+    0.0083,
+    0.0089,
+    0.0083,
+    0.0079,
+    0.0091,
+    0.0087,
+    0.0084,
+    0.0093,
+    0.0079,
+    0.0093,
+    0.0101,
+    0.0099,
+    0.0096,
+    0.0106,
+    0.0114,
+    0.011,
+    0.0128,
+    0.0116,
+    0.0122,
+    0.0128,
+    0.0105,
+    0.0122,
+    0.0116,
+    0.01,
+    0.0121,
+    0.0109,
+    0.0107,
+    0.0112,
+    0.0122,
+    0.0109
+  ],
+  "ibov": [
+    0.0337,
+    -0.0749,
+    -0.0291,
+    0.025,
+    0.0374,
+    0.09,
+    0.0327,
+    -0.0509,
+    0.0071,
+    -0.0294,
+    0.1254,
+    0.0538,
+    -0.0479,
+    0.0099,
+    -0.0071,
+    -0.017,
+    -0.0304,
+    0.0148,
+    0.0302,
+    0.0654,
+    -0.0308,
+    -0.016,
+    -0.0312,
+    -0.0428,
+    0.0486,
+    -0.0264,
+    0.0608,
+    0.0369,
+    0.0145,
+    0.0133,
+    -0.0417,
+    0.0628,
+    0.034,
+    0.0226,
+    0.0637,
+    0.0129,
+    0.1256,
+    0.0409,
+    -0.007,
+    -0.0008,
+    -0.0722,
+    -0.0101,
+    0.0347,
+    -0.0033
+  ],
+  "dolar": [
+    -0.0227,
+    0.0213,
+    -0.0245,
+    -0.0157,
+    0.019,
+    -0.0543,
+    -0.0161,
+    0.038,
+    0.0174,
+    0.01,
+    -0.0241,
+    -0.0191,
+    0.0232,
+    0.006,
+    0.0026,
+    0.0351,
+    0.0135,
+    0.0605,
+    0.0186,
+    -0.001,
+    -0.0368,
+    0.0605,
+    0.0477,
+    0.0229,
+    -0.0585,
+    0.0032,
+    -0.0182,
+    -0.0142,
+    0.0085,
+    -0.0441,
+    0.0266,
+    -0.0314,
+    -0.0199,
+    0.0124,
+    -0.0094,
+    0.0316,
+    -0.0495,
+    -0.0154,
+    0.0136,
+    -0.0442,
+    0.0137,
+    0.0237,
+    -0.0192,
+    0.0205
+  ],
   "funds": [
     {
       "name": "Tesouro Selic / Fundo Simples",
       "gestora": "Tesouro Nacional",
       "classe": "Zaga",
-      "iq_geral": "Geral",
-      "minimo": 30,
+      "macroClass": "RF / Crédito",
       "values": [
         0.0112,
         0.0092,
@@ -245,15 +347,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         0.0109,
         0.0107,
         0.0112,
-        0.0122
+        0.0122,
+        0.0109
       ]
     },
     {
       "name": "ARX Fuji",
-      "gestora": "ARX",
+      "gestora": "ARX Investimentos",
       "classe": "Zaga",
-      "iq_geral": "Geral",
-      "minimo": 1000,
+      "macroClass": "Outros",
       "values": [
         0.0112,
         0.0092,
@@ -297,15 +399,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         0.0107,
         0.0109,
         0.0116,
-        0.0123
+        0.0123,
+        0.0113
       ]
     },
     {
       "name": "VALORA GUARDIAN ADVISORY FIDC – RL",
-      "gestora": "Valora",
+      "gestora": "Valora Investimentos",
       "classe": "Zaga",
-      "iq_geral": "IQ",
-      "minimo": null,
+      "macroClass": "Outros",
       "values": [
         0.0106,
         0.0101,
@@ -349,15 +451,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         0.0104,
         0.0108,
         0.0103,
-        0.0122
+        0.0122,
+        0.0108
       ]
     },
     {
       "name": "Sparta Deb Inc FIC Incentivados",
-      "gestora": "Sparta",
+      "gestora": "Sparta Fundos",
       "classe": "Zaga",
-      "iq_geral": "Geral",
-      "minimo": 1000,
+      "macroClass": "Outros",
       "values": [
         0.0034,
         -0.0106,
@@ -401,15 +503,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         -0.0027,
         0.0077,
         0.0139,
-        0.012
+        0.012,
+        0.009
       ]
     },
     {
       "name": "JGP Corporate",
-      "gestora": "JGP",
+      "gestora": "JGP Asset Management",
       "classe": "Zaga",
-      "iq_geral": "Geral",
-      "minimo": 1000,
+      "macroClass": "Outros",
       "values": [
         0.0099,
         -0.003,
@@ -453,15 +555,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         0.0113,
         0.0165,
         0.0123,
-        0.0127
+        0.0127,
+        0.0131
       ]
     },
     {
       "name": "SPX Seahawk Credito Privado",
-      "gestora": "SPX",
+      "gestora": "SPX Capital",
       "classe": "Zaga",
-      "iq_geral": "Geral",
-      "minimo": 1000,
+      "macroClass": "Outros",
       "values": [
         -0.0047,
         0.0038,
@@ -505,15 +607,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         0.011,
         0.0156,
         0.0123,
-        0.0141
+        0.0141,
+        0.0106
       ]
     },
     {
       "name": "Kinea Oportunidade FIM",
-      "gestora": "Kinea",
-      "classe": "Zaga",
-      "iq_geral": "IQ",
-      "minimo": 500,
+      "gestora": "Kinea Investimentos",
+      "classe": "Meio",
+      "macroClass": "Outros",
       "values": [
         0.0111,
         0.0061,
@@ -557,15 +659,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         0.0109,
         0.0144,
         0.0119,
-        0.0133
+        0.0133,
+        0.0108
       ]
     },
     {
       "name": "BNP Paribas Rubi",
       "gestora": "BNP Paribas",
       "classe": "Zaga",
-      "iq_geral": "Geral",
-      "minimo": 500,
+      "macroClass": "Outros",
       "values": [
         0.011,
         0.0083,
@@ -609,15 +711,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         0.0078,
         0.0139,
         0.0121,
-        0.0131
+        0.0131,
+        0.0112
       ]
     },
     {
       "name": "MAPFRE RF FIF",
-      "gestora": "MAPFRE",
+      "gestora": "MAPFRE Investimentos",
       "classe": "Zaga",
-      "iq_geral": "Geral",
-      "minimo": 100,
+      "macroClass": "Outros",
       "values": [
         0.0091,
         0.0099,
@@ -661,15 +763,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         0.0114,
         0.0109,
         0.0099,
-        0.0125
+        0.0125,
+        0.0117
       ]
     },
     {
       "name": "Augme 30 CIC",
-      "gestora": "Augme",
+      "gestora": "Augme Capital",
       "classe": "Zaga",
-      "iq_geral": "IQ",
-      "minimo": 500,
+      "macroClass": "Outros",
       "values": [
         -0.0117,
         0.0037,
@@ -713,15 +815,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         0.0093,
         0.0155,
         0.011,
-        0.0126
+        0.0126,
+        0.0095
       ]
     },
     {
       "name": "Augme 180 FIF",
-      "gestora": "Augme",
+      "gestora": "Augme Capital",
       "classe": "Zaga",
-      "iq_geral": "IQ",
-      "minimo": 5000,
+      "macroClass": "Outros",
       "values": [
         -0.0156,
         0.0036,
@@ -765,15 +867,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         0.0113,
         0.0159,
         0.0107,
-        0.0121
+        0.0121,
+        0.0095
       ]
     },
     {
       "name": "Capitania Premium 45",
-      "gestora": "Capitania",
+      "gestora": "Capitânia Investimentos",
       "classe": "Zaga",
-      "iq_geral": "Geral",
-      "minimo": 1000,
+      "macroClass": "Outros",
       "values": [
         0,
         -0.0001,
@@ -817,15 +919,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         0.0074,
         -0.0033,
         0.0012,
-        0.0004
+        0.0004,
+        -0.0067
       ]
     },
     {
       "name": "Capitania Radar 90",
-      "gestora": "Capitania",
+      "gestora": "Capitânia Investimentos",
       "classe": "Zaga",
-      "iq_geral": "IQ",
-      "minimo": 1000,
+      "macroClass": "Outros",
       "values": [
         -0.0059,
         0.0015,
@@ -869,15 +971,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         0.0165,
         -0.0124,
         0.0025,
-        -0.0115
+        -0.0115,
+        -0.0118
       ]
     },
     {
       "name": "Capitania Yield 120",
-      "gestora": "Capitania",
+      "gestora": "Capitânia Investimentos",
       "classe": "Zaga",
-      "iq_geral": "IQ",
-      "minimo": 10000,
+      "macroClass": "Outros",
       "values": [
         0.0122,
         0.0122,
@@ -921,15 +1023,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         0.0129,
         0.0128,
         0.0132,
-        0.0136
+        0.0136,
+        0.0121
       ]
     },
     {
       "name": "Ibiuna Credit",
-      "gestora": "Ibiuna",
+      "gestora": "Ibiuna Investimentos",
       "classe": "Zaga",
-      "iq_geral": "Geral",
-      "minimo": 1000,
+      "macroClass": "Outros",
       "values": [
         0.0065,
         0.0039,
@@ -973,15 +1075,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         0.0078,
         0.0155,
         0.012,
-        0.0123
+        0.0123,
+        0.0097
       ]
     },
     {
       "name": "JGP Select Premium",
-      "gestora": "JGP",
+      "gestora": "JGP Asset Management",
       "classe": "Zaga",
-      "iq_geral": "Profissional",
-      "minimo": 10000,
+      "macroClass": "Outros",
       "values": [
         0.0213,
         -0.0094,
@@ -1025,15 +1127,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         0.0122,
         0.0161,
         0.0135,
-        0.0161
+        0.0161,
+        0.0107
       ]
     },
     {
       "name": "Genoa Capital Radar",
       "gestora": "Genoa Capital",
-      "classe": "Zaga",
-      "iq_geral": "Geral",
-      "minimo": 500,
+      "classe": "Meio",
+      "macroClass": "Outros",
       "values": [
         0.0001,
         0.0218,
@@ -1077,15 +1179,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         0.0165,
         0.0089,
         0.0174,
-        0.0099
+        0.0099,
+        0.0137
       ]
     },
     {
       "name": "Legacy Compound",
       "gestora": "Legacy Capital",
-      "classe": "Zaga",
-      "iq_geral": "IQ",
-      "minimo": 100,
+      "classe": "Meio",
+      "macroClass": "Outros",
       "values": [
         0.0104,
         0.0104,
@@ -1129,15 +1231,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         -0.0105,
         0.0056,
         -0.0101,
-        0.0071
+        0.0071,
+        0.0053
       ]
     },
     {
       "name": "Bahia AM DI",
       "gestora": "Bahia Asset",
-      "classe": "Zaga",
-      "iq_geral": "Geral",
-      "minimo": 500,
+      "classe": "Meio",
+      "macroClass": "Multimercado",
       "values": [
         0.0111,
         0.0091,
@@ -1181,15 +1283,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         0.0106,
         0.0105,
         0.011,
-        0.0121
+        0.0121,
+        0.0109
       ]
     },
     {
       "name": "ARX Hedge Infra",
-      "gestora": "ARX",
+      "gestora": "ARX Investimentos",
       "classe": "Zaga",
-      "iq_geral": "Geral",
-      "minimo": 3000,
+      "macroClass": "Outros",
       "values": [
         0.0046,
         -0.0079,
@@ -1233,15 +1335,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         -0.0108,
         0.0065,
         0.018,
-        0.0116
+        0.0116,
+        0.0083
       ]
     },
     {
       "name": "Kinea Deb Incentivadas",
-      "gestora": "Kinea",
+      "gestora": "Kinea Investimentos",
       "classe": "Zaga",
-      "iq_geral": "Geral",
-      "minimo": 500,
+      "macroClass": "Outros",
       "values": [
         0.0112,
         0.0092,
@@ -1285,15 +1387,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         -0.0076,
         0.0091,
         0.0208,
-        0.0103
+        0.0103,
+        0.0092
       ]
     },
     {
       "name": "Itau Deb Incentivadas",
       "gestora": "Itaú Asset",
       "classe": "Zaga",
-      "iq_geral": "Geral",
-      "minimo": 500,
+      "macroClass": "Outros",
       "values": [
         0.0112,
         0.0092,
@@ -1337,15 +1439,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         -0.0003,
         0.008,
         -0.0024,
-        0.0068
+        0.0068,
+        0.008
       ]
     },
     {
       "name": "Trend Pre Fixado",
-      "gestora": "XP Allocation System / Trend",
+      "gestora": "XP Asset / Trend",
       "classe": "Zaga",
-      "iq_geral": "Geral",
-      "minimo": 100,
+      "macroClass": "Outros",
       "values": [
         0.0083,
         0.0084,
@@ -1389,15 +1491,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         0.012,
         0.0065,
         0.0068,
-        0.0081
+        0.0081,
+        0.0101
       ]
     },
     {
       "name": "JGP Ecossistema",
-      "gestora": "JGP",
-      "classe": "Zaga",
-      "iq_geral": "IQ",
-      "minimo": 10000,
+      "gestora": "JGP Asset Management",
+      "classe": "Meio",
+      "macroClass": "Outros",
       "values": [
         0.0425,
         0.0214,
@@ -1441,15 +1543,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         -0.0174,
         0.001,
         -0.0059,
-        -0.0007
+        -0.0007,
+        -0.0209
       ]
     },
     {
       "name": "Gavea Macro",
       "gestora": "Gávea Investimentos",
       "classe": "Meio",
-      "iq_geral": "Geral",
-      "minimo": 10000,
+      "macroClass": "Outros",
       "values": [
         0.0205,
         0.0113,
@@ -1493,15 +1595,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         0.0285,
         0.0159,
         -0.0002,
-        0.0078
+        0.0078,
+        0.0111
       ]
     },
     {
       "name": "Gavea Macro Plus",
       "gestora": "Gávea Investimentos",
       "classe": "Meio",
-      "iq_geral": "IQ",
-      "minimo": 10000,
+      "macroClass": "Outros",
       "values": [
         0.0252,
         0.0129,
@@ -1545,15 +1647,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         0.0373,
         0.0194,
         -0.0072,
-        0.0056
+        0.0056,
+        0.0118
       ]
     },
     {
       "name": "Ibiuna Hedge ST",
-      "gestora": "Ibiuna",
+      "gestora": "Ibiuna Investimentos",
       "classe": "Meio",
-      "iq_geral": "Geral",
-      "minimo": 5000,
+      "macroClass": "Outros",
       "values": [
         0.0159,
         -0.0141,
@@ -1597,15 +1699,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         0.0207,
         0.0163,
         0.0037,
-        -0.0035
+        -0.0035,
+        0.0152
       ]
     },
     {
       "name": "Kapitalo Kappa",
-      "gestora": "Kapitalo",
+      "gestora": "Kapitalo Investimentos",
       "classe": "Meio",
-      "iq_geral": "Geral",
-      "minimo": 500,
+      "macroClass": "Outros",
       "values": [
         0.0187,
         -0.0006,
@@ -1649,15 +1751,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         0.0234,
         0.021,
         -0.0036,
-        -0.0041
+        -0.0041,
+        0.0382
       ]
     },
     {
       "name": "Kapitalo Zeta",
-      "gestora": "Kapitalo",
+      "gestora": "Kapitalo Investimentos",
       "classe": "Meio",
-      "iq_geral": "IQ",
-      "minimo": 500,
+      "macroClass": "Outros",
       "values": [
         0.0249,
         -0.0082,
@@ -1701,15 +1803,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         0.0311,
         0.0288,
         -0.0139,
-        -0.0155
+        -0.0155,
+        0.0582
       ]
     },
     {
       "name": "Kinea Atlas",
-      "gestora": "Kinea",
+      "gestora": "Kinea Investimentos",
       "classe": "Meio",
-      "iq_geral": "Geral",
-      "minimo": 500,
+      "macroClass": "Outros",
       "values": [
         -0.0014,
         0.0228,
@@ -1753,15 +1855,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         0.038,
         0.0046,
         0.0174,
-        -0.0019
+        -0.0019,
+        0.0181
       ]
     },
     {
       "name": "Kinea Oportunidade FIF",
-      "gestora": "Kinea",
+      "gestora": "Kinea Investimentos",
       "classe": "Zaga",
-      "iq_geral": "IQ",
-      "minimo": 500,
+      "macroClass": "Outros",
       "values": [
         0.0112,
         0.0062,
@@ -1805,15 +1907,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         0.0109,
         0.0142,
         0.0119,
-        0.0133
+        0.0133,
+        0.0108
       ]
     },
     {
       "name": "Mar Absoluto",
       "gestora": "Mar Asset",
       "classe": "Meio",
-      "iq_geral": "Geral",
-      "minimo": 5000,
+      "macroClass": "Outros",
       "values": [
         0.0015,
         0.0188,
@@ -1857,15 +1959,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         -0.0139,
         -0.0071,
         -0.0372,
-        -0.0419
+        -0.0419,
+        -0.0009
       ]
     },
     {
       "name": "SPX Nimitz",
-      "gestora": "SPX",
+      "gestora": "SPX Capital",
       "classe": "Meio",
-      "iq_geral": "IQ",
-      "minimo": 50000,
+      "macroClass": "Outros",
       "values": [
         0.0205,
         0.0041,
@@ -1909,15 +2011,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         0.0152,
         0.0121,
         0.0222,
-        -0.0086
+        -0.0086,
+        0.0207
       ]
     },
     {
       "name": "SPX Raptor",
-      "gestora": "SPX",
+      "gestora": "SPX Capital",
       "classe": "Meio",
-      "iq_geral": "IQ",
-      "minimo": 200000,
+      "macroClass": "Outros",
       "values": [
         0.0258,
         0.0003,
@@ -1961,67 +2063,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         0.0209,
         0.0151,
         0.033,
-        -0.0271
-      ]
-    },
-    {
-      "name": "Legacy V10",
-      "gestora": "Legacy Capital",
-      "classe": "Meio",
-      "iq_geral": "IQ",
-      "minimo": 100,
-      "values": [
-        0.0112,
-        0.0092,
-        0.0117,
-        0.0092,
-        0.0112,
-        0.0107,
-        0.0107,
-        0.0114,
-        0.0097,
-        0.01,
-        0.0092,
-        0.009,
-        0.0097,
-        0.008,
-        0.0083,
-        0.0089,
-        -0.0023,
-        -0.0091,
-        0.0209,
-        -0.0098,
-        0.0403,
-        -0.0131,
-        0.0166,
-        -0.0037,
-        0.0277,
-        -0.0292,
-        -0.0058,
-        0.0418,
-        0.0169,
-        0.0309,
-        -0.0038,
-        0.012,
-        0.0148,
-        0.0166,
-        0.007,
-        0.0105,
-        0.0183,
-        0.021,
-        -0.0565,
-        0.0345,
-        0.0174,
-        0.0073,
-        -0.0273
+        -0.0271,
+        0.0329
       ]
     },
     {
       "name": "Verde AM X60",
       "gestora": "Verde Asset",
       "classe": "Meio",
-      "iq_geral": "Geral",
-      "minimo": 50000,
+      "macroClass": "Outros",
       "values": [
         0.0265,
         0.0003,
@@ -2065,15 +2115,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         0.0297,
         0.0016,
         -0.0095,
-        0.0105
+        0.0105,
+        0.0197
       ]
     },
     {
       "name": "Vista Multiestrategia",
       "gestora": "Vista Capital",
       "classe": "Meio",
-      "iq_geral": "IQ",
-      "minimo": 5000,
+      "macroClass": "Outros",
       "values": [
         0.0248,
         -0.0735,
@@ -2117,15 +2167,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         -0.0156,
         -0.0803,
         -0.0408,
-        -0.1015
+        -0.1015,
+        0.006
       ]
     },
     {
       "name": "Vista Hedge",
       "gestora": "Vista Capital",
       "classe": "Meio",
-      "iq_geral": "Geral",
-      "minimo": 5000,
+      "macroClass": "Outros",
       "values": [
         0.0157,
         -0.0193,
@@ -2169,15 +2219,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         -0.0004,
         -0.0351,
         -0.0191,
-        -0.0455
+        -0.0455,
+        0.0086
       ]
     },
     {
       "name": "Dahlia Total Return",
-      "gestora": "Dahlia",
+      "gestora": "Dahlia Capital",
       "classe": "Meio",
-      "iq_geral": "Geral",
-      "minimo": 500,
+      "macroClass": "Outros",
       "values": [
         0.0232,
         -0.0236,
@@ -2221,15 +2271,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         0.0116,
         -0.0481,
         0.0017,
-        -0.0023
+        -0.0023,
+        -0.0076
       ]
     },
     {
       "name": "Encore Long Bias",
       "gestora": "Encore Asset",
       "classe": "Meio",
-      "iq_geral": "Geral",
-      "minimo": 500,
+      "macroClass": "Outros",
       "values": [
         0.0726,
         -0.0622,
@@ -2273,15 +2323,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         -0.0276,
         -0.0601,
         -0.0009,
-        -0.0065
+        -0.0065,
+        -0.0181
       ]
     },
     {
       "name": "Truxt Long Bias",
-      "gestora": "Truxt",
+      "gestora": "Truxt Investimentos",
       "classe": "Meio",
-      "iq_geral": "IQ",
-      "minimo": 500,
+      "macroClass": "Outros",
       "values": [
         0.0205,
         -0.0963,
@@ -2325,15 +2375,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         0.0974,
         0.0873,
         0.0074,
-        -0.0709
+        -0.0709,
+        0.0415
       ]
     },
     {
       "name": "Atmos Acoes",
       "gestora": "Atmos Capital",
       "classe": "Ataque",
-      "iq_geral": "Profissional",
-      "minimo": 50000,
+      "macroClass": "Ações",
       "values": [
         0.0714,
         -0.0518,
@@ -2377,15 +2427,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         0.0381,
         -0.045,
         -0.0074,
-        0.0063
+        0.0063,
+        0.0036
       ]
     },
     {
       "name": "Bogari Value",
       "gestora": "Bogari Capital",
       "classe": "Ataque",
-      "iq_geral": "IQ",
-      "minimo": 50000,
+      "macroClass": "Outros",
       "values": [
         0.0219,
         -0.0883,
@@ -2429,15 +2479,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         -0.0135,
         -0.0701,
         -0.0055,
-        0.0258
+        0.0258,
+        -0.0133
       ]
     },
     {
       "name": "Bogari Value Q FIC FIF Acoes RL",
       "gestora": "Bogari Capital",
       "classe": "Ataque",
-      "iq_geral": "IQ",
-      "minimo": 5000,
+      "macroClass": "Outros",
       "values": [
         0.0224,
         -0.0879,
@@ -2481,15 +2531,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         -0.0126,
         -0.069,
         -0.005,
-        0.0277
+        0.0277,
+        -0.0114
       ]
     },
     {
       "name": "Brasil Capital Institucional 30 FIC FIF Acoes RL",
       "gestora": "Brasil Capital",
       "classe": "Ataque",
-      "iq_geral": "Geral",
-      "minimo": null,
+      "macroClass": "Outros",
       "values": [
         0.0198,
         -0.0468,
@@ -2533,15 +2583,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         -0.0361,
         -0.0672,
         -0.0484,
-        0.0501
+        0.0501,
+        0.0266
       ]
     },
     {
       "name": "Dynamo Cougar",
       "gestora": "Dynamo",
       "classe": "Ataque",
-      "iq_geral": "IQ",
-      "minimo": 300000,
+      "macroClass": "Outros",
       "values": [
         0.0466,
         -0.0479,
@@ -2585,15 +2635,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         0.007,
         -0.0586,
         -0.0029,
-        0.0075
+        0.0075,
+        0.0079
       ]
     },
     {
       "name": "Hix Capital FIC FIA",
       "gestora": "Hix Capital",
       "classe": "Ataque",
-      "iq_geral": "IQ",
-      "minimo": 1000,
+      "macroClass": "Outros",
       "values": [
         0.0531,
         -0.0416,
@@ -2637,15 +2687,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         0.0185,
         -0.0357,
         -0.0106,
-        -0.0204
+        -0.0204,
+        0.0199
       ]
     },
     {
       "name": "Hix Capital HS FIA",
       "gestora": "Hix Capital",
       "classe": "Ataque",
-      "iq_geral": "Geral",
-      "minimo": 1000,
+      "macroClass": "Outros",
       "values": [
         0.073,
         0.0157,
@@ -2689,15 +2739,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         0.0181,
         -0.012,
         -0.0036,
-        -0.045
+        -0.045,
+        -0.0258
       ]
     },
     {
       "name": "Forpus Acoes FIC FIF Acoes RL",
       "gestora": "Forpus Capital",
       "classe": "Ataque",
-      "iq_geral": "Geral",
-      "minimo": 1000,
+      "macroClass": "Outros",
       "values": [
         0.0407,
         -0.1083,
@@ -2741,15 +2791,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         -0.0428,
         -0.0759,
         0.0019,
-        -0.0155
+        -0.0155,
+        0.0227
       ]
     },
     {
       "name": "Real Investor FIC FIF Acoes RL",
       "gestora": "Real Investor",
       "classe": "Ataque",
-      "iq_geral": "Geral",
-      "minimo": 5000,
+      "macroClass": "Outros",
       "values": [
         0.0242,
         -0.0438,
@@ -2793,15 +2843,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         -0.0421,
         -0.0501,
         -0.0461,
-        0.0038
+        0.0038,
+        0.0029
       ]
     },
     {
       "name": "IP Participacoes FIC FIF Acoes RL",
       "gestora": "IP Participações",
       "classe": "Ataque",
-      "iq_geral": "IQ",
-      "minimo": 1000,
+      "macroClass": "Outros",
       "values": [
         0.0492,
         -0.0529,
@@ -2845,15 +2895,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         0.0615,
         0.0029,
         -0.0201,
-        0.0444
+        0.0444,
+        0.0112
       ]
     },
     {
       "name": "Alaska Black FIF Cotas FIA",
       "gestora": "Alaska Asset",
       "classe": "Ataque",
-      "iq_geral": "IQ",
-      "minimo": 5000,
+      "macroClass": "Outros",
       "values": [
         0.1011,
         -0.1222,
@@ -2897,67 +2947,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         -0.0145,
         -0.1481,
         -0.0774,
-        0.0038
-      ]
-    },
-    {
-      "name": "Velt Partners FIF Cotas FIA",
-      "gestora": "Velt Partners",
-      "classe": "Ataque",
-      "iq_geral": "IQ",
-      "minimo": null,
-      "values": [
-        0.0328,
-        -0.0663,
-        -0.0528,
-        0.0374,
-        0.1106,
-        0.0721,
-        0.0342,
-        -0.0635,
-        -0.0282,
-        -0.0688,
-        0.1363,
-        0.0424,
-        -0.0367,
-        0.0053,
-        0.0048,
-        -0.0508,
-        0.0108,
-        0.0025,
-        0.0197,
-        0.0527,
-        -0.0195,
-        -0.0265,
-        -0.0896,
-        -0.0823,
-        0.0717,
-        -0.0313,
-        0.0383,
-        0.1121,
-        0.0567,
-        -0.0057,
-        -0.0486,
-        0.0834,
-        0.0274,
-        0.0107,
-        0.0172,
-        -0.0023,
-        0.0602,
-        0.0069,
-        -0.0115,
-        -0.0029,
-        -0.0412,
-        -0.0053,
-        0.0071
+        0.0038,
+        -0.0942
       ]
     },
     {
       "name": "SPX Falcon",
-      "gestora": "SPX",
-      "classe": "Ataque",
-      "iq_geral": "IQ",
-      "minimo": 50000,
+      "gestora": "SPX Capital",
+      "classe": "Zaga",
+      "macroClass": "Outros",
       "values": [
         0.0238,
         -0.0237,
@@ -3001,15 +2999,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         0.0166,
         -0.0218,
         0.0688,
-        0.0282
+        0.0282,
+        0.0179
       ]
     },
     {
       "name": "Wellington Ventura Advisory",
       "gestora": "Wellington Management",
       "classe": "Ataque",
-      "iq_geral": "IQ",
-      "minimo": null,
+      "macroClass": "Outros",
       "values": [
         0.0585,
         -0.0205,
@@ -3053,275 +3051,15 @@ export const HISTORICAL_DATA: HistoricalData = {
         0.1069,
         0.0518,
         -0.0002,
-        -0.0174
-      ]
-    },
-    {
-      "name": "IVVB11",
-      "gestora": "iShares / BlackRock",
-      "classe": "Ataque",
-      "iq_geral": "Geral",
-      "minimo": null,
-      "values": [
-        0.0142,
-        0.0048,
-        0.002,
-        0,
-        0.0152,
-        0.0086,
-        0.0194,
-        0.0326,
-        -0.0358,
-        -0.0201,
-        0.0671,
-        0.0317,
-        0.035,
-        0.0543,
-        0.0409,
-        -0.0055,
-        0.0591,
-        0.1026,
-        0.0232,
-        0.0206,
-        -0.0142,
-        0.0574,
-        0.0891,
-        0.012,
-        -0.0332,
-        -0.0037,
-        -0.0866,
-        -0.0121,
-        0.069,
-        -0.0025,
-        0.0534,
-        -0.0105,
-        0.0151,
-        0.0338,
-        -0.0054,
-        0.0319,
-        -0.0319,
-        -0.0338,
-        -0.0418,
-        0.0588,
-        0.0693,
-        0.0122,
-        -0.0167
-      ]
-    },
-    {
-      "name": "NASD11",
-      "gestora": "IT NOW / Itaú Asset",
-      "classe": "Ataque",
-      "iq_geral": "Geral",
-      "minimo": null,
-      "values": [
-        0.062,
-        0.0269,
-        0.0603,
-        -0.0107,
-        0.0944,
-        0.005,
-        0.0247,
-        0.0308,
-        -0.0373,
-        -0.0184,
-        0.081,
-        0.0448,
-        0.0359,
-        0.0557,
-        0.0208,
-        -0.0118,
-        0.0777,
-        0.1273,
-        -0.0033,
-        0.0079,
-        -0.0104,
-        0.0578,
-        0.0819,
-        0.0482,
-        -0.0421,
-        -0.0223,
-        -0.1046,
-        0.0091,
-        0.0977,
-        0.0112,
-        0.0559,
-        -0.0226,
-        0.0344,
-        0.0568,
-        -0.0227,
-        0.0275,
-        -0.0355,
-        -0.0485,
-        -0.0404,
-        0.1057,
-        0.1252,
-        0.023,
-        -0.0844
-      ]
-    },
-    {
-      "name": "WRLD11",
-      "gestora": "Investo",
-      "classe": "Ataque",
-      "iq_geral": "Geral",
-      "minimo": null,
-      "values": [
-        0.0281,
-        0,
-        -0.0088,
-        -0.0011,
-        0.0054,
-        -0.0055,
-        0.0289,
-        0.0313,
-        -0.0422,
-        -0.0311,
-        0.0642,
-        0.037,
-        0.019,
-        0.0462,
-        0.045,
-        -0.0047,
-        0.0537,
-        0.0809,
-        0.0335,
-        0.0169,
-        -0.0126,
-        0.0416,
-        0.0898,
-        -0.0111,
-        -0.0276,
-        0.0027,
-        -0.068,
-        0.0023,
-        0.0638,
-        -0.0059,
-        0.0407,
-        -0.004,
-        0.0148,
-        0.0306,
-        -0.0063,
-        0.0379,
-        -0.0148,
-        -0.0102,
-        -0.0523,
-        0.0435,
-        0.0643,
-        0.0198,
-        -0.0258
-      ]
-    },
-    {
-      "name": "CDBI11",
-      "gestora": "Investo",
-      "classe": "Ataque",
-      "iq_geral": "Geral",
-      "minimo": null,
-      "values": [
-        0.0112,
-        0.0092,
-        0.0117,
-        0.0092,
-        0.0112,
-        0.0107,
-        0.0107,
-        0.0114,
-        0.0097,
-        0.01,
-        0.0092,
-        0.0089,
-        0.0097,
-        0.008,
-        0.0083,
-        0.0089,
-        0.0083,
-        0.0079,
-        0.0091,
-        0.0087,
-        0.0084,
-        0.0093,
-        0.0079,
-        0.0088,
-        0.0101,
-        0.0099,
-        0.0096,
-        0.0106,
-        0.0114,
-        0.011,
-        0.0128,
-        0.0116,
-        0.0122,
-        0.0128,
-        0.0105,
-        0.0122,
-        0.0116,
-        0.01,
-        0.0116,
-        0.0109,
-        0.0107,
-        0.0112,
-        0.0122
-      ]
-    },
-    {
-      "name": "DIVO11",
-      "gestora": "IT NOW / Itaú Asset",
-      "classe": "Ataque",
-      "iq_geral": "Geral",
-      "minimo": null,
-      "values": [
-        0.0538,
-        -0.0751,
-        -0.0168,
-        0.036,
-        0.0147,
-        0.0829,
-        0.0294,
-        -0.0273,
-        0.0117,
-        -0.0311,
-        0.1063,
-        0.0708,
-        -0.0358,
-        0.009,
-        -0.0123,
-        -0.0032,
-        -0.0079,
-        0.015,
-        0.0222,
-        0.0627,
-        -0.0047,
-        -0.0186,
-        0.0001,
-        -0.0456,
-        0.0323,
-        -0.0123,
-        0.0368,
-        0.0397,
-        0.0139,
-        0.0154,
-        -0.0275,
-        0.0548,
-        0.028,
-        0.0173,
-        0.054,
-        0.0149,
-        0.104,
-        0.0458,
-        0.0046,
-        -0.0164,
-        -0.072,
-        0.0123,
-        0.0298
+        -0.0174,
+        0.0252
       ]
     },
     {
       "name": "SPX Patriot FIF CIC Ações RL",
-      "gestora": "SPX",
+      "gestora": "SPX Capital",
       "classe": "Ataque",
-      "iq_geral": "Geral",
-      "minimo": 5000,
+      "macroClass": "Outros",
       "values": [
         0.0478,
         -0.0525,
@@ -3365,7 +3103,372 @@ export const HISTORICAL_DATA: HistoricalData = {
         -0.0007,
         -0.061,
         0.0133,
-        0.0305
+        0.0305,
+        0.0082
+      ]
+    },
+    {
+      "name": "IVVB11",
+      "gestora": "BlackRock (iShares)",
+      "classe": "Ataque",
+      "macroClass": "Outros",
+      "values": [
+        0.0142,
+        0.0048,
+        0.002,
+        0,
+        0.0152,
+        0.0086,
+        0.0194,
+        0.0326,
+        -0.0358,
+        -0.0201,
+        0.0671,
+        0.0317,
+        0.035,
+        0.0543,
+        0.0409,
+        -0.0055,
+        0.0591,
+        0.1026,
+        0.0232,
+        0.0206,
+        -0.0142,
+        0.0574,
+        0.0891,
+        0.012,
+        -0.0332,
+        -0.0037,
+        -0.0866,
+        -0.0121,
+        0.069,
+        -0.0025,
+        0.0534,
+        -0.0105,
+        0.0151,
+        0.0338,
+        -0.0054,
+        0.0319,
+        -0.0319,
+        -0.0338,
+        -0.0418,
+        0.0588,
+        0.0693,
+        0.0122,
+        -0.0167,
+        0.0489
+      ]
+    },
+    {
+      "name": "NASD11",
+      "gestora": "Itaú Asset (IT NOW)",
+      "classe": "Ataque",
+      "macroClass": "ETFs",
+      "values": [
+        0.062,
+        0.0269,
+        0.0603,
+        -0.0107,
+        0.0944,
+        0.005,
+        0.0247,
+        0.0308,
+        -0.0373,
+        -0.0184,
+        0.081,
+        0.0448,
+        0.0359,
+        0.0557,
+        0.0208,
+        -0.0118,
+        0.0777,
+        0.1273,
+        -0.0033,
+        0.0079,
+        -0.0104,
+        0.0578,
+        0.0819,
+        0.0482,
+        -0.0421,
+        -0.0223,
+        -0.1046,
+        0.0091,
+        0.0977,
+        0.0112,
+        0.0559,
+        -0.0226,
+        0.0344,
+        0.0568,
+        -0.0227,
+        0.0275,
+        -0.0355,
+        -0.0485,
+        -0.0404,
+        0.1057,
+        0.1252,
+        0.023,
+        -0.0844,
+        0.0637
+      ]
+    },
+    {
+      "name": "WRLD11",
+      "gestora": "Investo / Vanguard",
+      "classe": "Ataque",
+      "macroClass": "Outros",
+      "values": [
+        0.0281,
+        0,
+        -0.0088,
+        -0.0011,
+        0.0054,
+        -0.0055,
+        0.0289,
+        0.0313,
+        -0.0422,
+        -0.0311,
+        0.0642,
+        0.037,
+        0.019,
+        0.0462,
+        0.045,
+        -0.0047,
+        0.0537,
+        0.0809,
+        0.0335,
+        0.0169,
+        -0.0126,
+        0.0416,
+        0.0898,
+        -0.0111,
+        -0.0276,
+        0.0027,
+        -0.068,
+        0.0023,
+        0.0638,
+        -0.0059,
+        0.0407,
+        -0.004,
+        0.0148,
+        0.0306,
+        -0.0063,
+        0.0379,
+        -0.0148,
+        -0.0102,
+        -0.0523,
+        0.0435,
+        0.0643,
+        0.0198,
+        -0.0258,
+        0.0525
+      ]
+    },
+    {
+      "name": "CDBI11",
+      "gestora": "Investo",
+      "classe": "Zaga",
+      "macroClass": "Outros",
+      "values": [
+        0.0112,
+        0.0092,
+        0.0117,
+        0.0092,
+        0.0112,
+        0.0107,
+        0.0107,
+        0.0114,
+        0.0097,
+        0.01,
+        0.0092,
+        0.0089,
+        0.0097,
+        0.008,
+        0.0083,
+        0.0089,
+        0.0083,
+        0.0079,
+        0.0091,
+        0.0087,
+        0.0084,
+        0.0093,
+        0.0079,
+        0.0088,
+        0.0101,
+        0.0099,
+        0.0096,
+        0.0106,
+        0.0114,
+        0.011,
+        0.0128,
+        0.0116,
+        0.0122,
+        0.0128,
+        0.0105,
+        0.0122,
+        0.0116,
+        0.01,
+        0.0116,
+        0.0109,
+        0.0107,
+        0.0112,
+        0.0122,
+        0.0109
+      ]
+    },
+    {
+      "name": "DIVO11",
+      "gestora": "Itaú Asset (IT NOW)",
+      "classe": "Ataque",
+      "macroClass": "Outros",
+      "values": [
+        0.0538,
+        -0.0751,
+        -0.0168,
+        0.036,
+        0.0147,
+        0.0829,
+        0.0294,
+        -0.0273,
+        0.0117,
+        -0.0311,
+        0.1063,
+        0.0708,
+        -0.0358,
+        0.009,
+        -0.0123,
+        -0.0032,
+        -0.0079,
+        0.015,
+        0.0222,
+        0.0627,
+        -0.0047,
+        -0.0186,
+        0.0001,
+        -0.0456,
+        0.0323,
+        -0.0123,
+        0.0368,
+        0.0397,
+        0.0139,
+        0.0154,
+        -0.0275,
+        0.0548,
+        0.028,
+        0.0173,
+        0.054,
+        0.0149,
+        0.104,
+        0.0458,
+        0.0046,
+        -0.0164,
+        -0.072,
+        0.0123,
+        0.0298,
+        -0.0148
+      ]
+    },
+    {
+      "name": "Legacy V10",
+      "gestora": "Legacy Capital",
+      "classe": "Meio",
+      "macroClass": "Outros",
+      "values": [
+        0.0112,
+        0.0092,
+        0.0117,
+        0.0092,
+        0.0112,
+        0.0107,
+        0.0107,
+        0.0114,
+        0.0097,
+        0.01,
+        0.0092,
+        0.009,
+        0.0097,
+        0.008,
+        0.0083,
+        0.0089,
+        0.0083,
+        0.0079,
+        0.0091,
+        0.0087,
+        0.0083,
+        0.0093,
+        0.0079,
+        0.0093,
+        0.0101,
+        0.0099,
+        0.0096,
+        0.0106,
+        0.0114,
+        0.011,
+        0.0128,
+        0.0116,
+        0.0122,
+        0.0128,
+        0.0105,
+        0.0122,
+        0.0116,
+        0.01,
+        0.0121,
+        0.0109,
+        0.0107,
+        0.0112,
+        0.0122,
+        0.0109
+      ]
+    },
+    {
+      "name": "Velt Partners FIF Cotas FIA",
+      "gestora": "Velt Partners",
+      "classe": "Ataque",
+      "macroClass": "Outros",
+      "values": [
+        0.0328,
+        -0.0663,
+        -0.0528,
+        0.0374,
+        0.1106,
+        0.0721,
+        0.0342,
+        -0.0635,
+        -0.0282,
+        -0.0688,
+        0.1363,
+        0.0424,
+        -0.0367,
+        0.0053,
+        0.0048,
+        -0.0508,
+        0.0108,
+        0.0025,
+        0.0197,
+        0.0527,
+        -0.0195,
+        -0.0265,
+        -0.0896,
+        -0.0823,
+        0.0717,
+        -0.0313,
+        0.0383,
+        0.1121,
+        0.0567,
+        -0.0057,
+        -0.0486,
+        0.0834,
+        0.0274,
+        0.0107,
+        0.0172,
+        -0.0023,
+        0.0602,
+        0.0069,
+        -0.0115,
+        -0.0029,
+        -0.0412,
+        -0.0053,
+        0.0071,
+        -0.0033
       ]
     }
   ]

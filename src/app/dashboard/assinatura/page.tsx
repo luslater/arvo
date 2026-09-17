@@ -10,10 +10,10 @@ export default function DashboardAssinaturaPage() {
     const isPremium = subscriptionStatus !== "FREE"
 
     return (
-        <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
-            <div className="mb-7">
-                <div className="font-serif text-[28px] text-dash-text tracking-tight mb-1">Assinatura</div>
-                <div className="text-[13px] text-dash-text-muted">Gerencie seu plano e acesse os benefícios da ARVO.</div>
+        <div className="animate-in fade-in slide-in-from-bottom-2 duration-300 space-y-6">
+            <div className="space-y-1">
+                <div className="text-2xl sm:text-3xl font-bold text-dash-text tracking-tight">Assinatura</div>
+                <div className="text-sm text-dash-text-muted">Gerencie seu plano e acesse os benefícios da ARVO.</div>
             </div>
 
             {/* Status Card */}
@@ -29,7 +29,7 @@ export default function DashboardAssinaturaPage() {
                         <div style={{ color: isPremium ? 'rgba(255,255,255,0.55)' : '#94A3B8', fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 6 }}>
                             Plano atual
                         </div>
-                        <div style={{ fontFamily: 'var(--font-dm-serif)', fontSize: 32, color: isPremium ? '#FFFFFF' : '#0A192F', letterSpacing: '-0.02em', lineHeight: 1 }}>
+                        <div className="text-3xl font-bold tracking-tight" style={{ color: isPremium ? '#FFFFFF' : '#0A192F', lineHeight: 1 }}>
                             {isPremium ? 'ARVO Premium' : 'Plano Gratuito'}
                         </div>
                         {isPremium && (
@@ -61,23 +61,22 @@ export default function DashboardAssinaturaPage() {
             {/* Upgrade CTA Banner — only for FREE users */}
             {!isPremium && (
                 <div
-                    className="rounded-2xl p-6 mb-5 flex items-center justify-between gap-6"
-                    style={{ background: 'linear-gradient(135deg, #1E3A5F 0%, #0A192F 100%)', border: '1px solid rgba(255,255,255,0.07)' }}
+                    className="rounded-2xl p-6 sm:p-7 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-6 bg-gradient-to-r from-[#C08A34] to-[#A06F20] text-white border border-[#D89F48]/40 shadow-sm"
                 >
                     <div>
-                        <div style={{ color: '#FFFFFF', fontSize: 17, fontWeight: 700, marginBottom: 4 }}>
+                        <div className="text-white text-base sm:text-lg font-bold mb-1 flex items-center gap-2">
+                            <Crown className="w-5 h-5 text-amber-200 shrink-0" />
                             Pronto para assinar o plano ARVO Premium?
                         </div>
-                        <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: 13 }}>
-                            Pague com <strong style={{ color: 'rgba(255,255,255,0.85)' }}>Pix</strong> ou <strong style={{ color: 'rgba(255,255,255,0.85)' }}>Cartão de Crédito</strong> — aprovação imediata.
+                        <div className="text-amber-100/90 text-xs sm:text-sm">
+                            Acesso a todas as 4 carteiras, relatórios trimestrais e agendamento 1:1. Pague com <strong>Pix</strong> ou <strong>Cartão de Crédito</strong>.
                         </div>
                     </div>
                     <Link
                         href="/premium"
-                        className="flex items-center gap-2 px-6 py-3 rounded-xl font-bold whitespace-nowrap transition-opacity hover:opacity-90 shrink-0"
-                        style={{ backgroundColor: '#FFFFFF', color: '#0A192F', fontSize: 14 }}
+                        className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold whitespace-nowrap transition-all hover:bg-[#0F2A3D] hover:text-white bg-white text-[#0F2A3D] text-sm shrink-0 shadow-xs"
                     >
-                        <Zap className="w-4 h-4" />
+                        <Zap className="w-4 h-4 text-amber-600" />
                         Assinar agora
                         <ArrowRight className="w-4 h-4" />
                     </Link>

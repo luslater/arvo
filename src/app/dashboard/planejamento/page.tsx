@@ -111,12 +111,12 @@ function ArvoSliderControl({
             <div className="flex items-baseline justify-between">
                 {isCurrency ? (
                     <div className="flex items-center gap-1">
-                        <span className="text-slate-400 text-lg font-light">R$</span>
+                        <span className="text-slate-400 text-lg font-semibold">R$</span>
                         <input
                             type="text"
                             value={inputValue}
                             onChange={handleInputChange}
-                            className="text-2xl md:text-3xl font-light tracking-tight text-slate-900 bg-transparent outline-none w-36 sm:w-44 border-b border-slate-100 focus:border-slate-400 transition-colors"
+                            className="text-2xl md:text-3xl tabular-nums font-semibold tracking-tight text-slate-900 bg-transparent outline-none w-36 sm:w-44 border-b border-slate-200 focus:border-[#1f674f] transition-colors"
                         />
                     </div>
                 ) : (
@@ -124,11 +124,11 @@ function ArvoSliderControl({
                         type="text"
                         value={inputValue}
                         onChange={handleInputChange}
-                        className="text-2xl md:text-3xl font-light tracking-tight text-slate-900 bg-transparent outline-none w-24 sm:w-28 border-b border-slate-100 focus:border-slate-400 transition-colors"
+                        className="text-2xl md:text-3xl tabular-nums font-semibold tracking-tight text-slate-900 bg-transparent outline-none w-24 sm:w-28 border-b border-slate-200 focus:border-[#1f674f] transition-colors"
                     />
                 )}
                 {!isCurrency && unit && (
-                    <span className="text-slate-400 font-light">{unit}</span>
+                    <span className="text-slate-400 font-semibold text-sm">{unit}</span>
                 )}
             </div>
             <Slider
@@ -147,7 +147,7 @@ function ArvoSliderControl({
 }
 
 // ─── Componente Principal de Planejamento ──────────────────────────────────────
-export function PlanejamentoContent() {
+function PlanejamentoContent() {
     const INFLATION_RATE = 4.87
     const { data: session } = useSession()
 
@@ -255,16 +255,15 @@ export function PlanejamentoContent() {
     return (
         <div className="text-slate-900 font-sans selection:bg-emerald-100 animate-in fade-in slide-in-from-bottom-2 duration-300">
             <header className="mb-8 md:mb-12 space-y-3">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-[10px] font-bold tracking-widest uppercase">
-                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                    Independência Financeira Transparente
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-dash-accent-light text-dash-accent text-[10px] font-bold tracking-widest uppercase border border-dash-border">
+                    <ShieldCheck className="w-3.5 h-3.5" />
+                    Simulação Patrimonial & Independência
                 </div>
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-slate-900 leading-[1.08]">
-                    Seu futuro, <br />
-                    <span className="font-serif italic font-normal text-slate-700">em tempo real.</span>
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-light tracking-tight text-slate-900 leading-tight">
+                    Projeção de Patrimônio & <span className="font-semibold text-slate-900">Renda Passiva</span>
                 </h1>
-                <p className="text-slate-500 max-w-lg text-sm md:text-base font-light leading-relaxed">
-                    Altere as premissas e veja instantaneamente o impacto no seu patrimônio e na sua renda passiva no longo prazo.
+                <p className="text-slate-500 max-w-xl text-sm md:text-base font-normal leading-relaxed">
+                    Altere as premissas e veja instantaneamente o impacto nos seus investimentos e na sua independência no longo prazo.
                 </p>
             </header>
 

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useMemo, useRef, useCallback } from "react"
+import { useState, useEffect, useMemo, useRef, useCallback, Fragment } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { 
     Check, ArrowRight, ArrowLeft, ArrowRightCircle, Target, 
@@ -14,28 +14,40 @@ import { saveJornadaProgress, getJornadaProgress } from "./actions"
 import { calculateInvestorProfile, getSuitabilityDiagnostic } from "@/lib/profile-calculator"
 
 // ─── TYPES & FIELD DEFINITIONS ────────────────────────────────────────────────
-export type FieldDef = {
+type FieldDef = {
     name: string
-    label: string
+    label: string | ((data: Record<string, string>) => string)
     type: "text" | "number" | "currency" | "select" | "radio"
     options?: string[]
-    placeholder?: string
+    placeholder?: string | ((data: Record<string, string>) => string)
     required?: boolean
-    helpText?: string
+    helpText?: string | ((data: Record<string, string>) => string)
     min?: number
     max?: number
     conditional?: (data: Record<string, string>) => boolean
 }
 
-export type CustomExpense = {
+function getFieldLabel(field: FieldDef, data: Record<string, string>): string {
+    return typeof field.label === "function" ? field.label(data) : field.label
+}
+
+function getFieldHelpText(field: FieldDef, data: Record<string, string>): string | undefined {
+    return typeof field.helpText === "function" ? field.helpText(data) : field.helpText
+}
+
+function getFieldPlaceholder(field: FieldDef, data: Record<string, string>): string | undefined {
+    return typeof field.placeholder === "function" ? field.placeholder(data) : field.placeholder
+}
+
+type CustomExpense = {
     id: string
     name: string
     value: string
 }
 
-export type StepStatus = "not_started" | "in_progress" | "completed" | "has_error"
+type StepStatus = "not_started" | "in_progress" | "completed" | "has_error"
 
-export const SUITABILITY_QUESTIONS = [
+const SUITABILITY_QUESTIONS = [
     {
         id: 0,
         name: "perfil_experiencia",
@@ -110,7 +122,7 @@ export const SUITABILITY_QUESTIONS = [
     }
 ]
 
-export const PLAN_DATA: Array<{
+const PLAN_DATA: Array<{
     title: string
     short: string
     status: string
@@ -191,13 +203,50 @@ export const PLAN_DATA: Array<{
         signal: "Cada aporte mensal tem destino e meta quantitativa definidos.",
         icon: <Target className="text-[#1f674f] shrink-0" size={24} />,
         fields: [
-            { name: "patrimonioInvestido", label: "Patrimônio Total Investido Atual", type: "currency", placeholder: "R$ 0,00", required: true, helpText: "Soma de todos os seus investimentos atuais (Renda Fixa, Ações, FIIs, Fundos), excluindo a reserva de emergência." },
-            { name: "aporteMensal", label: "Aporte Mensal Pretendido", type: "currency", placeholder: "R$ 0,00", required: true, helpText: "Valor que você planeja destinar mensalmente para investimentos." },
-            { name: "objetivoPrincipal", label: "Principal Objetivo Patrimonial (além da aposentadoria)", type: "select", options: ["Preservação de Capital", "Compra de Imóvel / Bem de Alto Valor", "Educação dos Filhos / Família", "Expansão de Negócio / Carreira", "Independência Financeira Antecipada"], required: true },
-            { name: "valorObjetivoPrincipal", label: "Valor Alvo Estimado para essa Meta", type: "currency", placeholder: "R$ 0,00", required: true, helpText: "Custo estimado para atingir essa meta em valores de hoje." },
-            { name: "prazoPrincipalObjetivo", label: "Prazo Desejado para essa Meta", type: "select", options: ["Curto prazo (até 2 anos)", "Médio prazo (2 a 5 anos)", "Longo prazo (5 a 10 anos)", "Mais de 10 anos"], required: true },
-            { name: "acumuladoObjetivoPrincipal", label: "Valor Já Guardado Especificamente para essa Meta (Opcional)", type: "currency", placeholder: "R$ 0,00", required: false },
-            { name: "prioridadeAportes", label: "Prioridade Imediata dos Próximos Aportes", type: "select", options: ["Completar Reserva de Emergência", "Acelerar Meta de Médio Prazo", "Acelerar Aposentadoria", "Diversificação Internacional"], required: true }
+            { name: "patrimonioInvestido", label: "Patrimônio Investido Atual", type: "currency", placeholder: "R$ 0,00", required: true, helpText: "Soma de todos os seus investimentos atuais (Renda Fixa, Ações, FIIs, Fundos), excluindo a reserva de emergência." },
+            { name: "aporteMensal", label: "Capacidade de Aporte Mensal", type: "currency", placeholder: "R$ 0,00", required: true, helpText: "Valor que você planeja destinar todo mês para novos investimentos." },
+            { name: "objetivoPrincipal", label: "Principal Objetivo Financeiro (além da aposentadoria)", type: "select", options: ["Compra de Imóvel ou Bem de Alto Valor", "Educação dos Filhos / Família", "Abrir ou Expandir Negócio Próprio", "Transição de Carreira / Sabático", "Crescimento de Patrimônio Geral", "Independência Financeira Antecipada"], required: true },
+            { 
+                name: "valorObjetivoPrincipal", 
+                label: (d) => {
+                    const obj = d.objetivoPrincipal
+                    if (obj === "Compra de Imóvel ou Bem de Alto Valor") return "Qual o valor estimado do imóvel ou bem a ser adquirido?"
+                    if (obj === "Educação dos Filhos / Família") return "Qual o custo total estimado para o projeto educacional?"
+                    if (obj === "Abrir ou Expandir Negócio Próprio") return "Qual o capital necessário para iniciar ou expandir o negócio?"
+                    if (obj === "Transição de Carreira / Sabático") return "Qual a reserva total necessária para o período de transição?"
+                    if (obj === "Independência Financeira Antecipada" || obj === "Crescimento de Patrimônio Geral") {
+                        return "Qual a renda mensal que você gostaria de usufruir? (Em valores de hoje)"
+                    }
+                    return "Qual o valor estimado para esse objetivo?"
+                },
+                type: "currency", 
+                placeholder: (d) => {
+                    const obj = d.objetivoPrincipal
+                    if (obj === "Compra de Imóvel ou Bem de Alto Valor") return "Ex: R$ 800.000,00"
+                    if (obj === "Educação dos Filhos / Família") return "Ex: R$ 250.000,00"
+                    if (obj === "Abrir ou Expandir Negócio Próprio") return "Ex: R$ 300.000,00"
+                    if (obj === "Transição de Carreira / Sabático") return "Ex: R$ 120.000,00"
+                    if (obj === "Independência Financeira Antecipada" || obj === "Crescimento de Patrimônio Geral") {
+                        return "Ex: R$ 15.000,00 / mês"
+                    }
+                    return "R$ 0,00"
+                }, 
+                required: true, 
+                helpText: (d) => {
+                    const obj = d.objetivoPrincipal
+                    if (obj === "Compra de Imóvel ou Bem de Alto Valor") return "Valor de compra do imóvel ou bem pretendido a poder de compra de hoje."
+                    if (obj === "Educação dos Filhos / Família") return "Estimativa de gastos totais com faculdade, intercâmbio ou cursos."
+                    if (obj === "Abrir ou Expandir Negócio Próprio") return "Capital inicial necessário para viabilizar o investimento no negócio."
+                    if (obj === "Transição de Carreira / Sabático") return "Valor total para custear o período sem renda de trabalho."
+                    if (obj === "Independência Financeira Antecipada" || obj === "Crescimento de Patrimônio Geral") {
+                        return "Informe a renda mensal líquida desejada a poder de compra de hoje. O montante total necessário é calculado pela ARVO."
+                    }
+                    return "Informe o valor estimado em valores de hoje."
+                }
+            },
+            { name: "prazoPrincipalObjetivo", label: "Em quanto tempo pretende alcançar esse objetivo?", type: "select", options: ["Curto prazo (até 2 anos)", "Médio prazo (2 a 5 anos)", "Longo prazo (5 a 10 anos)", "Mais de 10 anos"], required: true },
+            { name: "acumuladoObjetivoPrincipal", label: "Quanto você já tem reservado para esse objetivo? (Opcional)", type: "currency", placeholder: "R$ 0,00", required: false },
+            { name: "prioridadeAportes", label: "Prioridade Imediata dos seus Próximos Aportes", type: "select", options: ["Completar Reserva de Emergência", "Acelerar esse Objetivo de Médio Prazo", "Acelerar Aposentadoria / Liberdade Financeira", "Diversificação Internacional"], required: true }
         ],
         analysis: [
             "Viabilidade Matemática da Meta Principal vs. Aporte",
@@ -295,7 +344,7 @@ export const PLAN_DATA: Array<{
     }
 ]
 
-export const ROUTE_PROGRESS_DESCRIPTIONS = [
+const ROUTE_PROGRESS_DESCRIPTIONS = [
     "Marco 1: Mapeie suas entradas e gastos essenciais. É o ponto de partida onde todo o plano financeiro se apoia.",
     "Marco 2: Identifique vulnerabilidades pessoais e familiares para isolar riscos de perda de renda ou despesas graves.",
     "Marco 3: Estruture suas metas patrimoniais e alinhe o valor e o prazo com a sua capacidade de aporte mensal.",
@@ -306,7 +355,7 @@ export const ROUTE_PROGRESS_DESCRIPTIONS = [
 ]
 
 // ─── VALIDATION ENGINE ────────────────────────────────────────────────────────
-export function validateStepFields(
+function validateStepFields(
     stepIndex: number, 
     formData: Record<string, string>
 ): { isValid: boolean; errors: Record<string, string>; missingFields: string[] } {
@@ -333,10 +382,11 @@ export function validateStepFields(
             return
         }
 
+        const fieldLabel = getFieldLabel(field, formData)
         const value = formData[field.name]?.trim() ?? ""
 
         if (field.required && !value) {
-            errors[field.name] = `O campo "${field.label}" é obrigatório.`
+            errors[field.name] = `O campo "${fieldLabel}" é obrigatório.`
             missingFields.push(field.name)
             return
         }
@@ -355,10 +405,11 @@ export function validateStepFields(
             }
         }
 
-        if (value && field.type === "currency") {
+        if (field.type === "currency") {
             const cleanDigits = value.replace(/\D/g, "")
-            if (cleanDigits === "" && field.required) {
-                errors[field.name] = `Informe o valor para "${field.label}".`
+            const num = parseInt(cleanDigits || "0", 10)
+            if (field.required && (!cleanDigits || num === 0)) {
+                errors[field.name] = `Informe o valor para "${fieldLabel}".`
                 missingFields.push(field.name)
             }
         }
@@ -381,27 +432,40 @@ export function validateStepFields(
     }
 }
 
-export function computeStepStatus(
+function computeStepStatus(
     stepIndex: number,
     formData: Record<string, string>,
     attemptedSteps: Set<number>
 ): StepStatus {
-    const { isValid, missingFields } = validateStepFields(stepIndex, formData)
-    
-    if (isValid) return "completed"
+    if (!formData || Object.keys(formData).length === 0) {
+        return "not_started"
+    }
 
     if (stepIndex === 6) {
-        const answeredAny = SUITABILITY_QUESTIONS.some(q => Boolean(formData[q.name]))
-        if (attemptedSteps.has(stepIndex)) return "has_error"
-        return answeredAny ? "in_progress" : "not_started"
+        const answeredCount = SUITABILITY_QUESTIONS.filter(q => Boolean(formData[q.name]?.trim())).length
+        if (answeredCount === SUITABILITY_QUESTIONS.length) return "completed"
+        if (answeredCount > 0) return "in_progress"
+        return "not_started"
     }
 
     const step = PLAN_DATA[stepIndex]
-    const activeFields = step.fields.filter(f => !f.conditional || f.conditional(formData))
-    const filledCount = activeFields.filter(f => Boolean(formData[f.name]?.trim())).length
+    if (!step || !step.fields || step.fields.length === 0) return "not_started"
 
-    if (filledCount === 0) return "not_started"
-    if (attemptedSteps.has(stepIndex) && missingFields.length > 0) return "has_error"
+    const validation = validateStepFields(stepIndex, formData)
+    
+    const activeFields = step.fields.filter(f => !f.conditional || f.conditional(formData))
+    const filledFields = activeFields.filter(f => {
+        const val = formData[f.name]?.trim()
+        return val !== undefined && val !== "" && val !== "R$ 0,00" && val !== "R$ 0"
+    })
+
+    if (filledFields.length === 0) return "not_started"
+
+    // Only mark completed if ALL active required fields are valid and fully filled
+    if (validation.isValid) {
+        return "completed"
+    }
+
     return "in_progress"
 }
 
@@ -411,7 +475,7 @@ export default function PlanejamentoJornadaPage() {
     const [formData, setFormData] = useState<Record<string, string>>({})
     const [customExpenses, setCustomExpenses] = useState<CustomExpense[]>([])
     const [showDashboard, setShowDashboard] = useState(false)
-    const [isLoading, setIsLoading] = useState(true)
+    const [isHydrated, setIsHydrated] = useState(false)
     const [quizQuestionIndex, setQuizQuestionIndex] = useState(0)
     const [showQuizResult, setShowQuizResult] = useState(false)
     
@@ -435,60 +499,82 @@ export default function PlanejamentoJornadaPage() {
 
     // ─── PERSISTENCE (LOAD) ────────────────────────────────────────────────────
     useEffect(() => {
-        async function loadProgress() {
-            let initialData: Record<string, string> = {}
+        let isMounted = true
 
-            // 1. Try Local Storage Draft First
-            if (typeof window !== "undefined") {
-                try {
-                    const localRaw = localStorage.getItem("arvo_jornada_draft_v2")
-                    if (localRaw) {
-                        const parsed = JSON.parse(localRaw)
-                        if (parsed && typeof parsed === "object") {
-                            initialData = parsed
-                        }
-                    }
-                } catch (e) {
-                    console.warn("Could not read local draft:", e)
-                }
-            }
-
-            // 2. Fetch Server Session Progress
+        // 1. Instantly read local draft
+        if (typeof window !== "undefined") {
             try {
-                const res = await getJornadaProgress()
-                if (res?.success && res?.data) {
-                    const serverData = res.data as Record<string, string>
-                    // Merge preferring server data if completed, or merge fields
-                    initialData = { ...initialData, ...serverData }
-                    if (res.isCompleted) {
-                        setShowDashboard(true)
+                const localRaw = localStorage.getItem("arvo_jornada_draft_v2")
+                if (localRaw) {
+                    const parsed = JSON.parse(localRaw)
+                    if (parsed && typeof parsed === "object") {
+                        setFormData(parsed)
+                        if (parsed.customExpensesJson) {
+                            try {
+                                const exp = JSON.parse(parsed.customExpensesJson)
+                                if (Array.isArray(exp)) setCustomExpenses(exp)
+                            } catch (e) {}
+                        }
                     }
                 }
             } catch (e) {
-                console.warn("Could not load server progress:", e)
+                console.warn("Could not read local draft:", e)
             }
-
-            setFormData(initialData)
-
-            if (initialData.customExpensesJson) {
-                try {
-                    const parsed = JSON.parse(initialData.customExpensesJson)
-                    if (Array.isArray(parsed)) {
-                        setCustomExpenses(parsed)
-                    }
-                } catch (e) {}
-            }
-
-            const isAllSuitabilityAnswered = SUITABILITY_QUESTIONS.every(q => Boolean(initialData[q.name]))
-            if (isAllSuitabilityAnswered) {
-                setShowQuizResult(true)
-            }
-
-            setLastSavedTime(new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }))
-            setIsLoading(false)
         }
 
-        loadProgress()
+        // 2. Fetch server progress with timeout race
+        async function syncServerProgress() {
+            try {
+                const serverCall = getJornadaProgress()
+                const timeoutCall = new Promise<{ success: false }>((resolve) => 
+                    setTimeout(() => resolve({ success: false }), 800)
+                )
+                const res = await Promise.race([serverCall, timeoutCall])
+                
+                if (!isMounted) return
+                if (res && "success" in res && res.success && (res as any).data) {
+                    const serverData = (res as any).data as Record<string, string>
+                    // Only populate from server if local form data is empty
+                    setFormData(prev => {
+                        if (Object.keys(prev).length === 0) {
+                            return serverData
+                        }
+                        return prev
+                    })
+                    if ((res as any).isCompleted) {
+                        setShowDashboard(true)
+                    }
+                    if (serverData.customExpensesJson) {
+                        setCustomExpenses(prev => {
+                            if (prev.length === 0) {
+                                try {
+                                    const parsed = JSON.parse(serverData.customExpensesJson)
+                                    if (Array.isArray(parsed)) return parsed
+                                } catch (e) {}
+                            }
+                            return prev
+                        })
+                    }
+                    const isAllSuitabilityAnswered = SUITABILITY_QUESTIONS.every(q => Boolean(serverData[q.name]))
+                }
+            } catch (e) {
+                console.warn("Could not sync server progress:", e)
+            } finally {
+                if (isMounted) {
+                    setIsHydrated(true)
+                    setLastSavedTime(new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }))
+                }
+            }
+        }
+
+        syncServerProgress()
+
+        return () => {
+            isMounted = false
+            if (saveTimeoutRef.current) {
+                clearTimeout(saveTimeoutRef.current)
+            }
+        }
     }, [])
 
     // ─── PERSISTENCE (DEBOUNCED SAVE) ──────────────────────────────────────────
@@ -637,29 +723,8 @@ export default function PlanejamentoJornadaPage() {
         }, 180)
     }
 
-    // Advance to next step with strict validation
+    // Advance to next step (non-blocking, saves progress)
     const goNext = async () => {
-        const validation = validateStepFields(current, formData)
-        
-        // Mark current step as attempted
-        setAttemptedSteps(prev => new Set(prev).add(current))
-
-        if (!validation.isValid) {
-            setFieldErrors(validation.errors)
-            
-            // Auto focus on first error field
-            if (validation.missingFields.length > 0) {
-                const firstFieldName = validation.missingFields[0]
-                const el = document.getElementById(`field-${firstFieldName}`)
-                if (el) {
-                    el.scrollIntoView({ behavior: "smooth", block: "center" })
-                    el.focus()
-                }
-            }
-            return
-        }
-
-        // Clear errors if valid
         setFieldErrors({})
 
         if (current < PLAN_DATA.length - 1) {
@@ -683,9 +748,9 @@ export default function PlanejamentoJornadaPage() {
         window.scrollTo({ top: 0, behavior: "smooth" })
     }
 
-    if (isLoading) {
+    if (!isHydrated) {
         return (
-            <div className="min-h-screen flex flex-col items-center justify-center bg-[#f6f4ef] text-[#123044] space-y-3">
+            <div className="min-h-[calc(100vh-62px)] flex flex-col items-center justify-center bg-[#f6f4ef] text-[#123044] space-y-3">
                 <Loader2 className="w-8 h-8 animate-spin text-[#1f674f]" />
                 <p className="text-xs font-semibold text-[#667085]">Carregando seus dados da Jornada ARVO...</p>
             </div>
@@ -708,31 +773,31 @@ export default function PlanejamentoJornadaPage() {
         <div ref={containerRef} className="min-h-screen text-slate-900 font-sans p-4 sm:p-6 md:p-8 bg-[#f6f4ef]">
             <div className="max-w-[1100px] mx-auto space-y-6 sm:space-y-8">
                 
-                {/* ─── HEADER & STATUS BAR ────────────────────────────────────────────── */}
-                <header className="grid lg:grid-cols-[1fr_360px] gap-6 lg:gap-8 items-start">
-                    <div>
+                {/* ─── HEADER & NAUTICAL ROUTE STATUS ────────────────────────────────── */}
+                <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-2">
+                    <div className="max-w-2xl">
                         <div className="flex flex-wrap items-center gap-2 mb-2">
-                            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#e8f1ed] text-[#1f674f] text-[11px] font-bold rounded-full border border-[#d6e5de]">
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-dash-accent-light text-dash-accent text-[11px] font-bold rounded-full border border-dash-border">
                                 <Compass size={13} />
-                                Rota de Planejamento Financeiro ARVO
+                                Carta Náutica ARVO · Rota Patrimonial
                             </span>
                             
                             {/* Save Status Indicator */}
-                            <div className="inline-flex items-center gap-1.5 text-xs text-[#667085] px-2.5 py-0.5">
+                            <div className="inline-flex items-center gap-1.5 text-xs text-dash-text-light px-2.5 py-0.5">
                                 {saveStatus === "saving" && (
                                     <>
-                                        <Loader2 size={12} className="animate-spin text-[#1f674f]" />
-                                        <span>Salvando...</span>
+                                        <Loader2 size={12} className="animate-spin text-dash-accent" />
+                                        <span>Salvando rota...</span>
                                     </>
                                 )}
                                 {saveStatus === "saved" && lastSavedTime && (
                                     <>
-                                        <Check size={12} className="text-[#1f674f]" />
+                                        <Check size={12} className="text-dash-accent" />
                                         <span>Salvo às {lastSavedTime}</span>
                                     </>
                                 )}
                                 {saveStatus === "pending" && (
-                                    <span className="text-[#92400e]">Alterações pendentes</span>
+                                    <span className="text-amber-700">Alterações pendentes</span>
                                 )}
                                 {saveStatus === "error" && (
                                     <span className="text-red-600 flex items-center gap-1">
@@ -742,110 +807,163 @@ export default function PlanejamentoJornadaPage() {
                             </div>
                         </div>
 
-                        <h1 className="text-3xl sm:text-4xl md:text-5xl font-light tracking-tight text-[#123044] leading-tight">
-                            Diagnóstico em <span className="font-semibold text-[#123044]">7 Marcos Estratégicos</span>
+                        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-light tracking-tight text-dash-text leading-snug">
+                            Diagnóstico em <span className="font-semibold text-dash-text">7 Marcos Estratégicos</span>
                         </h1>
-                        <p className="text-[#667085] text-sm sm:text-base mt-2 max-w-xl leading-relaxed">
+                        <p className="text-dash-text-light text-sm sm:text-base mt-2 leading-relaxed">
                             Organizamos suas finanças com dados reais para identificar vulnerabilidades, projetar sua independência e calibrar sua Bússola de Investimentos.
                         </p>
                     </div>
 
-                    {/* ─── PROGRESS CARD ────────────────────────────────────────────── */}
-                    <div className="bg-white border border-[#e4e0d7] rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-sm">
-                        <div className="flex justify-between items-start mb-4">
-                            <div>
-                                <span className="text-xs font-bold text-[#667085] uppercase tracking-wider block mb-0.5">
-                                    Progresso da Rota
-                                </span>
-                                <div className="text-3xl sm:text-4xl font-extrabold text-[#123044] tracking-tight">
-                                    {globalProgressPct}%
-                                </div>
+                    {/* Consolidated Progress Pill */}
+                    <div className="flex items-center gap-3 bg-white border border-dash-border rounded-2xl px-4 py-3 shadow-xs shrink-0 self-start md:self-auto">
+                        <div className="w-10 h-10 rounded-xl bg-dash-accent-light text-dash-accent flex items-center justify-center font-extrabold text-sm tabular-nums">
+                            {globalProgressPct}%
+                        </div>
+                        <div>
+                            <div className="text-[10px] font-bold text-dash-text-light uppercase tracking-wider">
+                                Progresso da Rota
                             </div>
-                            <div className="text-right">
-                                <span className="inline-block px-3 py-1 bg-[#f0ece1] text-[#123044] text-xs font-bold rounded-lg">
-                                    {completedStepsCount} de {PLAN_DATA.length} concluídos
-                                </span>
-                                <span className="text-[11px] text-[#667085] block mt-1">
-                                    Marco {current + 1} em exibição
-                                </span>
+                            <div className="text-xs font-extrabold text-dash-text tabular-nums">
+                                {completedStepsCount} de {PLAN_DATA.length} marcos concluídos
                             </div>
                         </div>
-
-                        {/* Progress Bar */}
-                        <div className="h-2.5 bg-[#e4e0d7] rounded-full overflow-hidden mb-3">
-                            <motion.div 
-                                className="h-full bg-[#1f674f] rounded-full"
-                                initial={{ width: 0 }}
-                                animate={{ width: `${globalProgressPct}%` }}
-                                transition={{ duration: 0.4, ease: "easeOut" }}
-                            />
-                        </div>
-
-                        <p className="text-xs text-[#667085] leading-relaxed">
-                            {ROUTE_PROGRESS_DESCRIPTIONS[current]}
-                        </p>
                     </div>
                 </header>
 
-                {/* ─── STEP NAVIGATION BAR (7 ETAPAS) ────────────────────────────────── */}
-                <nav aria-label="Marcos da Jornada" className="w-full pb-2 overflow-x-auto no-scrollbar">
-                    <div className="flex sm:grid sm:grid-cols-4 lg:grid-cols-7 gap-2 min-w-max sm:min-w-0">
-                        {PLAN_DATA.map((item, idx) => {
-                            const isCurrent = idx === current
-                            const status = stepStatuses[idx]
-                            const isCompleted = status === "completed"
-                            const hasError = status === "has_error"
-
-                            return (
-                                <button
-                                    key={idx}
-                                    type="button"
-                                    onClick={() => handleStepJump(idx)}
-                                    aria-current={isCurrent ? "step" : undefined}
-                                    aria-label={`Marco ${idx + 1}: ${item.title}. Status: ${isCompleted ? "Concluído" : hasError ? "Com pendências" : "Pendente"}`}
-                                    className={`flex flex-col items-start gap-1.5 p-3 rounded-2xl text-left transition-all duration-200 border w-[140px] sm:w-full shrink-0 cursor-pointer ${
-                                        isCurrent 
-                                            ? "bg-[#123044] border-[#123044] text-white shadow-md" 
-                                            : isCompleted
-                                                ? "bg-white border-[#d6e5de] hover:bg-[#f8fcfb] text-[#123044]"
-                                                : hasError
-                                                    ? "bg-red-50/60 border-red-200 text-red-900"
-                                                    : "bg-white border-[#e4e0d7] hover:bg-[#f0ece1] text-[#123044]"
-                                    }`}
-                                >
-                                    <div className="flex items-center justify-between w-full">
-                                        <span className={`w-6 h-6 flex items-center justify-center rounded-lg font-bold text-xs ${
-                                            isCurrent 
-                                                ? "bg-white text-[#123044]" 
-                                                : isCompleted 
-                                                    ? "bg-[#1f674f] text-white" 
-                                                    : hasError 
-                                                        ? "bg-red-600 text-white" 
-                                                        : "bg-[#e4e0d7] text-[#667085]"
-                                        }`}>
-                                            {isCompleted ? <Check size={13} strokeWidth={3} /> : (idx + 1)}
-                                        </span>
-
-                                        <span className={`text-[10px] font-semibold ${
-                                            isCurrent ? "text-white/70" : isCompleted ? "text-[#1f674f]" : hasError ? "text-red-600 font-bold" : "text-[#a09e99]"
-                                        }`}>
-                                            {isCompleted ? "Concluído" : hasError ? "Pendente" : "Pilar " + (idx + 1)}
-                                        </span>
-                                    </div>
-
-                                    <div className="w-full mt-1">
-                                        <div className={`font-bold text-xs leading-snug line-clamp-1 ${isCurrent ? "text-white" : "text-[#123044]"}`}>
-                                            {item.title}
-                                        </div>
-                                        <div className={`text-[11px] truncate mt-0.5 ${isCurrent ? "text-white/70" : "text-[#667085]"}`}>
-                                            {item.short}
-                                        </div>
-                                    </div>
-                                </button>
-                            )
-                        })}
+                {/* ─── TRILHA DE MARCOS ESTRATÉGICOS ────────────────────────────────── */}
+                <section aria-label="Trilha de Navegação dos 7 Marcos" className="bg-white border border-dash-border rounded-3xl p-4 sm:p-6 md:p-7 shadow-xs">
+                    
+                    {/* Top track bar with current step title */}
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-5 mb-5 border-b border-dash-border/60">
+                        <div className="flex items-center gap-2">
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#0F2A3D] text-[#FBBF24] text-xs font-extrabold tracking-wide uppercase whitespace-nowrap shrink-0 border border-amber-500/50 shadow-xs" style={{ color: "#FBBF24" }}>
+                                <Compass size={14} className="text-[#FBBF24] shrink-0" style={{ color: "#FBBF24" }} />
+                                <span className="!text-[#FBBF24] font-black" style={{ color: "#FBBF24" }}>
+                                    Marco {current + 1} de {PLAN_DATA.length}
+                                </span>
+                            </span>
+                            <span className="text-sm font-bold text-dash-text">
+                                {currentStepData.title}
+                            </span>
+                        </div>
+                        <div className="text-xs text-dash-text-light flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-dash-amber animate-pulse shrink-0" />
+                            <span className="font-medium">{ROUTE_PROGRESS_DESCRIPTIONS[current]}</span>
+                        </div>
                     </div>
-                </nav>
+
+                    {/* Nautical Route Waypoints Track */}
+                    <div className="relative overflow-x-auto no-scrollbar py-2">
+                        <div className="min-w-[720px] lg:min-w-0 relative">
+                            
+                            {/* Segmented Connecting Lines between Waypoint Nodes */}
+                            <div className="absolute top-[24px] left-0 right-0 h-0.5 -z-0 pointer-events-none">
+                                {Array.from({ length: 6 }).map((_, i) => {
+                                    const isSegmentCompleted = stepStatuses[i] === "completed"
+                                    const leftPct = ((i + 0.5) / 7) * 100
+                                    const widthPct = (1 / 7) * 100
+
+                                    return (
+                                        <div
+                                            key={i}
+                                            className="absolute top-0 h-0.5"
+                                            style={{
+                                                left: `${leftPct}%`,
+                                                width: `${widthPct}%`,
+                                            }}
+                                        >
+                                            {isSegmentCompleted ? (
+                                                <div className="w-full h-0.5 bg-[#1f674f] transition-all duration-300" />
+                                            ) : (
+                                                <div className="w-full h-0.5 border-t-2 border-dashed border-[#e4e0d7]" />
+                                            )}
+                                        </div>
+                                    )
+                                })}
+                            </div>
+
+                            {/* Waypoint Nodes Grid */}
+                            <div className="grid grid-cols-7 gap-2 relative z-10">
+                                {PLAN_DATA.map((item, idx) => {
+                                    const isCurrent = idx === current
+                                    const status = stepStatuses[idx]
+                                    const isCompleted = status === "completed"
+                                    const hasError = status === "has_error"
+
+                                    return (
+                                        <button
+                                            key={idx}
+                                            type="button"
+                                            onClick={() => handleStepJump(idx)}
+                                            aria-current={isCurrent ? "step" : undefined}
+                                            aria-label={`Marco ${idx + 1}: ${item.title}. Status: ${isCompleted ? "Concluído" : hasError ? "Com pendências" : "Pendente"}`}
+                                            className="flex flex-col items-center text-center group cursor-pointer transition-transform duration-150 focus:outline-none"
+                                        >
+                                            {/* Waypoint Beacon Node (Círculo tipo Boia Náutica) */}
+                                            <div className="relative flex items-center justify-center mb-3">
+                                                {/* Active Farol Concentric Dual-Ring Highlight with High Contrast */}
+                                                {isCurrent && (
+                                                    <span className="absolute -inset-2.5 rounded-full bg-amber-400/25 border-2 border-amber-500 shadow-md animate-pulse pointer-events-none" />
+                                                )}
+
+                                                <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-200 relative z-10 ${
+                                                    isCurrent
+                                                        ? "bg-[#0F2A3D] border-[3px] border-amber-500 shadow-xl ring-4 ring-amber-400/50 scale-110"
+                                                        : isCompleted
+                                                            ? "bg-[#1F674F] border-2 border-[#1F674F] shadow-xs hover:scale-105"
+                                                            : hasError
+                                                                ? "bg-red-50 border-2 border-red-400 hover:bg-red-100"
+                                                                : "bg-white border-2 border-[#d6cfc2] hover:border-slate-400 hover:bg-slate-50 shadow-xs"
+                                                }`}>
+                                                    <span 
+                                                        className={`tabular-nums text-base font-black leading-none ${
+                                                            isCurrent || isCompleted
+                                                                ? "text-white !text-white"
+                                                                : hasError
+                                                                    ? "text-red-700"
+                                                                    : "text-[#123044]"
+                                                        }`}
+                                                        style={isCurrent || isCompleted ? { color: "#ffffff" } : { color: "#123044" }}
+                                                    >
+                                                        {idx + 1}
+                                                    </span>
+                                                </div>
+
+                                                {/* Overlaid Checkmark Badge for Completed Waypoints */}
+                                                {isCompleted && (
+                                                    <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-[#1F674F] text-white border-2 border-white flex items-center justify-center z-20 shadow-xs">
+                                                        <Check size={11} strokeWidth={3.5} />
+                                                    </span>
+                                                )}
+
+                                                {/* Overlaid Alert Badge for Errors */}
+                                                {hasError && !isCompleted && (
+                                                    <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-red-600 text-white border-2 border-white flex items-center justify-center z-20 shadow-xs">
+                                                        <AlertCircle size={11} strokeWidth={3.5} />
+                                                    </span>
+                                                )}
+                                            </div>
+
+                                            {/* Labels below node */}
+                                            <div className="mt-2 w-full px-0.5">
+                                                <div className={`text-xs leading-snug transition-colors line-clamp-2 min-h-[32px] flex items-center justify-center ${
+                                                    isCurrent ? "text-[#0F2A3D] font-extrabold" : isCompleted ? "text-[#1f674f] font-bold" : "text-slate-700 font-medium group-hover:text-slate-900"
+                                                }`}>
+                                                    {item.title.replace(/:.*/, "")}
+                                                </div>
+                                                <div className="text-[10px] font-medium text-slate-400 leading-tight mt-0.5 whitespace-normal">
+                                                    {item.short}
+                                                </div>
+                                            </div>
+                                        </button>
+                                    )
+                                })}
+                            </div>
+
+                        </div>
+                    </div>
+                </section>
 
                 {/* ─── MAIN PANEL CONTENT ────────────────────────────────────────────── */}
                 <main className="bg-white border border-[#e4e0d7] rounded-3xl p-5 sm:p-8 md:p-10 shadow-sm flex flex-col w-full min-h-[520px]">
@@ -899,27 +1017,39 @@ export default function PlanejamentoJornadaPage() {
                                                         </span>
                                                     </div>
 
-                                                    {/* Dots de Navegação Rápida entre Perguntas */}
-                                                    <div className="flex items-center gap-1.5" role="tablist" aria-label="Perguntas de suitability">
-                                                        {SUITABILITY_QUESTIONS.map((q, qIdx) => {
-                                                            const isQCurrent = qIdx === quizQuestionIndex
-                                                            const isQAnswered = Boolean(formData[q.name])
-                                                            return (
-                                                                <button
-                                                                    key={qIdx}
-                                                                    type="button"
-                                                                    onClick={() => setQuizQuestionIndex(qIdx)}
-                                                                    aria-label={`Ir para pergunta ${qIdx + 1}`}
-                                                                    className={`h-2.5 rounded-full transition-all duration-200 cursor-pointer ${
-                                                                        isQCurrent 
-                                                                            ? "w-8 bg-[#123044]" 
-                                                                            : isQAnswered 
-                                                                                ? "w-2.5 bg-[#1f674f]" 
-                                                                                : "w-2.5 bg-[#e4e0d7]"
-                                                                    }`}
-                                                                />
-                                                            )
-                                                        })}
+                                                    <div className="flex items-center gap-3">
+                                                        {SUITABILITY_QUESTIONS.every(q => Boolean(formData[q.name]?.trim())) && (
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => setShowQuizResult(true)}
+                                                                className="text-[11px] font-extrabold text-[#1f674f] hover:text-[#123044] bg-[#e8f1ed] hover:bg-[#d6e5de] px-2.5 py-1 rounded-lg border border-[#1f674f]/20 transition-colors cursor-pointer"
+                                                            >
+                                                                Ver Diagnóstico ({suitabilityDiagnostic.label}) →
+                                                            </button>
+                                                        )}
+
+                                                        {/* Dots de Navegação Rápida entre Perguntas */}
+                                                        <div className="flex items-center gap-1.5" role="tablist" aria-label="Perguntas de suitability">
+                                                            {SUITABILITY_QUESTIONS.map((q, qIdx) => {
+                                                                const isQCurrent = qIdx === quizQuestionIndex
+                                                                const isQAnswered = Boolean(formData[q.name])
+                                                                return (
+                                                                    <button
+                                                                        key={qIdx}
+                                                                        type="button"
+                                                                        onClick={() => setQuizQuestionIndex(qIdx)}
+                                                                        aria-label={`Ir para pergunta ${qIdx + 1}`}
+                                                                        className={`h-2.5 rounded-full transition-all duration-200 cursor-pointer ${
+                                                                            isQCurrent 
+                                                                                ? "w-8 bg-[#123044]" 
+                                                                                : isQAnswered 
+                                                                                    ? "w-2.5 bg-[#1f674f]" 
+                                                                                    : "w-2.5 bg-[#e4e0d7]"
+                                                                        }`}
+                                                                    />
+                                                                )
+                                                            })}
+                                                        </div>
                                                     </div>
                                                 </div>
 
@@ -947,16 +1077,26 @@ export default function PlanejamentoJornadaPage() {
                                                                 }`}
                                                             >
                                                                 <div className="flex items-center gap-3">
-                                                                    <span className={`w-7 h-7 rounded-lg font-bold text-xs flex items-center justify-center shrink-0 ${
-                                                                        isSelected ? "bg-white text-[#123044]" : "bg-[#e8f1ed] text-[#1f674f]"
-                                                                    }`}>
+                                                                    <span 
+                                                                        className={`w-7 h-7 rounded-lg text-xs flex items-center justify-center shrink-0 font-extrabold ${
+                                                                            isSelected ? "bg-amber-400 shadow-xs" : "bg-[#e8f1ed]"
+                                                                        }`}
+                                                                        style={{ color: isSelected ? "#0F2A3D" : "#1F674F" }}
+                                                                    >
                                                                         {opt.letter}
                                                                     </span>
-                                                                    <span className={`text-sm font-medium leading-relaxed ${isSelected ? "text-white" : "text-[#123044]"}`}>
+                                                                    <span 
+                                                                        className="text-sm font-medium leading-relaxed" 
+                                                                        style={{ color: isSelected ? "#FFFFFF" : "#123044" }}
+                                                                    >
                                                                         {opt.text}
                                                                     </span>
                                                                 </div>
-                                                                {isSelected && <Check size={18} className="text-[#4fa080] shrink-0" />}
+                                                                {isSelected && (
+                                                                    <span className="w-6 h-6 rounded-full bg-amber-400/20 border border-amber-400 flex items-center justify-center shrink-0 shadow-xs">
+                                                                        <Check size={14} className="text-amber-400" style={{ color: "#FBBF24" }} strokeWidth={3.5} />
+                                                                    </span>
+                                                                )}
                                                             </button>
                                                         )
                                                     })}
@@ -1090,216 +1230,224 @@ export default function PlanejamentoJornadaPage() {
                                             const val = formData[field.name] || ""
                                             const hasFieldError = Boolean(fieldErrors[field.name])
                                             const fieldId = `field-${field.name}`
+                                            const fieldLabel = getFieldLabel(field, formData)
+                                            const fieldHelpText = getFieldHelpText(field, formData)
+                                            const fieldPlaceholder = getFieldPlaceholder(field, formData)
 
                                             return (
-                                                <div 
-                                                    key={field.name} 
-                                                    className={`space-y-1.5 ${field.type === "radio" ? "md:col-span-2" : ""}`}
-                                                >
-                                                    <div className="flex justify-between items-baseline">
-                                                        <label 
-                                                            htmlFor={fieldId} 
-                                                            className="text-xs font-bold text-[#123044] flex items-center gap-1"
-                                                        >
-                                                            {field.label}
-                                                            {field.required && <span className="text-red-500 font-bold" title="Campo obrigatório">*</span>}
-                                                            {!field.required && <span className="text-[#a09e99] font-normal text-[11px]">(Opcional)</span>}
-                                                        </label>
-                                                    </div>
+                                                <Fragment key={field.name}>
+                                                    <div 
+                                                        className={`space-y-1.5 ${field.type === "radio" ? "md:col-span-2" : ""}`}
+                                                    >
+                                                        <div className="flex justify-between items-baseline">
+                                                            <label 
+                                                                htmlFor={fieldId} 
+                                                                className="text-xs font-bold text-[#123044] flex items-center gap-1"
+                                                            >
+                                                                {fieldLabel}
+                                                                {field.required && <span className="text-red-500 font-bold" title="Campo obrigatório">*</span>}
+                                                                {!field.required && <span className="text-[#a09e99] font-normal text-[11px]">(Opcional)</span>}
+                                                            </label>
+                                                        </div>
 
-                                                    {/* CURRENCY INPUT */}
-                                                    {field.type === "currency" && (
-                                                        <div className="relative">
+                                                        {/* CURRENCY INPUT */}
+                                                        {field.type === "currency" && (
+                                                            <div className="relative">
+                                                                <input 
+                                                                    id={fieldId}
+                                                                    name={field.name}
+                                                                    type="text" 
+                                                                    inputMode="numeric"
+                                                                    placeholder={fieldPlaceholder || "R$ 0,00"}
+                                                                    value={val}
+                                                                    aria-required={field.required}
+                                                                    aria-invalid={hasFieldError}
+                                                                    aria-describedby={hasFieldError ? `err-${field.name}` : undefined}
+                                                                    onChange={(e) => handleInputChange(field.name, formatCurrencyInput(e.target.value))}
+                                                                    className={`w-full bg-[#f6f4ef] rounded-xl px-4 py-3 text-sm text-[#123044] font-medium placeholder:text-[#a09e99] focus:outline-none transition-all border ${
+                                                                        hasFieldError 
+                                                                            ? "border-red-400 focus:border-red-600 focus:ring-1 focus:ring-red-600 bg-red-50/20" 
+                                                                            : "border-[#e4e0d7] focus:border-[#1f674f] focus:ring-1 focus:ring-[#1f674f]"
+                                                                        }`}
+                                                                />
+                                                            </div>
+                                                        )}
+
+                                                        {/* NUMBER INPUT */}
+                                                        {field.type === "number" && (
                                                             <input 
                                                                 id={fieldId}
                                                                 name={field.name}
-                                                                type="text" 
+                                                                type="number" 
                                                                 inputMode="numeric"
-                                                                placeholder={field.placeholder || "R$ 0,00"}
+                                                                placeholder={fieldPlaceholder}
                                                                 value={val}
+                                                                min={field.min}
+                                                                max={field.max}
                                                                 aria-required={field.required}
                                                                 aria-invalid={hasFieldError}
                                                                 aria-describedby={hasFieldError ? `err-${field.name}` : undefined}
-                                                                onChange={(e) => handleInputChange(field.name, formatCurrencyInput(e.target.value))}
+                                                                onChange={(e) => handleInputChange(field.name, e.target.value)}
                                                                 className={`w-full bg-[#f6f4ef] rounded-xl px-4 py-3 text-sm text-[#123044] font-medium placeholder:text-[#a09e99] focus:outline-none transition-all border ${
                                                                     hasFieldError 
                                                                         ? "border-red-400 focus:border-red-600 focus:ring-1 focus:ring-red-600 bg-red-50/20" 
                                                                         : "border-[#e4e0d7] focus:border-[#1f674f] focus:ring-1 focus:ring-[#1f674f]"
-                                                                }`}
-                                                            />
-                                                        </div>
-                                                    )}
-
-                                                    {/* NUMBER INPUT */}
-                                                    {field.type === "number" && (
-                                                        <input 
-                                                            id={fieldId}
-                                                            name={field.name}
-                                                            type="number" 
-                                                            inputMode="numeric"
-                                                            placeholder={field.placeholder}
-                                                            value={val}
-                                                            min={field.min}
-                                                            max={field.max}
-                                                            aria-required={field.required}
-                                                            aria-invalid={hasFieldError}
-                                                            aria-describedby={hasFieldError ? `err-${field.name}` : undefined}
-                                                            onChange={(e) => handleInputChange(field.name, e.target.value)}
-                                                            className={`w-full bg-[#f6f4ef] rounded-xl px-4 py-3 text-sm text-[#123044] font-medium placeholder:text-[#a09e99] focus:outline-none transition-all border ${
-                                                                hasFieldError 
-                                                                    ? "border-red-400 focus:border-red-600 focus:ring-1 focus:ring-red-600 bg-red-50/20" 
-                                                                    : "border-[#e4e0d7] focus:border-[#1f674f] focus:ring-1 focus:ring-[#1f674f]"
-                                                                }`}
-                                                        />
-                                                    )}
-
-                                                    {/* TEXT INPUT */}
-                                                    {field.type === "text" && (
-                                                        <input 
-                                                            id={fieldId}
-                                                            name={field.name}
-                                                            type="text" 
-                                                            placeholder={field.placeholder}
-                                                            value={val}
-                                                            aria-required={field.required}
-                                                            aria-invalid={hasFieldError}
-                                                            aria-describedby={hasFieldError ? `err-${field.name}` : undefined}
-                                                            onChange={(e) => handleInputChange(field.name, e.target.value)}
-                                                            className={`w-full bg-[#f6f4ef] rounded-xl px-4 py-3 text-sm text-[#123044] font-medium placeholder:text-[#a09e99] focus:outline-none transition-all border ${
-                                                                hasFieldError 
-                                                                    ? "border-red-400 focus:border-red-600 focus:ring-1 focus:ring-red-600 bg-red-50/20" 
-                                                                    : "border-[#e4e0d7] focus:border-[#1f674f] focus:ring-1 focus:ring-[#1f674f]"
-                                                                }`}
-                                                        />
-                                                    )}
-
-                                                    {/* SELECT INPUT */}
-                                                    {field.type === "select" && (
-                                                        <select 
-                                                            id={fieldId}
-                                                            name={field.name}
-                                                            value={val}
-                                                            aria-required={field.required}
-                                                            aria-invalid={hasFieldError}
-                                                            aria-describedby={hasFieldError ? `err-${field.name}` : undefined}
-                                                            onChange={(e) => handleInputChange(field.name, e.target.value)}
-                                                            className={`w-full bg-[#f6f4ef] rounded-xl px-4 py-3 text-sm text-[#123044] font-medium focus:outline-none transition-all border cursor-pointer ${
-                                                                hasFieldError 
-                                                                    ? "border-red-400 focus:border-red-600 focus:ring-1 focus:ring-red-600 bg-red-50/20" 
-                                                                    : "border-[#e4e0d7] focus:border-[#1f674f] focus:ring-1 focus:ring-[#1f674f]"
-                                                                }`}
-                                                        >
-                                                            <option value="">Selecione uma opção...</option>
-                                                            {field.options?.map(opt => (
-                                                                <option key={opt} value={opt}>{opt}</option>
-                                                            ))}
-                                                        </select>
-                                                    )}
-
-                                                    {/* RADIO BUTTON GROUP */}
-                                                    {field.type === "radio" && (
-                                                        <div 
-                                                            id={fieldId} 
-                                                            role="radiogroup" 
-                                                            aria-label={field.label}
-                                                            className="grid sm:grid-cols-2 md:grid-cols-3 gap-2.5 pt-1"
-                                                        >
-                                                            {field.options?.map(opt => (
-                                                                <button
-                                                                    type="button"
-                                                                    key={opt}
-                                                                    role="radio"
-                                                                    aria-checked={val === opt}
-                                                                    onClick={() => handleInputChange(field.name, opt)}
-                                                                    className={`px-4 py-3 text-xs font-semibold rounded-xl border text-left transition-all cursor-pointer ${
-                                                                        val === opt 
-                                                                            ? "bg-[#123044] text-white border-[#123044] shadow-sm" 
-                                                                            : hasFieldError
-                                                                                ? "bg-red-50/40 text-[#123044] border-red-200 hover:bg-[#e4e0d7]/60"
-                                                                                : "bg-[#f6f4ef] text-[#123044] border-[#e4e0d7] hover:bg-[#e4e0d7]/60"
                                                                     }`}
-                                                                >
-                                                                    {opt}
-                                                                </button>
-                                                            ))}
-                                                        </div>
-                                                    )}
+                                                            />
+                                                        )}
 
-                                                    {/* Help text or Inline Error */}
-                                                    {hasFieldError ? (
-                                                        <p id={`err-${field.name}`} className="text-xs text-red-600 font-semibold flex items-center gap-1 mt-1">
-                                                            <AlertCircle size={12} /> {fieldErrors[field.name]}
-                                                        </p>
-                                                    ) : field.helpText ? (
-                                                        <p className="text-[11px] text-[#667085] leading-normal">
-                                                            {field.helpText}
-                                                        </p>
-                                                    ) : null}
-                                                </div>
-                                            )
-                                        })}
+                                                        {/* TEXT INPUT */}
+                                                        {field.type === "text" && (
+                                                            <input 
+                                                                id={fieldId}
+                                                                name={field.name}
+                                                                type="text" 
+                                                                placeholder={fieldPlaceholder}
+                                                                value={val}
+                                                                aria-required={field.required}
+                                                                aria-invalid={hasFieldError}
+                                                                aria-describedby={hasFieldError ? `err-${field.name}` : undefined}
+                                                                onChange={(e) => handleInputChange(field.name, e.target.value)}
+                                                                className={`w-full bg-[#f6f4ef] rounded-xl px-4 py-3 text-sm text-[#123044] font-medium placeholder:text-[#a09e99] focus:outline-none transition-all border ${
+                                                                    hasFieldError 
+                                                                        ? "border-red-400 focus:border-red-600 focus:ring-1 focus:ring-red-600 bg-red-50/20" 
+                                                                        : "border-[#e4e0d7] focus:border-[#1f674f] focus:ring-1 focus:ring-[#1f674f]"
+                                                                    }`}
+                                                            />
+                                                        )}
 
-                                        {/* ─── CUSTOM EXTRA EXPENSES (MARCO 1) ────────────────────── */}
-                                        {current === 0 && customExpenses.map((expense) => (
-                                            <div key={expense.id} className="space-y-1.5">
-                                                <div className="flex items-center justify-between gap-2">
-                                                    <div className="flex items-center gap-1 flex-1 min-w-0">
-                                                        <label className="text-xs font-bold text-[#123044] shrink-0">Outro Gasto:</label>
-                                                        <input
-                                                            type="text"
-                                                            placeholder="Ex: Lazer, Educação, etc."
-                                                            value={expense.name}
-                                                            onChange={(e) => handleUpdateCustomExpense(expense.id, "name", e.target.value)}
-                                                            className="text-xs font-bold text-[#123044] bg-transparent border-b border-dashed border-[#123044]/30 hover:border-[#1f674f] focus:border-[#1f674f] focus:outline-none px-1 py-0.5 w-full transition-colors"
-                                                        />
+                                                        {/* SELECT INPUT */}
+                                                        {field.type === "select" && (
+                                                            <select 
+                                                                id={fieldId}
+                                                                name={field.name}
+                                                                value={val}
+                                                                aria-required={field.required}
+                                                                aria-invalid={hasFieldError}
+                                                                aria-describedby={hasFieldError ? `err-${field.name}` : undefined}
+                                                                onChange={(e) => handleInputChange(field.name, e.target.value)}
+                                                                className={`w-full bg-[#f6f4ef] rounded-xl px-4 py-3 text-sm text-[#123044] font-medium focus:outline-none transition-all border cursor-pointer ${
+                                                                    hasFieldError 
+                                                                        ? "border-red-400 focus:border-red-600 focus:ring-1 focus:ring-red-600 bg-red-50/20" 
+                                                                        : "border-[#e4e0d7] focus:border-[#1f674f] focus:ring-1 focus:ring-[#1f674f]"
+                                                                    }`}
+                                                            >
+                                                                <option value="">Selecione uma opção...</option>
+                                                                {field.options?.map(opt => (
+                                                                    <option key={opt} value={opt}>{opt}</option>
+                                                                ))}
+                                                            </select>
+                                                        )}
+
+                                                        {/* RADIO BUTTON GROUP */}
+                                                        {field.type === "radio" && (
+                                                            <div 
+                                                                id={fieldId} 
+                                                                role="radiogroup" 
+                                                                aria-label={fieldLabel}
+                                                                className="grid sm:grid-cols-2 md:grid-cols-3 gap-2.5 pt-1"
+                                                            >
+                                                                {field.options?.map(opt => (
+                                                                    <button
+                                                                        type="button"
+                                                                        key={opt}
+                                                                        role="radio"
+                                                                        aria-checked={val === opt}
+                                                                        onClick={() => handleInputChange(field.name, opt)}
+                                                                        className={`px-4 py-3 text-xs font-semibold rounded-xl border text-left transition-all cursor-pointer ${
+                                                                            val === opt 
+                                                                                ? "bg-[#123044] text-white !text-white border-[#123044] shadow-sm" 
+                                                                                : hasFieldError
+                                                                                    ? "bg-red-50/40 text-[#123044] border-red-200 hover:bg-[#e4e0d7]/60"
+                                                                                    : "bg-[#f6f4ef] text-[#123044] border-[#e4e0d7] hover:bg-[#e4e0d7]/60"
+                                                                        }`}
+                                                                        style={val === opt ? { color: "#ffffff" } : undefined}
+                                                                    >
+                                                                        {opt}
+                                                                    </button>
+                                                                ))}
+                                                            </div>
+                                                        )}
+
+                                                        {/* Help text or Inline Error */}
+                                                        {hasFieldError ? (
+                                                            <p id={`err-${field.name}`} className="text-xs text-red-600 font-semibold flex items-center gap-1 mt-1">
+                                                                <AlertCircle size={12} /> {fieldErrors[field.name]}
+                                                            </p>
+                                                        ) : fieldHelpText ? (
+                                                            <p className="text-[11px] text-[#667085] leading-normal">
+                                                                {fieldHelpText}
+                                                            </p>
+                                                        ) : null}
                                                     </div>
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => handleRemoveCustomExpense(expense.id)}
-                                                        className="text-[#98a2b3] hover:text-red-700 text-xs font-medium flex items-center gap-1 hover:underline transition-colors shrink-0 cursor-pointer"
-                                                        title="Remover este gasto"
-                                                    >
-                                                        <Trash2 size={12} /> Remover
-                                                    </button>
-                                                </div>
 
-                                                <input 
-                                                    type="text" 
-                                                    inputMode="numeric"
-                                                    placeholder="R$ 0,00"
-                                                    value={expense.value}
-                                                    onChange={(e) => handleUpdateCustomExpense(expense.id, "value", formatCurrencyInput(e.target.value))}
-                                                    className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-4 py-3 text-sm text-[#123044] font-medium placeholder:text-[#a09e99] focus:outline-none focus:border-[#1f674f] focus:ring-1 focus:ring-[#1f674f] transition-all"
-                                                />
-                                            </div>
-                                        ))}
+                                                {/* ─── CUSTOM EXTRA EXPENSES (MARCO 1: INTEGRADO NA SEÇÃO DE GASTOS) ─── */}
+                                                {current === 0 && field.name === "gastoSaude" && (
+                                                    <div className="md:col-span-2 space-y-3.5 pt-2 border-t border-dashed border-[#e4e0d7] my-1">
+                                                        <div className="flex items-center justify-between">
+                                                            <span className="text-xs font-bold text-[#123044] uppercase tracking-wider">
+                                                                Outros Gastos Específicos
+                                                            </span>
+                                                        </div>
 
-                                        {/* ADD CUSTOM EXPENSE BUTTON (MARCO 1) */}
-                                        {current === 0 && (
-                                            <div className="space-y-1.5 flex flex-col justify-end">
-                                                <button
-                                                    type="button"
-                                                    onClick={handleAddCustomExpense}
-                                                    className="w-full h-[46px] bg-transparent hover:bg-[#e8f1ed]/50 border-2 border-dashed border-[#d8d3c5] hover:border-[#1f674f] text-[#123044] hover:text-[#1f674f] text-xs font-bold rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer"
-                                                >
-                                                    <Plus size={14} /> Adicionar Outro Gasto Específico
-                                                </button>
-                                            </div>
-                                        )}
+                                                        {customExpenses.map((expense) => (
+                                                            <div key={expense.id} className="grid sm:grid-cols-2 gap-3 p-3 bg-[#f6f4ef]/60 rounded-xl border border-[#e4e0d7]">
+                                                                <div>
+                                                                    <label className="text-[11px] font-bold text-[#123044] block mb-1">Nome do Gasto</label>
+                                                                    <input
+                                                                        type="text"
+                                                                        placeholder="Ex: Lazer, Educação, Academia, etc."
+                                                                        value={expense.name}
+                                                                        onChange={(e) => handleUpdateCustomExpense(expense.id, "name", e.target.value)}
+                                                                        className="w-full bg-white border border-[#e4e0d7] rounded-xl px-3 py-2 text-xs text-[#123044] font-medium focus:outline-none focus:border-[#1f674f] transition-colors"
+                                                                    />
+                                                                </div>
+                                                                <div>
+                                                                    <div className="flex items-center justify-between mb-1">
+                                                                        <label className="text-[11px] font-bold text-[#123044]">Valor Mensal</label>
+                                                                        <button
+                                                                            type="button"
+                                                                            onClick={() => handleRemoveCustomExpense(expense.id)}
+                                                                            className="text-[#98a2b3] hover:text-red-700 text-[11px] font-medium flex items-center gap-0.5 hover:underline transition-colors shrink-0 cursor-pointer"
+                                                                        >
+                                                                            <Trash2 size={12} /> Remover
+                                                                        </button>
+                                                                    </div>
+                                                                    <input 
+                                                                        type="text" 
+                                                                        inputMode="numeric"
+                                                                        placeholder="R$ 0,00"
+                                                                        value={expense.value}
+                                                                        onChange={(e) => handleUpdateCustomExpense(expense.id, "value", formatCurrencyInput(e.target.value))}
+                                                                        className="w-full bg-white border border-[#e4e0d7] rounded-xl px-3 py-2 text-xs text-[#123044] font-medium placeholder:text-[#a09e99] focus:outline-none focus:border-[#1f674f] transition-all"
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                        ))}
 
-                                        {/* TOTAL EXPENSES BANNER (MARCO 1) */}
-                                        {current === 0 && (
-                                            <div className="md:col-span-2 p-4 rounded-2xl bg-[#e8f1ed]/60 border border-[#d6e5de] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mt-2">
-                                                <div className="text-xs text-[#123044] font-bold flex items-center gap-1.5">
-                                                    <DollarSign size={15} className="text-[#1f674f]" />
-                                                    Soma dos Gastos Mensais Declarados:
-                                                </div>
-                                                <div className="text-base font-extrabold text-[#1f674f]">
-                                                    {totalExpensesFormatted}
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
+                                                        <button
+                                                            type="button"
+                                                            onClick={handleAddCustomExpense}
+                                                            className="w-full h-[42px] bg-transparent hover:bg-[#e8f1ed]/50 border-2 border-dashed border-[#d8d3c5] hover:border-[#1f674f] text-[#123044] hover:text-[#1f674f] text-xs font-bold rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer"
+                                                        >
+                                                            <Plus size={14} /> Adicionar Outro Gasto Específico
+                                                        </button>
+
+                                                        <div className="p-3.5 rounded-2xl bg-[#e8f1ed]/60 border border-[#d6e5de] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                                                            <div className="text-xs text-[#123044] font-bold flex items-center gap-1.5">
+                                                                <DollarSign size={15} className="text-[#1f674f]" />
+                                                                Soma dos Gastos Mensais Declarados:
+                                                            </div>
+                                                            <div className="text-base font-extrabold text-[#1f674f] tabular-nums">
+                                                                {totalExpensesFormatted}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </Fragment>
+                                        )
+                                    })}
+                                </div>
 
                                     {/* ─── DELIVERABLES LIST ────────────────────────────────────── */}
                                     <div className="mt-8 pt-6 border-t border-[#e4e0d7]">

@@ -227,7 +227,7 @@ function MetricCard({
         <div className="text-xs font-bold uppercase tracking-wider text-[#667085] mb-1">
           {label}
         </div>
-        <div className="text-xl sm:text-2xl font-extrabold text-[#123044] tracking-tight truncate">
+        <div className="text-xl sm:text-2xl font-bold font-sans text-[#123044] tracking-tight truncate">
           {value}
         </div>
       </div>

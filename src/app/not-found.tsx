@@ -33,12 +33,12 @@ export default function NotFound() {
                 </div>
 
                 <div className="space-y-4">
-                    <h1 className="text-4xl sm:text-5xl lg:text-6xl font-light tracking-tight text-[#123044] leading-tight">
+                    <h1 className="text-4xl sm:text-5xl lg:text-6xl font-light tracking-tight text-dash-text leading-tight">
                         Parece que você <br />
-                        <span className="font-serif italic font-normal text-[#1f674f]">mudou de rumo.</span>
+                        <span className="font-semibold text-dash-accent">mudou de rumo.</span>
                     </h1>
-                    <p className="text-sm sm:text-base font-light text-[#667085] max-w-md mx-auto leading-relaxed">
-                        A página que você estava procurando não existe ou foi movida. Vamos te colocar de volta no caminho certo.
+                    <p className="text-sm sm:text-base font-normal text-dash-text-light max-w-md mx-auto leading-relaxed">
+                        A rota que você estava buscando não existe ou foi alterada. Vamos recalibrar a sua Bússola e te colocar no caminho certo.
                     </p>
                 </div>
 

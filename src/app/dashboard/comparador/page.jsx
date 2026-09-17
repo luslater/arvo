@@ -258,7 +258,7 @@ function eqRate(net, I, M) {
   return M > 0 ? (Math.pow(net / I, 12 / M) - 1) * 100 : 0;
 }
 
-export function ComparadorContent() {
+function ComparadorContent() {
   const [initial, setInitial] = useState(100000);
   const [months, setMonths] = useState(36);
   const [cdi, setCdi] = useState(13.0);
@@ -374,11 +374,11 @@ export function ComparadorContent() {
               <div>
                 <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2">Aporte Inicial</label>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-mono font-bold text-sm">R$</span>
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-sm">R$</span>
                   <input
                     type="number" value={initial} min={100} step={1000}
                     onChange={(e) => setInitial(Math.max(100, Number(e.target.value) || 100))}
-                    className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-xl outline-none font-mono font-bold text-[#123044] text-sm focus:border-[#4fa080]"
+                    className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-xl outline-none font-bold text-[#123044] text-sm focus:border-[#4fa080]"
                   />
                 </div>
               </div>
@@ -403,7 +403,7 @@ export function ComparadorContent() {
           {best && (
             <div className="bg-white rounded-2xl border p-6 shadow-sm flex flex-col justify-center" style={{ borderColor: colorOf(assets.findIndex((a) => a.id === best.asset.id)), borderWidth: '2px' }}>
               <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Melhor líquido</p>
-              <div className="font-mono text-2xl font-bold mb-1" style={{ color: T.text }}>
+              <div className="font-sans text-2xl font-bold mb-1" style={{ color: T.text }}>
                 {fmtBRL(best.net)}
               </div>
               <div className="text-sm font-bold" style={{ color: colorOf(assets.findIndex((a) => a.id === best.asset.id)) }}>
@@ -411,7 +411,7 @@ export function ComparadorContent() {
               </div>
               {results.length > 1 && (
                 <div className="text-xs text-gray-500 mt-2 pt-2 border-t border-gray-100">
-                  <span className="font-mono font-bold">{fmtBRL(best.net - results[1].net)}</span> à frente do 2º colocado
+                  <span className="font-sans font-bold">{fmtBRL(best.net - results[1].net)}</span> à frente do 2º colocado
                 </div>
               )}
             </div>
@@ -565,17 +565,17 @@ export function ComparadorContent() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
               <div className="bg-[#fcfbf9] rounded-xl p-4 border border-[#e4e0d7] border-l-4" style={{ borderLeftColor: "#123044" }}>
                 <div className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Custo do Come-Cotas</div>
-                <div className="font-mono text-lg font-bold text-[#123044] mb-1">{fmtBRL(deferData.cdbLast.net - deferData.flpLast.net)}</div>
+                <div className="font-sans text-lg font-bold text-[#123044] mb-1">{fmtBRL(deferData.cdbLast.net - deferData.flpLast.net)}</div>
                 <div className="text-xs text-gray-500">{fmtPct(eqRate(deferData.cdbLast.net, initial, months) - eqRate(deferData.flpLast.net, initial, months))} a.a. perdidos no período</div>
               </div>
               <div className="bg-[#fcfbf9] rounded-xl p-4 border border-[#e4e0d7] border-l-4" style={{ borderLeftColor: "#2b6e76" }}>
                 <div className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Diferença VGBL vs CDB</div>
-                <div className="font-mono text-lg font-bold text-[#123044] mb-1">{(deferData.vgblLast.net - deferData.cdbLast.net >= 0 ? "+" : "-")}{fmtBRL(Math.abs(deferData.vgblLast.net - deferData.cdbLast.net))}</div>
+                <div className="font-sans text-lg font-bold text-[#123044] mb-1">{(deferData.vgblLast.net - deferData.cdbLast.net >= 0 ? "+" : "-")}{fmtBRL(Math.abs(deferData.vgblLast.net - deferData.cdbLast.net))}</div>
                 <div className="text-xs text-gray-500">{(deferData.vgblLast.net - deferData.cdbLast.net >= 0) ? "VGBL vence CDB com alíquota regressiva exclusiva." : "CDB vence VGBL (alíquota maior ou custo da previdência)."}</div>
               </div>
               <div className="bg-[#fcfbf9] rounded-xl p-4 border border-[#e4e0d7] border-l-4" style={{ borderLeftColor: "#4fa080" }}>
                 <div className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">VGBL vs Fundo LP</div>
-                <div className="font-mono text-lg font-bold text-[#123044] mb-1">{(deferData.vgblLast.net - deferData.flpLast.net >= 0 ? "+" : "-")}{fmtBRL(Math.abs(deferData.vgblLast.net - deferData.flpLast.net))}</div>
+                <div className="font-sans text-lg font-bold text-[#123044] mb-1">{(deferData.vgblLast.net - deferData.flpLast.net >= 0 ? "+" : "-")}{fmtBRL(Math.abs(deferData.vgblLast.net - deferData.flpLast.net))}</div>
                 <div className="text-xs text-gray-500">{(deferData.vgblLast.net - deferData.flpLast.net >= 0) ? "O diferimento compensa a desvantagem." : "Fundo de Longo Prazo ainda ganha."}</div>
               </div>
             </div>
@@ -610,12 +610,12 @@ export function ComparadorContent() {
                       <td className={`py-4 px-5 text-sm ${isWinner ? 'font-bold text-[#123044]' : 'font-semibold text-gray-700'}`}>
                         {r.asset.name}
                       </td>
-                      <td className="py-4 px-5 text-right font-mono text-xs text-gray-600">{fmtBRL(r.gross)}</td>
-                      <td className="py-4 px-5 text-right font-mono text-xs text-red-500">-{fmtBRL(r.tax)}</td>
-                      {!presentMode && <td className="py-4 px-5 text-right font-mono text-xs text-gray-400">{fmtPct(r.effTax, 1)}</td>}
-                      <td className="py-4 px-5 text-right font-mono text-sm font-bold text-[#123044]">{fmtBRL(r.net)}</td>
-                      <td className="py-4 px-5 text-right font-mono text-xs font-bold text-gray-600">{fmtPct(r.netAnnual)}</td>
-                      <td className="py-4 px-5 text-right font-mono text-xs font-bold text-[#10B981]">+{fmtBRL(r.net - initial)}</td>
+                      <td className="py-4 px-5 text-right font-sans font-medium text-xs text-gray-600">{fmtBRL(r.gross)}</td>
+                      <td className="py-4 px-5 text-right font-sans font-medium text-xs text-red-500">-{fmtBRL(r.tax)}</td>
+                      {!presentMode && <td className="py-4 px-5 text-right font-sans font-medium text-xs text-gray-400">{fmtPct(r.effTax, 1)}</td>}
+                      <td className="py-4 px-5 text-right font-sans text-sm font-bold text-[#123044]">{fmtBRL(r.net)}</td>
+                      <td className="py-4 px-5 text-right font-sans text-xs font-bold text-gray-600">{fmtPct(r.netAnnual)}</td>
+                      <td className="py-4 px-5 text-right font-sans text-xs font-bold text-[#10B981]">+{fmtBRL(r.net - initial)}</td>
                     </tr>
                   );
                 })}

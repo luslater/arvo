@@ -1,19 +1,19 @@
 "use client"
-import { useState, useMemo, useCallback } from "react";
-import { ArrowRight, Check, Info } from "lucide-react";
+import { useState, useMemo } from "react";
+import { ArrowRight } from "lucide-react";
 
 // ─── Helpers ───
-const fmt = (v: any) => v.toLocaleString("pt-BR", { maximumFractionDigits: 0 });
+const fmt = (v: any) => v.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const fmtCurrency = (v: any) => `R$ ${fmt(v)}`;
 
-// ─── Cálculo: projeção com juros compostos (IPCA + 6% a.a. real) ───
+// ─── Cálculo: projeção com juros compostos (6% a.a. acima da inflação) ───
 function calcProjection(patrimonio: any, aporteMensal: any, gastoMensal: any, taxaAnualReal = 0.06) {
   const taxaMensal = Math.pow(1 + taxaAnualReal, 1 / 12) - 1;
   const metaPatrimonio = gastoMensal * 12 * 25; // Regra dos 4%
   const maxMeses = 40 * 12; // 40 anos máximo
 
   let saldo = patrimonio;
-  let anoIndependencia = null;
+  let anoIndependencia = patrimonio >= metaPatrimonio ? 0 : null;
   const pontos = [{ mes: 0, saldo }];
 
   for (let m = 1; m <= maxMeses; m++) {
@@ -21,13 +21,13 @@ function calcProjection(patrimonio: any, aporteMensal: any, gastoMensal: any, ta
     if (m % 12 === 0) {
       pontos.push({ mes: m, saldo });
     }
-    if (!anoIndependencia && saldo >= metaPatrimonio) {
+    if (anoIndependencia === null && saldo >= metaPatrimonio) {
       anoIndependencia = Math.ceil(m / 12);
     }
   }
 
   const saldoFinal20 = pontos.find((p: any) => p.mes === 240)?.saldo || saldo;
-  const rendaMensal20 = (saldoFinal20 * taxaAnualReal) / 12;
+  const rendaMensal20 = (saldoFinal20 * 0.04) / 12;
 
   return {
     pontos,
@@ -68,6 +68,7 @@ function SliderInput({ label, value, onChange, min, max, step, prefix = "R$", su
         }} />
         <input
           type="range"
+          aria-label={label}
           min={min}
           max={max}
           step={step}
@@ -183,7 +184,7 @@ export default function ArvoSimulador() {
     [patrimonio, aporte, gasto]
   );
 
-  const anoAlvo = proj.anoIndependencia
+  const anoAlvo = proj.anoIndependencia !== null
     ? proj.anoAtual + proj.anoIndependencia
     : null;
 
@@ -239,7 +240,7 @@ export default function ArvoSimulador() {
               padding: "4px 8px", borderRadius: 8, fontWeight: 600,
               whiteSpace: "nowrap", flexShrink: 0
             }}>
-              IPCA + 6% a.a. real
+              6% a.a. acima da inflação
             </div>
           </div>
 
@@ -293,50 +294,51 @@ export default function ArvoSimulador() {
           }}>
             {/* Resultado 1: Quando */}
             <div style={{
-              background: "#0A192F", borderRadius: 12, padding: "12px 16px",
-              color: "white"
+              background: "#E8F1ED", borderRadius: 12, padding: "12px 16px",
+              border: "1px solid #C2DDD0"
             }}>
               <span style={{
                 fontSize: 10, letterSpacing: 1.5, textTransform: "uppercase",
-                color: "#4FA080", display: "block", marginBottom: 8
+                color: "#1F674F", display: "block", marginBottom: 8, fontWeight: 600
               }}>
                 Independência financeira
               </span>
               {anoAlvo ? (
                 <>
-                  <span className="ui-sim-val-lg" style={{ fontSize: 36, fontWeight: 300, letterSpacing: -1, display: "block" }}>
+                  <span className="ui-sim-val-lg" style={{ fontSize: 36, fontWeight: 300, letterSpacing: -1, display: "block", color: "#1F674F" }}>
                     {anoAlvo}
                   </span>
-                  <span style={{ fontSize: 12, color: "rgba(255,255,255,0.4)" }}>
+                  <span style={{ fontSize: 12, color: "#4A6B5D" }}>
                     em {proj.anoIndependencia} {proj.anoIndependencia === 1 ? "ano" : "anos"}
                   </span>
                 </>
               ) : (
                 <>
-                  <span style={{ fontSize: 20, fontWeight: 400, display: "block", color: "rgba(255,255,255,0.6)" }}>
+                  <span style={{ fontSize: 20, fontWeight: 400, display: "block", color: "#1F674F" }}>
                     +40 anos
                   </span>
-                  <span style={{ fontSize: 12, color: "rgba(255,255,255,0.4)" }}>
+                  <span style={{ fontSize: 12, color: "#667085" }}>
                     Aumente o aporte ou reduza o gasto
                   </span>
                 </>
               )}
             </div>
 
-            {/* Resultado 2: Renda passiva em 20 anos */}
+            {/* Resultado 2: Retirada estimada em 20 anos */}
             <div style={{
-              background: "#FAFAF7", borderRadius: 12, padding: "12px 16px",
+              background: "#FBFAF5", borderRadius: 12, padding: "12px 16px",
+              border: "1px solid #E4DFD5"
             }}>
               <span style={{
                 fontSize: 10, letterSpacing: 1.5, textTransform: "uppercase",
-                color: "#4FA080", display: "block", marginBottom: 8
+                color: "#2B6E76", display: "block", marginBottom: 8, fontWeight: 600
               }}>
-                Renda passiva em 20 anos
+                Retirada estimada em 20 anos
               </span>
-              <span className="ui-sim-val-lg" style={{ fontSize: 32, fontWeight: 300, letterSpacing: -1, color: "#0A192F", display: "block" }}>
+              <span className="ui-sim-val-lg" style={{ fontSize: 32, fontWeight: 300, letterSpacing: -1, color: "#123044", display: "block" }}>
                 {fmtCurrency(Math.round(proj.rendaMensal20))}
               </span>
-              <span style={{ fontSize: 12, color: "#bbb" }}>
+              <span style={{ fontSize: 12, color: "#667085" }}>
                 por mês
               </span>
             </div>
@@ -355,22 +357,35 @@ export default function ArvoSimulador() {
           </div>
 
           {/* CTA dentro do card */}
-          <a href="/register" style={{
-            width: "100%",
-            background: "#2B6E76", color: "#FFFFFF",
-            border: "none", borderRadius: 100,
-            padding: "12px 0", fontSize: 14, fontWeight: 600, cursor: "pointer",
-            display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-            textDecoration: "none", transition: "filter 0.2s"
-          }}>
-            Ver meu plano completo <ArrowRight size={15} />
+          <a
+            href={`/diagnostico?initial=${patrimonio}&monthly=${aporte}&income=${gasto}`}
+            onClick={() => {
+              try {
+                sessionStorage.setItem("arvo-simulation", JSON.stringify({ initial: patrimonio, monthly: aporte, income: gasto }));
+                sessionStorage.removeItem("arvo-diagnostic-view");
+              } catch {
+                /* The destination retains editable defaults if storage is unavailable. */
+              }
+            }}
+            style={{
+              width: "100%",
+              background: "#2B6E76", color: "#FFFFFF",
+              border: "none", borderRadius: 100,
+              padding: "13px 0", fontSize: 14.5, fontWeight: 600, cursor: "pointer",
+              display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+              textDecoration: "none", transition: "all 0.2s ease",
+              boxShadow: "0 4px 12px rgba(43, 110, 118, 0.25)"
+            }}
+            className="hover:brightness-110 hover:-translate-y-0.5"
+          >
+            Receber meu mapa gratuito <ArrowRight size={16} />
           </a>
 
           <p style={{
             fontSize: 10.5, color: "#667085", textAlign: "center", marginTop: 10, marginBottom: 0,
             lineHeight: 1.45
           }}>
-            💡 Projeção com <strong>IPCA + 6,0% a.a. de rendimento real</strong>. Todos os valores já são <strong>descontados da inflação (valores de hoje em poder de compra)</strong>. Rentabilidade passada não representa garantia de resultados futuros.
+            💡 Projeção com <strong>6,0% a.a. de rendimento real</strong>. Todos os valores já são <strong>descontados da inflação (valores de hoje em poder de compra)</strong>. Aportes corrigidos pela inflação. Retirada inicial de 4% a.a., sem garantia de renda vitalícia. Custos e tributos não deduzidos.
           </p>
         </div>
   );

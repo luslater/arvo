@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { getServerSession } from "next-auth/next"
-import { authOptions } from "@/app/api/auth/[...nextauth]/route"
+import { authOptions } from "@/lib/auth-options"
 import { prisma } from "@/lib/prisma"
 
 export const dynamic = "force-dynamic"
@@ -114,6 +114,7 @@ const profileSchema = z.object({
   emergencyFund: z.number().min(0).optional(),
   totalCarteira: z.number().min(0).optional(),
   carteira2Data: z.any().optional(), // Pode ser tipado mais estritamente depois
+  inflacaoRealData: z.any().optional(),
 });
 
 export async function PUT(req: Request) {
@@ -132,7 +133,7 @@ export async function PUT(req: Request) {
             return new NextResponse("Bad Request: Payload inválido", { status: 400 })
         }
         
-        const { portfolioType, saldo, emergencyFund, totalCarteira, carteira2Data } = validationResult.data
+        const { portfolioType, saldo, emergencyFund, totalCarteira, carteira2Data, inflacaoRealData } = validationResult.data
 
         const url = new URL(req.url)
         const adminViewUser = url.searchParams.get("adminViewUser")
@@ -158,8 +159,11 @@ export async function PUT(req: Request) {
         }
         
         let newJornadaData = user.profile?.jornadaData ? (typeof user.profile.jornadaData === 'string' ? JSON.parse(user.profile.jornadaData) : user.profile.jornadaData) : {};
-        if (carteira2Data) {
+        if (carteira2Data !== undefined) {
             newJornadaData = { ...newJornadaData, carteira2Data };
+        }
+        if (inflacaoRealData !== undefined) {
+            newJornadaData = { ...newJornadaData, inflacaoRealData };
         }
 
         // Upsert Profile
@@ -172,7 +176,7 @@ export async function PUT(req: Request) {
                 ...(saldo !== undefined && { saldo }),
                 ...(emergencyFund !== undefined && { emergencyFund }),
                 ...(totalCarteira !== undefined && { totalCarteira }),
-                ...(carteira2Data !== undefined && { jornadaData: newJornadaData })
+                ...((carteira2Data !== undefined || inflacaoRealData !== undefined) && { jornadaData: newJornadaData })
             },
             create: {
                 userId: user.id,
@@ -180,7 +184,7 @@ export async function PUT(req: Request) {
                 saldo: saldo || 0,
                 emergencyFund: emergencyFund || 0,
                 totalCarteira: totalCarteira || 0,
-                jornadaData: carteira2Data ? { carteira2Data } : {}
+                jornadaData: newJornadaData
             }
         })
 

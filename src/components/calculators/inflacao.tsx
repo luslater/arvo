@@ -469,7 +469,7 @@ export default function CalculadoraInflacao() {
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/60 text-emerald-800 text-xs font-semibold uppercase tracking-wider mb-2.5">
             <ShieldCheck className="w-3.5 h-3.5 text-[#1f674f]" /> Correção Monetária & Poder de Compra
           </div>
-          <h1 className="text-3xl md:text-4xl font-serif text-dash-text">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-dash-text">
             Calculadora de Inflação & Poder de Compra
           </h1>
           <p className="text-dash-text-muted mt-2 max-w-xl mx-auto text-sm md:text-base">
@@ -706,7 +706,7 @@ export default function CalculadoraInflacao() {
                           {copied ? <Check className="w-4 h-4 text-emerald-300" /> : <Copy className="w-4 h-4" />}
                         </button>
                       </div>
-                      <h3 className="text-3xl sm:text-4xl font-serif font-bold tracking-tight mb-2 text-white">
+                      <h3 className="text-3xl sm:text-4xl font-sans font-bold tracking-tight mb-2 text-white">
                         {money.format(result.corrected)}
                       </h3>
                     </div>

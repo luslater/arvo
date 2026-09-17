@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, Suspense } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
@@ -50,6 +50,24 @@ function RegisterForm() {
     const [confirmPassword, setConfirmPassword] = useState("")
     const [error, setError] = useState("")
     const [loading, setLoading] = useState(false)
+
+    useEffect(() => {
+        const pName = searchParams.get("name")
+        const pEmail = searchParams.get("email")
+        const pPhone = searchParams.get("phone")
+        if (pName) setName(pName)
+        if (pEmail) setEmail(pEmail)
+        if (pPhone) setPhone(maskPhone(pPhone))
+
+        try {
+            const savedLead = JSON.parse(sessionStorage.getItem("arvo-lead") || "null")
+            if (savedLead) {
+                if (savedLead.name && !name && !pName) setName(savedLead.name)
+                if (savedLead.email && !email && !pEmail) setEmail(savedLead.email)
+                if (savedLead.phone && !phone && !pPhone) setPhone(maskPhone(savedLead.phone))
+            }
+        } catch {}
+    }, [searchParams])
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()

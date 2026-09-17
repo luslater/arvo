@@ -1,15 +1,44 @@
 "use client";
 
-import { useState } from "react";
-import { PlanejamentoContent } from "../planejamento/page";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import PlanejamentoContent from "../planejamento/page";
 import { CalculadoraJurosCompostos } from "@/components/calculators/juros-compostos";
 import { CalculadoraFinanciamento } from "@/components/calculators/financiamento";
-import { ComparadorContent } from "../comparador/page";
+import ComparadorPage from "../comparador/page";
 import CalculadoraInflacao from "@/components/calculators/inflacao";
-import { Calculator, TrendingUp, Home, ArrowLeftRight, Percent } from "lucide-react";
+import { CalculadoraMinhaInflacaoReal } from "@/components/calculators/minha-inflacao-real";
+import { CalculadoraAposentadoriaBase } from "@/components/calculators/aposentadoria-base";
+import { Calculator, TrendingUp, Home, ArrowLeftRight, Percent, Shield } from "lucide-react";
 
-export default function CalculadorasHubPage() {
-    const [activeTab, setActiveTab] = useState<"pl" | "compostos" | "financiamento" | "comparador" | "inflacao">("pl");
+function StairsIcon({ className = "w-4 h-4" }: { className?: string }) {
+    return (
+        <svg
+            className={className}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+        >
+            <path d="M4 19h4v-4h4v-4h4V7h4" />
+        </svg>
+    );
+}
+
+export type CalculadoraTab = "aposentadoria-base" | "inflacao-real" | "pl" | "compostos" | "financiamento" | "comparador" | "inflacao";
+
+function CalculadorasHubInner() {
+    const searchParams = useSearchParams();
+    const tabParam = searchParams.get("tab") as CalculadoraTab | null;
+    const [activeTab, setActiveTab] = useState<CalculadoraTab>("aposentadoria-base");
+
+    useEffect(() => {
+        if (tabParam && ["aposentadoria-base", "inflacao-real", "pl", "compostos", "financiamento", "comparador", "inflacao"].includes(tabParam)) {
+            setActiveTab(tabParam);
+        }
+    }, [tabParam]);
 
     return (
         <div className="flex flex-col gap-6 w-full max-w-7xl mx-auto pb-12 pt-6">
@@ -25,7 +54,27 @@ export default function CalculadorasHubPage() {
                 </div>
             </div>
 
-            <div className="bg-dash-surface border border-dash-border p-1.5 rounded-[16px] flex flex-wrap gap-2 w-full md:w-max shadow-sm">
+            <div className="bg-dash-surface border border-dash-border p-1.5 rounded-[16px] flex flex-wrap gap-2 w-full shadow-sm">
+                <button
+                    onClick={() => setActiveTab("aposentadoria-base")}
+                    className={`flex-1 md:flex-none px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-2 ${activeTab === "aposentadoria-base"
+                        ? "bg-dash-accent text-white shadow-md scale-[1.02]"
+                        : "text-dash-text-muted hover:text-dash-text hover:bg-dash-surface-active"
+                        }`}
+                >
+                    <Shield className="w-4 h-4" />
+                    Aposentadoria Base
+                </button>
+                <button
+                    onClick={() => setActiveTab("inflacao-real")}
+                    className={`flex-1 md:flex-none px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-2 ${activeTab === "inflacao-real"
+                        ? "bg-dash-accent text-white shadow-md scale-[1.02]"
+                        : "text-dash-text-muted hover:text-dash-text hover:bg-dash-surface-active"
+                        }`}
+                >
+                    <StairsIcon className="w-4 h-4" />
+                    Minha Inflação Real
+                </button>
                 <button
                     onClick={() => setActiveTab("pl")}
                     className={`flex-1 md:flex-none px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-2 ${activeTab === "pl"
@@ -74,12 +123,14 @@ export default function CalculadorasHubPage() {
                         }`}
                 >
                     <Calculator className="w-4 h-4" />
-                    Correção de Inflação
+                    Correção Histórica
                 </button>
             </div>
 
             {/* Container principal das calculadoras */}
-            <div className={`mt-2 ${activeTab === 'comparador' || activeTab === 'pl' ? '' : 'bg-dash-surface rounded-[24px] p-6 lg:p-8 overflow-hidden shadow-sm border border-dash-border'}`}>
+            <div className={`mt-2 ${activeTab === 'comparador' || activeTab === 'pl' || activeTab === 'inflacao-real' || activeTab === 'aposentadoria-base' ? '' : 'bg-dash-surface rounded-[24px] p-6 lg:p-8 overflow-hidden shadow-sm border border-dash-border'}`}>
+                {activeTab === "aposentadoria-base" && <CalculadoraAposentadoriaBase />}
+                {activeTab === "inflacao-real" && <CalculadoraMinhaInflacaoReal />}
                 {activeTab === "pl" && (
                     <div className="bg-white border border-[#e4e0d7] rounded-[28px] p-6 md:p-10 shadow-xs">
                         <PlanejamentoContent />
@@ -89,7 +140,7 @@ export default function CalculadorasHubPage() {
                 {activeTab === "financiamento" && <CalculadoraFinanciamento />}
                 {activeTab === "comparador" && (
                     <div className="bg-white rounded-3xl overflow-hidden mt-0 -mx-4 sm:mx-0">
-                        <ComparadorContent />
+                        <ComparadorPage />
                     </div>
                 )}
                 {activeTab === "inflacao" && (
@@ -99,6 +150,14 @@ export default function CalculadorasHubPage() {
                 )}
             </div>
         </div>
+    );
+}
+
+export default function CalculadorasHubPage() {
+    return (
+        <Suspense fallback={<div className="p-8 text-center text-sm text-dash-text-muted">Carregando calculadoras...</div>}>
+            <CalculadorasHubInner />
+        </Suspense>
     );
 }
 
