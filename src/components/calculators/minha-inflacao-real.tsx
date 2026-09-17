@@ -32,7 +32,6 @@ import {
   BookOpen,
   SlidersHorizontal,
   ArrowRight,
-  Target,
   Wallet,
   ShieldAlert,
   ArrowUpRight,
@@ -607,9 +606,6 @@ const CustomDonutTooltip = ({
 export function CalculadoraMinhaInflacaoReal() {
   const { data: session } = useSession();
 
-  // Abas principais: Cesta de Consumo vs. Módulo de Objetivos
-  const [activeMainTab, setActiveMainTab] = useState<"cesta" | "objetivo">("cesta");
-
   // Metodologia da Base dos Gastos: Final (Atuais) vs. Início (12 meses atrás)
   const [expenseBase, setExpenseBase] = useState<"final" | "initial">("final");
 
@@ -649,16 +645,6 @@ export function CalculadoraMinhaInflacaoReal() {
 
   // Ordenação da tabela detalhada
   const [tableSort, setTableSort] = useState<"contrib" | "peso" | "padrao">("contrib");
-
-  // Módulo de Objetivos ("Quanto encareceu meu objetivo?")
-  const [goalName, setGoalName] = useState<string>("Ex: Troca de Carro");
-  const [goalPriceBefore, setGoalPriceBefore] = useState<string>("80.000");
-  const [goalPriceCurrent, setGoalPriceCurrent] = useState<string>("89.900");
-  const [goalDateBefore, setGoalDateBefore] = useState<string>("Ago/2025");
-  const [goalDateCurrent, setGoalDateCurrent] = useState<string>("Jul/2026");
-  const [goalSavingsBefore, setGoalSavingsBefore] = useState<string>("40.000");
-  const [goalSavingsCurrent, setGoalSavingsCurrent] = useState<string>("55.000");
-  const [goalIpcaRate, setGoalIpcaRate] = useState<string>("4.44");
 
   const [isLoaded, setIsLoaded] = useState(false);
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -1086,44 +1072,6 @@ export function CalculadoraMinhaInflacaoReal() {
   }, [incomeInitial, incomeCurrent, basketCalc.costInitial, basketCalc.costCurrent, basketCalc.totalInflationPct]);
 
   // ==========================================================================
-  // MÓDULO: QUANTO ENCARECEU MEU OBJETIVO?
-  // ==========================================================================
-  const goalCalc = useMemo(() => {
-    const p0 = parseFloat(goalPriceBefore.replace(/[^\d.,]/g, "").replace(",", "."));
-    const p1 = parseFloat(goalPriceCurrent.replace(/[^\d.,]/g, "").replace(",", "."));
-    const s0 = parseFloat(goalSavingsBefore.replace(/[^\d.,]/g, "").replace(",", "."));
-    const s1 = parseFloat(goalSavingsCurrent.replace(/[^\d.,]/g, "").replace(",", "."));
-    const ipcaRate = parseFloat(goalIpcaRate.replace(/[^\d.,]/g, "").replace(",", "."));
-
-    const hasPrices = isFinite(p0) && isFinite(p1) && p0 > 0 && p1 > 0;
-    const hasSavings = isFinite(s0) && isFinite(s1) && s1 >= 0;
-    const ipcaDec = isFinite(ipcaRate) ? ipcaRate / 100 : 0.0444;
-
-    if (!hasPrices) return null;
-
-    const nominalIncreasePct = ((p1 - p0) / p0) * 100;
-    const nominalIncreaseDecimal = (p1 - p0) / p0;
-    const realIncreaseAboveIpcaPct = ((1 + nominalIncreaseDecimal) / (1 + ipcaDec) - 1) * 100;
-
-    const coverageBeforePct = hasSavings && p0 > 0 ? (s0 / p0) * 100 : null;
-    const coverageCurrentPct = hasSavings && p1 > 0 ? (s1 / p1) * 100 : null;
-    const remainingToGoal = hasSavings ? Math.max(0, p1 - s1) : Math.max(0, p1);
-
-    return {
-      nominalIncreasePct,
-      nominalDiff: p1 - p0,
-      realIncreaseAboveIpcaPct,
-      coverageBeforePct,
-      coverageCurrentPct,
-      remainingToGoal,
-      p0,
-      p1,
-      s0: hasSavings ? s0 : 0,
-      s1: hasSavings ? s1 : 0
-    };
-  }, [goalPriceBefore, goalPriceCurrent, goalSavingsBefore, goalSavingsCurrent, goalIpcaRate]);
-
-  // ==========================================================================
   // DADOS VISUAIS (GRÁFICO DONUT E COMPARATIVO DE ÍNDICES)
   // ==========================================================================
   const categoryChartData = useMemo(() => {
@@ -1250,39 +1198,10 @@ export function CalculadoraMinhaInflacaoReal() {
           </p>
         </div>
 
-        {/* Navegação entre Módulos: Cesta de Consumo vs Quanto Encareceu Meu Objetivo */}
-        <div className="flex p-1 bg-[#f6f4ef] rounded-2xl border border-[#e4e0d7] max-w-md">
-          <button
-            type="button"
-            onClick={() => setActiveMainTab("cesta")}
-            className={`flex-1 py-2.5 px-4 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
-              activeMainTab === "cesta"
-                ? "bg-white text-[#123044] shadow-xs scale-[1.01]"
-                : "text-[#667085] hover:text-[#123044]"
-            }`}
-          >
-            <PieIcon size={14} className={activeMainTab === "cesta" ? "text-[#1f674f]" : ""} />
-            Cesta de Consumo
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveMainTab("objetivo")}
-            className={`flex-1 py-2.5 px-4 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
-              activeMainTab === "objetivo"
-                ? "bg-white text-[#123044] shadow-xs scale-[1.01]"
-                : "text-[#667085] hover:text-[#123044]"
-            }`}
-          >
-            <Target size={14} className={activeMainTab === "objetivo" ? "text-[#1f674f]" : ""} />
-            Quanto Encareceu Meu Objetivo?
-          </button>
-        </div>
       </div>
 
-      {activeMainTab === "cesta" && (
-        <>
-          {/* ─── GRID PRINCIPAL: FORMULÁRIO (ESQUERDA) + RESULTADOS (DIREITA) ─── */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      {/* ─── GRID PRINCIPAL: FORMULÁRIO (ESQUERDA) + RESULTADOS (DIREITA) ─── */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             {/* COLUNA ESQUERDA: CONFIGURAÇÃO + CATEGORIAS + COMPROMISSOS + RENDA */}
             <div className="lg:col-span-7 space-y-6">
               {/* Card 1: Localidade & Seleção da Base Metodológica */}
@@ -2468,205 +2387,6 @@ export function CalculadoraMinhaInflacaoReal() {
               </div>
             </div>
           </div>
-        </>
-      )}
-
-      {/* ─── MÓDULO SEPARADO: "QUANTO ENCARECEU MEU OBJETIVO?" ─── */}
-      {activeMainTab === "objetivo" && (
-        <div className="space-y-8">
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#e4e0d7] shadow-xs space-y-6">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-[#e8f1ed] text-[#1f674f] flex items-center justify-center font-bold">
-                <Target size={20} />
-              </div>
-              <div>
-                <h3 className="text-xl font-bold text-[#123044] font-sans">
-                  Quanto Encareceu Meu Objetivo?
-                </h3>
-                <p className="text-xs text-[#667085] mt-0.5">
-                  Acompanhe a variação real de preço de um bem específico (imóvel, carro, curso, reforma) descontada a inflação geral do IPCA.
-                </p>
-              </div>
-            </div>
-
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              <div className="space-y-1.5 sm:col-span-2 lg:col-span-1">
-                <label className="text-xs font-bold text-[#123044] block">Nome do Objetivo / Bem:</label>
-                <input
-                  type="text"
-                  value={goalName}
-                  onChange={(e) => setGoalName(e.target.value)}
-                  placeholder="Ex: Carro SUV / Entrada do Apartamento"
-                  className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-3 py-2 text-xs font-bold text-[#123044]"
-                />
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-[#123044] block">Preço Anterior e Data:</label>
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="relative">
-                    <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs font-bold text-[#667085]">R$</span>
-                    <input
-                      type="text"
-                      value={goalPriceBefore}
-                      onChange={(e) => setGoalPriceBefore(e.target.value)}
-                      placeholder="80.000"
-                      className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl pl-8 pr-2 py-2 text-xs font-bold text-[#123044]"
-                    />
-                  </div>
-                  <input
-                    type="text"
-                    value={goalDateBefore}
-                    onChange={(e) => setGoalDateBefore(e.target.value)}
-                    placeholder="Ago/2025"
-                    className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-2.5 py-2 text-xs font-bold text-center text-[#123044]"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-[#123044] block">Preço Atual e Data:</label>
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="relative">
-                    <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs font-bold text-[#667085]">R$</span>
-                    <input
-                      type="text"
-                      value={goalPriceCurrent}
-                      onChange={(e) => setGoalPriceCurrent(e.target.value)}
-                      placeholder="89.900"
-                      className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl pl-8 pr-2 py-2 text-xs font-bold text-[#123044]"
-                    />
-                  </div>
-                  <input
-                    type="text"
-                    value={goalDateCurrent}
-                    onChange={(e) => setGoalDateCurrent(e.target.value)}
-                    placeholder="Jul/2026"
-                    className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-2.5 py-2 text-xs font-bold text-center text-[#123044]"
-                  />
-                </div>
-              </div>
-
-              {/* Poupança / Reservas para o objetivo */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-[#123044] block">
-                  Recursos Reservados Anteriormente (Opcional):
-                </label>
-                <div className="relative">
-                  <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs font-bold text-[#667085]">R$</span>
-                  <input
-                    type="text"
-                    value={goalSavingsBefore}
-                    onChange={(e) => setGoalSavingsBefore(e.target.value)}
-                    placeholder="40.000"
-                    className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl pl-8 pr-2 py-2 text-xs font-bold text-[#123044]"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-[#123044] block">
-                  Recursos Reservados Atualmente (Opcional):
-                </label>
-                <div className="relative">
-                  <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs font-bold text-[#667085]">R$</span>
-                  <input
-                    type="text"
-                    value={goalSavingsCurrent}
-                    onChange={(e) => setGoalSavingsCurrent(e.target.value)}
-                    placeholder="55.000"
-                    className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl pl-8 pr-2 py-2 text-xs font-bold text-[#123044]"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-[#123044] block">
-                  IPCA Acumulado de Referência (% no período):
-                </label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    value={goalIpcaRate}
-                    onChange={(e) => setGoalIpcaRate(e.target.value)}
-                    placeholder="4.44"
-                    className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl pl-3 pr-8 py-2 text-xs font-bold text-[#123044]"
-                  />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-[#667085]">%</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Resultado do Objetivo */}
-            {goalCalc ? (
-              <div className="p-6 bg-[#fbfaf5] rounded-2xl border border-[#e4e0d7] space-y-5">
-                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <div className="p-4 bg-white rounded-xl border border-[#e4e0d7] space-y-1">
-                    <span className="text-[11px] text-[#667085] block uppercase tracking-wider font-bold">
-                      Aumento Nominal
-                    </span>
-                    <strong className="text-xl font-bold text-[#123044] font-sans block">
-                      {fmtPct(goalCalc.nominalIncreasePct)}
-                    </strong>
-                    <span className="text-[11px] text-[#667085]">
-                      +{fmtMoney(goalCalc.nominalDiff)}
-                    </span>
-                  </div>
-
-                  <div className="p-4 bg-white rounded-xl border border-[#e4e0d7] space-y-1">
-                    <span className="text-[11px] text-[#667085] block uppercase tracking-wider font-bold">
-                      IPCA no Período
-                    </span>
-                    <strong className="text-xl font-bold text-[#667085] font-sans block">
-                      {fmtPct(parseFloat(goalIpcaRate) || 4.44)}
-                    </strong>
-                    <span className="text-[11px] text-[#667085]">
-                      Inflação geral média
-                    </span>
-                  </div>
-
-                  <div className="p-4 bg-white rounded-xl border border-[#e4e0d7] space-y-1">
-                    <span className="text-[11px] text-[#667085] block uppercase tracking-wider font-bold">
-                      Aumento Real Acima do IPCA
-                    </span>
-                    <strong
-                      className={`text-xl font-bold font-sans block ${
-                        goalCalc.realIncreaseAboveIpcaPct > 0 ? "text-[#b34a3c]" : "text-[#1f674f]"
-                      }`}
-                    >
-                      {goalCalc.realIncreaseAboveIpcaPct > 0 ? "▲ +" : "▼ "}
-                      {fmtPct(goalCalc.realIncreaseAboveIpcaPct)}
-                    </strong>
-                    <span className="text-[11px] text-[#667085]">
-                      Fórmula geométrica real
-                    </span>
-                  </div>
-
-                  <div className="p-4 bg-white rounded-xl border border-[#e4e0d7] space-y-1">
-                    <span className="text-[11px] text-[#667085] block uppercase tracking-wider font-bold">
-                      Saldo que Falta Hoje
-                    </span>
-                    <strong className="text-xl font-bold text-[#1f674f] font-sans block">
-                      {fmtMoney(goalCalc.remainingToGoal)}
-                    </strong>
-                    {goalCalc.coverageCurrentPct !== null && (
-                      <span className="text-[11px] text-[#1f674f] font-bold">
-                        {fmtPct(goalCalc.coverageCurrentPct, 1)} do preço coberto
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                <div className="text-[11px] text-[#667085] leading-relaxed pt-2 border-t border-[#f0ece1]">
-                  <p>
-                    💡 <strong>Orientação de Planejamento:</strong> Certifique-se de comparar versões, ano-modelo e condições equivalentes do bem. O crescimento do saldo reservado decorre principalmente dos seus novos aportes de poupança somados à rentabilidade dos investimentos.
-                  </p>
-                </div>
-              </div>
-            ) : null}
-          </div>
-        </div>
-      )}
     </div>
   );
 }
