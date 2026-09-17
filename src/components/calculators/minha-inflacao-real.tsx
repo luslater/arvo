@@ -642,6 +642,7 @@ export function CalculadoraMinhaInflacaoReal() {
   // Visualização no card direito: Gráfico Donut vs Índices Oficiais
   const [rightCardTab, setRightCardTab] = useState<"gastos" | "indices">("gastos");
   const [showIdxDefs, setShowIdxDefs] = useState<boolean>(false);
+  const [showFaq, setShowFaq] = useState<boolean>(false);
 
   // Ordenação da tabela detalhada
   const [tableSort, setTableSort] = useState<"contrib" | "peso" | "padrao">("contrib");
@@ -1161,19 +1162,19 @@ export function CalculadoraMinhaInflacaoReal() {
 
   return (
     <div className="space-y-8 max-w-6xl mx-auto">
-      {/* ─── TOPO: NOME DA FERRAMENTA, DISCLAIMER E ABAS PRINCIPAIS ─── */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#e4e0d7] shadow-xs space-y-5">
+      {/* ─── TOPO: NOME DA FERRAMENTA E CONTROLES ─── */}
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#e4e0d7] shadow-xs">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#e8f1ed] text-[#1f674f] text-xs font-bold mb-2">
-              <Sparkles size={13} />
+              <Sparkles size={13} className="text-[#1f674f]" />
               Minha Inflação Real · Metodologia ARVO
             </div>
             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#123044] font-sans">
               Minha Inflação Real
             </h2>
             <p className="text-xs sm:text-sm text-[#667085] mt-1">
-              Referência dos dados: <strong>Julho/2026</strong> (acumulado de 12 meses: Ago/2025 a Jul/2026) · Fontes: IBGE/SNIPC e FGV.
+              Acumulado de 12 meses (Ago/2025 a Jul/2026) · Fontes: IBGE e FGV. Gastos ponderados pelo seu perfil.
             </p>
           </div>
 
@@ -1181,23 +1182,14 @@ export function CalculadoraMinhaInflacaoReal() {
             <button
               type="button"
               onClick={handleClearAll}
-              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-[#667085] hover:text-[#123044] bg-[#f6f4ef] hover:bg-[#e4e0d7] rounded-xl transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-[#123044] hover:text-black bg-[#f6f4ef] hover:bg-[#e4e0d7] border border-[#e4e0d7] rounded-xl transition-colors cursor-pointer"
               title="Limpar todos os campos preenchidos"
             >
-              <RotateCcw size={13} />
+              <RotateCcw size={13} className="text-[#123044]" />
               Zerar Valores
             </button>
           </div>
         </div>
-
-        {/* Texto explicativo e disclaimer de responsabilidade metodológica */}
-        <div className="p-4 bg-[#fbfaf5] rounded-2xl border border-[#e4e0d7] flex items-start gap-3">
-          <Info size={16} className="text-[#1f674f] shrink-0 mt-0.5" />
-          <p className="text-xs text-[#667085] leading-relaxed">
-            “Estimamos a variação do custo da sua cesta combinando seus gastos com variações de preços do IBGE e, quando informados, seus reajustes pessoais. O resultado pode diferir da inflação efetivamente vivida pela sua família. Personalizar os pesos não significa conhecer os preços exatos pagos no caixa.”
-          </p>
-        </div>
-
       </div>
 
       {/* ─── GRID PRINCIPAL: FORMULÁRIO (ESQUERDA) + RESULTADOS (DIREITA) ─── */}
@@ -1208,13 +1200,12 @@ export function CalculadoraMinhaInflacaoReal() {
               <div className="bg-white rounded-3xl p-6 border border-[#e4e0d7] shadow-xs space-y-5">
                 {/* Localidade */}
                 <div className="space-y-3">
-                  <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 rounded-lg bg-[#e8f1ed] text-[#1f674f] flex items-center justify-center font-bold">
-                      <MapPin size={15} />
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-xl bg-[#e8f1ed] border border-[#d2e4dc] text-[#1f674f] flex items-center justify-center font-bold shrink-0">
+                      <MapPin size={16} className="text-[#1f674f]" />
                     </div>
                     <div>
                       <h3 className="text-sm font-bold text-[#123044]">Sua Localidade</h3>
-                      <p className="text-[11px] text-[#667085]">Ajusta os preços para o índice regional apurado pelo IBGE</p>
                     </div>
                   </div>
 
@@ -1260,8 +1251,8 @@ export function CalculadoraMinhaInflacaoReal() {
                   </div>
 
                   {cityNote && (
-                    <p className="text-[11px] text-[#667085] bg-[#fbfaf5] p-3 rounded-xl border border-[#e4e0d7] flex items-start gap-2 leading-relaxed">
-                      <Info size={14} className="text-[#1f674f] shrink-0 mt-0.5" />
+                    <p className="text-[11px] text-[#667085] bg-[#fbfaf5] p-2.5 rounded-xl border border-[#e4e0d7] flex items-center gap-2">
+                      <Info size={14} className="text-[#1f674f] shrink-0" />
                       <span>{cityNote}</span>
                     </p>
                   )}
@@ -1269,13 +1260,12 @@ export function CalculadoraMinhaInflacaoReal() {
 
                 {/* Base Temporal dos Gastos: Atuais vs Início */}
                 <div className="pt-4 border-t border-[#f0ece1] space-y-3">
-                  <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 rounded-lg bg-[#fbf4e8] text-[#c08a34] flex items-center justify-center font-bold">
-                      <SlidersHorizontal size={15} />
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-xl bg-[#e8f1ed] border border-[#d2e4dc] text-[#1f674f] flex items-center justify-center font-bold shrink-0">
+                      <SlidersHorizontal size={16} className="text-[#1f674f]" />
                     </div>
                     <div>
-                      <h3 className="text-sm font-bold text-[#123044]">Base Temporal dos Valores Informados</h3>
-                      <p className="text-[11px] text-[#667085]">Determina rigorosamente a fórmula matemática de reconstrução dos pesos</p>
+                      <h3 className="text-sm font-bold text-[#123044]">Base Temporal dos Gastos</h3>
                     </div>
                   </div>
 
@@ -1290,11 +1280,11 @@ export function CalculadoraMinhaInflacaoReal() {
                       }`}
                     >
                       <div className="flex items-center justify-between font-bold text-xs">
-                        <span>Gastos Atuais (Recomendado)</span>
+                        <span>Gastos Atuais (Padrão)</span>
                         {expenseBase === "final" && <CheckCircle2 size={14} className="text-[#1f674f]" />}
                       </div>
                       <p className="text-[11px] text-[#667085] mt-1 leading-snug">
-                        Valores do final dos 12 meses. A calculadora desconta a inflação de cada item para reconstruir o custo da mesma cesta 1 ano atrás.
+                        Desconta a inflação de cada item para reconstruir o custo de 1 ano atrás.
                       </p>
                     </button>
 
@@ -1312,7 +1302,7 @@ export function CalculadoraMinhaInflacaoReal() {
                         {expenseBase === "initial" && <CheckCircle2 size={14} className="text-[#1f674f]" />}
                       </div>
                       <p className="text-[11px] text-[#667085] mt-1 leading-snug">
-                        Valores do início do período. A calculadora aplica a variação de cada item para estimar quanto aquela cesta custaria hoje.
+                        Aplica a variação acumulada para projetar o custo atual da mesma cesta.
                       </p>
                     </button>
                   </div>
@@ -1321,13 +1311,10 @@ export function CalculadoraMinhaInflacaoReal() {
 
               {/* 9 Grupos Oficiais de Consumo (Accordions) */}
               <div className="space-y-3">
-                <div className="flex items-center justify-between px-1">
+                <div className="px-1">
                   <h3 className="text-xs font-bold uppercase tracking-wider text-[#667085]">
                     Cesta de Consumo (9 Grupos Oficiais do IPCA)
                   </h3>
-                  <span className="text-[11px] text-[#667085]">
-                    Preencha os itens representativos da sua família
-                  </span>
                 </div>
 
                 {INFLATION_GROUPS.map((g) => {
@@ -1349,18 +1336,16 @@ export function CalculadoraMinhaInflacaoReal() {
                       >
                         <div className="flex items-center gap-3 min-w-0">
                           <div
-                            className="w-8 h-8 rounded-xl flex items-center justify-center text-white shrink-0 font-bold"
-                            style={{ backgroundColor: g.color }}
+                            className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 border transition-all ${
+                              isOpen
+                                ? "bg-[#e8f1ed] text-[#1f674f] border-[#1f674f]/30 shadow-xs"
+                                : "bg-[#f6f4ef] text-[#123044] border-[#e4e0d7]"
+                            }`}
                           >
-                            <IconComp size={16} />
+                            <IconComp size={17} className={isOpen ? "text-[#1f674f]" : "text-[#123044]"} />
                           </div>
                           <div className="truncate">
                             <span className="text-sm font-bold text-[#123044] block truncate">{g.label}</span>
-                            {g.sub && (
-                              <span className="text-[11px] text-[#667085] block truncate font-normal">
-                                {g.sub}
-                              </span>
-                            )}
                           </div>
                         </div>
 
@@ -1375,7 +1360,7 @@ export function CalculadoraMinhaInflacaoReal() {
                           </div>
                           <ChevronDown
                             size={16}
-                            className={`text-[#667085] transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+                            className={`text-[#123044] transition-transform duration-200 ${isOpen ? "rotate-180 text-[#1f674f]" : ""}`}
                           />
                         </div>
                       </button>
@@ -1410,14 +1395,10 @@ export function CalculadoraMinhaInflacaoReal() {
                                             {it.label}
                                           </label>
 
-                                          {/* Badge de Origem do Dado */}
-                                          {isCustomized ? (
-                                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#fbf4e8] text-[#c08a34] border border-[#c08a34]/30">
-                                              ★ {effRate.sourceLabel}
-                                            </span>
-                                          ) : (
-                                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-[#f6f4ef] text-[#667085]">
-                                              {effRate.sourceLabel}
+                                          {/* Badge discreto apenas se for reajuste personalizado */}
+                                          {isCustomized && (
+                                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#fbf4e8] text-[#9e6919] border border-[#f0dfbe]">
+                                              ★ Reajuste pessoal
                                             </span>
                                           )}
                                         </div>
@@ -1436,7 +1417,7 @@ export function CalculadoraMinhaInflacaoReal() {
                                             onClick={() => setEditingItemKey(isEditing ? null : key)}
                                             className="text-[10px] font-bold text-[#1f674f] hover:underline cursor-pointer ml-1"
                                           >
-                                            {isCustomized ? "Editar reajuste pessoal" : "Personalizar reajuste"}
+                                            {isCustomized ? "Editar" : "Personalizar"}
                                           </button>
 
                                           {isCustomized && (
@@ -1446,7 +1427,7 @@ export function CalculadoraMinhaInflacaoReal() {
                                               className="text-[10px] font-bold text-[#b34a3c] hover:underline cursor-pointer flex items-center gap-0.5"
                                               title="Restaurar variação oficial do IBGE"
                                             >
-                                              <RotateCcw size={10} />
+                                              <RotateCcw size={10} className="text-[#b34a3c]" />
                                               Restaurar IBGE
                                             </button>
                                           )}
@@ -1647,21 +1628,17 @@ export function CalculadoraMinhaInflacaoReal() {
 
               {/* Seção 3: Compromissos Financeiros (Dívidas & Financiamentos - Separado do Consumo) */}
               <div className="bg-white rounded-3xl p-6 border border-[#e4e0d7] shadow-xs space-y-4">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-xl bg-[#e8eef2] text-[#0f2a3d] flex items-center justify-center font-bold">
-                    <Wallet size={16} />
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-xl bg-[#e8f1ed] border border-[#d2e4dc] text-[#1f674f] flex items-center justify-center font-bold shrink-0">
+                    <Wallet size={16} className="text-[#1f674f]" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold text-[#123044]">Compromissos Financeiros & Financiamentos (Opcional)</h3>
+                    <h3 className="text-sm font-bold text-[#123044]">Compromissos Financeiros (Opcional)</h3>
                     <p className="text-[11px] text-[#667085]">
-                      Mede a pressão sobre as saídas totais do seu orçamento, separado do índice de consumo de bens.
+                      Financiamentos e parcelas para acompanhar a pressão sobre o orçamento total, fora da cesta de consumo.
                     </p>
                   </div>
                 </div>
-
-                <p className="text-xs text-[#667085] bg-[#fbfaf5] p-3 rounded-xl border border-[#e4e0d7] leading-relaxed">
-                  <strong>Por que financiamentos não entram na inflação de consumo?</strong> A parcela de um financiamento é amortização de dívida (passivo financeiro), e não o consumo corrente de bens ou serviços. Incluir parcelas fixas diluiria artificialmente a inflação dos alimentos, energia e saúde que você consome.
-                </p>
 
                 <div className="space-y-3 pt-1">
                   {FINANCIAL_COMMITMENTS.map((fc) => {
@@ -1723,14 +1700,14 @@ export function CalculadoraMinhaInflacaoReal() {
 
               {/* Seção 4: Renda Familiar Líquida Inicial e Atual (Opcional) */}
               <div className="bg-white rounded-3xl p-6 border border-[#e4e0d7] shadow-xs space-y-4">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-xl bg-[#e8f1ed] text-[#1f674f] flex items-center justify-center font-bold">
-                    <TrendingUp size={16} />
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-xl bg-[#e8f1ed] border border-[#d2e4dc] text-[#1f674f] flex items-center justify-center font-bold shrink-0">
+                    <TrendingUp size={16} className="text-[#1f674f]" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold text-[#123044]">Evolução da Renda Líquida Familiar (Opcional)</h3>
+                    <h3 className="text-sm font-bold text-[#123044]">Evolução da Renda Líquida (Opcional)</h3>
                     <p className="text-[11px] text-[#667085]">
-                      Permite calcular se você ganhou ou perdeu poder de compra real em relação à sua cesta informada.
+                      Compara a evolução dos seus rendimentos com a inflação da sua cesta.
                     </p>
                   </div>
                 </div>
@@ -1827,10 +1804,10 @@ export function CalculadoraMinhaInflacaoReal() {
 
                       {/* Alerta de Cesta Parcial */}
                       {basketCalc.filledItemsCount < 4 && (
-                        <div className="p-3 bg-[#fbf4e8] rounded-xl border border-[#c08a34]/30 text-[11px] text-[#c08a34] flex items-start gap-2">
-                          <ShieldAlert size={14} className="shrink-0 mt-0.5" />
+                        <div className="p-2.5 bg-[#fbf4e8] rounded-xl border border-[#c08a34]/30 text-[11px] text-[#9e6919] flex items-center gap-2">
+                          <ShieldAlert size={14} className="text-[#9e6919] shrink-0" />
                           <span>
-                            Cesta informada contém apenas {basketCalc.filledItemsCount} {basketCalc.filledItemsCount === 1 ? "item" : "itens"}. O resultado reflete exclusivamente esse recorte específico, e não o custo total de vida da família.
+                            Cesta com {basketCalc.filledItemsCount} {basketCalc.filledItemsCount === 1 ? "item informado" : "itens informados"}. Preencha mais categorias para ampliar a precisão.
                           </span>
                         </div>
                       )}
@@ -1868,16 +1845,12 @@ export function CalculadoraMinhaInflacaoReal() {
                         </span>
                       </div>
                       <div className="text-right">
-                        <span className="text-[#667085] block text-[11px]">Impacto anualizado no patamar atual:</span>
+                        <span className="text-[#667085] block text-[11px]">Impacto anualizado (x12):</span>
                         <span className="text-xs font-extrabold text-[#1f674f] font-sans">
                           {basketCalc.annualizedImpact >= 0 ? "+" : ""}{fmtMoney(basketCalc.annualizedImpact)}/ano
                         </span>
                       </div>
                     </div>
-
-                    <p className="text-[10px] text-[#667085] leading-snug pt-1">
-                      * O valor anualizado multiplica a diferença do mês por 12. Não reflete o gasto extra acumulado ao longo do último ano, pois as despesas variam mês a mês.
-                    </p>
                   </div>
                 )}
 
@@ -2158,8 +2131,8 @@ export function CalculadoraMinhaInflacaoReal() {
                 <h3 className="text-lg font-bold text-[#123044] font-sans">
                   Maiores Responsáveis pelo Resultado
                 </h3>
-                <p className="text-xs text-[#667085] mt-1">
-                  Os itens que tiveram maior impacto positivo (puxando a sua inflação para cima) ou negativo (aliviando a sua cesta), combinando reajuste de preço e peso no cálculo.
+                <p className="text-xs text-[#667085] mt-0.5">
+                  Itens com maior impacto na sua taxa, ponderados pelo peso no seu orçamento.
                 </p>
               </div>
 
@@ -2171,7 +2144,7 @@ export function CalculadoraMinhaInflacaoReal() {
                         #{idx + 1} Maior Impacto
                       </span>
                       <span className="inline-flex items-center gap-1 font-bold text-xs text-[#B34A3C] font-sans">
-                        <ArrowUpRight size={13} />
+                        <ArrowUpRight size={13} className="text-[#B34A3C]" />
                         {fmtPp(it.contributionPp)}
                       </span>
                     </div>
@@ -2187,9 +2160,6 @@ export function CalculadoraMinhaInflacaoReal() {
                         <span>Peso no cálculo:</span>
                         <strong className="text-[#123044] font-bold font-sans">{fmtPct(it.weightInCalculation, 1)}</strong>
                       </div>
-                      <div className="text-[10px] text-[#667085] pt-0.5 truncate" title={it.sourceLabel}>
-                        {it.sourceLabel}
-                      </div>
                     </div>
                   </div>
                 ))}
@@ -2201,7 +2171,7 @@ export function CalculadoraMinhaInflacaoReal() {
                         Alívio de Preço
                       </span>
                       <span className="inline-flex items-center gap-1 font-bold text-xs text-[#1F674F] font-sans">
-                        <ArrowDownRight size={13} />
+                        <ArrowDownRight size={13} className="text-[#1F674F]" />
                         {fmtPp(it.contributionPp)}
                       </span>
                     </div>
@@ -2229,10 +2199,10 @@ export function CalculadoraMinhaInflacaoReal() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
                 <h3 className="text-lg font-bold text-[#123044] font-sans">
-                  Detalhamento Completo por Categoria e Item
+                  Detalhamento por Item
                 </h3>
-                <p className="text-xs text-[#667085] mt-1">
-                  A contribuição em pontos percentuais (p.p.) reflete quanto cada item adiciona à taxa final. A soma das contribuições fecha rigorosamente na inflação total.
+                <p className="text-xs text-[#667085] mt-0.5">
+                  Contribuição em pontos percentuais (p.p.) de cada despesa no índice final.
                 </p>
               </div>
 
@@ -2260,7 +2230,7 @@ export function CalculadoraMinhaInflacaoReal() {
                     <th className="py-3 px-4 text-right">Participação Atual</th>
                     <th className="py-3 px-4 text-right">Peso no Cálculo</th>
                     <th className="py-3 px-4 text-right">Variação 12m</th>
-                    <th className="py-3 px-4 text-left">Origem do Dado</th>
+                    <th className="py-3 px-4 text-left">Origem</th>
                     <th className="py-3 px-4 text-right">Contribuição (p.p.)</th>
                   </tr>
                 </thead>
@@ -2293,13 +2263,13 @@ export function CalculadoraMinhaInflacaoReal() {
                         </td>
                         <td className="py-2.5 px-4 text-left text-[11px] text-[#667085]">
                           <span
-                            className={`inline-flex px-2 py-0.5 rounded-md text-[10px] ${
+                            className={`inline-flex px-2 py-0.5 rounded-md text-[10px] font-bold ${
                               it.sourceType.startsWith("custom")
-                                ? "bg-[#fbf4e8] text-[#c08a34] font-bold"
+                                ? "bg-[#fbf4e8] text-[#9e6919] border border-[#f0dfbe]"
                                 : "bg-[#f6f4ef] text-[#667085]"
                             }`}
                           >
-                            {it.sourceType.startsWith("custom") ? "Personalizado" : "IBGE"}
+                            {it.sourceType.startsWith("custom") ? "Pessoal" : "IBGE"}
                           </span>
                         </td>
                         <td className="py-2.5 px-4 text-right font-bold font-sans">
@@ -2334,58 +2304,81 @@ export function CalculadoraMinhaInflacaoReal() {
             </div>
           </div>
 
-          {/* ─── SEÇÃO EDUCATIVA (6 TÓPICOS FUNDAMENTAIS) ─── */}
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#e4e0d7] shadow-xs space-y-6">
-            <div className="flex items-center gap-2">
-              <BookOpen size={18} className="text-[#1f674f]" />
-              <h3 className="text-lg font-bold text-[#123044] font-sans">
-                Conceitos Importantes para o seu Planejamento Financeiro
-              </h3>
-            </div>
-
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 text-xs">
-              <div className="p-4 bg-[#fbfaf5] rounded-2xl border border-[#e4e0d7] space-y-2">
-                <h4 className="font-bold text-[#123044]">1. Inflação Menor ≠ Preços Menores</h4>
-                <p className="text-[#667085] leading-relaxed">
-                  Desinflação significa que os preços continuam subindo, apenas em velocidade mais lenta. Os preços só caem no caso de <strong>deflação</strong> (taxa negativa acumulada).
-                </p>
+          {/* ─── SEÇÃO EDUCATIVA (OPCIONAL / RECOLHIDA) ─── */}
+          <div className="bg-white rounded-2xl border border-[#e4e0d7] overflow-hidden shadow-xs">
+            <button
+              type="button"
+              onClick={() => setShowFaq(!showFaq)}
+              className="w-full px-5 py-4 flex items-center justify-between text-left hover:bg-[#fcfbf9] transition-colors cursor-pointer"
+            >
+              <div className="flex items-center gap-2.5">
+                <div className="w-7 h-7 rounded-lg bg-[#e8f1ed] border border-[#d2e4dc] text-[#1f674f] flex items-center justify-center font-bold shrink-0">
+                  <BookOpen size={15} className="text-[#1f674f]" />
+                </div>
+                <span className="text-xs font-bold text-[#123044]">
+                  Conceitos e dúvidas frequentes sobre inflação pessoal
+                </span>
               </div>
+              <ChevronDown
+                size={16}
+                className={`text-[#123044] transition-transform duration-200 ${showFaq ? "rotate-180 text-[#1f674f]" : ""}`}
+              />
+            </button>
 
-              <div className="p-4 bg-[#fbfaf5] rounded-2xl border border-[#e4e0d7] space-y-2">
-                <h4 className="font-bold text-[#123044]">2. Por que sua Cesta Difere do IPCA?</h4>
-                <p className="text-[#667085] leading-relaxed">
-                  O IPCA afere uma família média (1 a 40 salários mínimos). Se a sua família aloca mais orçamento em educação privada, planos de saúde ou viagens, a sua inflação vivida será diferente da média nacional.
-                </p>
-              </div>
+            <AnimatePresence>
+              {showFaq && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  className="overflow-hidden"
+                >
+                  <div className="p-5 pt-2 border-t border-[#f0ece1] grid sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
+                    <div className="p-3.5 bg-[#fbfaf5] rounded-xl border border-[#e4e0d7] space-y-1.5">
+                      <h4 className="font-bold text-[#123044]">1. Inflação Menor ≠ Preços Menores</h4>
+                      <p className="text-[#667085] leading-relaxed text-[11px]">
+                        Desinflação é desaceleração do aumento. Os preços só caem em caso de deflação (taxa negativa).
+                      </p>
+                    </div>
 
-              <div className="p-4 bg-[#fbfaf5] rounded-2xl border border-[#e4e0d7] space-y-2">
-                <h4 className="font-bold text-[#123044]">3. Efeito Preço vs. Padrão de Vida</h4>
-                <p className="text-[#667085] leading-relaxed">
-                  Gastar mais porque comprou mais ou subiu de padrão (upgrade de carro, viagens extras) é mudança no estilo de vida, não inflação. Este cálculo isola o custo de manter a mesma cesta constante.
-                </p>
-              </div>
+                    <div className="p-3.5 bg-[#fbfaf5] rounded-xl border border-[#e4e0d7] space-y-1.5">
+                      <h4 className="font-bold text-[#123044]">2. Por que sua Cesta Difere do IPCA?</h4>
+                      <p className="text-[#667085] leading-relaxed text-[11px]">
+                        O IPCA afere uma família média (1 a 40 SM). Gastos maiores em educação privada, saúde ou viagens mudam o seu índice pessoal.
+                      </p>
+                    </div>
 
-              <div className="p-4 bg-[#fbfaf5] rounded-2xl border border-[#e4e0d7] space-y-2">
-                <h4 className="font-bold text-[#123044]">4. Reajuste (%) vs. Contribuição (p.p.)</h4>
-                <p className="text-[#667085] leading-relaxed">
-                  Um item que sobe 30%, mas representa apenas 1% do seu orçamento, contribui com modestos 0,30 p.p. Já a alimentação subindo 5% com 30% de peso adiciona 1,50 p.p. ao seu bolso.
-                </p>
-              </div>
+                    <div className="p-3.5 bg-[#fbfaf5] rounded-xl border border-[#e4e0d7] space-y-1.5">
+                      <h4 className="font-bold text-[#123044]">3. Efeito Preço vs. Padrão de Vida</h4>
+                      <p className="text-[#667085] leading-relaxed text-[11px]">
+                        Gastar mais por upgrade ou estilo de vida não é inflação. O cálculo isola o custo de manter a mesma cesta constante.
+                      </p>
+                    </div>
 
-              <div className="p-4 bg-[#fbfaf5] rounded-2xl border border-[#e4e0d7] space-y-2">
-                <h4 className="font-bold text-[#123044]">5. Inflação Passada não é Previsão</h4>
-                <p className="text-[#667085] leading-relaxed">
-                  O cálculo apura os últimos 12 meses históricos. Projetar essa mesma taxa para o futuro ignora a resposta da taxa Selic, choques de colheitas e variações cambiais.
-                </p>
-              </div>
+                    <div className="p-3.5 bg-[#fbfaf5] rounded-xl border border-[#e4e0d7] space-y-1.5">
+                      <h4 className="font-bold text-[#123044]">4. Reajuste (%) vs. Contribuição (p.p.)</h4>
+                      <p className="text-[#667085] leading-relaxed text-[11px]">
+                        Um item que sobe 30% mas pesa 1% contribui com 0,30 p.p. Já alimentação subindo 5% com peso 30% adiciona 1,50 p.p.
+                      </p>
+                    </div>
 
-              <div className="p-4 bg-[#fbfaf5] rounded-2xl border border-[#e4e0d7] space-y-2">
-                <h4 className="font-bold text-[#123044]">6. O que é o M2 na Economia?</h4>
-                <p className="text-[#667085] leading-relaxed">
-                  O M2 é um agregado monetário que mede o dinheiro em circulação e depósitos de poupança/títulos. É um indicador macroeconômico de liquidez, e não um índice de preços ao consumidor.
-                </p>
-              </div>
-            </div>
+                    <div className="p-3.5 bg-[#fbfaf5] rounded-xl border border-[#e4e0d7] space-y-1.5">
+                      <h4 className="font-bold text-[#123044]">5. Inflação Passada não é Previsão</h4>
+                      <p className="text-[#667085] leading-relaxed text-[11px]">
+                        Os dados apuram os últimos 12 meses. O futuro responde à taxa Selic, câmbio e safras agrícolas.
+                      </p>
+                    </div>
+
+                    <div className="p-3.5 bg-[#fbfaf5] rounded-xl border border-[#e4e0d7] space-y-1.5">
+                      <h4 className="font-bold text-[#123044]">6. O que é o M2 na Economia?</h4>
+                      <p className="text-[#667085] leading-relaxed text-[11px]">
+                        M2 é liquidez e dinheiro em circulação, um agregado macroeconômico e não um índice de preços ao consumidor.
+                      </p>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
     </div>
   );
