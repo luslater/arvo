@@ -5,7 +5,7 @@ import Image from "next/image"
 import { usePathname } from "next/navigation"
 import {
     LayoutDashboard, Wallet, BookOpen, HelpCircle,
-    Target, CreditCard, User, BarChart3, LogOut, ChevronDown, Calculator, TrendingUp, Lock, Check, Menu, X, Compass, Map, ShieldCheck, Scale, Calendar
+    Target, CreditCard, User, BarChart3, LogOut, ChevronDown, Calculator, TrendingUp, Lock, Check, Menu, X, Compass, Map, ShieldCheck, Scale, Calendar, Percent
 } from "lucide-react"
 import { useSession, signOut } from "next-auth/react"
 import { useState } from "react"
@@ -116,13 +116,15 @@ export function DashboardSidebar() {
                 <span className="text-[10px] font-semibold text-dash-text-light uppercase tracking-widest px-3 py-2 mt-1">Principal</span>
 
                 <NavLink href="/dashboard/jornada" icon={<Map className="w-4 h-4" />} label="Jornada" onClick={closeMobileMenu} />
+                <NavLink href="/dashboard/inflacao" icon={<Percent className="w-4 h-4" />} label="Calculadora de Inflação" onClick={closeMobileMenu} />
+                <NavLink href="/dashboard/aposentadoria-base" icon={<Target className="w-4 h-4" />} label="Aposentadoria Base" onClick={closeMobileMenu} />
+                <NavLink href="/dashboard/planejamento" icon={<TrendingUp className="w-4 h-4" />} label="PL" onClick={closeMobileMenu} />
                 <NavLink href="/dashboard/bussola" icon={<Compass className="w-4 h-4" />} label="Bússola" onClick={closeMobileMenu} />
                 <NavLink href="/dashboard/carteira" icon={<Wallet className="w-4 h-4" />} label="Minha Carteira" exact onClick={closeMobileMenu} />
-                <NavLink href="/dashboard/aposentadoria-base" icon={<Target className="w-4 h-4" />} label="Aposentadoria Base" onClick={closeMobileMenu} />
-                <NavLink href="/dashboard/calculadoras" icon={<Calculator className="w-4 h-4" />} label="Calculadoras" onClick={closeMobileMenu} />
 
                 <span className="text-[10px] font-semibold text-dash-text-light uppercase tracking-widest px-3 py-2 mt-4">Aprendizado</span>
                 <NavLink href="/dashboard/educacao" icon={<BookOpen className="w-4 h-4" />} label="Educação" onClick={closeMobileMenu} />
+                <NavLink href="/dashboard/calculadoras" icon={<Calculator className="w-4 h-4" />} label="Outras Calculadoras" onClick={closeMobileMenu} />
                 <span className="text-[10px] font-semibold text-dash-text-light uppercase tracking-widest px-3 py-2 mt-4">Conta & Contato</span>
                 <NavLink href="/dashboard/assinatura" icon={<CreditCard className="w-4 h-4" />} label="Assinatura" onClick={closeMobileMenu} />
                 <NavLink href="/dashboard/agendamento" icon={<Calendar className="w-4 h-4" />} label="Agendamento" onClick={closeMobileMenu} />

@@ -34,7 +34,7 @@ export function MobileBottomNav({ onOpenMenu }: MobileBottomNavProps) {
             href: "/dashboard/calculadoras",
             label: "Calculadora",
             icon: Calculator,
-            isActive: pathname.startsWith("/dashboard/calculadoras") || pathname.startsWith("/dashboard/planejamento"),
+            isActive: pathname.startsWith("/dashboard/calculadoras") || pathname.startsWith("/dashboard/planejamento") || pathname.startsWith("/dashboard/inflacao") || pathname.startsWith("/dashboard/aposentadoria-base"),
         },
     ];
 
