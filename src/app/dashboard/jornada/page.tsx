@@ -837,19 +837,13 @@ export default function PlanejamentoJornadaPage() {
                     {/* Top track bar with current step title */}
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-5 mb-5 border-b border-dash-border/60">
                         <div className="flex items-center gap-2">
-                            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#0F2A3D] text-[#FBBF24] text-xs font-extrabold tracking-wide uppercase whitespace-nowrap shrink-0 border border-amber-500/50 shadow-xs" style={{ color: "#FBBF24" }}>
-                                <Compass size={14} className="text-[#FBBF24] shrink-0" style={{ color: "#FBBF24" }} />
-                                <span className="!text-[#FBBF24] font-black" style={{ color: "#FBBF24" }}>
-                                    Marco {current + 1} de {PLAN_DATA.length}
-                                </span>
-                            </span>
-                            <span className="text-sm font-bold text-dash-text">
+                            <span className="text-base font-bold text-[#123044]">
                                 {currentStepData.title}
                             </span>
                         </div>
                         <div className="text-xs text-dash-text-light flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-dash-amber animate-pulse shrink-0" />
-                            <span className="font-medium">{ROUTE_PROGRESS_DESCRIPTIONS[current]}</span>
+                            <span className="w-2 h-2 rounded-full bg-[#1F674F] shrink-0" />
+                            <span className="font-medium text-[#667085]">{ROUTE_PROGRESS_DESCRIPTIONS[current]}</span>
                         </div>
                     </div>
 
@@ -860,7 +854,7 @@ export default function PlanejamentoJornadaPage() {
                             {/* Segmented Connecting Lines between Waypoint Nodes */}
                             <div className="absolute top-[24px] left-0 right-0 h-0.5 -z-0 pointer-events-none">
                                 {Array.from({ length: 6 }).map((_, i) => {
-                                    const isSegmentCompleted = stepStatuses[i] === "completed"
+                                    const isSegmentPassed = i < current
                                     const leftPct = ((i + 0.5) / 7) * 100
                                     const widthPct = (1 / 7) * 100
 
@@ -873,10 +867,10 @@ export default function PlanejamentoJornadaPage() {
                                                 width: `${widthPct}%`,
                                             }}
                                         >
-                                            {isSegmentCompleted ? (
-                                                <div className="w-full h-0.5 bg-[#1f674f] transition-all duration-300" />
+                                            {isSegmentPassed ? (
+                                                <div className="w-full h-0.5 bg-[#1F674F] transition-all duration-300" />
                                             ) : (
-                                                <div className="w-full h-0.5 border-t-2 border-dashed border-[#e4e0d7]" />
+                                                <div className="w-full h-0.5 border-t-2 border-dashed border-[#e4dfd5]" />
                                             )}
                                         </div>
                                     )
@@ -900,55 +894,28 @@ export default function PlanejamentoJornadaPage() {
                                             aria-label={`Marco ${idx + 1}: ${item.title}. Status: ${isCompleted ? "Concluído" : hasError ? "Com pendências" : "Pendente"}`}
                                             className="flex flex-col items-center text-center group cursor-pointer transition-transform duration-150 focus:outline-none"
                                         >
-                                            {/* Waypoint Beacon Node (Círculo tipo Boia Náutica) */}
+                                            {/* Waypoint Beacon Node */}
                                             <div className="relative flex items-center justify-center mb-3">
-                                                {/* Active Farol Concentric Dual-Ring Highlight with High Contrast */}
-                                                {isCurrent && (
-                                                    <span className="absolute -inset-2.5 rounded-full bg-amber-400/25 border-2 border-amber-500 shadow-md animate-pulse pointer-events-none" />
-                                                )}
-
                                                 <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-200 relative z-10 ${
                                                     isCurrent
-                                                        ? "bg-[#0F2A3D] border-[3px] border-amber-500 shadow-xl ring-4 ring-amber-400/50 scale-110"
-                                                        : isCompleted
-                                                            ? "bg-[#1F674F] border-2 border-[#1F674F] shadow-xs hover:scale-105"
-                                                            : hasError
-                                                                ? "bg-red-50 border-2 border-red-400 hover:bg-red-100"
-                                                                : "bg-white border-2 border-[#d6cfc2] hover:border-slate-400 hover:bg-slate-50 shadow-xs"
+                                                        ? "bg-[#1F674F] border-2 border-[#1F674F] shadow-md ring-4 ring-[#1F674F]/20 scale-110"
+                                                        : "bg-white border-2 border-[#e4dfd5] hover:border-[#1F674F] hover:bg-[#faf9f5] shadow-xs"
                                                 }`}>
                                                     <span 
-                                                        className={`tabular-nums text-base font-black leading-none ${
-                                                            isCurrent || isCompleted
-                                                                ? "text-white !text-white"
-                                                                : hasError
-                                                                    ? "text-red-700"
-                                                                    : "text-[#123044]"
+                                                        className={`tabular-nums text-base font-bold leading-none ${
+                                                            isCurrent ? "text-white" : "text-[#123044]"
                                                         }`}
-                                                        style={isCurrent || isCompleted ? { color: "#ffffff" } : { color: "#123044" }}
+                                                        style={isCurrent ? { color: "#ffffff" } : { color: "#123044" }}
                                                     >
                                                         {idx + 1}
                                                     </span>
                                                 </div>
-
-                                                {/* Overlaid Checkmark Badge for Completed Waypoints */}
-                                                {isCompleted && (
-                                                    <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-[#1F674F] text-white border-2 border-white flex items-center justify-center z-20 shadow-xs">
-                                                        <Check size={11} strokeWidth={3.5} />
-                                                    </span>
-                                                )}
-
-                                                {/* Overlaid Alert Badge for Errors */}
-                                                {hasError && !isCompleted && (
-                                                    <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-red-600 text-white border-2 border-white flex items-center justify-center z-20 shadow-xs">
-                                                        <AlertCircle size={11} strokeWidth={3.5} />
-                                                    </span>
-                                                )}
                                             </div>
 
                                             {/* Labels below node */}
                                             <div className="mt-2 w-full px-0.5">
                                                 <div className={`text-xs leading-snug transition-colors line-clamp-2 min-h-[32px] flex items-center justify-center ${
-                                                    isCurrent ? "text-[#0F2A3D] font-extrabold" : isCompleted ? "text-[#1f674f] font-bold" : "text-slate-700 font-medium group-hover:text-slate-900"
+                                                    isCurrent ? "text-[#1F674F] font-extrabold" : "text-[#123044] font-medium group-hover:text-[#1F674F]"
                                                 }`}>
                                                     {item.title.replace(/:.*/, "")}
                                                 </div>
