@@ -1,19 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
-import { DM_Sans } from "next/font/google";
 import { ClientProviders } from "@/components/client-providers";
-
-const dmSans = DM_Sans({
-    subsets: ["latin"],
-    variable: "--font-dm-sans",
-    weight: ["300", "400", "500", "600", "700"],
-});
-
-const dmSerif = DM_Sans({
-    weight: ["400", "600", "700"],
-    subsets: ["latin"],
-    variable: "--font-dm-serif",
-});
 
 export const viewport: Viewport = {
     width: "device-width",
@@ -119,7 +106,7 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="pt-BR" className={`${dmSans.variable} ${dmSerif.variable}`}>
+        <html lang="pt-BR">
             <head>
                 <link rel="preconnect" href="https://fonts.googleapis.com" />
                 <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

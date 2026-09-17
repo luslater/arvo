@@ -30,7 +30,6 @@ import {
 import data from '@/data/diagnostic-data.json';
 import { DEFAULT_INPUTS, project, money, pct, duration, formatBRLNumber, parseBRLNumber, type Inputs } from '@/lib/diagnostic-math';
 import { HISTORICAL_INFLATION, HISTORICAL_IGPM, PROFILES, portfolioForProfile, type DiagnosticProfile } from '@/lib/diagnostic-options';
-import './report.css';
 
 const colors = ['#ad986b', '#8c9d74', '#4fa080', '#2b6e76', '#143a50', '#765878', '#324bbc', '#b77d3e', '#137c81'];
 
