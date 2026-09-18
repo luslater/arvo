@@ -688,44 +688,44 @@ export function RaioXFluxoCaixa({ formData, onChange, onBulkChange }: RaioXFluxo
       </div>
 
       {/* ─── 2. NAVIGATION BAR (ABAS DO RAIO-X) ─── */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#e4e0d7] pb-2">
-        <div className="flex items-center gap-1 sm:gap-2 overflow-x-auto no-scrollbar">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#e4e0d7]">
+        <div className="flex items-center gap-0 overflow-x-auto no-scrollbar">
           <button
             type="button"
             onClick={() => setActiveTab("entradas")}
-            className={`px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer ${
+            className={`px-4 py-2.5 text-xs sm:text-sm font-bold transition-all cursor-pointer border-b-2 -mb-px whitespace-nowrap ${
               activeTab === "entradas"
-                ? "bg-[#1F674F] text-white shadow-xs"
-                : "bg-white border border-[#e4e0d7] text-[#667085] hover:text-[#123044] hover:bg-slate-50"
+                ? "border-[#1F674F] text-[#1F674F]"
+                : "border-transparent text-[#667085] hover:text-[#123044]"
             }`}
           >
-            <span>1. Entradas ({formatBRL(totalIncomes)})</span>
+            1. Entradas ({formatBRL(totalIncomes)})
           </button>
 
           <button
             type="button"
             onClick={() => setActiveTab("gastos")}
-            className={`px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer ${
+            className={`px-4 py-2.5 text-xs sm:text-sm font-bold transition-all cursor-pointer border-b-2 -mb-px whitespace-nowrap ${
               activeTab === "gastos"
-                ? "bg-[#1F674F] text-white shadow-xs"
-                : "bg-white border border-[#e4e0d7] text-[#667085] hover:text-[#123044] hover:bg-slate-50"
+                ? "border-[#1F674F] text-[#1F674F]"
+                : "border-transparent text-[#667085] hover:text-[#123044]"
             }`}
           >
-            <span>2. Gastos & Cesta ({formatBRL(totalExpenses)})</span>
+            2. Gastos & Cesta ({formatBRL(totalExpenses)})
           </button>
 
           <button
             type="button"
             onClick={() => setActiveTab("alertas")}
-            className={`px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer ${
+            className={`px-4 py-2.5 text-xs sm:text-sm font-bold transition-all cursor-pointer border-b-2 -mb-px whitespace-nowrap flex items-center gap-2 ${
               activeTab === "alertas"
-                ? "bg-[#1F674F] text-white shadow-xs"
-                : "bg-white border border-[#e4e0d7] text-[#667085] hover:text-[#123044] hover:bg-slate-50"
+                ? "border-[#1F674F] text-[#1F674F]"
+                : "border-transparent text-[#667085] hover:text-[#123044]"
             }`}
           >
-            <span>3. Controle & Alertas</span>
+            3. Controle & Alertas
             {alerts.filter(a => a.type === "danger" || a.type === "warning").length > 0 && (
-              <span className="w-5 h-5 rounded-full bg-amber-500 text-white text-[10px] font-extrabold flex items-center justify-center">
+              <span className="w-4.5 h-4.5 min-w-[18px] min-h-[18px] rounded-full bg-amber-500 text-white text-[10px] font-extrabold flex items-center justify-center">
                 {alerts.filter(a => a.type === "danger" || a.type === "warning").length}
               </span>
             )}
@@ -734,27 +734,27 @@ export function RaioXFluxoCaixa({ formData, onChange, onBulkChange }: RaioXFluxo
           <button
             type="button"
             onClick={() => setActiveTab("inflacao")}
-            className={`px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer ${
+            className={`px-4 py-2.5 text-xs sm:text-sm font-bold transition-all cursor-pointer border-b-2 -mb-px whitespace-nowrap ${
               activeTab === "inflacao"
-                ? "bg-[#1F674F] text-white shadow-xs"
-                : "bg-white border border-[#e4e0d7] text-[#667085] hover:text-[#123044] hover:bg-slate-50"
+                ? "border-[#1F674F] text-[#1F674F]"
+                : "border-transparent text-[#667085] hover:text-[#123044]"
             }`}
           >
-            <Percent className="w-3.5 h-3.5" />
-            <span>Minha Inflação Real</span>
+            Minha Inflação Real
           </button>
         </div>
 
-        {/* Botão de Leitura de Cartão com IA */}
+        {/* Botão de Leitura de Fatura */}
         <button
           type="button"
           onClick={() => setIsInvoiceModalOpen(true)}
-          className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#2B6E76] to-[#1F674F] hover:opacity-95 text-white text-xs font-bold shadow-sm flex items-center gap-2 transition-all cursor-pointer shrink-0"
+          className="mb-1 px-3.5 py-1.5 rounded-lg bg-white border border-[#e4e0d7] text-[#123044] text-xs font-bold flex items-center gap-2 hover:border-[#1f674f] hover:text-[#1f674f] transition-all cursor-pointer shrink-0"
         >
-          <Sparkles className="w-4 h-4 text-emerald-200" />
-          <span>Importar Fatura de Cartão com IA</span>
+          <CreditCard className="w-3.5 h-3.5" />
+          <span>Importar Fatura</span>
         </button>
       </div>
+
 
       {/* ─── ABA 1: ENTRADAS DETALHADAS ─── */}
       {activeTab === "entradas" && (
