@@ -23,12 +23,20 @@ export async function saveJornadaProgress(formData: Record<string, string>, isCo
         const calculatedProfile = calculateInvestorProfile(formData);
         const metrics = extractMetricsFromJornada(formData)
 
+        const existingJornada = user.profile?.jornadaData
+            ? (typeof user.profile.jornadaData === "string" ? JSON.parse(user.profile.jornadaData) : user.profile.jornadaData)
+            : {}
+        const mergedJornada = {
+            ...existingJornada,
+            ...formData
+        }
+
         // 1. Atualiza Profile
         if (user.profile) {
             await prisma.profile.update({
                 where: { id: user.profile.id },
                 data: {
-                    jornadaData: formData,
+                    jornadaData: mergedJornada,
                     jornadaCompleted: isCompleted,
                     portfolioType: calculatedProfile,
                     ...(metrics && {
@@ -42,7 +50,7 @@ export async function saveJornadaProgress(formData: Record<string, string>, isCo
             await prisma.profile.create({
                 data: {
                     userId: user.id,
-                    jornadaData: formData,
+                    jornadaData: mergedJornada,
                     jornadaCompleted: isCompleted,
                     portfolioType: calculatedProfile,
                     saldo: metrics?.aporteMensal || 0,

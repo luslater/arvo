@@ -72,27 +72,16 @@ export async function GET(req: Request) {
             currentProfile.portfolioType = "VISÃO"
         }
 
-        // Sync from jornadaData if current values are empty or defaults
-        if (currentProfile.jornadaData) {
+        // Sync from jornadaData only if portfolioType is not yet set
+        if (currentProfile.jornadaData && !currentProfile.portfolioType) {
             try {
                 const { extractMetricsFromJornada } = await import("@/lib/jornada-sync")
                 const jData = typeof currentProfile.jornadaData === "string" 
                     ? JSON.parse(currentProfile.jornadaData) 
                     : currentProfile.jornadaData
                 const metrics = extractMetricsFromJornada(jData)
-                if (metrics) {
-                    if ((!currentProfile.totalCarteira || currentProfile.totalCarteira === 0) && metrics.totalPatrimonio > 0) {
-                        currentProfile.totalCarteira = metrics.totalPatrimonio
-                    }
-                    if ((!currentProfile.emergencyFund || currentProfile.emergencyFund === 0) && metrics.reservaAtual > 0) {
-                        currentProfile.emergencyFund = metrics.reservaAtual
-                    }
-                    if ((!currentProfile.saldo || currentProfile.saldo === 0) && metrics.aporteMensal > 0) {
-                        currentProfile.saldo = metrics.aporteMensal
-                    }
-                    if (!currentProfile.portfolioType && metrics.profile) {
-                        currentProfile.portfolioType = metrics.profile
-                    }
+                if (metrics?.profile) {
+                    currentProfile.portfolioType = metrics.profile
                 }
             } catch (e) {
                 console.error("Error parsing jornadaData in profile GET:", e)
@@ -113,8 +102,9 @@ const profileSchema = z.object({
   saldo: z.number().min(0).optional(),
   emergencyFund: z.number().min(0).optional(),
   totalCarteira: z.number().min(0).optional(),
-  carteira2Data: z.any().optional(), // Pode ser tipado mais estritamente depois
+  carteira2Data: z.any().optional(),
   inflacaoRealData: z.any().optional(),
+  inflacaoRealDataV2: z.any().optional(),
 });
 
 export async function PUT(req: Request) {
@@ -133,7 +123,7 @@ export async function PUT(req: Request) {
             return new NextResponse("Bad Request: Payload inválido", { status: 400 })
         }
         
-        const { portfolioType, saldo, emergencyFund, totalCarteira, carteira2Data, inflacaoRealData } = validationResult.data
+        const { portfolioType, saldo, emergencyFund, totalCarteira, carteira2Data, inflacaoRealData, inflacaoRealDataV2 } = validationResult.data
 
         const url = new URL(req.url)
         const adminViewUser = url.searchParams.get("adminViewUser")
@@ -160,11 +150,28 @@ export async function PUT(req: Request) {
         
         let newJornadaData = user.profile?.jornadaData ? (typeof user.profile.jornadaData === 'string' ? JSON.parse(user.profile.jornadaData) : user.profile.jornadaData) : {};
         if (carteira2Data !== undefined) {
-            newJornadaData = { ...newJornadaData, carteira2Data };
+            if (carteira2Data === null) {
+                delete newJornadaData.carteira2Data;
+            } else {
+                newJornadaData = { ...newJornadaData, carteira2Data };
+            }
         }
         if (inflacaoRealData !== undefined) {
-            newJornadaData = { ...newJornadaData, inflacaoRealData };
+            if (inflacaoRealData === null) {
+                delete newJornadaData.inflacaoRealData;
+            } else {
+                newJornadaData = { ...newJornadaData, inflacaoRealData };
+            }
         }
+        if (inflacaoRealDataV2 !== undefined) {
+            if (inflacaoRealDataV2 === null) {
+                delete newJornadaData.inflacaoRealDataV2;
+            } else {
+                newJornadaData = { ...newJornadaData, inflacaoRealDataV2 };
+            }
+        }
+
+        const hasJornadaUpdate = carteira2Data !== undefined || inflacaoRealData !== undefined || inflacaoRealDataV2 !== undefined;
 
         // Upsert Profile
         const profile = await prisma.profile.upsert({
@@ -176,14 +183,14 @@ export async function PUT(req: Request) {
                 ...(saldo !== undefined && { saldo }),
                 ...(emergencyFund !== undefined && { emergencyFund }),
                 ...(totalCarteira !== undefined && { totalCarteira }),
-                ...((carteira2Data !== undefined || inflacaoRealData !== undefined) && { jornadaData: newJornadaData })
+                ...(hasJornadaUpdate && { jornadaData: newJornadaData })
             },
             create: {
                 userId: user.id,
                 portfolioType: (portfolioType === "VANGUARDA" || portfolioType === "VISAO") ? "VISÃO" : (portfolioType || "ABRIGO"),
-                saldo: saldo || 0,
-                emergencyFund: emergencyFund || 0,
-                totalCarteira: totalCarteira || 0,
+                saldo: saldo ?? 0,
+                emergencyFund: emergencyFund ?? 0,
+                totalCarteira: totalCarteira ?? 0,
                 jornadaData: newJornadaData
             }
         })

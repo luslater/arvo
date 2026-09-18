@@ -156,12 +156,16 @@ export default function LandingPage() {
           display: flex;
           align-items: center;
           gap: 10px;
-          font-family: 'Lora', Georgia, serif;
-          font-weight: 600;
+          font-family: var(--font-sans), 'Plus Jakarta Sans', sans-serif;
+          font-weight: 700;
           font-size: 20px;
-          color: #2B6E76;
+          color: #2B6E76 !important;
           text-decoration: none;
           letter-spacing: 0.04em;
+        }
+        .ui-logo span {
+          color: #2B6E76 !important;
+          font-weight: 700;
         }
         .ui-nav-links {
           display: flex;
@@ -478,9 +482,9 @@ export default function LandingPage() {
         {/* HEADER NAV */}
         <header className="ui-nav">
           <div className="ui-wrap ui-nav-inner">
-            <Link href="/" className="ui-logo">
-              <img src="/arvo-simbolo-blue.png" alt="ARVO" style={{ width: "24px", height: "24px", objectFit: "contain" }} />
-              <span>ARVO</span>
+            <Link href="/" className="ui-logo" style={{ color: "#2B6E76" }}>
+              <img src="/arvo-simbolo-green.png" alt="ARVO" style={{ width: "24px", height: "24px", objectFit: "contain" }} />
+              <span style={{ color: "#2B6E76", fontWeight: 700 }}>ARVO</span>
             </Link>
             <nav className="ui-nav-links">
               <a href="#como-funciona">Método</a>
@@ -1004,7 +1008,7 @@ export default function LandingPage() {
           <div className="ui-wrap">
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "24px", borderBottom: "1px solid rgba(255,255,255,0.1)", paddingBottom: "32px" }}>
               <div className="ui-logo" style={{ color: "#ffffff" }}>
-                <img src="/arvo-simbolo-blue.png" alt="ARVO Símbolo Oficial" style={{ width: "24px", height: "24px", objectFit: "contain" }} />
+                <img src="/arvo-simbolo-green.png" alt="ARVO Símbolo Oficial" style={{ width: "24px", height: "24px", objectFit: "contain" }} />
                 <span>ARVO</span>
               </div>
               <div style={{ display: "flex", gap: "24px", fontSize: "14px", color: "rgba(255,255,255,0.7)", flexWrap: "wrap" }}>

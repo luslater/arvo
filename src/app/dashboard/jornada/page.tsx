@@ -569,17 +569,33 @@ export default function PlanejamentoJornadaPage() {
 
         syncServerProgress()
 
+        const handleBeforeUnload = () => {
+            if (pendingSaveRef.current) {
+                saveJornadaProgress(pendingSaveRef.current.data, pendingSaveRef.current.isCompleted).catch(() => {})
+            }
+        }
+        window.addEventListener("beforeunload", handleBeforeUnload)
+
         return () => {
             isMounted = false
+            window.removeEventListener("beforeunload", handleBeforeUnload)
             if (saveTimeoutRef.current) {
                 clearTimeout(saveTimeoutRef.current)
+                saveTimeoutRef.current = null
+            }
+            if (pendingSaveRef.current) {
+                saveJornadaProgress(pendingSaveRef.current.data, pendingSaveRef.current.isCompleted).catch(() => {})
+                pendingSaveRef.current = null
             }
         }
     }, [])
 
     // ─── PERSISTENCE (DEBOUNCED SAVE) ──────────────────────────────────────────
+    const pendingSaveRef = useRef<{ data: Record<string, string>; isCompleted: boolean } | null>(null)
+
     const triggerSave = useCallback((dataToSave: Record<string, string>, isCompletedFlag: boolean = false) => {
         setSaveStatus("saving")
+        pendingSaveRef.current = { data: dataToSave, isCompleted: isCompletedFlag }
         
         // Instant local draft save
         if (typeof window !== "undefined") {
@@ -598,13 +614,16 @@ export default function PlanejamentoJornadaPage() {
                 if (res?.success) {
                     setSaveStatus("saved")
                     setLastSavedTime(new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }))
+                    if (pendingSaveRef.current?.data === dataToSave) {
+                        pendingSaveRef.current = null
+                    }
                 } else {
                     setSaveStatus("error")
                 }
             } catch (error) {
                 setSaveStatus("error")
             }
-        }, 1000)
+        }, 400)
     }, [])
 
     // Handle single input update

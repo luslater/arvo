@@ -42,36 +42,18 @@ export async function GET(req: Request) {
                     ? JSON.parse(user.profile.jornadaData)
                     : user.profile.jornadaData
                 const metrics = extractMetricsFromJornada(jData)
-                if (metrics) {
-                    if (!planData) {
-                        planData = {
-                            id: "synced-jornada",
-                            userId: user.id,
-                            monthlyContribution: metrics.aporteMensal,
-                            expectedReturn: metrics.expectedReturn,
-                            desiredLifestyleCost: metrics.desiredLifestyleCost,
-                            investmentPeriod: metrics.investmentPeriod,
-                            currentCapital: metrics.totalPatrimonio,
-                            createdAt: new Date(),
-                            updatedAt: new Date()
-                        } as any
-                    } else {
-                        if (!planData.monthlyContribution || planData.monthlyContribution === 0) {
-                            planData.monthlyContribution = metrics.aporteMensal
-                        }
-                        if (!planData.expectedReturn || planData.expectedReturn === 0) {
-                            planData.expectedReturn = metrics.expectedReturn
-                        }
-                        if (!planData.desiredLifestyleCost || planData.desiredLifestyleCost === 0) {
-                            planData.desiredLifestyleCost = metrics.desiredLifestyleCost
-                        }
-                        if (!planData.investmentPeriod || planData.investmentPeriod === 0) {
-                            planData.investmentPeriod = metrics.investmentPeriod
-                        }
-                        if (!planData.currentCapital || planData.currentCapital === 0) {
-                            planData.currentCapital = metrics.totalPatrimonio
-                        }
-                    }
+                if (metrics && !planData) {
+                    planData = {
+                        id: "synced-jornada",
+                        userId: user.id,
+                        monthlyContribution: metrics.aporteMensal,
+                        expectedReturn: metrics.expectedReturn,
+                        desiredLifestyleCost: metrics.desiredLifestyleCost,
+                        investmentPeriod: metrics.investmentPeriod,
+                        currentCapital: metrics.totalPatrimonio,
+                        createdAt: new Date(),
+                        updatedAt: new Date()
+                    } as any
                 }
             } catch (e) {
                 console.error("Error parsing jornadaData in financialPlan GET:", e)

@@ -106,7 +106,13 @@ function EditableMetric({
         : `${value.toLocaleString("pt-BR")}${suffix}`
 
     const handleSave = () => {
-        const parsed = prefix === "R$" ? parseBRL(input) : parseFloat(input.replace(",", "."))
+        const raw = input.trim()
+        if (raw === "") {
+            onSave(0)
+            setEditing(false)
+            return
+        }
+        const parsed = prefix === "R$" ? parseBRL(raw) : parseFloat(raw.replace(",", "."))
         if (!isNaN(parsed)) onSave(parsed)
         setEditing(false)
     }
@@ -149,8 +155,16 @@ function EditableMetric({
 export default function MinhaCarteiraPage() {
   const initialized = useRef(false);
   const { data: session } = useSession()
+  const sessionRef = useRef(session);
   const [data, setData] = useState<DashboardData | null>(null)
   const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+      sessionRef.current = session;
+      if (typeof window !== "undefined" && session?.user?.email) {
+          (window as any).__ARVO_USER_EMAIL__ = session.user.email;
+      }
+  }, [session]);
 
   const loadData = async () => {
       setLoading(true)
@@ -167,25 +181,69 @@ export default function MinhaCarteiraPage() {
           const profile = await profileRes.json()
           const plan = planRes.ok ? await planRes.json() : null
 
-          // Priority 1: Check informed portfolio from database (jornadaData.carteira2Data) or localStorage state
-          let savedState: any = null;
           const userScope = session?.user?.email ? encodeURIComponent(session.user.email) : 'guest';
           const storageKey = `simuladorCarteirasState_${userScope}_v2`;
 
+          let localState: any = null;
           try {
-              if (profile?.jornadaData) {
-                  const jData = typeof profile.jornadaData === 'string' ? JSON.parse(profile.jornadaData) : profile.jornadaData;
-                  if (jData?.carteira2Data && Array.isArray(jData.carteira2Data.portfolios)) {
-                      savedState = jData.carteira2Data;
-                  }
-              }
-              if (!savedState && typeof window !== "undefined" && window.localStorage) {
-                  savedState = JSON.parse(localStorage.getItem(storageKey) || "null");
-              }
-              if (savedState && typeof window !== "undefined" && window.localStorage) {
-                  localStorage.setItem(storageKey, JSON.stringify(savedState));
+              if (typeof window !== "undefined" && window.localStorage) {
+                  localState = JSON.parse(localStorage.getItem(storageKey) || localStorage.getItem('simuladorCarteirasState_guest_v2') || "null");
               }
           } catch (e) {}
+
+          let dbState: any = null;
+          if (profile?.jornadaData) {
+              const jData = typeof profile.jornadaData === 'string' ? JSON.parse(profile.jornadaData) : profile.jornadaData;
+              if (jData?.carteira2Data && Array.isArray(jData.carteira2Data.portfolios)) {
+                  dbState = jData.carteira2Data;
+              }
+          }
+
+          // Smart synchronization based on update timestamp
+          let savedState: any = null;
+          if (localState && dbState) {
+              const localTime = localState.updatedAt || 0;
+              const dbTime = dbState.updatedAt || 0;
+              if (localTime >= dbTime) {
+                  savedState = localState;
+                  // If local is newer, ensure DB has the latest data
+                  if (localTime > dbTime) {
+                      fetch('/api/user/profile', {
+                          method: 'PUT',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ carteira2Data: localState }),
+                          keepalive: true
+                      }).catch(() => {});
+                  }
+              } else {
+                  savedState = dbState;
+                  try {
+                      if (typeof window !== "undefined" && window.localStorage) {
+                          localStorage.setItem(storageKey, JSON.stringify(savedState));
+                      }
+                  } catch (e) {}
+              }
+          } else if (localState) {
+              savedState = localState;
+              fetch('/api/user/profile', {
+                  method: 'PUT',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ carteira2Data: localState }),
+                  keepalive: true
+              }).catch(() => {});
+          } else if (dbState) {
+              savedState = dbState;
+              try {
+                  if (typeof window !== "undefined" && window.localStorage) {
+                      localStorage.setItem(storageKey, JSON.stringify(savedState));
+                  }
+              } catch (e) {}
+          }
+
+          // Trigger hydration in DOM simulator if already initialized
+          if (savedState && typeof window !== "undefined" && typeof (window as any).__ARVO_HYDRATE_CARTEIRA__ === "function") {
+              (window as any).__ARVO_HYDRATE_CARTEIRA__(savedState);
+          }
 
           const activeInformed = savedState?.portfolios?.find((p: any) => p.holdings && p.holdings.length > 0);
           let calcReturn: number = 0;
@@ -238,7 +296,8 @@ export default function MinhaCarteiraPage() {
       await fetch(`/api/user/profile${qs}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(updates)
+          body: JSON.stringify(updates),
+          keepalive: true
       })
       setData(prev => prev ? { ...prev, ...updates } : prev)
   }
@@ -258,7 +317,8 @@ export default function MinhaCarteiraPage() {
               investmentPeriod: current.investmentPeriod,
               expectedReturn: current.expectedReturn,
               ...updates
-          })
+          }),
+          keepalive: true
       })
       setData(prev => prev ? { ...prev, ...updates } : prev)
   }
@@ -792,37 +852,73 @@ export default function MinhaCarteiraPage() {
         return p;
       }
 
-      const userScope = session?.user?.email ? encodeURIComponent(session.user.email) : 'guest';
-      const STORAGE_KEY = `simuladorCarteirasState_${userScope}_v2`;
+      function getStorageKey(){
+        const email = sessionRef.current?.user?.email || (typeof window !== 'undefined' && (window as any).__ARVO_USER_EMAIL__) || '';
+        return email ? `simuladorCarteirasState_${encodeURIComponent(email)}_v2` : `simuladorCarteirasState_guest_v2`;
+      }
 
       function saveState(){
         try{
           const customFunds = Object.values(FUND_BY_NAME)
             .filter((f:any) => f.isCustom)
             .map((f:any) => ({ name: f.name, values: f.values }));
-          const payload = { portfolios, nextId, nextColorIdx, customFundCounter, customFunds };
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+          const payload = { 
+            portfolios, 
+            nextId, 
+            nextColorIdx, 
+            customFundCounter, 
+            customFunds,
+            updatedAt: Date.now() 
+          };
+          const key = getStorageKey();
+          localStorage.setItem(key, JSON.stringify(payload));
+          if (key !== 'simuladorCarteirasState_guest_v2') {
+            localStorage.setItem('simuladorCarteirasState_guest_v2', JSON.stringify(payload));
+          }
 
           // Sincroniza diretamente no banco de dados central (PostgreSQL via Prisma / Profile)
-          if (session?.user?.email) {
-            fetch('/api/user/profile', {
-              method: 'PUT',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ carteira2Data: payload })
-            }).catch(() => {});
-          }
+          // Always call fetch with keepalive: true so deletion is never aborted on navigation
+          fetch('/api/user/profile', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ carteira2Data: payload }),
+            keepalive: true
+          }).catch(() => {});
         } catch(e){ }
       }
 
       function loadState(){
         try{
-          const raw = localStorage.getItem(STORAGE_KEY);
+          const key = getStorageKey();
+          let raw = localStorage.getItem(key);
+          if (!raw && key !== 'simuladorCarteirasState_guest_v2') {
+            raw = localStorage.getItem('simuladorCarteirasState_guest_v2');
+          }
           if (!raw) return null;
           const data = JSON.parse(raw);
           if (!data || !Array.isArray(data.portfolios)) return null;
           return data;
         } catch(e){ return null; }
       }
+
+      (window as any).__ARVO_HYDRATE_CARTEIRA__ = (externalState: any) => {
+        if (!externalState || !Array.isArray(externalState.portfolios) || externalState.portfolios.length === 0) return;
+        const currentHasHoldings = portfolios.some(p => p.holdings && p.holdings.length > 0);
+        const incomingHasHoldings = externalState.portfolios.some((p: any) => p.holdings && p.holdings.length > 0);
+        if (!currentHasHoldings && incomingHasHoldings) {
+          if (Array.isArray(externalState.customFunds)) {
+            externalState.customFunds.forEach((cf: any) => {
+              const fundObj = { name: cf.name, gestora: 'Informado por você', classe: 'Personalizado', iq_geral: '?', minimo: null, values: cf.values, isCustom: true };
+              FUND_BY_NAME[cf.name] = fundObj;
+            });
+          }
+          portfolios = externalState.portfolios;
+          if (externalState.nextId) nextId = externalState.nextId;
+          if (externalState.nextColorIdx) nextColorIdx = externalState.nextColorIdx;
+          if (externalState.customFundCounter) customFundCounter = externalState.customFundCounter;
+          renderAll();
+        }
+      };
 
       function defaultPortfolios(){
         return [ makePortfolio('Carteira A', []), makePortfolio('Carteira B', []) ];

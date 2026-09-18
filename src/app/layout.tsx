@@ -71,9 +71,9 @@ export const metadata: Metadata = {
         },
     },
     icons: {
-        icon: "/arvo-simbolo-blue.png",
-        shortcut: "/arvo-simbolo-blue.png",
-        apple: "/arvo-simbolo-blue.png",
+        icon: "/arvo-simbolo-green.png",
+        shortcut: "/arvo-simbolo-green.png",
+        apple: "/arvo-simbolo-green.png",
     },
 };
 

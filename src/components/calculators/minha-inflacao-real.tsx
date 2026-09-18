@@ -730,13 +730,24 @@ export function CalculadoraMinhaInflacaoReal() {
         fetch("/api/user/profile", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ inflacaoRealDataV2: payload })
+          body: JSON.stringify({ inflacaoRealDataV2: payload }),
+          keepalive: true
         }).catch((e) => console.error("Erro ao sincronizar inflação:", e));
-      }, 800);
+      }, 350);
     }
 
     return () => {
-      if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+        if (userEmail) {
+          fetch("/api/user/profile", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ inflacaoRealDataV2: payload }),
+            keepalive: true
+          }).catch(() => {});
+        }
+      }
     };
   }, [
     rawValues,

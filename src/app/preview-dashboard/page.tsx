@@ -305,7 +305,7 @@ export default function PreviewDashboardPage() {
           <div>
             {/* Logo */}
             <div style={{ display: "flex", alignItems: "center", gap: "10px", padding: "0 8px 24px 8px", borderBottom: "1px solid var(--border)" }}>
-              <img src="/arvo-simbolo-blue.png" alt="ARVO" style={{ width: "24px", height: "24px", objectFit: "contain" }} />
+              <img src="/arvo-simbolo-green.png" alt="ARVO" style={{ width: "24px", height: "24px", objectFit: "contain" }} />
               <div>
                 <span className="ui-serif" style={{ fontSize: "20px", fontWeight: 600, color: "var(--ink-navy)", letterSpacing: "0.02em" }}>ARVO</span>
                 <span className="ui-mono" style={{ display: "block", fontSize: "9px", color: "var(--deep-teal)", letterSpacing: "0.1em" }}>COCKPIT</span>

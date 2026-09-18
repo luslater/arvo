@@ -155,7 +155,7 @@ export function DashboardSidebar() {
                     className="w-full flex items-center gap-2.5 px-2 py-2 rounded-lg hover:bg-dash-surface-active transition-colors text-left"
                 >
                     <div className="w-8 h-8 rounded-full bg-dash-accent flex items-center justify-center shrink-0 overflow-hidden">
-                        <img src="/arvo-simbolo-blue.png" alt="ARVO" className="w-full h-full object-cover" />
+                        <img src="/arvo-simbolo-green.png" alt="ARVO" className="w-full h-full object-cover" />
                     </div>
                     <div className="flex-1 min-w-0">
                         <div className="text-[12px] font-semibold text-dash-text truncate">

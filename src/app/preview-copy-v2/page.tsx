@@ -302,7 +302,7 @@ export default function PreviewCopyV2Page() {
         <header className="v2-nav">
           <div className="v2-wrap v2-nav-inner">
             <Link href="/" className="v2-logo">
-              <img src="/arvo-simbolo-blue.png" alt="ARVO" style={{ width: "24px", height: "24px", objectFit: "contain" }} />
+              <img src="/arvo-simbolo-green.png" alt="ARVO" style={{ width: "24px", height: "24px", objectFit: "contain" }} />
               <span>ARVO</span>
             </Link>
             <nav className="v2-nav-links">
@@ -814,7 +814,7 @@ export default function PreviewCopyV2Page() {
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "24px", borderBottom: "1px solid rgba(255,255,255,0.1)", paddingBottom: "32px" }}>
               <div>
                 <div className="v2-logo" style={{ color: "#ffffff", marginBottom: "6px" }}>
-                  <img src="/arvo-simbolo-blue.png" alt="ARVO" style={{ width: "24px", height: "24px", objectFit: "contain" }} />
+                  <img src="/arvo-simbolo-green.png" alt="ARVO" style={{ width: "24px", height: "24px", objectFit: "contain" }} />
                   <span>ARVO</span>
                 </div>
                 <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.6)" }}>

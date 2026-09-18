@@ -417,7 +417,7 @@ export default function PreviewUserInterviewsPage() {
         <header className="ui-nav">
         <div className="ui-wrap ui-nav-inner">
           <Link href="/" className="ui-logo">
-            <img src="/arvo-simbolo-blue.png" alt="ARVO" style={{ width: "24px", height: "24px", objectFit: "contain" }} />
+            <img src="/arvo-simbolo-green.png" alt="ARVO" style={{ width: "24px", height: "24px", objectFit: "contain" }} />
             <span>ARVO</span>
           </Link>
           <nav className="ui-nav-links">
@@ -856,7 +856,7 @@ export default function PreviewUserInterviewsPage() {
         <div className="ui-wrap">
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "24px", borderBottom: "1px solid rgba(255,255,255,0.1)", paddingBottom: "32px" }}>
             <div className="ui-logo" style={{ color: "#ffffff" }}>
-              <img src="/arvo-simbolo-blue.png" alt="ARVO" style={{ width: "24px", height: "24px", objectFit: "contain" }} />
+              <img src="/arvo-simbolo-green.png" alt="ARVO" style={{ width: "24px", height: "24px", objectFit: "contain" }} />
               <span>ARVO</span>
             </div>
             <div style={{ display: "flex", gap: "24px", fontSize: "14px", color: "rgba(255,255,255,0.7)" }}>

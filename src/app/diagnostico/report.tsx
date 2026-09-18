@@ -603,12 +603,16 @@ export default function Diagnostic() {
           display: flex;
           align-items: center;
           gap: 10px;
-          font-family: 'Lora', Georgia, serif;
-          font-weight: 600;
+          font-family: var(--font-sans), 'Plus Jakarta Sans', sans-serif;
+          font-weight: 700;
           font-size: 20px;
-          color: #2B6E76;
+          color: #2B6E76 !important;
           text-decoration: none;
           letter-spacing: 0.04em;
+        }
+        .ui-logo span {
+          color: #2B6E76 !important;
+          font-weight: 700;
         }
 
         .ui-eyebrow {
@@ -650,9 +654,9 @@ export default function Diagnostic() {
         {/* HEADER OFICIAL ARVO */}
         <header className="ui-nav no-print">
           <div className="ui-wrap ui-nav-inner">
-            <Link href="/" className="ui-logo">
-              <img src="/arvo-simbolo-blue.png" alt="ARVO" className="w-6 h-6 object-contain" />
-              <span>ARVO</span>
+            <Link href="/" className="ui-logo" style={{ color: "#2B6E76" }}>
+              <img src="/arvo-simbolo-green.png" alt="ARVO" className="w-6 h-6 object-contain" />
+              <span style={{ color: "#2B6E76", fontWeight: 700 }}>ARVO</span>
             </Link>
 
             <div className="hidden sm:flex items-center gap-3">
