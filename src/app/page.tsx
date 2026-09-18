@@ -159,7 +159,7 @@ export default function LandingPage() {
           font-family: 'Lora', Georgia, serif;
           font-weight: 600;
           font-size: 20px;
-          color: var(--ink-navy);
+          color: #2B6E76;
           text-decoration: none;
           letter-spacing: 0.04em;
         }
