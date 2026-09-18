@@ -10,6 +10,7 @@ import {
     HelpCircle, Shield, ArrowUpRight
 } from "lucide-react"
 import PlanoArvoDashboard from "@/components/plano-arvo-dashboard"
+import { RaioXFluxoCaixa } from "@/components/dashboard/raio-x-fluxo-caixa"
 import { saveJornadaProgress, getJornadaProgress } from "./actions"
 import { calculateInvestorProfile, getSuitabilityDiagnostic } from "@/lib/profile-calculator"
 
@@ -362,6 +363,55 @@ function validateStepFields(
     const errors: Record<string, string> = {}
     const missingFields: string[] = []
 
+    if (stepIndex === 0) {
+        // Marco 1: Raio-X Financeiro & Fluxo de Caixa
+        const parseDigits = (v?: string) => parseInt((v || "").replace(/\D/g, "") || "0", 10)
+        
+        const hasIncome = 
+            parseDigits(formData.salarioLiquido) > 0 ||
+            parseDigits(formData.rendaClt) > 0 ||
+            parseDigits(formData.rendaProLabore) > 0 ||
+            parseDigits(formData.rendaLucrosDividendos) > 0 ||
+            parseDigits(formData.rendaAlugueis) > 0 ||
+            parseDigits(formData.rendaInvestimentos) > 0 ||
+            parseDigits(formData.rendaPensaoAposentadoria) > 0 ||
+            parseDigits(formData.rendaExtraFreelance) > 0
+
+        if (!hasIncome) {
+            errors.salarioLiquido = "Informe ao menos uma fonte de renda mensal líquida."
+            missingFields.push("salarioLiquido")
+        }
+
+        if (!formData.tipoVinculo?.trim()) {
+            errors.tipoVinculo = "Selecione o vínculo profissional principal."
+            missingFields.push("tipoVinculo")
+        }
+
+        const hasBasketExpenses = Object.keys(formData).some(k => k.startsWith("gasto_") && parseDigits(formData[k]) > 0)
+        const hasLegacyExpenses = 
+            parseDigits(formData.gastoMoradia) > 0 ||
+            parseDigits(formData.gastoAlimentacao) > 0 ||
+            parseDigits(formData.gastoTransporte) > 0 ||
+            parseDigits(formData.gastoSaude) > 0
+
+        let hasCustomExpenses = false
+        if (formData.customExpensesJson) {
+            try {
+                const parsed = JSON.parse(formData.customExpensesJson)
+                if (Array.isArray(parsed) && parsed.some((p: any) => parseDigits(p.value) > 0)) {
+                    hasCustomExpenses = true
+                }
+            } catch (e) {}
+        }
+
+        if (!hasBasketExpenses && !hasLegacyExpenses && !hasCustomExpenses) {
+            errors.gastos = "Preencha seus gastos habituais ou importe uma fatura de cartão."
+            missingFields.push("gastos")
+        }
+
+        return { isValid: missingFields.length === 0, errors, missingFields }
+    }
+
     if (stepIndex === 6) {
         // Suitability Step
         SUITABILITY_QUESTIONS.forEach(q => {
@@ -438,6 +488,19 @@ function computeStepStatus(
     attemptedSteps: Set<number>
 ): StepStatus {
     if (!formData || Object.keys(formData).length === 0) {
+        return "not_started"
+    }
+
+    if (stepIndex === 0) {
+        const validation = validateStepFields(0, formData)
+        if (validation.isValid) return "completed"
+        const parseDigits = (v?: string) => parseInt((v || "").replace(/\D/g, "") || "0", 10)
+        const hasAny = parseDigits(formData.salarioLiquido) > 0 || 
+            parseDigits(formData.rendaClt) > 0 || 
+            parseDigits(formData.rendaProLabore) > 0 ||
+            Boolean(formData.tipoVinculo?.trim()) ||
+            Object.keys(formData).some(k => k.startsWith("gasto_") && parseDigits(formData[k]) > 0)
+        if (hasAny) return "in_progress"
         return "not_started"
     }
 
@@ -641,6 +704,16 @@ export default function PlanejamentoJornadaPage() {
 
         triggerSave(nextData, false)
     }
+
+    // Handle batch updates (e.g. from credit card invoice reconciliation)
+    const handleBulkChange = useCallback((updates: Record<string, string>) => {
+        setFormData((prev) => {
+            const nextData = { ...prev, ...updates }
+            triggerSave(nextData, false)
+            return nextData
+        })
+        setSaveStatus("pending")
+    }, [triggerSave])
 
     // Handle Custom Expenses (Etapa 1)
     const handleAddCustomExpense = () => {
@@ -966,7 +1039,7 @@ export default function PlanejamentoJornadaPage() {
                             <div className="pb-5 border-b border-[#e4e0d7] mb-6">
                                 <div className="text-xs font-bold text-[#1f674f] uppercase tracking-wider mb-1 flex items-center gap-2">
                                     {currentStepData.icon}
-                                    <span>MARCO {current + 1} DE {PLAN_DATA.length} · {currentStepData.status}</span>
+                                    <span>{currentStepData.status}</span>
                                 </div>
                                 <h2 className="text-2xl sm:text-3xl font-light tracking-tight text-[#123044]">
                                     {currentStepData.title}
@@ -1204,8 +1277,32 @@ export default function PlanejamentoJornadaPage() {
                                         </div>
                                     )}
                                 </div>
+                            ) : current === 0 ? (
+                                /* ─── MARCO 1: RAIO-X FINANCEIRO & FLUXO DE CAIXA COMPLETO ─── */
+                                <div className="space-y-6 my-2">
+                                    <RaioXFluxoCaixa
+                                        formData={formData}
+                                        onChange={handleInputChange}
+                                        onBulkChange={handleBulkChange}
+                                    />
+
+                                    {/* ─── DELIVERABLES LIST DO MARCO 1 ─── */}
+                                    <div className="mt-8 pt-6 border-t border-[#e4e0d7]">
+                                        <span className="text-xs font-bold text-[#667085] uppercase tracking-wider block mb-3">
+                                            Entregáveis do Marco 1
+                                        </span>
+                                        <div className="grid sm:grid-cols-2 gap-2.5">
+                                            {currentStepData.analysis.map((an, i) => (
+                                                <div key={i} className="flex items-center gap-2 text-xs font-medium text-[#123044] bg-[#f6f4ef]/80 p-2.5 rounded-xl border border-[#e4e0d7]/70">
+                                                    <Check size={13} className="text-[#1f674f] shrink-0" />
+                                                    <span>{an}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
                             ) : (
-                                /* ─── ETAPAS 1 A 6: FORMULÁRIO DE MARCOS ────────────────────────── */
+                                /* ─── ETAPAS 2 A 6: FORMULÁRIO DE MARCOS ────────────────────────── */
                                 <>
                                     <div className="grid md:grid-cols-2 gap-5 sm:gap-6 my-4">
                                         {currentStepData.fields.map((field) => {
@@ -1366,74 +1463,10 @@ export default function PlanejamentoJornadaPage() {
                                                             </p>
                                                         ) : null}
                                                     </div>
-
-                                                {/* ─── CUSTOM EXTRA EXPENSES (MARCO 1: INTEGRADO NA SEÇÃO DE GASTOS) ─── */}
-                                                {current === 0 && field.name === "gastoSaude" && (
-                                                    <div className="md:col-span-2 space-y-3.5 pt-2 border-t border-dashed border-[#e4e0d7] my-1">
-                                                        <div className="flex items-center justify-between">
-                                                            <span className="text-xs font-bold text-[#123044] uppercase tracking-wider">
-                                                                Outros Gastos Específicos
-                                                            </span>
-                                                        </div>
-
-                                                        {customExpenses.map((expense) => (
-                                                            <div key={expense.id} className="grid sm:grid-cols-2 gap-3 p-3 bg-[#f6f4ef]/60 rounded-xl border border-[#e4e0d7]">
-                                                                <div>
-                                                                    <label className="text-[11px] font-bold text-[#123044] block mb-1">Nome do Gasto</label>
-                                                                    <input
-                                                                        type="text"
-                                                                        placeholder="Ex: Lazer, Educação, Academia, etc."
-                                                                        value={expense.name}
-                                                                        onChange={(e) => handleUpdateCustomExpense(expense.id, "name", e.target.value)}
-                                                                        className="w-full bg-white border border-[#e4e0d7] rounded-xl px-3 py-2 text-xs text-[#123044] font-medium focus:outline-none focus:border-[#1f674f] transition-colors"
-                                                                    />
-                                                                </div>
-                                                                <div>
-                                                                    <div className="flex items-center justify-between mb-1">
-                                                                        <label className="text-[11px] font-bold text-[#123044]">Valor Mensal</label>
-                                                                        <button
-                                                                            type="button"
-                                                                            onClick={() => handleRemoveCustomExpense(expense.id)}
-                                                                            className="text-[#98a2b3] hover:text-red-700 text-[11px] font-medium flex items-center gap-0.5 hover:underline transition-colors shrink-0 cursor-pointer"
-                                                                        >
-                                                                            <Trash2 size={12} /> Remover
-                                                                        </button>
-                                                                    </div>
-                                                                    <input 
-                                                                        type="text" 
-                                                                        inputMode="numeric"
-                                                                        placeholder="R$ 0,00"
-                                                                        value={expense.value}
-                                                                        onChange={(e) => handleUpdateCustomExpense(expense.id, "value", formatCurrencyInput(e.target.value))}
-                                                                        className="w-full bg-white border border-[#e4e0d7] rounded-xl px-3 py-2 text-xs text-[#123044] font-medium placeholder:text-[#a09e99] focus:outline-none focus:border-[#1f674f] transition-all"
-                                                                    />
-                                                                </div>
-                                                            </div>
-                                                        ))}
-
-                                                        <button
-                                                            type="button"
-                                                            onClick={handleAddCustomExpense}
-                                                            className="w-full h-[42px] bg-transparent hover:bg-[#e8f1ed]/50 border-2 border-dashed border-[#d8d3c5] hover:border-[#1f674f] text-[#123044] hover:text-[#1f674f] text-xs font-bold rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer"
-                                                        >
-                                                            <Plus size={14} /> Adicionar Outro Gasto Específico
-                                                        </button>
-
-                                                        <div className="p-3.5 rounded-2xl bg-[#e8f1ed]/60 border border-[#d6e5de] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-                                                            <div className="text-xs text-[#123044] font-bold flex items-center gap-1.5">
-                                                                <DollarSign size={15} className="text-[#1f674f]" />
-                                                                Soma dos Gastos Mensais Declarados:
-                                                            </div>
-                                                            <div className="text-base font-extrabold text-[#1f674f] tabular-nums">
-                                                                {totalExpensesFormatted}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                )}
-                                            </Fragment>
-                                        )
-                                    })}
-                                </div>
+                                                </Fragment>
+                                            )
+                                        })}
+                                    </div>
 
                                     {/* ─── DELIVERABLES LIST ────────────────────────────────────── */}
                                     <div className="mt-8 pt-6 border-t border-[#e4e0d7]">

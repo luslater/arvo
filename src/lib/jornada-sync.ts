@@ -27,17 +27,61 @@ export function extractMetricsFromJornada(formData?: Record<string, any> | null)
         return null
     }
 
-    // 1. Renda
-    const salario = parseCurrency(formData.salarioLiquido)
-    const variavel = parseCurrency(formData.rendaVariavel)
-    const rendaTotal = salario + variavel
+    // 1. Renda / Entradas (suporta categorias detalhadas e legadas)
+    let rendaTotal = 0
+    const clt = parseCurrency(formData.rendaClt)
+    const proLabore = parseCurrency(formData.rendaProLabore)
+    const lucros = parseCurrency(formData.rendaLucrosDividendos)
+    const alugueis = parseCurrency(formData.rendaAlugueis)
+    const proventos = parseCurrency(formData.rendaInvestimentos)
+    const pensao = parseCurrency(formData.rendaPensaoAposentadoria)
+    const extra = parseCurrency(formData.rendaExtraFreelance)
 
-    // 2. Gastos
-    const moradia = parseCurrency(formData.gastoMoradia)
-    const alimentacao = parseCurrency(formData.gastoAlimentacao)
-    const transporte = parseCurrency(formData.gastoTransporte)
-    const saude = parseCurrency(formData.gastoSaude)
-    const dividasParcela = parseCurrency(formData.parcelasDividas)
+    let customIncomesTotal = 0
+    if (formData.customIncomesJson) {
+        try {
+            const parsedIncomes = typeof formData.customIncomesJson === "string"
+                ? JSON.parse(formData.customIncomesJson)
+                : formData.customIncomesJson
+            if (Array.isArray(parsedIncomes)) {
+                customIncomesTotal = parsedIncomes.reduce((sum: number, it: any) => sum + parseCurrency(it.valor || it.value), 0)
+            }
+        } catch (e) {}
+    }
+
+    const classifiedTotal = clt + proLabore + lucros + alugueis + proventos + pensao + extra + customIncomesTotal
+    if (classifiedTotal > 0) {
+        rendaTotal = classifiedTotal
+    } else {
+        const salario = parseCurrency(formData.salarioLiquido)
+        const variavel = parseCurrency(formData.rendaVariavel)
+        rendaTotal = salario + variavel
+    }
+
+    // 2. Gastos / Despesas (suporta cesta detalhada, grupos ampliados e legados)
+    let gastoTotal = 0
+    let detailedExpensesSum = 0
+
+    // Soma das chaves diretas da cesta IBGE (gasto_aluguel, gasto_supermercado, etc.)
+    let basketExpensesSum = 0
+    Object.keys(formData).forEach((k) => {
+        if (k.startsWith("gasto_") && formData[k]) {
+            basketExpensesSum += parseCurrency(formData[k])
+        }
+    })
+
+    if (formData.gastosDetalhadosJson) {
+        try {
+            const parsedG = typeof formData.gastosDetalhadosJson === "string"
+                ? JSON.parse(formData.gastosDetalhadosJson)
+                : formData.gastosDetalhadosJson
+            if (parsedG && typeof parsedG === "object") {
+                Object.values(parsedG).forEach((val: any) => {
+                    detailedExpensesSum += parseCurrency(val)
+                })
+            }
+        } catch (e) {}
+    }
 
     let customExpensesTotal = 0
     if (formData.customExpensesJson) {
@@ -46,12 +90,40 @@ export function extractMetricsFromJornada(formData?: Record<string, any> | null)
                 ? JSON.parse(formData.customExpensesJson) 
                 : formData.customExpensesJson
             if (Array.isArray(parsed)) {
-                customExpensesTotal = parsed.reduce((sum: number, it: any) => sum + parseCurrency(it.value), 0)
+                customExpensesTotal = parsed.reduce((sum: number, it: any) => sum + parseCurrency(it.value || it.valor), 0)
             }
         } catch (e) {}
     }
 
-    const gastoTotal = moradia + alimentacao + transporte + saude + dividasParcela + customExpensesTotal
+    if (basketExpensesSum > 0) {
+        gastoTotal = basketExpensesSum + customExpensesTotal
+    } else if (detailedExpensesSum > 0) {
+        gastoTotal = detailedExpensesSum + customExpensesTotal
+    } else {
+        const moradia = parseCurrency(formData.gastoMoradia)
+        const alimentacao = parseCurrency(formData.gastoAlimentacao)
+        const transporte = parseCurrency(formData.gastoTransporte)
+        const saude = parseCurrency(formData.gastoSaude)
+        const educacao = parseCurrency(formData.gastoEducacao)
+        const comunicacao = parseCurrency(formData.gastoComunicacao)
+        const estiloVida = parseCurrency(formData.gastoEstiloVida || formData.gastoLazer)
+        const artigos = parseCurrency(formData.gastoArtigos)
+        const dividasParcela = parseCurrency(formData.parcelasDividas || formData.gastoDividas)
+
+        let customExpensesTotal = 0
+        if (formData.customExpensesJson) {
+            try {
+                const parsed = typeof formData.customExpensesJson === "string" 
+                    ? JSON.parse(formData.customExpensesJson) 
+                    : formData.customExpensesJson
+                if (Array.isArray(parsed)) {
+                    customExpensesTotal = parsed.reduce((sum: number, it: any) => sum + parseCurrency(it.value || it.valor), 0)
+                }
+            } catch (e) {}
+        }
+
+        gastoTotal = moradia + alimentacao + transporte + saude + educacao + comunicacao + estiloVida + artigos + dividasParcela + customExpensesTotal
+    }
 
     // 3. Capacidade de Aporte (Entradas - Saídas)
     const capacidadeInvestimento = Math.max(0, rendaTotal - gastoTotal)
