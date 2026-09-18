@@ -21,7 +21,15 @@ import {
   HelpCircle,
   PiggyBank,
   Compass,
-  ArrowRight
+  ArrowRight,
+  Home,
+  Utensils,
+  Car,
+  HeartPulse,
+  GraduationCap,
+  Wifi,
+  ShoppingBag,
+  Tv
 } from "lucide-react";
 import { InvoiceImportModal } from "./invoice-import-modal";
 import { ExtractedInvoiceTransaction } from "@/app/api/extract/invoice/route";
@@ -33,12 +41,21 @@ interface RaioXFluxoCaixaProps {
   onBulkChange?: (updates: Record<string, string>) => void;
 }
 
+interface ExpenseGroupDef {
+  id: string;
+  label: string;
+  icon: React.ElementType;
+  color: string;
+  desc: string;
+  items: { id: string; label: string }[];
+}
+
 // ─── ESTRUTURA DOS GRUPOS DE GASTOS COMPATÍVEIS COM A CALCULADORA DE INFLAÇÃO ───
-export const EXPENSE_GROUPS_DEF = [
+export const EXPENSE_GROUPS_DEF: ExpenseGroupDef[] = [
   {
     id: "habitacao",
     label: "Moradia & Habitação",
-    icon: "🏠",
+    icon: Home,
     color: "#2B6E76",
     desc: "Aluguel, condomínio, contas de consumo e manutenção",
     items: [
@@ -53,7 +70,7 @@ export const EXPENSE_GROUPS_DEF = [
   {
     id: "alimentacao",
     label: "Alimentação",
-    icon: "🛒",
+    icon: Utensils,
     color: "#1F674F",
     desc: "Mercado, feira, delivery e refeições fora",
     items: [
@@ -65,7 +82,7 @@ export const EXPENSE_GROUPS_DEF = [
   {
     id: "transportes",
     label: "Transportes",
-    icon: "🚗",
+    icon: Car,
     color: "#2E5C6E",
     desc: "Combustível, transporte por app, seguros e manutenção",
     items: [
@@ -80,8 +97,8 @@ export const EXPENSE_GROUPS_DEF = [
   {
     id: "saude",
     label: "Saúde & Cuidados",
-    icon: "🩺",
-    color: "#3B82F6",
+    icon: HeartPulse,
+    color: "#1D7070",
     desc: "Plano de saúde, medicamentos, consultas e bem-estar",
     items: [
       { id: "plano", label: "Plano de saúde (individual, familiar ou coparticipação)" },
@@ -93,8 +110,8 @@ export const EXPENSE_GROUPS_DEF = [
   {
     id: "educacao",
     label: "Educação & Aperfeiçoamento",
-    icon: "🎓",
-    color: "#8B5CF6",
+    icon: GraduationCap,
+    color: "#435B66",
     desc: "Escola, faculdade, cursos e livros",
     items: [
       { id: "mensalidade", label: "Mensalidade escolar / faculdade / pós-graduação" },
@@ -105,8 +122,8 @@ export const EXPENSE_GROUPS_DEF = [
   {
     id: "comunicacao",
     label: "Comunicação & Tecnologia",
-    icon: "📶",
-    color: "#06B6D4",
+    icon: Wifi,
+    color: "#526E7A",
     desc: "Internet, celular e assinaturas de streaming",
     items: [
       { id: "internet", label: "Internet banda larga e Wi-Fi" },
@@ -117,8 +134,8 @@ export const EXPENSE_GROUPS_DEF = [
   {
     id: "despesas",
     label: "Estilo de Vida & Família",
-    icon: "✨",
-    color: "#EC4899",
+    icon: Sparkles,
+    color: "#7C5A60",
     desc: "Lazer, passeios, empregada doméstica e pets",
     items: [
       { id: "lazer", label: "Lazer, passeios, cinema, shows e bares" },
@@ -129,8 +146,8 @@ export const EXPENSE_GROUPS_DEF = [
   {
     id: "artigos",
     label: "Artigos do Lar & Vestuário",
-    icon: "🛍️",
-    color: "#F59E0B",
+    icon: Tv,
+    color: "#475569",
     desc: "Vestuário, calçados, eletrônicos e compras para casa",
     items: [
       { id: "roupas", label: "Roupas, calçados e acessórios" },
@@ -141,7 +158,7 @@ export const EXPENSE_GROUPS_DEF = [
   {
     id: "dividas",
     label: "Compromissos Financeiros & Dívidas",
-    icon: "💳",
+    icon: CreditCard,
     color: "#EF4444",
     desc: "Financiamentos, empréstimos e parcelamentos",
     items: [
@@ -152,6 +169,7 @@ export const EXPENSE_GROUPS_DEF = [
     ]
   }
 ];
+
 
 // Taxas anuais médias do IBGE para a calculadora rápida embutida
 const IBGE_RATES: Record<string, number> = {
@@ -1009,7 +1027,15 @@ export function RaioXFluxoCaixa({ formData, onChange, onBulkChange }: RaioXFluxo
                     className="px-5 py-3.5 flex items-center justify-between cursor-pointer hover:bg-slate-50/70 transition-colors"
                   >
                     <div className="flex items-center gap-3">
-                      <span className="text-xl">{group.icon}</span>
+                      {(() => { const IconComp = group.icon; return (
+                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 border transition-all ${
+                          isOpen
+                            ? "bg-[#e8f1ed] text-[#1f674f] border-[#1f674f]/30 shadow-xs"
+                            : "bg-[#f6f4ef] text-[#123044] border-[#e4e0d7]"
+                        }`}>
+                          <IconComp size={17} className={isOpen ? "text-[#1f674f]" : "text-[#123044]"} />
+                        </div>
+                      ); })()}
                       <div>
                         <div className="text-xs sm:text-sm font-bold text-[#123044] flex items-center gap-2">
                           <span>{group.label}</span>
