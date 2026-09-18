@@ -232,7 +232,7 @@ export default function PoliticaPrivacidadePage() {
                             <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#1f674f] shrink-0" /> Realizar seu planejamento financeiro</li>
                             <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#1f674f] shrink-0" /> Avaliar sua relação com risco</li>
                             <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#1f674f] shrink-0" /> Apresentar estratégias compatíveis</li>
-                            <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#1f674f] shrink-0" /> Operar Bússola e Calculadora PL</li>
+                            <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#1f674f] shrink-0" /> Operar Bússola e Plano Patrimonial</li>
                             <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#1f674f] shrink-0" /> Prestar atendimento e suporte</li>
                             <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#1f674f] shrink-0" /> Prevenção a fraudes e abusos</li>
                             <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-[#1f674f] shrink-0" /> Melhoria contínua de produtos</li>

@@ -816,7 +816,7 @@ export default function LandingPage() {
                 {
                   name: "Rodrigo F. Lima",
                   role: "Engenheiro de Software · 31 anos",
-                  dep: "“A Calculadora PL e a Jornada dos 7 Pilares me deram um plano visual e prático. Em 10 minutos entendi o impacto dos juros compostos na minha aposentadoria.”",
+                  dep: "“O Plano Patrimonial e a Jornada dos 7 Pilares me deram um plano visual e prático. Em 10 minutos entendi o impacto dos juros compostos na minha aposentadoria.”",
                   tag: "Carteira Oceano",
                   rating: "★★★★★"
                 }

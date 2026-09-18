@@ -83,7 +83,7 @@ function CalculadorasHubInner() {
                         }`}
                 >
                     <TrendingUp className="w-4 h-4" />
-                    Calculadora PL
+                    Plano Patrimonial
                 </button>
                 <button
                     onClick={() => setActiveTab("compostos")}

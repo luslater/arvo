@@ -106,7 +106,7 @@ export default function ObrigadoPage() {
                                 <div className="w-8 h-8 rounded-xl bg-[#f0ece1] flex items-center justify-center text-[#1f674f]">
                                     <Calculator className="w-4 h-4" />
                                 </div>
-                                <h3 className="font-bold text-sm text-[#123044]">Calculadora PL</h3>
+                                <h3 className="font-bold text-sm text-[#123044]">Plano Patrimonial</h3>
                                 <p className="text-xs text-[#667085] line-clamp-2">Simule aportes, prazos e sua renda passiva futura.</p>
                             </div>
                             <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#1f674f] mt-3 group-hover:translate-x-1 transition-transform">

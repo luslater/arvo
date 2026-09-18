@@ -177,7 +177,7 @@ export default function TermosPage() {
                             <li>análise de capacidade de poupança;</li>
                             <li>planejamento de longo prazo;</li>
                             <li>planejamento de aposentadoria;</li>
-                            <li>Calculadora PL;</li>
+                            <li>Plano Patrimonial;</li>
                             <li>análise de perfil financeiro e de risco;</li>
                             <li>Bússola;</li>
                             <li>simulações de alocação;</li>
@@ -507,7 +507,7 @@ export default function TermosPage() {
                         <h2 className="text-xl font-bold text-[#123044] border-b border-[#e4e0d7] pb-2">
                             33. Limites das simulações
                         </h2>
-                        <p>Ferramentas como a Calculadora PL e demais projeções da ARVO trabalham com premissas (taxa de retorno, inflação, horizonte, aportes, patrimônio inicial, renda, despesas). Pequenas diferenças nessas premissas podem produzir diferenças relevantes em projeções de longo prazo. Consequentemente, valores futuros apresentados pela plataforma devem ser interpretados como cenários de planejamento, e não como compromisso de resultado.</p>
+                        <p>Ferramentas como o Plano Patrimonial e demais projeções da ARVO trabalham com premissas (taxa de retorno, inflação, horizonte, aportes, patrimônio inicial, renda, despesas). Pequenas diferenças nessas premissas podem produzir diferenças relevantes em projeções de longo prazo. Consequentemente, valores futuros apresentados pela plataforma devem ser interpretados como cenários de planejamento, e não como compromisso de resultado.</p>
                     </section>
 
                     {/* 34 */}

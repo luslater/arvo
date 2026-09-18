@@ -118,7 +118,7 @@ export function DashboardSidebar() {
                 <NavLink href="/dashboard/jornada" icon={<Map className="w-4 h-4" />} label="Jornada" onClick={closeMobileMenu} />
                 <NavLink href="/dashboard/inflacao" icon={<Percent className="w-4 h-4" />} label="Calculadora de Inflação" onClick={closeMobileMenu} />
                 <NavLink href="/dashboard/aposentadoria-base" icon={<Target className="w-4 h-4" />} label="Aposentadoria Base" onClick={closeMobileMenu} />
-                <NavLink href="/dashboard/planejamento" icon={<TrendingUp className="w-4 h-4" />} label="PL" onClick={closeMobileMenu} />
+                <NavLink href="/dashboard/planejamento" icon={<TrendingUp className="w-4 h-4" />} label="Plano Patrimonial" onClick={closeMobileMenu} />
                 <NavLink href="/dashboard/bussola" icon={<Compass className="w-4 h-4" />} label="Bússola" onClick={closeMobileMenu} />
                 <NavLink href="/dashboard/carteira" icon={<Wallet className="w-4 h-4" />} label="Minha Carteira" exact onClick={closeMobileMenu} />
 
