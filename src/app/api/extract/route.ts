@@ -3,6 +3,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import * as xlsx from "xlsx";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth-options";
+import { parseXpWorkbook } from "@/lib/portfolio-xp-parser";
 
 export const dynamic = "force-dynamic";
 
@@ -38,18 +39,6 @@ export async function POST(req: NextRequest) {
 
     if (!session?.user?.id && !session?.user?.email && !isDev && !isLocal) {
       return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
-    }
-
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) {
-      console.warn("GEMINI_API_KEY is not defined in environment variables.");
-      return NextResponse.json(
-        {
-          error: "Chave de IA (GEMINI_API_KEY) não configurada no servidor.",
-          code: "NO_API_KEY"
-        },
-        { status: 503 }
-      );
     }
 
     const contentType = req.headers.get("content-type") || "";
@@ -90,10 +79,59 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const lowerName = fileName.toLowerCase();
+    const isSpreadsheet =
+      lowerName.endsWith(".xlsx") ||
+      lowerName.endsWith(".xls") ||
+      lowerName.endsWith(".csv") ||
+      mimeType.includes("spreadsheetml") ||
+      mimeType.includes("excel");
+
+    // 1. Extração nativa ultra-rápida e determinística para planilhas XP (PosicaoDetalhada.xlsx)
+    if (fileBuffer && isSpreadsheet) {
+      try {
+        const workbook = xlsx.read(fileBuffer, { type: "buffer" });
+        const xpParsed = parseXpWorkbook(workbook);
+        if (xpParsed && xpParsed.assets.length > 0) {
+          const totalW = xpParsed.assets.reduce((acc, a) => acc + (a.weight || 0), 0) || 100;
+          const calculatedMonthlyWeighted = xpParsed.assets.reduce((acc, a) => {
+            const w = (a.weight || 0) / totalW;
+            return acc + w * (a.yield || 0);
+          }, 0);
+          const calculatedAnnualWeighted = (Math.pow(1 + calculatedMonthlyWeighted / 100, 12) - 1) * 100;
+
+          return NextResponse.json({
+            success: true,
+            portfolioName: xpParsed.portfolioName,
+            totalValue: xpParsed.totalValue,
+            portfolioReturn12m: Math.round(calculatedAnnualWeighted * 100) / 100,
+            monthlyWeightedYield: Math.round(calculatedMonthlyWeighted * 100) / 100,
+            monthlyHistory: [],
+            assets: xpParsed.assets
+          });
+        }
+      } catch (sheetErr) {
+        console.warn("Extração nativa XP não aplicável ou com falha, seguindo para IA:", sheetErr);
+      }
+    }
+
+    // 2. Extração via IA (Gemini) para outros formatos (PDF, imagens, textos livres ou outras corretoras)
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      console.warn("GEMINI_API_KEY is not defined in environment variables.");
+      return NextResponse.json(
+        {
+          error: "Chave de IA (GEMINI_API_KEY) não configurada no servidor.",
+          code: "NO_API_KEY"
+        },
+        { status: 503 }
+      );
+    }
+
     const genAI = new GoogleGenerativeAI(apiKey);
     
-    // Lista de modelos suportados em ordem de prioridade
-    const candidateModels = ["gemini-2.5-flash", "gemini-1.5-flash", "gemini-2.0-flash", "gemini-1.5-pro"];
+    // Lista de modelos suportados atualizados em ordem de prioridade
+    const candidateModels = ["gemini-3.7-flash", "gemini-3.6-flash", "gemini-2.5-flash", "gemini-flash-latest"];
     
     const systemPrompt = `Você é o analista sênior de inteligência de investimentos da ARVO (consultoria de patrimônio e investimentos independente).
 Sua missão é realizar a leitura técnica, interpretação de linguagem natural e extração de altíssima precisão de investimentos financeiros, seja a partir de:
@@ -114,7 +152,11 @@ OBJETIVO CRUCIAL:
      - Se o cliente informar "Prefixado 14% a.a.": taxa = "Pré 14% a.a.", annualReturn = 14.00, yield = 1.10.
 5. Calcular o totalValue somando os valores dos ativos, os pesos (weight em %) e o rendimento ponderado da carteira.
 
-REGRAS ESPECÍFICAS PARA RELATÓRIOS XP / XPERFORMANCE:
+REGRAS ESPECÍFICAS PARA RELATÓRIOS E PLANILHAS DA XP INVESTIMENTOS:
+- Ignore completamente seções como "Dividendos, proventos e outras distribuições", "Proventos provisionados", "Custódia Remunerada" ou "Garantias". Essas linhas representam proventos futuros ou remunerações temporárias, e NÃO ativos em custódia na data base.
+- Se um ticker como "TAEE11" aparece na seção de Ações com sua posição principal, e depois reaparece na seção de Dividendos/Proventos com R$ 107,84 de JCP ou R$ 72,22 de dividendo provisionado, NUNCA duplique o ativo com esses valores residuais de proventos!
+- Para fundos de investimentos e ações, o valor em reais (R$) deve ser extraído da coluna "Saldo líquido" ou "Saldo", e não da coluna "Valor aplicado", "Quantidade" ou "Preço médio".
+- Extraia cada ativo de COE, Fundos de Investimentos, Ações e Renda Fixa com seu saldo em conta correto.
 - NUNCA utilize mês parcial (corte no meio do mês) como rentabilidade anual.
 - Extraia a rentabilidade acumulada de 12 Meses (12M) de cada ativo/classe e calcule yield mensal = ((1 + taxa_12M / 100)^(1/12) - 1) * 100.
 - Extraia a tabela de evolução mês a mês no campo "monthlyHistory".
@@ -170,9 +212,6 @@ Retorne EXCLUSIVAMENTE o objeto JSON abaixo, sem texto antes ou depois, sem mark
     }
 
     if (fileBuffer) {
-      const lowerName = fileName.toLowerCase();
-      const isSpreadsheet = lowerName.endsWith(".xlsx") || lowerName.endsWith(".xls") || lowerName.endsWith(".csv") || mimeType.includes("spreadsheetml") || mimeType.includes("excel");
-
       if (isSpreadsheet) {
         const workbook = xlsx.read(fileBuffer, { type: "buffer" });
         let sheetCsvText = "";
@@ -232,6 +271,7 @@ Retorne EXCLUSIVAMENTE o objeto JSON abaixo, sem texto antes ou depois, sem mark
       } catch (err: any) {
         lastError = err;
         console.warn(`Tentativa com modelo ${modelName} falhou:`, err?.message || err);
+        await new Promise((resolve) => setTimeout(resolve, 300));
       }
     }
 

@@ -7,6 +7,7 @@ import { Pencil, Check, X, TrendingUp, Wallet, PiggyBank, BarChart3, ShieldCheck
 import { HISTORICAL_DATA } from "@/data/historicalData"
 import { RECOMMENDED_PORTFOLIOS, ASSET_METRICS, TIER_ORDER, TIER_LABEL, TIER_DEFAULT_VALUE, ITYPE_ORDER, ITYPE_LABEL, PERFIL_ORDER } from "@/data/portfoliosData"
 import { PortfolioFileError, readPortfolioFile } from "@/lib/portfolio-file-reader"
+import { parseXpRows } from "@/lib/portfolio-xp-parser"
 
 const formatBRL = (val: number) =>
     new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 }).format(val)
@@ -615,6 +616,17 @@ export default function MinhaCarteiraPage() {
 
       function parseTabularRows(rows2d: any){
         if (!rows2d || !rows2d.length) return [];
+        const xpParsed = parseXpRows(rows2d);
+        if (xpParsed && xpParsed.assets.length > 0) {
+          return xpParsed.assets.map(a => ({
+            rawName: a.name,
+            weight: a.weight,
+            amount: a.value,
+            customReturnPct: a.yield,
+            indexador: a.indexador,
+            taxa: a.taxa
+          }));
+        }
         const KEY_NAME = ['fundo', 'ativo', 'nome', 'produto'];
         const KEY_PCT = ['%', 'percentual', 'peso', 'participacao'];
         const KEY_AMOUNT = ['valor', 'montante', 'saldo', 'aplicado', 'r$'];
@@ -2303,9 +2315,28 @@ export default function MinhaCarteiraPage() {
               const extension = file.name.split('.').pop()?.toLowerCase();
               if (extension === 'xlsx' || extension === 'xls' || extension === 'csv') {
                 const content = await readPortfolioFile(file);
-                rows = content.kind === 'table'
-                  ? parseTabularRows(content.rows)
-                  : parseTabularRows(parseSimpleCsv(content.text));
+                if (content.kind === 'table') {
+                  const xpCheck = parseXpRows(content.rows);
+                  if (xpCheck && xpCheck.assets.length > 0) {
+                    rows = xpCheck.assets.map(a => ({
+                      rawName: a.name,
+                      weight: a.weight,
+                      amount: a.value,
+                      customReturnPct: a.yield,
+                      indexador: a.indexador,
+                      taxa: a.taxa
+                    }));
+                    defaultName = xpCheck.portfolioName;
+                    importMetadata = {
+                      portfolioName: xpCheck.portfolioName,
+                      totalValue: xpCheck.totalValue
+                    };
+                  } else {
+                    rows = parseTabularRows(content.rows);
+                  }
+                } else {
+                  rows = parseTabularRows(parseSimpleCsv(content.text));
+                }
               } else {
                 throw new PortfolioFileError('A leitura automática do PDF não identificou as posições de custódia. Por favor, envie novamente o arquivo.');
               }
