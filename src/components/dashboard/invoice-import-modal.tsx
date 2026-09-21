@@ -50,6 +50,46 @@ export function InvoiceImportModal({ isOpen, onClose, onApply }: InvoiceImportMo
   const [searchQuery, setSearchQuery] = useState("");
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
+  // Filtros
+  const filteredTransactions = useMemo(() => {
+    return transactions.filter((t) => {
+      const matchSearch =
+        !searchQuery ||
+        t.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        t.groupLabel.toLowerCase().includes(searchQuery.toLowerCase());
+
+      if (!matchSearch) return false;
+
+      if (filterMode === "all") return true;
+      if (filterMode === "review") return t.needsReview;
+      return t.groupId === filterMode;
+    });
+  }, [transactions, filterMode, searchQuery]);
+
+  // Totais consolidados dos itens selecionados
+  const { totalSelectedAmount, reviewCount, selectedCount, totalsByCategory } = useMemo(() => {
+    let total = 0;
+    let revCount = 0;
+    let selCount = 0;
+    const catTotals: Record<string, number> = {};
+
+    transactions.forEach((t) => {
+      if (t.needsReview) revCount++;
+      if (t.selected) {
+        total += t.amount;
+        selCount++;
+        catTotals[t.groupId] = (catTotals[t.groupId] || 0) + t.amount;
+      }
+    });
+
+    return {
+      totalSelectedAmount: total,
+      reviewCount: revCount,
+      selectedCount: selCount,
+      totalsByCategory: catTotals
+    };
+  }, [transactions]);
+
   if (!isOpen) return null;
 
   const handleFileDrop = (e: React.DragEvent) => {
@@ -142,45 +182,8 @@ export function InvoiceImportModal({ isOpen, onClose, onApply }: InvoiceImportMo
     setTransactions((prev) => prev.map((t) => ({ ...t, selected: !areAllSelected })));
   };
 
-  // Filtros
-  const filteredTransactions = useMemo(() => {
-    return transactions.filter((t) => {
-      const matchSearch =
-        !searchQuery ||
-        t.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        t.groupLabel.toLowerCase().includes(searchQuery.toLowerCase());
 
-      if (!matchSearch) return false;
 
-      if (filterMode === "all") return true;
-      if (filterMode === "review") return t.needsReview;
-      return t.groupId === filterMode;
-    });
-  }, [transactions, filterMode, searchQuery]);
-
-  // Totais consolidados dos itens selecionados
-  const { totalSelectedAmount, reviewCount, selectedCount, totalsByCategory } = useMemo(() => {
-    let total = 0;
-    let revCount = 0;
-    let selCount = 0;
-    const catTotals: Record<string, number> = {};
-
-    transactions.forEach((t) => {
-      if (t.needsReview) revCount++;
-      if (t.selected) {
-        total += t.amount;
-        selCount++;
-        catTotals[t.groupId] = (catTotals[t.groupId] || 0) + t.amount;
-      }
-    });
-
-    return {
-      totalSelectedAmount: total,
-      reviewCount: revCount,
-      selectedCount: selCount,
-      totalsByCategory: catTotals
-    };
-  }, [transactions]);
 
   const handleConfirmApply = () => {
     onApply(totalsByCategory, transactions);

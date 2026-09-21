@@ -623,69 +623,104 @@ export function RaioXFluxoCaixa({ formData, onChange, onBulkChange }: RaioXFluxo
       {/* ─── 1. TOP FINANCIAL KPI SUMMARY COCKPIT ─── */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {/* Entradas */}
-        <div className="bg-white border border-[#e4e0d7] rounded-2xl p-4 shadow-xs">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-[#667085] uppercase tracking-wider">Entradas Líquidas</span>
+        <button
+          type="button"
+          onClick={() => setActiveTab("entradas")}
+          className={`text-left bg-white rounded-2xl p-4 shadow-xs transition-all cursor-pointer border-l-4 border-t border-r border-b ${
+            activeTab === "entradas"
+              ? "border-l-[#1f674f] border-t-[#e4e0d7] border-r-[#e4e0d7] border-b-[#e4e0d7] shadow-sm ring-1 ring-[#1f674f]/10"
+              : "border-l-[#e4e0d7] border-t-[#e4e0d7] border-r-[#e4e0d7] border-b-[#e4e0d7] hover:border-l-[#1f674f]/40 hover:shadow"
+          }`}
+        >
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[10px] font-bold text-[#667085] uppercase tracking-wider">Entradas Líquidas</span>
             <span className="p-1.5 rounded-lg bg-emerald-50 text-emerald-600">
-              <ArrowUpRight className="w-4 h-4" />
+              <ArrowUpRight className="w-3.5 h-3.5" />
             </span>
           </div>
-          <div className="text-xl sm:text-2xl font-extrabold text-[#123044] mt-1 tabular-nums">
+          <div className="text-xl sm:text-2xl font-extrabold text-[#123044] tabular-nums leading-tight">
             {formatBRL(totalIncomes)}
           </div>
-          <div className="text-[11px] text-[#667085] mt-0.5">
+          <div className="text-[11px] text-[#667085] mt-1">
             {formData.tipoVinculo ? `${formData.tipoVinculo} apurado` : "Renda total mensal"}
           </div>
-        </div>
+        </button>
 
         {/* Gastos */}
-        <div className="bg-white border border-[#e4e0d7] rounded-2xl p-4 shadow-xs">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-[#667085] uppercase tracking-wider">Gastos Mensais</span>
+        <button
+          type="button"
+          onClick={() => setActiveTab("gastos")}
+          className={`text-left bg-white rounded-2xl p-4 shadow-xs transition-all cursor-pointer border-l-4 border-t border-r border-b ${
+            activeTab === "gastos"
+              ? "border-l-[#e05252] border-t-[#e4e0d7] border-r-[#e4e0d7] border-b-[#e4e0d7] shadow-sm ring-1 ring-[#e05252]/10"
+              : "border-l-[#e4e0d7] border-t-[#e4e0d7] border-r-[#e4e0d7] border-b-[#e4e0d7] hover:border-l-[#e05252]/40 hover:shadow"
+          }`}
+        >
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[10px] font-bold text-[#667085] uppercase tracking-wider">Gastos Mensais</span>
             <span className="p-1.5 rounded-lg bg-rose-50 text-rose-600">
-              <ArrowDownRight className="w-4 h-4" />
+              <ArrowDownRight className="w-3.5 h-3.5" />
             </span>
           </div>
-          <div className="text-xl sm:text-2xl font-extrabold text-[#123044] mt-1 tabular-nums">
+          <div className="text-xl sm:text-2xl font-extrabold text-[#123044] tabular-nums leading-tight">
             {formatBRL(totalExpenses)}
           </div>
-          <div className="text-[11px] text-[#667085] mt-0.5">
+          <div className="text-[11px] text-[#667085] mt-1">
             {totalIncomes > 0 ? `${((totalExpenses / totalIncomes) * 100).toFixed(0)}% da renda` : "Custo de vida total"}
           </div>
-        </div>
+        </button>
 
         {/* Capacidade de Aporte */}
-        <div className="bg-white border border-[#e4e0d7] rounded-2xl p-4 shadow-xs">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-[#667085] uppercase tracking-wider">Capacidade de Aporte</span>
+        <button
+          type="button"
+          onClick={() => setActiveTab("alertas")}
+          className={`text-left bg-white rounded-2xl p-4 shadow-xs transition-all cursor-pointer border-l-4 border-t border-r border-b ${
+            activeTab === "alertas"
+              ? "border-l-[#1f674f] border-t-[#e4e0d7] border-r-[#e4e0d7] border-b-[#e4e0d7] shadow-sm ring-1 ring-[#1f674f]/10"
+              : "border-l-[#e4e0d7] border-t-[#e4e0d7] border-r-[#e4e0d7] border-b-[#e4e0d7] hover:border-l-[#1f674f]/40 hover:shadow"
+          }`}
+        >
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[10px] font-bold text-[#667085] uppercase tracking-wider">Capacidade de Aporte</span>
             <span className={`p-1.5 rounded-lg ${monthlySavings > 0 ? "bg-[#e8f1ed] text-[#1f674f]" : "bg-red-50 text-red-600"}`}>
-              <TrendingUp className="w-4 h-4" />
+              <TrendingUp className="w-3.5 h-3.5" />
             </span>
           </div>
-          <div className="text-xl sm:text-2xl font-extrabold text-[#1f674f] mt-1 tabular-nums">
+          <div className={`text-xl sm:text-2xl font-extrabold tabular-nums leading-tight ${monthlySavings > 0 ? "text-[#1f674f]" : "text-red-600"}`}>
             {formatBRL(monthlySavings)}
           </div>
-          <div className="text-[11px] text-[#667085] mt-0.5">
+          <div className="text-[11px] text-[#667085] mt-1">
             {savingsRate.toFixed(1)}% poupado / mês
           </div>
-        </div>
+        </button>
 
         {/* Reserva de Emergência */}
-        <div className="bg-white border border-[#e4e0d7] rounded-2xl p-4 shadow-xs">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-[#667085] uppercase tracking-wider">Reserva Cobertura</span>
+        <button
+          type="button"
+          onClick={() => setActiveTab("entradas")}
+          className={`text-left bg-white rounded-2xl p-4 shadow-xs transition-all cursor-pointer border-l-4 border-t border-r border-b ${
+            reserveMonthsCoverage >= recommendedMonths
+              ? "border-l-emerald-500 border-t-[#e4e0d7] border-r-[#e4e0d7] border-b-[#e4e0d7]"
+              : reserveMonthsCoverage >= 3
+              ? "border-l-amber-400 border-t-[#e4e0d7] border-r-[#e4e0d7] border-b-[#e4e0d7]"
+              : "border-l-red-400 border-t-[#e4e0d7] border-r-[#e4e0d7] border-b-[#e4e0d7]"
+          } hover:shadow`}
+        >
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[10px] font-bold text-[#667085] uppercase tracking-wider">Reserva Cobertura</span>
             <span className={`p-1.5 rounded-lg ${reserveMonthsCoverage >= recommendedMonths ? "bg-emerald-50 text-emerald-600" : "bg-amber-50 text-amber-600"}`}>
-              <ShieldCheck className="w-4 h-4" />
+              <ShieldCheck className="w-3.5 h-3.5" />
             </span>
           </div>
-          <div className="text-xl sm:text-2xl font-extrabold text-[#123044] mt-1 tabular-nums">
+          <div className="text-xl sm:text-2xl font-extrabold text-[#123044] tabular-nums leading-tight">
             {reserveMonthsCoverage.toFixed(1)} <span className="text-sm font-normal text-[#667085]">meses</span>
           </div>
-          <div className="text-[11px] text-[#667085] mt-0.5">
+          <div className="text-[11px] text-[#667085] mt-1">
             Meta: {recommendedMonths} meses ({formatBRL(targetReserve)})
           </div>
-        </div>
+        </button>
       </div>
+
 
       {/* ─── 2. NAVIGATION BAR (ABAS DO RAIO-X) ─── */}
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#e4e0d7]">
