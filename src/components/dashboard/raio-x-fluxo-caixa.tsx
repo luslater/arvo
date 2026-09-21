@@ -722,721 +722,781 @@ export function RaioXFluxoCaixa({ formData, onChange, onBulkChange }: RaioXFluxo
       </div>
 
 
-      {/* ─── 2. NAVIGATION BAR (ABAS DO RAIO-X) ─── */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#e4e0d7]">
-        <div className="flex items-center gap-0 overflow-x-auto no-scrollbar">
+      {/* ─── 2. LAYOUT PRINCIPAL: COLUNA LATERAL + CONTEÚDO ─── */}
+      <div className="flex gap-0 min-h-[500px] border border-[#e4e0d7] rounded-2xl overflow-hidden bg-white shadow-xs">
+
+        {/* ── Coluna de Navegação Lateral ── */}
+        <div className="w-52 shrink-0 border-r border-[#e4e0d7] bg-[#fafaf8] flex flex-col">
+
+          {/* Passo 1: Entradas */}
           <button
             type="button"
             onClick={() => setActiveTab("entradas")}
-            className={`px-4 py-2.5 text-xs sm:text-sm font-bold transition-all cursor-pointer border-b-2 -mb-px whitespace-nowrap ${
+            className={`w-full text-left px-4 py-4 border-b border-[#e4e0d7] transition-all cursor-pointer group ${
               activeTab === "entradas"
-                ? "border-[#1F674F] text-[#1F674F]"
-                : "border-transparent text-[#667085] hover:text-[#123044]"
+                ? "bg-white border-l-2 border-l-[#1f674f]"
+                : "hover:bg-[#f0ece1]/50 border-l-2 border-l-transparent"
             }`}
           >
-            1. Entradas ({formatBRL(totalIncomes)})
+            <div className="flex items-center gap-2.5">
+              <div className={`w-6 h-6 rounded-lg flex items-center justify-center text-[11px] font-black shrink-0 transition-all ${
+                activeTab === "entradas"
+                  ? "bg-[#1f674f] text-white"
+                  : totalIncomes > 0
+                  ? "bg-[#e8f1ed] text-[#1f674f]"
+                  : "bg-[#f0ece1] text-[#667085]"
+              }`}>
+                {totalIncomes > 0 ? <CheckCircle2 size={13} /> : "1"}
+              </div>
+              <div className="min-w-0">
+                <div className={`text-xs font-bold truncate ${activeTab === "entradas" ? "text-[#1f674f]" : "text-[#123044]"}`}>
+                  Entradas
+                </div>
+                <div className="text-[10px] text-[#667085] font-semibold tabular-nums mt-0.5">
+                  {totalIncomes > 0 ? formatBRL(totalIncomes) : "Não preenchido"}
+                </div>
+              </div>
+            </div>
           </button>
 
+          {/* Passo 2: Gastos */}
           <button
             type="button"
             onClick={() => setActiveTab("gastos")}
-            className={`px-4 py-2.5 text-xs sm:text-sm font-bold transition-all cursor-pointer border-b-2 -mb-px whitespace-nowrap ${
+            className={`w-full text-left px-4 py-4 border-b border-[#e4e0d7] transition-all cursor-pointer group ${
               activeTab === "gastos"
-                ? "border-[#1F674F] text-[#1F674F]"
-                : "border-transparent text-[#667085] hover:text-[#123044]"
+                ? "bg-white border-l-2 border-l-[#1f674f]"
+                : "hover:bg-[#f0ece1]/50 border-l-2 border-l-transparent"
             }`}
           >
-            2. Gastos & Cesta ({formatBRL(totalExpenses)})
+            <div className="flex items-center gap-2.5">
+              <div className={`w-6 h-6 rounded-lg flex items-center justify-center text-[11px] font-black shrink-0 transition-all ${
+                activeTab === "gastos"
+                  ? "bg-[#1f674f] text-white"
+                  : totalExpenses > 0
+                  ? "bg-[#e8f1ed] text-[#1f674f]"
+                  : "bg-[#f0ece1] text-[#667085]"
+              }`}>
+                {totalExpenses > 0 ? <CheckCircle2 size={13} /> : "2"}
+              </div>
+              <div className="min-w-0">
+                <div className={`text-xs font-bold truncate ${activeTab === "gastos" ? "text-[#1f674f]" : "text-[#123044]"}`}>
+                  Gastos
+                </div>
+                <div className="text-[10px] text-[#667085] font-semibold tabular-nums mt-0.5">
+                  {totalExpenses > 0 ? formatBRL(totalExpenses) : "Não preenchido"}
+                </div>
+              </div>
+            </div>
           </button>
 
+          {/* Passo 3: Controle & Alertas */}
           <button
             type="button"
             onClick={() => setActiveTab("alertas")}
-            className={`px-4 py-2.5 text-xs sm:text-sm font-bold transition-all cursor-pointer border-b-2 -mb-px whitespace-nowrap flex items-center gap-2 ${
+            className={`w-full text-left px-4 py-4 border-b border-[#e4e0d7] transition-all cursor-pointer group ${
               activeTab === "alertas"
-                ? "border-[#1F674F] text-[#1F674F]"
-                : "border-transparent text-[#667085] hover:text-[#123044]"
+                ? "bg-white border-l-2 border-l-[#1f674f]"
+                : "hover:bg-[#f0ece1]/50 border-l-2 border-l-transparent"
             }`}
           >
-            3. Controle & Alertas
-            {alerts.filter(a => a.type === "danger" || a.type === "warning").length > 0 && (
-              <span className="w-4.5 h-4.5 min-w-[18px] min-h-[18px] rounded-full bg-amber-500 text-white text-[10px] font-extrabold flex items-center justify-center">
-                {alerts.filter(a => a.type === "danger" || a.type === "warning").length}
-              </span>
-            )}
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setActiveTab("inflacao")}
-            className={`px-4 py-2.5 text-xs sm:text-sm font-bold transition-all cursor-pointer border-b-2 -mb-px whitespace-nowrap ${
-              activeTab === "inflacao"
-                ? "border-[#1F674F] text-[#1F674F]"
-                : "border-transparent text-[#667085] hover:text-[#123044]"
-            }`}
-          >
-            Minha Inflação Real
-          </button>
-        </div>
-
-        {/* Botão de Leitura de Fatura */}
-        <button
-          type="button"
-          onClick={() => setIsInvoiceModalOpen(true)}
-          className="mb-1 px-3.5 py-1.5 rounded-lg bg-white border border-[#e4e0d7] text-[#123044] text-xs font-bold flex items-center gap-2 hover:border-[#1f674f] hover:text-[#1f674f] transition-all cursor-pointer shrink-0"
-        >
-          <CreditCard className="w-3.5 h-3.5" />
-          <span>Importar Fatura</span>
-        </button>
-      </div>
-
-
-      {/* ─── ABA 1: ENTRADAS DETALHADAS ─── */}
-      {activeTab === "entradas" && (
-        <div className="space-y-5 animate-in fade-in duration-150">
-          <div className="bg-[#f6f4ef]/60 p-4 rounded-2xl border border-[#e4e0d7]">
-            <h4 className="text-sm font-bold text-[#123044] flex items-center gap-2">
-              <span>Classificação de Entradas Líquidas</span>
-              <span className="text-xs font-normal text-[#667085]">(Informe apenas os valores líquidos que caem na sua conta)</span>
-            </h4>
-            <p className="text-xs text-[#667085] mt-1">
-              Separar salário, pró-labore, lucros de empresa e renda passiva permite à ARVO calibrar seu colchão de segurança e a previsibilidade dos seus aportes.
-            </p>
-          </div>
-
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {/* Salário CLT */}
-            <div className="bg-white p-4 rounded-2xl border border-[#e4e0d7] space-y-1.5">
-              <label className="text-xs font-bold text-[#123044] block">Salário Líquido (CLT)</label>
-              <input
-                type="text"
-                inputMode="numeric"
-                placeholder="R$ 0,00"
-                value={formData.rendaClt || ""}
-                onChange={(e) => onChange("rendaClt", formatCurrencyInput(e.target.value))}
-                className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-3.5 py-2.5 text-sm text-[#123044] font-semibold focus:outline-none focus:border-[#1f674f]"
-              />
-              <span className="text-[10px] text-[#667085] block">Salário mensal após descontos de INSS/IRRF.</span>
-            </div>
-
-            {/* Pró-labore */}
-            <div className="bg-white p-4 rounded-2xl border border-[#e4e0d7] space-y-1.5">
-              <label className="text-xs font-bold text-[#123044] block">Pró-labore Líquido (PJ / Sócio)</label>
-              <input
-                type="text"
-                inputMode="numeric"
-                placeholder="R$ 0,00"
-                value={formData.rendaProLabore || ""}
-                onChange={(e) => onChange("rendaProLabore", formatCurrencyInput(e.target.value))}
-                className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-3.5 py-2.5 text-sm text-[#123044] font-semibold focus:outline-none focus:border-[#1f674f]"
-              />
-              <span className="text-[10px] text-[#667085] block">Remuneração fixa de sócio ou contrato PJ.</span>
-            </div>
-
-            {/* Distribuição de Lucros / Dividendos */}
-            <div className="bg-white p-4 rounded-2xl border border-[#e4e0d7] space-y-1.5">
-              <label className="text-xs font-bold text-[#123044] block">Distribuição de Lucros / Dividendos</label>
-              <input
-                type="text"
-                inputMode="numeric"
-                placeholder="R$ 0,00"
-                value={formData.rendaLucrosDividendos || ""}
-                onChange={(e) => onChange("rendaLucrosDividendos", formatCurrencyInput(e.target.value))}
-                className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-3.5 py-2.5 text-sm text-[#123044] font-semibold focus:outline-none focus:border-[#1f674f]"
-              />
-              <span className="text-[10px] text-[#667085] block">Média mensal de retiradas de lucro isentas.</span>
-            </div>
-
-            {/* Aluguéis Recebidos */}
-            <div className="bg-white p-4 rounded-2xl border border-[#e4e0d7] space-y-1.5">
-              <label className="text-xs font-bold text-[#123044] block">Renda de Aluguéis de Imóveis</label>
-              <input
-                type="text"
-                inputMode="numeric"
-                placeholder="R$ 0,00"
-                value={formData.rendaAlugueis || ""}
-                onChange={(e) => onChange("rendaAlugueis", formatCurrencyInput(e.target.value))}
-                className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-3.5 py-2.5 text-sm text-[#123044] font-semibold focus:outline-none focus:border-[#1f674f]"
-              />
-              <span className="text-[10px] text-[#667085] block">Locação líquida de imóveis próprios recebida.</span>
-            </div>
-
-            {/* Rendimentos de Investimentos */}
-            <div className="bg-white p-4 rounded-2xl border border-[#e4e0d7] space-y-1.5">
-              <label className="text-xs font-bold text-[#123044] block">Proventos de Investimentos (Ações/FIIs)</label>
-              <input
-                type="text"
-                inputMode="numeric"
-                placeholder="R$ 0,00"
-                value={formData.rendaInvestimentos || ""}
-                onChange={(e) => onChange("rendaInvestimentos", formatCurrencyInput(e.target.value))}
-                className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-3.5 py-2.5 text-sm text-[#123044] font-semibold focus:outline-none focus:border-[#1f674f]"
-              />
-              <span className="text-[10px] text-[#667085] block">Rendimentos passivos sacados todo mês.</span>
-            </div>
-
-            {/* Pensão / Aposentadoria */}
-            <div className="bg-white p-4 rounded-2xl border border-[#e4e0d7] space-y-1.5">
-              <label className="text-xs font-bold text-[#123044] block">Pensão / Aposentadoria / Previdência</label>
-              <input
-                type="text"
-                inputMode="numeric"
-                placeholder="R$ 0,00"
-                value={formData.rendaPensaoAposentadoria || ""}
-                onChange={(e) => onChange("rendaPensaoAposentadoria", formatCurrencyInput(e.target.value))}
-                className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-3.5 py-2.5 text-sm text-[#123044] font-semibold focus:outline-none focus:border-[#1f674f]"
-              />
-              <span className="text-[10px] text-[#667085] block">Benefício previdenciário ou pensão regular.</span>
-            </div>
-
-            {/* Consultorias / Freelances / Renda Extra */}
-            <div className="bg-white p-4 rounded-2xl border border-[#e4e0d7] space-y-1.5">
-              <label className="text-xs font-bold text-[#123044] block">Renda Extra / Freelances / Bônus</label>
-              <input
-                type="text"
-                inputMode="numeric"
-                placeholder="R$ 0,00"
-                value={formData.rendaExtraFreelance || ""}
-                onChange={(e) => onChange("rendaExtraFreelance", formatCurrencyInput(e.target.value))}
-                className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-3.5 py-2.5 text-sm text-[#123044] font-semibold focus:outline-none focus:border-[#1f674f]"
-              />
-              <span className="text-[10px] text-[#667085] block">Média mensal de projetos e comissões.</span>
-            </div>
-
-            {/* Vínculo Profissional */}
-            <div className="bg-white p-4 rounded-2xl border border-[#e4e0d7] space-y-1.5">
-              <label className="text-xs font-bold text-[#123044] block">Vínculo Profissional Principal</label>
-              <select
-                value={formData.tipoVinculo || "CLT"}
-                onChange={(e) => onChange("tipoVinculo", e.target.value)}
-                className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-3.5 py-2.5 text-sm text-[#123044] font-semibold focus:outline-none focus:border-[#1f674f]"
-              >
-                <option value="CLT">CLT (Estabilidade relativa / 6m reserva)</option>
-                <option value="PJ">PJ / Contrato de prestação (12m reserva)</option>
-                <option value="Empresário">Empresário / Sócio (12m reserva)</option>
-                <option value="Autônomo">Profissional Liberal / Autônomo (12m reserva)</option>
-                <option value="Funcionário Público">Servidor Público (6m reserva)</option>
-                <option value="Misto">Misto (Múltiplas fontes / 12m reserva)</option>
-              </select>
-              <span className="text-[10px] text-[#667085] block">Define a régua técnica recomendada para sua reserva.</span>
-            </div>
-          </div>
-
-          {/* Entradas Customizadas */}
-          <div className="space-y-3 pt-2">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-[#123044] uppercase tracking-wider">
-                Outras Entradas Personalizadas
-              </span>
-            </div>
-
-            {incomeDetails.customList.map((item) => (
-              <div key={item.id} className="grid sm:grid-cols-2 gap-3 p-3 bg-white rounded-xl border border-[#e4e0d7]">
-                <div>
-                  <label className="text-[11px] font-bold text-[#123044] block mb-1">Descrição da Entrada</label>
-                  <input
-                    type="text"
-                    placeholder="Ex: Royalty, Dividendos de Startup, etc."
-                    value={item.name}
-                    onChange={(e) => handleUpdateCustomIncome(item.id, "name", e.target.value)}
-                    className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-3 py-2 text-xs text-[#123044] font-medium focus:outline-none focus:border-[#1f674f]"
-                  />
-                </div>
-                <div>
-                  <div className="flex items-center justify-between mb-1">
-                    <label className="text-[11px] font-bold text-[#123044]">Valor Líquido Mensal</label>
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveCustomIncome(item.id)}
-                      className="text-slate-400 hover:text-red-600 text-[11px] font-medium flex items-center gap-1 cursor-pointer"
-                    >
-                      <Trash2 className="w-3 h-3" /> Remover
-                    </button>
-                  </div>
-                  <input
-                    type="text"
-                    inputMode="numeric"
-                    placeholder="R$ 0,00"
-                    value={item.value}
-                    onChange={(e) => handleUpdateCustomIncome(item.id, "value", formatCurrencyInput(e.target.value))}
-                    className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-3 py-2 text-xs text-[#123044] font-medium focus:outline-none focus:border-[#1f674f]"
-                  />
-                </div>
-              </div>
-            ))}
-
-            <button
-              type="button"
-              onClick={handleAddCustomIncome}
-              className="w-full h-10 border-2 border-dashed border-[#d8d3c5] hover:border-[#1f674f] text-[#123044] hover:text-[#1f674f] text-xs font-bold rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer"
-            >
-              <Plus className="w-4 h-4" /> Adicionar Outra Fonte de Renda
-            </button>
-          </div>
-
-          {/* Reserva de Emergência e Instrumento de Custódia */}
-          <div className="bg-[#fbfaf5] p-5 rounded-2xl border border-[#e4e0d7] space-y-4 mt-6">
             <div className="flex items-center gap-2.5">
-              <div className="p-2 bg-emerald-50 text-[#1f674f] rounded-xl border border-emerald-100">
-                <PiggyBank className="w-5 h-5" />
-              </div>
-              <div>
-                <h4 className="text-sm font-bold text-[#123044]">Reserva de Emergência Atual</h4>
-                <p className="text-xs text-[#667085]">Recursos em instrumentos com liquidez diária exclusiva para imprevistos.</p>
-              </div>
-            </div>
-
-            <div className="grid sm:grid-cols-2 gap-4 pt-1">
-              <div className="bg-white p-4 rounded-xl border border-[#e4e0d7] space-y-1.5">
-                <label className="text-xs font-bold text-[#123044] block">Valor Atual da Reserva Guardada</label>
-                <input
-                  type="text"
-                  inputMode="numeric"
-                  placeholder="R$ 0,00"
-                  value={formData.reservaAtual || ""}
-                  onChange={(e) => onChange("reservaAtual", formatCurrencyInput(e.target.value))}
-                  className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-3.5 py-2.5 text-sm text-[#123044] font-semibold focus:outline-none focus:border-[#1f674f] tabular-nums"
-                />
-                <span className="text-[10px] text-[#667085] block">Montante total disponível imediatamente em D+0 / D+1.</span>
-              </div>
-
-              <div className="bg-white p-4 rounded-xl border border-[#e4e0d7] space-y-1.5">
-                <label className="text-xs font-bold text-[#123044] block">Onde a reserva está aplicada?</label>
-                <select
-                  value={formData.localReserva || ""}
-                  onChange={(e) => onChange("localReserva", e.target.value)}
-                  className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-3.5 py-2.5 text-sm text-[#123044] font-semibold focus:outline-none focus:border-[#1f674f]"
-                >
-                  <option value="">Selecione uma opção...</option>
-                  <option value="CDB Liquidez Diária">CDB Liquidez Diária (100%+ do CDI)</option>
-                  <option value="Tesouro Selic">Tesouro Selic (Tesouro Direto)</option>
-                  <option value="Poupança">Poupança (Baixa rentabilidade)</option>
-                  <option value="Conta Corrente">Conta Corrente (Sem rentabilidade)</option>
-                  <option value="Outro">Outro investimento conservador</option>
-                  <option value="Não possuo reserva">Ainda não possuo reserva montada</option>
-                </select>
-                <span className="text-[10px] text-[#667085] block">Instrumento de custódia e risco de crédito do emissor.</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ─── ABA 2: GASTOS DETALHADOS (CESTA COMPLETA) ─── */}
-      {activeTab === "gastos" && (
-        <div className="space-y-4 animate-in fade-in duration-150">
-          <div className="bg-[#f6f4ef]/60 p-4 rounded-2xl border border-[#e4e0d7] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div>
-              <h4 className="text-sm font-bold text-[#123044]">
-                Cesta Completa de Gastos Mensais
-              </h4>
-              <p className="text-xs text-[#667085] mt-0.5">
-                Organizada nos 9 grupos oficiais. Cada valor informado aqui calibra simultaneamente seu orçamento e sua Calculadora de Inflação Real.
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => setIsInvoiceModalOpen(true)}
-              className="px-4 py-2 rounded-xl bg-white border border-[#1f674f] text-[#1f674f] hover:bg-[#e8f1ed]/50 text-xs font-bold flex items-center gap-2 transition-all cursor-pointer shrink-0"
-            >
-              <CreditCard className="w-4 h-4" />
-              <span>Importar Fatura de Cartão</span>
-            </button>
-          </div>
-
-          {/* Acordeão de Grupos */}
-          <div className="space-y-3">
-            {EXPENSE_GROUPS_DEF.map((group) => {
-              const isOpen = !!openGroups[group.id];
-              const groupTotal = expenseDetails.byGroup[group.id] || 0;
-              const groupShare = totalExpenses > 0 ? (groupTotal / totalExpenses) * 100 : 0;
-
-              return (
-                <div
-                  key={group.id}
-                  className="bg-white border border-[#e4e0d7] rounded-2xl overflow-hidden shadow-xs transition-all"
-                >
-                  {/* Header do Grupo */}
-                  <div
-                    onClick={() => toggleGroup(group.id)}
-                    className="px-5 py-3.5 flex items-center justify-between cursor-pointer hover:bg-slate-50/70 transition-colors"
-                  >
-                    <div className="flex items-center gap-3">
-                      {(() => { const IconComp = group.icon; return (
-                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 border transition-all ${
-                          isOpen
-                            ? "bg-[#e8f1ed] text-[#1f674f] border-[#1f674f]/30 shadow-xs"
-                            : "bg-[#f6f4ef] text-[#123044] border-[#e4e0d7]"
-                        }`}>
-                          <IconComp size={17} className={isOpen ? "text-[#1f674f]" : "text-[#123044]"} />
-                        </div>
-                      ); })()}
-                      <div>
-                        <div className="text-xs sm:text-sm font-bold text-[#123044] flex items-center gap-2">
-                          <span>{group.label}</span>
-                          {groupTotal > 0 && (
-                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#f0ece1] text-[#123044]">
-                              {groupShare.toFixed(1)}% do total
-                            </span>
-                          )}
-                        </div>
-                        <div className="text-[11px] text-[#667085] hidden sm:block">{group.desc}</div>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                      <div className="text-right">
-                        <div className="text-xs sm:text-sm font-extrabold text-[#123044] tabular-nums">
-                          {formatBRL(groupTotal)}
-                        </div>
-                        <div className="text-[10px] text-[#667085]">por mês</div>
-                      </div>
-                      {isOpen ? (
-                        <ChevronUp className="w-4 h-4 text-slate-400" />
-                      ) : (
-                        <ChevronDown className="w-4 h-4 text-slate-400" />
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Itens do Grupo */}
-                  {isOpen && (
-                    <div className="px-5 pb-5 pt-2 border-t border-[#f0ece1] bg-[#fdfbf7]/50">
-                      <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
-                        {group.items.map((item) => (
-                          <div key={item.id} className="space-y-1">
-                            <label className="text-[11px] font-bold text-[#123044] block truncate" title={item.label}>
-                              {item.label}
-                            </label>
-                            <input
-                              type="text"
-                              inputMode="numeric"
-                              placeholder="R$ 0,00"
-                              value={formData[`gasto_${item.id}`] || ""}
-                              onChange={(e) => onChange(`gasto_${item.id}`, formatCurrencyInput(e.target.value))}
-                              className="w-full bg-white border border-[#e4e0d7] rounded-xl px-3 py-2 text-xs text-[#123044] font-semibold focus:outline-none focus:border-[#1f674f] tabular-nums"
-                            />
-                          </div>
-                        ))}
-                      </div>
-
-                      {group.id === "dividas" && (
-                        <div className="mt-4 pt-4 border-t border-[#f0ece1] grid sm:grid-cols-2 gap-3">
-                          <div className="space-y-1">
-                            <label className="text-[11px] font-bold text-[#123044] block">
-                              Saldo Devedor Total Acumulado (para quitação hoje)
-                            </label>
-                            <input
-                              type="text"
-                              inputMode="numeric"
-                              placeholder="R$ 0,00"
-                              value={formData.totalDividas || ""}
-                              onChange={(e) => {
-                                const val = formatCurrencyInput(e.target.value);
-                                onChange("totalDividas", val);
-                                onChange("possuiDividas", val && val !== "R$ 0,00" ? "Sim, possuo" : "Não possuo dívidas");
-                              }}
-                              className="w-full bg-white border border-[#e4e0d7] rounded-xl px-3 py-2 text-xs text-[#123044] font-semibold focus:outline-none focus:border-[#1f674f] tabular-nums"
-                            />
-                            <span className="text-[10px] text-[#667085] block">Montante total devedor para quitar passivos.</span>
-                          </div>
-
-                          <div className="space-y-1">
-                            <label className="text-[11px] font-bold text-[#123044] block">
-                              Tipo Principal de Dívida / Financiamento
-                            </label>
-                            <select
-                              value={formData.tipoDivida || ""}
-                              onChange={(e) => onChange("tipoDivida", e.target.value)}
-                              className="w-full bg-white border border-[#e4e0d7] rounded-xl px-3 py-2 text-xs text-[#123044] font-semibold focus:outline-none focus:border-[#1f674f]"
-                            >
-                              <option value="">Selecione uma opção...</option>
-                              <option value="Financiamento Imobiliário">Financiamento Imobiliário</option>
-                              <option value="Financiamento de Veículo">Financiamento de Veículo</option>
-                              <option value="Empréstimo Consignado">Empréstimo Consignado</option>
-                              <option value="Cartão de Crédito / Rotativo">Cartão de Crédito / Rotativo</option>
-                              <option value="Empréstimo Pessoal">Empréstimo Pessoal</option>
-                              <option value="Outro">Outro tipo de dívida</option>
-                            </select>
-                            <span className="text-[10px] text-[#667085] block">Identifica a taxa média de juros e prioridade de quitação.</span>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Gastos Customizados */}
-          <div className="space-y-3 pt-2">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-[#123044] uppercase tracking-wider">
-                Outros Gastos Específicos Livres
-              </span>
-            </div>
-
-            {expenseDetails.customList.map((item) => (
-              <div key={item.id} className="grid sm:grid-cols-2 gap-3 p-3 bg-white rounded-xl border border-[#e4e0d7]">
-                <div>
-                  <label className="text-[11px] font-bold text-[#123044] block mb-1">Nome do Gasto</label>
-                  <input
-                    type="text"
-                    placeholder="Ex: Terapia, Hobbies, etc."
-                    value={item.name}
-                    onChange={(e) => handleUpdateCustomExpense(item.id, "name", e.target.value)}
-                    className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-3 py-2 text-xs text-[#123044] font-medium focus:outline-none focus:border-[#1f674f]"
-                  />
-                </div>
-                <div>
-                  <div className="flex items-center justify-between mb-1">
-                    <label className="text-[11px] font-bold text-[#123044]">Valor Mensal</label>
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveCustomExpense(item.id)}
-                      className="text-slate-400 hover:text-red-600 text-[11px] font-medium flex items-center gap-1 cursor-pointer"
-                    >
-                      <Trash2 className="w-3 h-3" /> Remover
-                    </button>
-                  </div>
-                  <input
-                    type="text"
-                    inputMode="numeric"
-                    placeholder="R$ 0,00"
-                    value={item.value}
-                    onChange={(e) => handleUpdateCustomExpense(item.id, "value", formatCurrencyInput(e.target.value))}
-                    className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-3 py-2 text-xs text-[#123044] font-medium focus:outline-none focus:border-[#1f674f]"
-                  />
-                </div>
-              </div>
-            ))}
-
-            <button
-              type="button"
-              onClick={handleAddCustomExpense}
-              className="w-full h-10 border-2 border-dashed border-[#d8d3c5] hover:border-[#1f674f] text-[#123044] hover:text-[#1f674f] text-xs font-bold rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer"
-            >
-              <Plus className="w-4 h-4" /> Adicionar Outro Gasto Específico
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* ─── ABA 3: CONTROLE, DIAGNÓSTICO & ALERTAS ─── */}
-      {activeTab === "alertas" && (
-        <div className="space-y-5 animate-in fade-in duration-150">
-          {/* Termômetro 50-30-20 */}
-          <div className="bg-white border border-[#e4e0d7] rounded-2xl p-5 shadow-xs">
-            <h4 className="text-sm font-bold text-[#123044] flex items-center gap-2">
-              <Compass className="w-4 h-4 text-[#1f674f]" />
-              Equilíbrio Orçamentário (Regra 50 / 30 / 20)
-            </h4>
-            <p className="text-xs text-[#667085] mt-1 leading-relaxed">
-              Compara a divisão do seu orçamento com os parâmetros de saúde patrimonial:
-              <strong className="text-[#123044]"> 50% Gastos Essenciais</strong>,
-              <strong className="text-[#123044]"> 30% Estilo de Vida</strong> e
-              <strong className="text-[#123044]"> 20% Aportes para o Futuro</strong>.
-            </p>
-
-            {/* Barra Visual */}
-            <div className="h-6 w-full bg-[#f0ece1] rounded-full overflow-hidden flex mt-4 border border-[#e4e0d7]">
-              <div
-                style={{ width: `${Math.min(100, essentialPct)}%` }}
-                className="bg-[#2B6E76] h-full transition-all"
-                title={`Essenciais: ${essentialPct.toFixed(1)}%`}
-              />
-              <div
-                style={{ width: `${Math.min(100 - essentialPct, lifestylePct)}%` }}
-                className="bg-[#F59E0B] h-full transition-all"
-                title={`Estilo de Vida: ${lifestylePct.toFixed(1)}%`}
-              />
-              <div
-                style={{ width: `${Math.max(0, savingsRate)}%` }}
-                className="bg-[#1F674F] h-full transition-all"
-                title={`Aporte Livre: ${savingsRate.toFixed(1)}%`}
-              />
-            </div>
-
-            {/* Legenda da Barra */}
-            <div className="grid grid-cols-3 gap-2 mt-3 text-center text-xs">
-              <div className="p-2 rounded-xl bg-slate-50 border border-slate-100">
-                <div className="flex items-center justify-center gap-1.5 font-bold text-[#2B6E76]">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#2B6E76]" />
-                  Essenciais: {essentialPct.toFixed(1)}%
-                </div>
-                <div className="text-[10px] text-[#667085] mt-0.5">Meta: até 50% ({formatBRL(totalIncomes * 0.5)})</div>
-              </div>
-
-              <div className="p-2 rounded-xl bg-slate-50 border border-slate-100">
-                <div className="flex items-center justify-center gap-1.5 font-bold text-[#F59E0B]">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#F59E0B]" />
-                  Estilo de Vida: {lifestylePct.toFixed(1)}%
-                </div>
-                <div className="text-[10px] text-[#667085] mt-0.5">Meta: até 30% ({formatBRL(totalIncomes * 0.3)})</div>
-              </div>
-
-              <div className="p-2 rounded-xl bg-slate-50 border border-slate-100">
-                <div className="flex items-center justify-center gap-1.5 font-bold text-[#1F674F]">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#1F674F]" />
-                  Aportes / Futuro: {savingsRate.toFixed(1)}%
-                </div>
-                <div className="text-[10px] text-[#667085] mt-0.5">Meta: mín. 20% ({formatBRL(totalIncomes * 0.2)})</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Lista de Alertas Inteligentes */}
-          <div className="space-y-3">
-            <h4 className="text-xs font-bold text-[#123044] uppercase tracking-wider">
-              Radar de Alertas Preventivos da ARVO
-            </h4>
-
-            {alerts.map((al, idx) => (
-              <div
-                key={idx}
-                className={`p-4 rounded-2xl border flex items-start justify-between gap-3 text-xs leading-relaxed ${
-                  al.type === "danger"
-                    ? "bg-rose-50/70 border-rose-200 text-rose-950"
-                    : al.type === "warning"
-                    ? "bg-amber-50/70 border-amber-200 text-amber-950"
-                    : "bg-emerald-50/70 border-emerald-200 text-emerald-950"
-                }`}
-              >
-                <div className="flex items-start gap-2.5">
-                  {al.type === "danger" ? (
-                    <AlertTriangle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
-                  ) : al.type === "warning" ? (
-                    <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
-                  ) : (
-                    <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
-                  )}
-                  <div>
-                    <div className="font-bold text-sm">{al.title}</div>
-                    <div className="text-[#475467] mt-0.5">{al.desc}</div>
-                  </div>
-                </div>
-
-                {al.metric && (
-                  <span className="px-2.5 py-1 rounded-lg bg-white/80 border border-current font-bold text-xs shrink-0 self-start">
-                    {al.metric}
+              <div className={`w-6 h-6 rounded-lg flex items-center justify-center text-[11px] font-black shrink-0 transition-all relative ${
+                activeTab === "alertas"
+                  ? "bg-[#1f674f] text-white"
+                  : "bg-[#f0ece1] text-[#667085]"
+              }`}>
+                3
+                {alerts.filter(a => a.type === "danger" || a.type === "warning").length > 0 && (
+                  <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-amber-500 text-white text-[8px] font-extrabold flex items-center justify-center">
+                    {alerts.filter(a => a.type === "danger" || a.type === "warning").length}
                   </span>
                 )}
               </div>
-            ))}
-          </div>
+              <div className="min-w-0">
+                <div className={`text-xs font-bold truncate ${activeTab === "alertas" ? "text-[#1f674f]" : "text-[#123044]"}`}>
+                  Controle
+                </div>
+                <div className="text-[10px] text-[#667085] font-semibold mt-0.5">
+                  {totalIncomes > 0
+                    ? `${savingsRate.toFixed(0)}% poupado`
+                    : "Alertas e análise"}
+                </div>
+              </div>
+            </div>
+          </button>
 
-          {/* Simulador de Impacto de Corte de Ralos */}
-          <div className="bg-[#123044] text-white p-5 rounded-2xl space-y-2">
-            <div className="flex items-center gap-2 text-emerald-400 text-xs font-bold uppercase tracking-wider">
-              <Sparkles className="w-4 h-4" /> Efeito Multiplicador de Longo Prazo
-            </div>
-            <div className="text-sm font-light text-slate-200 leading-relaxed">
-              Se você otimizar <strong className="text-white">R$ 500,00 por mês</strong> cortando pequenos ralos identificados na sua fatura e investir com a alocação da sua Carteira ARVO, você acumulará aproximadamente:
-            </div>
-            <div className="grid grid-cols-2 gap-3 pt-2">
-              <div className="bg-white/10 rounded-xl p-3">
-                <div className="text-[11px] text-slate-300">Em 10 Anos</div>
-                <div className="text-lg font-extrabold text-emerald-400">~ R$ 138.000,00</div>
+          {/* Passo 4: Minha Inflação Real */}
+          <button
+            type="button"
+            onClick={() => setActiveTab("inflacao")}
+            className={`w-full text-left px-4 py-4 border-b border-[#e4e0d7] transition-all cursor-pointer group ${
+              activeTab === "inflacao"
+                ? "bg-white border-l-2 border-l-[#1f674f]"
+                : "hover:bg-[#f0ece1]/50 border-l-2 border-l-transparent"
+            }`}
+          >
+            <div className="flex items-center gap-2.5">
+              <div className={`w-6 h-6 rounded-lg flex items-center justify-center text-[11px] font-black shrink-0 transition-all ${
+                activeTab === "inflacao"
+                  ? "bg-[#1f674f] text-white"
+                  : "bg-[#f0ece1] text-[#667085]"
+              }`}>
+                4
               </div>
-              <div className="bg-white/10 rounded-xl p-3">
-                <div className="text-[11px] text-slate-300">Em 20 Anos</div>
-                <div className="text-lg font-extrabold text-emerald-400">~ R$ 584.000,00</div>
+              <div className="min-w-0">
+                <div className={`text-xs font-bold truncate ${activeTab === "inflacao" ? "text-[#1f674f]" : "text-[#123044]"}`}>
+                  Inflação Real
+                </div>
+                <div className="text-[10px] text-[#667085] font-semibold mt-0.5">
+                  {personalInflationMetrics.hasData
+                    ? `${personalInflationMetrics.personalRate.toFixed(1)}% a.a.`
+                    : "Preencha gastos"}
+                </div>
               </div>
             </div>
+          </button>
+
+          {/* Importar Fatura — fixo na base */}
+          <div className="mt-auto p-3 border-t border-[#e4e0d7]">
+            <button
+              type="button"
+              onClick={() => setIsInvoiceModalOpen(true)}
+              className="w-full px-3 py-2 rounded-lg bg-white border border-[#e4e0d7] text-[#123044] text-[11px] font-bold flex items-center gap-1.5 hover:border-[#1f674f] hover:text-[#1f674f] transition-all cursor-pointer"
+            >
+              <CreditCard className="w-3 h-3 shrink-0" />
+              <span>Importar Fatura</span>
+            </button>
           </div>
         </div>
-      )}
 
-      {/* ─── ABA 4: MINHA INFLAÇÃO REAL CONECTADA ─── */}
-      {activeTab === "inflacao" && (
-        <div className="space-y-5 animate-in fade-in duration-150">
-          <div className="bg-white border border-[#e4e0d7] rounded-2xl p-5 shadow-xs space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div>
-                <span className="text-[11px] font-bold text-[#1f674f] uppercase tracking-wider">
-                  Cálculo Conectado em Tempo Real
-                </span>
-                <h4 className="text-lg font-bold text-[#123044] mt-0.5">
-                  Inflação Estimada da Sua Cesta Familiar
+        {/* ── Painel de Conteúdo ── */}
+        <div className="flex-1 min-w-0 overflow-y-auto p-5 space-y-5">
+
+          {/* ─── PAINEL 1: ENTRADAS ─── */}
+          {activeTab === "entradas" && (
+            <div className="space-y-5 animate-in fade-in duration-150">
+              <div className="bg-[#f6f4ef]/60 p-4 rounded-2xl border border-[#e4e0d7]">
+                <h4 className="text-sm font-bold text-[#123044] flex items-center gap-2">
+                  <span>Classificação de Entradas Líquidas</span>
+                  <span className="text-xs font-normal text-[#667085]">(Informe apenas os valores líquidos que caem na sua conta)</span>
                 </h4>
+                <p className="text-xs text-[#667085] mt-1">
+                  Separar salário, pró-labore, lucros de empresa e renda passiva permite à ARVO calibrar seu colchão de segurança e a previsibilidade dos seus aportes.
+                </p>
               </div>
 
-              <Link
-                href="/dashboard/inflacao"
-                className="px-4 py-2 rounded-xl bg-[#e8f1ed] text-[#1f674f] hover:bg-[#d8e9e2] text-xs font-bold flex items-center gap-1.5 transition-colors self-start sm:self-auto"
-              >
-                <span>Abrir Calculadora Completa</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
+              <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
+                {/* Salário CLT */}
+                <div className="bg-white p-4 rounded-2xl border border-[#e4e0d7] space-y-1.5">
+                  <label className="text-xs font-bold text-[#123044] block">Salário Líquido (CLT)</label>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    placeholder="R$ 0,00"
+                    value={formData.rendaClt || ""}
+                    onChange={(e) => onChange("rendaClt", formatCurrencyInput(e.target.value))}
+                    className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-3.5 py-2.5 text-sm text-[#123044] font-semibold focus:outline-none focus:border-[#1f674f]"
+                  />
+                  <span className="text-[10px] text-[#667085] block">Salário mensal após descontos de INSS/IRRF.</span>
+                </div>
+
+                {/* Pró-labore */}
+                <div className="bg-white p-4 rounded-2xl border border-[#e4e0d7] space-y-1.5">
+                  <label className="text-xs font-bold text-[#123044] block">Pró-labore Líquido (PJ / Sócio)</label>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    placeholder="R$ 0,00"
+                    value={formData.rendaProLabore || ""}
+                    onChange={(e) => onChange("rendaProLabore", formatCurrencyInput(e.target.value))}
+                    className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-3.5 py-2.5 text-sm text-[#123044] font-semibold focus:outline-none focus:border-[#1f674f]"
+                  />
+                  <span className="text-[10px] text-[#667085] block">Remuneração fixa de sócio ou contrato PJ.</span>
+                </div>
+
+                {/* Distribuição de Lucros */}
+                <div className="bg-white p-4 rounded-2xl border border-[#e4e0d7] space-y-1.5">
+                  <label className="text-xs font-bold text-[#123044] block">Distribuição de Lucros / Dividendos</label>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    placeholder="R$ 0,00"
+                    value={formData.rendaLucrosDividendos || ""}
+                    onChange={(e) => onChange("rendaLucrosDividendos", formatCurrencyInput(e.target.value))}
+                    className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-3.5 py-2.5 text-sm text-[#123044] font-semibold focus:outline-none focus:border-[#1f674f]"
+                  />
+                  <span className="text-[10px] text-[#667085] block">Média mensal de retiradas de lucro isentas.</span>
+                </div>
+
+                {/* Aluguéis */}
+                <div className="bg-white p-4 rounded-2xl border border-[#e4e0d7] space-y-1.5">
+                  <label className="text-xs font-bold text-[#123044] block">Renda de Aluguéis de Imóveis</label>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    placeholder="R$ 0,00"
+                    value={formData.rendaAlugueis || ""}
+                    onChange={(e) => onChange("rendaAlugueis", formatCurrencyInput(e.target.value))}
+                    className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-3.5 py-2.5 text-sm text-[#123044] font-semibold focus:outline-none focus:border-[#1f674f]"
+                  />
+                  <span className="text-[10px] text-[#667085] block">Locação líquida de imóveis próprios recebida.</span>
+                </div>
+
+                {/* Rendimentos */}
+                <div className="bg-white p-4 rounded-2xl border border-[#e4e0d7] space-y-1.5">
+                  <label className="text-xs font-bold text-[#123044] block">Proventos de Investimentos (Ações/FIIs)</label>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    placeholder="R$ 0,00"
+                    value={formData.rendaInvestimentos || ""}
+                    onChange={(e) => onChange("rendaInvestimentos", formatCurrencyInput(e.target.value))}
+                    className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-3.5 py-2.5 text-sm text-[#123044] font-semibold focus:outline-none focus:border-[#1f674f]"
+                  />
+                  <span className="text-[10px] text-[#667085] block">Rendimentos passivos sacados todo mês.</span>
+                </div>
+
+                {/* Pensão */}
+                <div className="bg-white p-4 rounded-2xl border border-[#e4e0d7] space-y-1.5">
+                  <label className="text-xs font-bold text-[#123044] block">Pensão / Aposentadoria / Previdência</label>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    placeholder="R$ 0,00"
+                    value={formData.rendaPensaoAposentadoria || ""}
+                    onChange={(e) => onChange("rendaPensaoAposentadoria", formatCurrencyInput(e.target.value))}
+                    className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-3.5 py-2.5 text-sm text-[#123044] font-semibold focus:outline-none focus:border-[#1f674f]"
+                  />
+                  <span className="text-[10px] text-[#667085] block">Benefício previdenciário ou pensão regular.</span>
+                </div>
+
+                {/* Renda Extra */}
+                <div className="bg-white p-4 rounded-2xl border border-[#e4e0d7] space-y-1.5">
+                  <label className="text-xs font-bold text-[#123044] block">Renda Extra / Freelances / Bônus</label>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    placeholder="R$ 0,00"
+                    value={formData.rendaExtraFreelance || ""}
+                    onChange={(e) => onChange("rendaExtraFreelance", formatCurrencyInput(e.target.value))}
+                    className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-3.5 py-2.5 text-sm text-[#123044] font-semibold focus:outline-none focus:border-[#1f674f]"
+                  />
+                  <span className="text-[10px] text-[#667085] block">Média mensal de projetos e comissões.</span>
+                </div>
+
+                {/* Vínculo Profissional */}
+                <div className="bg-white p-4 rounded-2xl border border-[#e4e0d7] space-y-1.5">
+                  <label className="text-xs font-bold text-[#123044] block">Vínculo Profissional Principal</label>
+                  <select
+                    value={formData.tipoVinculo || "CLT"}
+                    onChange={(e) => onChange("tipoVinculo", e.target.value)}
+                    className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-3.5 py-2.5 text-sm text-[#123044] font-semibold focus:outline-none focus:border-[#1f674f]"
+                  >
+                    <option value="CLT">CLT (Estabilidade relativa / 6m reserva)</option>
+                    <option value="PJ">PJ / Contrato de prestação (12m reserva)</option>
+                    <option value="Empresário">Empresário / Sócio (12m reserva)</option>
+                    <option value="Autônomo">Profissional Liberal / Autônomo (12m reserva)</option>
+                    <option value="Funcionário Público">Servidor Público (6m reserva)</option>
+                    <option value="Misto">Misto (Múltiplas fontes / 12m reserva)</option>
+                  </select>
+                  <span className="text-[10px] text-[#667085] block">Define a régua técnica recomendada para sua reserva.</span>
+                </div>
+              </div>
+
+              {/* Entradas Customizadas */}
+              <div className="space-y-3 pt-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-[#123044] uppercase tracking-wider">
+                    Outras Entradas Personalizadas
+                  </span>
+                </div>
+
+                {incomeDetails.customList.map((item) => (
+                  <div key={item.id} className="grid sm:grid-cols-2 gap-3 p-3 bg-white rounded-xl border border-[#e4e0d7]">
+                    <div>
+                      <label className="text-[11px] font-bold text-[#123044] block mb-1">Descrição da Entrada</label>
+                      <input
+                        type="text"
+                        placeholder="Ex: Royalty, Dividendos de Startup, etc."
+                        value={item.name}
+                        onChange={(e) => handleUpdateCustomIncome(item.id, "name", e.target.value)}
+                        className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-3 py-2 text-xs text-[#123044] font-medium focus:outline-none focus:border-[#1f674f]"
+                      />
+                    </div>
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="text-[11px] font-bold text-[#123044]">Valor Líquido Mensal</label>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveCustomIncome(item.id)}
+                          className="text-slate-400 hover:text-red-600 text-[11px] font-medium flex items-center gap-1 cursor-pointer"
+                        >
+                          <Trash2 className="w-3 h-3" /> Remover
+                        </button>
+                      </div>
+                      <input
+                        type="text"
+                        inputMode="numeric"
+                        placeholder="R$ 0,00"
+                        value={item.value}
+                        onChange={(e) => handleUpdateCustomIncome(item.id, "value", formatCurrencyInput(e.target.value))}
+                        className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-3 py-2 text-xs text-[#123044] font-medium focus:outline-none focus:border-[#1f674f]"
+                      />
+                    </div>
+                  </div>
+                ))}
+
+                <button
+                  type="button"
+                  onClick={handleAddCustomIncome}
+                  className="w-full h-10 border-2 border-dashed border-[#d8d3c5] hover:border-[#1f674f] text-[#123044] hover:text-[#1f674f] text-xs font-bold rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer"
+                >
+                  <Plus className="w-4 h-4" /> Adicionar Outra Fonte de Renda
+                </button>
+              </div>
+
+              {/* Reserva de Emergência */}
+              <div className="bg-[#fbfaf5] p-5 rounded-2xl border border-[#e4e0d7] space-y-4 mt-6">
+                <div className="flex items-center gap-2.5">
+                  <div className="p-2 bg-emerald-50 text-[#1f674f] rounded-xl border border-emerald-100">
+                    <PiggyBank className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-[#123044]">Reserva de Emergência Atual</h4>
+                    <p className="text-xs text-[#667085]">Recursos em instrumentos com liquidez diária exclusiva para imprevistos.</p>
+                  </div>
+                </div>
+
+                <div className="grid sm:grid-cols-2 gap-4 pt-1">
+                  <div className="bg-white p-4 rounded-xl border border-[#e4e0d7] space-y-1.5">
+                    <label className="text-xs font-bold text-[#123044] block">Valor Atual da Reserva Guardada</label>
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      placeholder="R$ 0,00"
+                      value={formData.reservaAtual || ""}
+                      onChange={(e) => onChange("reservaAtual", formatCurrencyInput(e.target.value))}
+                      className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-3.5 py-2.5 text-sm text-[#123044] font-semibold focus:outline-none focus:border-[#1f674f] tabular-nums"
+                    />
+                    <span className="text-[10px] text-[#667085] block">Montante total disponível imediatamente em D+0 / D+1.</span>
+                  </div>
+
+                  <div className="bg-white p-4 rounded-xl border border-[#e4e0d7] space-y-1.5">
+                    <label className="text-xs font-bold text-[#123044] block">Onde a reserva está aplicada?</label>
+                    <select
+                      value={formData.localReserva || ""}
+                      onChange={(e) => onChange("localReserva", e.target.value)}
+                      className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-3.5 py-2.5 text-sm text-[#123044] font-semibold focus:outline-none focus:border-[#1f674f]"
+                    >
+                      <option value="">Selecione uma opção...</option>
+                      <option value="CDB Liquidez Diária">CDB Liquidez Diária (100%+ do CDI)</option>
+                      <option value="Tesouro Selic">Tesouro Selic (Tesouro Direto)</option>
+                      <option value="Poupança">Poupança (Baixa rentabilidade)</option>
+                      <option value="Conta Corrente">Conta Corrente (Sem rentabilidade)</option>
+                      <option value="Outro">Outro investimento conservador</option>
+                      <option value="Não possuo reserva">Ainda não possuo reserva montada</option>
+                    </select>
+                    <span className="text-[10px] text-[#667085] block">Instrumento de custódia e risco de crédito do emissor.</span>
+                  </div>
+                </div>
+              </div>
             </div>
+          )}
 
-            {/* Placar de Comparação */}
-            <div className="grid sm:grid-cols-3 gap-3">
-              <div className="p-4 rounded-2xl bg-[#f6f4ef] border border-[#e4e0d7] text-center">
-                <div className="text-[11px] text-[#667085] font-bold uppercase">Sua Inflação Pessoal</div>
-                <div className="text-2xl sm:text-3xl font-black text-[#123044] mt-1 tabular-nums">
-                  {personalInflationMetrics.personalRate.toFixed(2)}%
+          {/* ─── PAINEL 2: GASTOS ─── */}
+          {activeTab === "gastos" && (
+            <div className="space-y-4 animate-in fade-in duration-150">
+              <div className="bg-[#f6f4ef]/60 p-4 rounded-2xl border border-[#e4e0d7] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <h4 className="text-sm font-bold text-[#123044]">
+                    Cesta Completa de Gastos Mensais
+                  </h4>
+                  <p className="text-xs text-[#667085] mt-0.5">
+                    Organizada nos 9 grupos oficiais. Cada valor informado aqui calibra simultaneamente seu orçamento e sua Calculadora de Inflação Real.
+                  </p>
                 </div>
-                <div className="text-[10px] text-[#667085] mt-0.5">ao ano (estimativa ponderada)</div>
+                <button
+                  type="button"
+                  onClick={() => setIsInvoiceModalOpen(true)}
+                  className="px-4 py-2 rounded-xl bg-white border border-[#1f674f] text-[#1f674f] hover:bg-[#e8f1ed]/50 text-xs font-bold flex items-center gap-2 transition-all cursor-pointer shrink-0"
+                >
+                  <CreditCard className="w-4 h-4" />
+                  <span>Importar Fatura de Cartão</span>
+                </button>
               </div>
 
-              <div className="p-4 rounded-2xl bg-[#f6f4ef] border border-[#e4e0d7] text-center">
-                <div className="text-[11px] text-[#667085] font-bold uppercase">IPCA Oficial (IBGE)</div>
-                <div className="text-2xl sm:text-3xl font-black text-[#667085] mt-1 tabular-nums">
-                  {personalInflationMetrics.ipcaBenchmark.toFixed(2)}%
-                </div>
-                <div className="text-[10px] text-[#667085] mt-0.5">ao ano (média Brasil)</div>
-              </div>
+              {/* Acordeão de Grupos */}
+              <div className="space-y-3">
+                {EXPENSE_GROUPS_DEF.map((group) => {
+                  const isOpen = !!openGroups[group.id];
+                  const groupTotal = expenseDetails.byGroup[group.id] || 0;
+                  const groupShare = totalExpenses > 0 ? (groupTotal / totalExpenses) * 100 : 0;
 
-              <div className="p-4 rounded-2xl bg-[#f6f4ef] border border-[#e4e0d7] text-center">
-                <div className="text-[11px] text-[#667085] font-bold uppercase">Diferença em Relação ao IPCA</div>
-                <div className={`text-2xl sm:text-3xl font-black mt-1 tabular-nums ${
-                  personalInflationMetrics.diffIpca > 0 ? "text-rose-600" : "text-emerald-600"
-                }`}>
-                  {personalInflationMetrics.diffIpca >= 0 ? "+" : ""}
-                  {personalInflationMetrics.diffIpca.toFixed(2)} pp
-                </div>
-                <div className="text-[10px] text-[#667085] mt-0.5">
-                  {personalInflationMetrics.diffIpca > 0 ? "Seu custo sobe mais que o índice oficial" : "Seu custo sobe menos que a média"}
-                </div>
-              </div>
-            </div>
-
-            {/* Top Vilões da Cesta */}
-            {personalInflationMetrics.topVillains.length > 0 && (
-              <div className="pt-2">
-                <div className="text-xs font-bold text-[#123044] uppercase tracking-wider mb-2.5">
-                  Maiores Impactos na Sua Inflação (Top Vilões)
-                </div>
-                <div className="space-y-2">
-                  {personalInflationMetrics.topVillains.map((v, i) => (
-                    <div key={v.id} className="p-3 bg-[#fdfbf7] rounded-xl border border-[#e4e0d7] flex items-center justify-between text-xs">
-                      <div className="flex items-center gap-2">
-                        <span className="w-5 h-5 rounded-full bg-[#123044] text-white text-[10px] font-bold flex items-center justify-center">
-                          {i + 1}
-                        </span>
-                        <div>
-                          <div className="font-bold text-[#123044]">{v.label}</div>
-                          <div className="text-[11px] text-[#667085]">
-                            Gasto: {formatBRL(v.expense)}/mês ({v.weightPct.toFixed(1)}% da sua cesta)
+                  return (
+                    <div
+                      key={group.id}
+                      className="bg-white border border-[#e4e0d7] rounded-2xl overflow-hidden shadow-xs transition-all"
+                    >
+                      {/* Header do Grupo */}
+                      <div
+                        onClick={() => toggleGroup(group.id)}
+                        className="px-5 py-3.5 flex items-center justify-between cursor-pointer hover:bg-slate-50/70 transition-colors"
+                      >
+                        <div className="flex items-center gap-3">
+                          {(() => { const IconComp = group.icon; return (
+                            <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 border transition-all ${
+                              isOpen
+                                ? "bg-[#e8f1ed] text-[#1f674f] border-[#1f674f]/30 shadow-xs"
+                                : "bg-[#f6f4ef] text-[#123044] border-[#e4e0d7]"
+                            }`}>
+                              <IconComp size={17} className={isOpen ? "text-[#1f674f]" : "text-[#123044]"} />
+                            </div>
+                          ); })()}
+                          <div>
+                            <div className="text-xs sm:text-sm font-bold text-[#123044] flex items-center gap-2">
+                              <span>{group.label}</span>
+                              {groupTotal > 0 && (
+                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#f0ece1] text-[#123044]">
+                                  {groupShare.toFixed(1)}% do total
+                                </span>
+                              )}
+                            </div>
+                            <div className="text-[11px] text-[#667085] hidden sm:block">{group.desc}</div>
                           </div>
                         </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="font-extrabold text-[#123044] tabular-nums">
-                          +{v.ratePct.toFixed(2)}% a.a.
+
+                        <div className="flex items-center gap-3">
+                          <div className="text-right">
+                            <div className="text-xs sm:text-sm font-extrabold text-[#123044] tabular-nums">
+                              {formatBRL(groupTotal)}
+                            </div>
+                            <div className="text-[10px] text-[#667085]">por mês</div>
+                          </div>
+                          {isOpen ? (
+                            <ChevronUp className="w-4 h-4 text-slate-400" />
+                          ) : (
+                            <ChevronDown className="w-4 h-4 text-slate-400" />
+                          )}
                         </div>
-                        <div className="text-[10px] text-[#667085]">impacto ponderado: +{v.impact.toFixed(2)} pp</div>
                       </div>
+
+                      {/* Itens do Grupo */}
+                      {isOpen && (
+                        <div className="px-5 pb-5 pt-2 border-t border-[#f0ece1] bg-[#fdfbf7]/50">
+                          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
+                            {group.items.map((item) => (
+                              <div key={item.id} className="space-y-1">
+                                <label className="text-[11px] font-bold text-[#123044] block truncate" title={item.label}>
+                                  {item.label}
+                                </label>
+                                <input
+                                  type="text"
+                                  inputMode="numeric"
+                                  placeholder="R$ 0,00"
+                                  value={formData[`gasto_${item.id}`] || ""}
+                                  onChange={(e) => onChange(`gasto_${item.id}`, formatCurrencyInput(e.target.value))}
+                                  className="w-full bg-white border border-[#e4e0d7] rounded-xl px-3 py-2 text-xs text-[#123044] font-semibold focus:outline-none focus:border-[#1f674f] tabular-nums"
+                                />
+                              </div>
+                            ))}
+                          </div>
+
+                          {group.id === "dividas" && (
+                            <div className="mt-4 pt-4 border-t border-[#f0ece1] grid sm:grid-cols-2 gap-3">
+                              <div className="space-y-1">
+                                <label className="text-[11px] font-bold text-[#123044] block">
+                                  Saldo Devedor Total Acumulado (para quitação hoje)
+                                </label>
+                                <input
+                                  type="text"
+                                  inputMode="numeric"
+                                  placeholder="R$ 0,00"
+                                  value={formData.totalDividas || ""}
+                                  onChange={(e) => {
+                                    const val = formatCurrencyInput(e.target.value);
+                                    onChange("totalDividas", val);
+                                    onChange("possuiDividas", val && val !== "R$ 0,00" ? "Sim, possuo" : "Não possuo dívidas");
+                                  }}
+                                  className="w-full bg-white border border-[#e4e0d7] rounded-xl px-3 py-2 text-xs text-[#123044] font-semibold focus:outline-none focus:border-[#1f674f] tabular-nums"
+                                />
+                                <span className="text-[10px] text-[#667085] block">Montante total devedor para quitar passivos.</span>
+                              </div>
+
+                              <div className="space-y-1">
+                                <label className="text-[11px] font-bold text-[#123044] block">
+                                  Tipo Principal de Dívida / Financiamento
+                                </label>
+                                <select
+                                  value={formData.tipoDivida || ""}
+                                  onChange={(e) => onChange("tipoDivida", e.target.value)}
+                                  className="w-full bg-white border border-[#e4e0d7] rounded-xl px-3 py-2 text-xs text-[#123044] font-semibold focus:outline-none focus:border-[#1f674f]"
+                                >
+                                  <option value="">Selecione uma opção...</option>
+                                  <option value="Financiamento Imobiliário">Financiamento Imobiliário</option>
+                                  <option value="Financiamento de Veículo">Financiamento de Veículo</option>
+                                  <option value="Empréstimo Consignado">Empréstimo Consignado</option>
+                                  <option value="Cartão de Crédito / Rotativo">Cartão de Crédito / Rotativo</option>
+                                  <option value="Empréstimo Pessoal">Empréstimo Pessoal</option>
+                                  <option value="Outro">Outro tipo de dívida</option>
+                                </select>
+                                <span className="text-[10px] text-[#667085] block">Identifica a taxa média de juros e prioridade de quitação.</span>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
-                  ))}
+                  );
+                })}
+              </div>
+
+              {/* Gastos Customizados */}
+              <div className="space-y-3 pt-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-[#123044] uppercase tracking-wider">
+                    Outros Gastos Específicos Livres
+                  </span>
+                </div>
+
+                {expenseDetails.customList.map((item) => (
+                  <div key={item.id} className="grid sm:grid-cols-2 gap-3 p-3 bg-white rounded-xl border border-[#e4e0d7]">
+                    <div>
+                      <label className="text-[11px] font-bold text-[#123044] block mb-1">Nome do Gasto</label>
+                      <input
+                        type="text"
+                        placeholder="Ex: Terapia, Hobbies, etc."
+                        value={item.name}
+                        onChange={(e) => handleUpdateCustomExpense(item.id, "name", e.target.value)}
+                        className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-3 py-2 text-xs text-[#123044] font-medium focus:outline-none focus:border-[#1f674f]"
+                      />
+                    </div>
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="text-[11px] font-bold text-[#123044]">Valor Mensal</label>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveCustomExpense(item.id)}
+                          className="text-slate-400 hover:text-red-600 text-[11px] font-medium flex items-center gap-1 cursor-pointer"
+                        >
+                          <Trash2 className="w-3 h-3" /> Remover
+                        </button>
+                      </div>
+                      <input
+                        type="text"
+                        inputMode="numeric"
+                        placeholder="R$ 0,00"
+                        value={item.value}
+                        onChange={(e) => handleUpdateCustomExpense(item.id, "value", formatCurrencyInput(e.target.value))}
+                        className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-3 py-2 text-xs text-[#123044] font-medium focus:outline-none focus:border-[#1f674f]"
+                      />
+                    </div>
+                  </div>
+                ))}
+
+                <button
+                  type="button"
+                  onClick={handleAddCustomExpense}
+                  className="w-full h-10 border-2 border-dashed border-[#d8d3c5] hover:border-[#1f674f] text-[#123044] hover:text-[#1f674f] text-xs font-bold rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer"
+                >
+                  <Plus className="w-4 h-4" /> Adicionar Outro Gasto Específico
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* ─── PAINEL 3: CONTROLE & ALERTAS ─── */}
+          {activeTab === "alertas" && (
+            <div className="space-y-5 animate-in fade-in duration-150">
+              {/* Termômetro 50-30-20 */}
+              <div className="bg-white border border-[#e4e0d7] rounded-2xl p-5 shadow-xs">
+                <h4 className="text-sm font-bold text-[#123044] flex items-center gap-2">
+                  <Compass className="w-4 h-4 text-[#1f674f]" />
+                  Equilíbrio Orçamentário (Regra 50 / 30 / 20)
+                </h4>
+                <p className="text-xs text-[#667085] mt-1 leading-relaxed">
+                  Compara a divisão do seu orçamento com os parâmetros de saúde patrimonial:
+                  <strong className="text-[#123044]"> 50% Gastos Essenciais</strong>,
+                  <strong className="text-[#123044]"> 30% Estilo de Vida</strong> e
+                  <strong className="text-[#123044]"> 20% Aportes para o Futuro</strong>.
+                </p>
+
+                <div className="h-6 w-full bg-[#f0ece1] rounded-full overflow-hidden flex mt-4 border border-[#e4e0d7]">
+                  <div style={{ width: `${Math.min(100, essentialPct)}%` }} className="bg-[#2B6E76] h-full transition-all" />
+                  <div style={{ width: `${Math.min(100 - essentialPct, lifestylePct)}%` }} className="bg-[#F59E0B] h-full transition-all" />
+                  <div style={{ width: `${Math.max(0, savingsRate)}%` }} className="bg-[#1F674F] h-full transition-all" />
+                </div>
+
+                <div className="grid grid-cols-3 gap-2 mt-3 text-center text-xs">
+                  <div className="p-2 rounded-xl bg-slate-50 border border-slate-100">
+                    <div className="flex items-center justify-center gap-1.5 font-bold text-[#2B6E76]">
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#2B6E76]" />
+                      Essenciais: {essentialPct.toFixed(1)}%
+                    </div>
+                    <div className="text-[10px] text-[#667085] mt-0.5">Meta: até 50% ({formatBRL(totalIncomes * 0.5)})</div>
+                  </div>
+                  <div className="p-2 rounded-xl bg-slate-50 border border-slate-100">
+                    <div className="flex items-center justify-center gap-1.5 font-bold text-[#F59E0B]">
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#F59E0B]" />
+                      Estilo de Vida: {lifestylePct.toFixed(1)}%
+                    </div>
+                    <div className="text-[10px] text-[#667085] mt-0.5">Meta: até 30% ({formatBRL(totalIncomes * 0.3)})</div>
+                  </div>
+                  <div className="p-2 rounded-xl bg-slate-50 border border-slate-100">
+                    <div className="flex items-center justify-center gap-1.5 font-bold text-[#1F674F]">
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#1F674F]" />
+                      Aportes / Futuro: {savingsRate.toFixed(1)}%
+                    </div>
+                    <div className="text-[10px] text-[#667085] mt-0.5">Meta: mín. 20% ({formatBRL(totalIncomes * 0.2)})</div>
+                  </div>
                 </div>
               </div>
-            )}
-          </div>
+
+              {/* Alertas */}
+              <div className="space-y-3">
+                <h4 className="text-xs font-bold text-[#123044] uppercase tracking-wider">
+                  Radar de Alertas Preventivos da ARVO
+                </h4>
+                {alerts.map((al, idx) => (
+                  <div
+                    key={idx}
+                    className={`p-4 rounded-2xl border flex items-start justify-between gap-3 text-xs leading-relaxed ${
+                      al.type === "danger"
+                        ? "bg-rose-50/70 border-rose-200 text-rose-950"
+                        : al.type === "warning"
+                        ? "bg-amber-50/70 border-amber-200 text-amber-950"
+                        : "bg-emerald-50/70 border-emerald-200 text-emerald-950"
+                    }`}
+                  >
+                    <div className="flex items-start gap-2.5">
+                      {al.type === "danger" ? (
+                        <AlertTriangle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
+                      ) : al.type === "warning" ? (
+                        <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+                      ) : (
+                        <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
+                      )}
+                      <div>
+                        <div className="font-bold text-sm">{al.title}</div>
+                        <div className="text-[#475467] mt-0.5">{al.desc}</div>
+                      </div>
+                    </div>
+                    {al.metric && (
+                      <span className="px-2.5 py-1 rounded-lg bg-white/80 border border-current font-bold text-xs shrink-0 self-start">
+                        {al.metric}
+                      </span>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              {/* Simulador */}
+              <div className="bg-[#123044] text-white p-5 rounded-2xl space-y-2">
+                <div className="text-sm font-light text-slate-200 leading-relaxed">
+                  Se você otimizar <strong className="text-white">R$ 500,00 por mês</strong> cortando pequenos ralos identificados na sua fatura e investir com a alocação da sua Carteira ARVO, você acumulará aproximadamente:
+                </div>
+                <div className="grid grid-cols-2 gap-3 pt-2">
+                  <div className="bg-white/10 rounded-xl p-3">
+                    <div className="text-[11px] text-slate-300">Em 10 Anos</div>
+                    <div className="text-lg font-extrabold text-emerald-400">~ R$ 138.000,00</div>
+                  </div>
+                  <div className="bg-white/10 rounded-xl p-3">
+                    <div className="text-[11px] text-slate-300">Em 20 Anos</div>
+                    <div className="text-lg font-extrabold text-emerald-400">~ R$ 584.000,00</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ─── PAINEL 4: MINHA INFLAÇÃO REAL ─── */}
+          {activeTab === "inflacao" && (
+            <div className="space-y-5 animate-in fade-in duration-150">
+              <div className="bg-white border border-[#e4e0d7] rounded-2xl p-5 shadow-xs space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div>
+                    <span className="text-[11px] font-bold text-[#1f674f] uppercase tracking-wider">
+                      Cálculo Conectado em Tempo Real
+                    </span>
+                    <h4 className="text-lg font-bold text-[#123044] mt-0.5">
+                      Inflação Estimada da Sua Cesta Familiar
+                    </h4>
+                  </div>
+                  <Link
+                    href="/dashboard/inflacao"
+                    className="px-4 py-2 rounded-xl bg-[#e8f1ed] text-[#1f674f] hover:bg-[#d8e9e2] text-xs font-bold flex items-center gap-1.5 transition-colors self-start sm:self-auto"
+                  >
+                    <span>Abrir Calculadora Completa</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
+
+                <div className="grid sm:grid-cols-3 gap-3">
+                  <div className="p-4 rounded-2xl bg-[#f6f4ef] border border-[#e4e0d7] text-center">
+                    <div className="text-[11px] text-[#667085] font-bold uppercase">Sua Inflação Pessoal</div>
+                    <div className="text-2xl sm:text-3xl font-black text-[#123044] mt-1 tabular-nums">
+                      {personalInflationMetrics.personalRate.toFixed(2)}%
+                    </div>
+                    <div className="text-[10px] text-[#667085] mt-0.5">ao ano (estimativa ponderada)</div>
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-[#f6f4ef] border border-[#e4e0d7] text-center">
+                    <div className="text-[11px] text-[#667085] font-bold uppercase">IPCA Oficial (IBGE)</div>
+                    <div className="text-2xl sm:text-3xl font-black text-[#667085] mt-1 tabular-nums">
+                      {personalInflationMetrics.ipcaBenchmark.toFixed(2)}%
+                    </div>
+                    <div className="text-[10px] text-[#667085] mt-0.5">ao ano (média Brasil)</div>
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-[#f6f4ef] border border-[#e4e0d7] text-center">
+                    <div className="text-[11px] text-[#667085] font-bold uppercase">Diferença em Relação ao IPCA</div>
+                    <div className={`text-2xl sm:text-3xl font-black mt-1 tabular-nums ${
+                      personalInflationMetrics.diffIpca > 0 ? "text-rose-600" : "text-emerald-600"
+                    }`}>
+                      {personalInflationMetrics.diffIpca >= 0 ? "+" : ""}
+                      {personalInflationMetrics.diffIpca.toFixed(2)} pp
+                    </div>
+                    <div className="text-[10px] text-[#667085] mt-0.5">
+                      {personalInflationMetrics.diffIpca > 0 ? "Seu custo sobe mais que o índice oficial" : "Seu custo sobe menos que a média"}
+                    </div>
+                  </div>
+                </div>
+
+                {personalInflationMetrics.topVillains.length > 0 && (
+                  <div className="pt-2">
+                    <div className="text-xs font-bold text-[#123044] uppercase tracking-wider mb-2.5">
+                      Maiores Impactos na Sua Inflação (Top Vilões)
+                    </div>
+                    <div className="space-y-2">
+                      {personalInflationMetrics.topVillains.map((v, i) => (
+                        <div key={v.id} className="p-3 bg-[#fdfbf7] rounded-xl border border-[#e4e0d7] flex items-center justify-between text-xs">
+                          <div className="flex items-center gap-2">
+                            <span className="w-5 h-5 rounded-full bg-[#123044] text-white text-[10px] font-bold flex items-center justify-center">
+                              {i + 1}
+                            </span>
+                            <div>
+                              <div className="font-bold text-[#123044]">{v.label}</div>
+                              <div className="text-[11px] text-[#667085]">
+                                Gasto: {formatBRL(v.expense)}/mês ({v.weightPct.toFixed(1)}% da sua cesta)
+                              </div>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className="font-extrabold text-[#123044] tabular-nums">
+                              +{v.ratePct.toFixed(2)}% a.a.
+                            </div>
+                            <div className="text-[10px] text-[#667085]">impacto ponderado: +{v.impact.toFixed(2)} pp</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </div>
-      )}
+      </div>
 
       {/* ─── MODAL DE LEITURA DE FATURA DE CARTÃO ─── */}
       <InvoiceImportModal
