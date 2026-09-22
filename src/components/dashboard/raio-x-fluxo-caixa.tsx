@@ -739,17 +739,17 @@ export function RaioXFluxoCaixa({ formData, onChange, onBulkChange }: RaioXFluxo
             }`}
           >
             <div className="flex items-center gap-2.5">
-              <div className={`w-6 h-6 rounded-lg flex items-center justify-center text-[11px] font-black shrink-0 transition-all ${
-                activeTab === "entradas"
-                  ? "bg-[#1f674f] text-white"
-                  : totalIncomes > 0
-                  ? "bg-[#e8f1ed] text-[#1f674f]"
-                  : "bg-[#f0ece1] text-[#1d2939]"
-              }`}>
-                {totalIncomes > 0 ? "1" : "1"}
+              <div
+                className="w-7 h-7 rounded-xl flex items-center justify-center text-xs font-black shrink-0 transition-all"
+                style={{
+                  background: activeTab === "entradas" ? "#1f674f" : totalIncomes > 0 ? "#e8f1ed" : "#f0ece1",
+                  color: activeTab === "entradas" ? "#ffffff" : totalIncomes > 0 ? "#1f674f" : "#1d2939"
+                }}
+              >
+                1
               </div>
               <div className="min-w-0">
-                <div className={`text-xs font-bold truncate ${activeTab === "entradas" ? "text-[#1f674f]" : "text-[#123044]"}`}>
+                <div className="text-xs font-bold truncate" style={{ color: activeTab === "entradas" ? "#1f674f" : "#123044" }}>
                   Entradas
                 </div>
                 <div className="text-[10px] text-[#667085] font-semibold tabular-nums mt-0.5">
@@ -758,6 +758,7 @@ export function RaioXFluxoCaixa({ formData, onChange, onBulkChange }: RaioXFluxo
               </div>
             </div>
           </button>
+
 
           {/* Passo 2: Gastos */}
           <button
@@ -770,17 +771,17 @@ export function RaioXFluxoCaixa({ formData, onChange, onBulkChange }: RaioXFluxo
             }`}
           >
             <div className="flex items-center gap-2.5">
-              <div className={`w-6 h-6 rounded-lg flex items-center justify-center text-[11px] font-black shrink-0 transition-all ${
-                activeTab === "gastos"
-                  ? "bg-[#1f674f] text-white"
-                  : totalExpenses > 0
-                  ? "bg-[#e8f1ed] text-[#1f674f]"
-                  : "bg-[#f0ece1] text-[#1d2939]"
-              }`}>
-                {"2"}
+              <div
+                className="w-7 h-7 rounded-xl flex items-center justify-center text-xs font-black shrink-0 transition-all"
+                style={{
+                  background: activeTab === "gastos" ? "#1f674f" : totalExpenses > 0 ? "#e8f1ed" : "#f0ece1",
+                  color: activeTab === "gastos" ? "#ffffff" : totalExpenses > 0 ? "#1f674f" : "#1d2939"
+                }}
+              >
+                2
               </div>
               <div className="min-w-0">
-                <div className={`text-xs font-bold truncate ${activeTab === "gastos" ? "text-[#1f674f]" : "text-[#123044]"}`}>
+                <div className="text-xs font-bold truncate" style={{ color: activeTab === "gastos" ? "#1f674f" : "#123044" }}>
                   Gastos
                 </div>
                 <div className="text-[10px] text-[#667085] font-semibold tabular-nums mt-0.5">
@@ -801,11 +802,13 @@ export function RaioXFluxoCaixa({ formData, onChange, onBulkChange }: RaioXFluxo
             }`}
           >
             <div className="flex items-center gap-2.5">
-              <div className={`w-6 h-6 rounded-lg flex items-center justify-center text-[11px] font-black shrink-0 transition-all relative ${
-                activeTab === "alertas"
-                  ? "bg-[#1f674f] text-white"
-                  : "bg-[#f0ece1] text-[#1d2939]"
-              }`}>
+              <div
+                className="w-7 h-7 rounded-xl flex items-center justify-center text-xs font-black shrink-0 transition-all relative"
+                style={{
+                  background: activeTab === "alertas" ? "#1f674f" : "#f0ece1",
+                  color: activeTab === "alertas" ? "#ffffff" : "#1d2939"
+                }}
+              >
                 3
                 {alerts.filter(a => a.type === "danger" || a.type === "warning").length > 0 && (
                   <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-amber-500 text-white text-[8px] font-extrabold flex items-center justify-center">
@@ -814,7 +817,7 @@ export function RaioXFluxoCaixa({ formData, onChange, onBulkChange }: RaioXFluxo
                 )}
               </div>
               <div className="min-w-0">
-                <div className={`text-xs font-bold truncate ${activeTab === "alertas" ? "text-[#1f674f]" : "text-[#123044]"}`}>
+                <div className="text-xs font-bold truncate" style={{ color: activeTab === "alertas" ? "#1f674f" : "#123044" }}>
                   Controle
                 </div>
                 <div className="text-[10px] text-[#667085] font-semibold mt-0.5">
@@ -837,15 +840,17 @@ export function RaioXFluxoCaixa({ formData, onChange, onBulkChange }: RaioXFluxo
             }`}
           >
             <div className="flex items-center gap-2.5">
-              <div className={`w-6 h-6 rounded-lg flex items-center justify-center text-[11px] font-black shrink-0 transition-all ${
-                activeTab === "inflacao"
-                  ? "bg-[#1f674f] text-white"
-                  : "bg-[#f0ece1] text-[#1d2939]"
-              }`}>
+              <div
+                className="w-7 h-7 rounded-xl flex items-center justify-center text-xs font-black shrink-0 transition-all"
+                style={{
+                  background: activeTab === "inflacao" ? "#1f674f" : "#f0ece1",
+                  color: activeTab === "inflacao" ? "#ffffff" : "#1d2939"
+                }}
+              >
                 4
               </div>
               <div className="min-w-0">
-                <div className={`text-xs font-bold truncate ${activeTab === "inflacao" ? "text-[#1f674f]" : "text-[#123044]"}`}>
+                <div className="text-xs font-bold truncate" style={{ color: activeTab === "inflacao" ? "#1f674f" : "#123044" }}>
                   Inflação Real
                 </div>
                 <div className="text-[10px] text-[#667085] font-semibold mt-0.5">
@@ -868,6 +873,7 @@ export function RaioXFluxoCaixa({ formData, onChange, onBulkChange }: RaioXFluxo
               <span>Importar Fatura</span>
             </button>
           </div>
+
         </div>
 
         {/* ── Painel de Conteúdo ── */}
@@ -1391,21 +1397,22 @@ export function RaioXFluxoCaixa({ formData, onChange, onBulkChange }: RaioXFluxo
               </div>
 
               {/* Simulador */}
-              <div className="bg-[#123044] text-white p-5 rounded-2xl space-y-2">
-                <div className="text-sm text-white leading-relaxed">
-                  Se você otimizar <strong className="text-white font-bold">R$ 500,00 por mês</strong> cortando pequenos ralos identificados na sua fatura e investir com a alocação da sua Carteira ARVO, você acumulará aproximadamente:
+              <div style={{ background: "#123044" }} className="p-5 rounded-2xl space-y-2">
+                <div className="text-sm leading-relaxed" style={{ color: "#ffffff" }}>
+                  Se você otimizar <strong style={{ color: "#ffffff", fontWeight: 700 }}>R$ 500,00 por mês</strong> cortando pequenos ralos identificados na sua fatura e investir com a alocação da sua Carteira ARVO, você acumulará aproximadamente:
                 </div>
                 <div className="grid grid-cols-2 gap-3 pt-2">
-                  <div className="bg-white/10 rounded-xl p-3">
-                    <div className="text-[11px] text-white/70 font-medium">Em 10 Anos</div>
-                    <div className="text-lg font-extrabold text-white">~ R$ 138.000,00</div>
+                  <div className="rounded-xl p-3" style={{ background: "rgba(255,255,255,0.1)" }}>
+                    <div className="text-[11px] font-medium" style={{ color: "rgba(255,255,255,0.75)" }}>Em 10 Anos</div>
+                    <div className="text-lg font-extrabold" style={{ color: "#ffffff" }}>~ R$ 138.000,00</div>
                   </div>
-                  <div className="bg-white/10 rounded-xl p-3">
-                    <div className="text-[11px] text-white/70 font-medium">Em 20 Anos</div>
-                    <div className="text-lg font-extrabold text-white">~ R$ 584.000,00</div>
+                  <div className="rounded-xl p-3" style={{ background: "rgba(255,255,255,0.1)" }}>
+                    <div className="text-[11px] font-medium" style={{ color: "rgba(255,255,255,0.75)" }}>Em 20 Anos</div>
+                    <div className="text-lg font-extrabold" style={{ color: "#ffffff" }}>~ R$ 584.000,00</div>
                   </div>
                 </div>
               </div>
+
             </div>
           )}
 
