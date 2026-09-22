@@ -746,7 +746,7 @@ export function RaioXFluxoCaixa({ formData, onChange, onBulkChange }: RaioXFluxo
                   ? "bg-[#e8f1ed] text-[#1f674f]"
                   : "bg-[#f0ece1] text-[#667085]"
               }`}>
-                {totalIncomes > 0 ? <CheckCircle2 size={13} /> : "1"}
+                {totalIncomes > 0 ? "1" : "1"}
               </div>
               <div className="min-w-0">
                 <div className={`text-xs font-bold truncate ${activeTab === "entradas" ? "text-[#1f674f]" : "text-[#123044]"}`}>
@@ -777,7 +777,7 @@ export function RaioXFluxoCaixa({ formData, onChange, onBulkChange }: RaioXFluxo
                   ? "bg-[#e8f1ed] text-[#1f674f]"
                   : "bg-[#f0ece1] text-[#667085]"
               }`}>
-                {totalExpenses > 0 ? <CheckCircle2 size={13} /> : "2"}
+                {"2"}
               </div>
               <div className="min-w-0">
                 <div className={`text-xs font-bold truncate ${activeTab === "gastos" ? "text-[#1f674f]" : "text-[#123044]"}`}>
@@ -1329,14 +1329,14 @@ export function RaioXFluxoCaixa({ formData, onChange, onBulkChange }: RaioXFluxo
 
                 <div className="grid grid-cols-3 gap-2 mt-3 text-center text-xs">
                   <div className="p-2 rounded-xl bg-slate-50 border border-slate-100">
-                    <div className="flex items-center justify-center gap-1.5 font-bold text-[#2B6E76]">
+                    <div className="flex items-center justify-center gap-1.5 font-bold text-[#1a4a52]">
                       <span className="w-2.5 h-2.5 rounded-full bg-[#2B6E76]" />
                       Essenciais: {essentialPct.toFixed(1)}%
                     </div>
                     <div className="text-[10px] text-[#667085] mt-0.5">Meta: até 50% ({formatBRL(totalIncomes * 0.5)})</div>
                   </div>
                   <div className="p-2 rounded-xl bg-slate-50 border border-slate-100">
-                    <div className="flex items-center justify-center gap-1.5 font-bold text-[#F59E0B]">
+                    <div className="flex items-center justify-center gap-1.5 font-bold text-[#b45309]">
                       <span className="w-2.5 h-2.5 rounded-full bg-[#F59E0B]" />
                       Estilo de Vida: {lifestylePct.toFixed(1)}%
                     </div>
