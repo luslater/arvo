@@ -744,7 +744,7 @@ export function RaioXFluxoCaixa({ formData, onChange, onBulkChange }: RaioXFluxo
                   ? "bg-[#1f674f] text-white"
                   : totalIncomes > 0
                   ? "bg-[#e8f1ed] text-[#1f674f]"
-                  : "bg-[#f0ece1] text-[#667085]"
+                  : "bg-[#f0ece1] text-[#1d2939]"
               }`}>
                 {totalIncomes > 0 ? "1" : "1"}
               </div>
@@ -775,7 +775,7 @@ export function RaioXFluxoCaixa({ formData, onChange, onBulkChange }: RaioXFluxo
                   ? "bg-[#1f674f] text-white"
                   : totalExpenses > 0
                   ? "bg-[#e8f1ed] text-[#1f674f]"
-                  : "bg-[#f0ece1] text-[#667085]"
+                  : "bg-[#f0ece1] text-[#1d2939]"
               }`}>
                 {"2"}
               </div>
@@ -804,7 +804,7 @@ export function RaioXFluxoCaixa({ formData, onChange, onBulkChange }: RaioXFluxo
               <div className={`w-6 h-6 rounded-lg flex items-center justify-center text-[11px] font-black shrink-0 transition-all relative ${
                 activeTab === "alertas"
                   ? "bg-[#1f674f] text-white"
-                  : "bg-[#f0ece1] text-[#667085]"
+                  : "bg-[#f0ece1] text-[#1d2939]"
               }`}>
                 3
                 {alerts.filter(a => a.type === "danger" || a.type === "warning").length > 0 && (
@@ -840,7 +840,7 @@ export function RaioXFluxoCaixa({ formData, onChange, onBulkChange }: RaioXFluxo
               <div className={`w-6 h-6 rounded-lg flex items-center justify-center text-[11px] font-black shrink-0 transition-all ${
                 activeTab === "inflacao"
                   ? "bg-[#1f674f] text-white"
-                  : "bg-[#f0ece1] text-[#667085]"
+                  : "bg-[#f0ece1] text-[#1d2939]"
               }`}>
                 4
               </div>
@@ -1392,22 +1392,23 @@ export function RaioXFluxoCaixa({ formData, onChange, onBulkChange }: RaioXFluxo
 
               {/* Simulador */}
               <div className="bg-[#123044] text-white p-5 rounded-2xl space-y-2">
-                <div className="text-sm font-light text-slate-200 leading-relaxed">
-                  Se você otimizar <strong className="text-white">R$ 500,00 por mês</strong> cortando pequenos ralos identificados na sua fatura e investir com a alocação da sua Carteira ARVO, você acumulará aproximadamente:
+                <div className="text-sm text-white leading-relaxed">
+                  Se você otimizar <strong className="text-white font-bold">R$ 500,00 por mês</strong> cortando pequenos ralos identificados na sua fatura e investir com a alocação da sua Carteira ARVO, você acumulará aproximadamente:
                 </div>
                 <div className="grid grid-cols-2 gap-3 pt-2">
                   <div className="bg-white/10 rounded-xl p-3">
-                    <div className="text-[11px] text-slate-300">Em 10 Anos</div>
-                    <div className="text-lg font-extrabold text-emerald-400">~ R$ 138.000,00</div>
+                    <div className="text-[11px] text-white/70 font-medium">Em 10 Anos</div>
+                    <div className="text-lg font-extrabold text-white">~ R$ 138.000,00</div>
                   </div>
                   <div className="bg-white/10 rounded-xl p-3">
-                    <div className="text-[11px] text-slate-300">Em 20 Anos</div>
-                    <div className="text-lg font-extrabold text-emerald-400">~ R$ 584.000,00</div>
+                    <div className="text-[11px] text-white/70 font-medium">Em 20 Anos</div>
+                    <div className="text-lg font-extrabold text-white">~ R$ 584.000,00</div>
                   </div>
                 </div>
               </div>
             </div>
           )}
+
 
           {/* ─── PAINEL 4: MINHA INFLAÇÃO REAL ─── */}
           {activeTab === "inflacao" && (
