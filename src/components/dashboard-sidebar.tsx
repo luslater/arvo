@@ -5,7 +5,7 @@ import Image from "next/image"
 import { usePathname } from "next/navigation"
 import {
     LayoutDashboard, Wallet, BookOpen, HelpCircle,
-    Target, CreditCard, User, BarChart3, LogOut, ChevronDown, Calculator, TrendingUp, Lock, Check, Menu, X, Compass, Map, ShieldCheck, Scale, Calendar, Percent
+    Target, CreditCard, User, BarChart3, LogOut, ChevronDown, Calculator, TrendingUp, Lock, Check, Menu, X, Compass, Map, ShieldCheck, Scale, Calendar
 } from "lucide-react"
 import { useSession, signOut } from "next-auth/react"
 import { useState } from "react"
@@ -116,7 +116,8 @@ export function DashboardSidebar() {
                 <span className="text-[10px] font-semibold text-dash-text-light uppercase tracking-widest px-3 py-2 mt-1">Principal</span>
 
                 <NavLink href="/dashboard/jornada" icon={<Map className="w-4 h-4" />} label="Jornada" onClick={closeMobileMenu} />
-                <NavLink href="/dashboard/inflacao" icon={<Percent className="w-4 h-4" />} label="Calculadora de Inflação" onClick={closeMobileMenu} />
+
+
                 <NavLink href="/dashboard/aposentadoria-base" icon={<Target className="w-4 h-4" />} label="Aposentadoria Base" onClick={closeMobileMenu} />
                 <NavLink href="/dashboard/planejamento" icon={<TrendingUp className="w-4 h-4" />} label="Plano Patrimonial" onClick={closeMobileMenu} />
                 <NavLink href="/dashboard/bussola" icon={<Compass className="w-4 h-4" />} label="Bússola" onClick={closeMobileMenu} />
