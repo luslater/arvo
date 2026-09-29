@@ -2,29 +2,28 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 async function main() {
-  const users = await prisma.user.findMany({
-      where: {
-          email: {
-              contains: 'lucas'
-          }
-      }
+  const targetEmail = process.argv[2];
+  if (!targetEmail) {
+    console.error("Uso seguro: node promote_admin.js <email_do_usuario>");
+    process.exit(1);
+  }
+
+  const user = await prisma.user.findUnique({
+      where: { email: targetEmail }
   });
 
-  if (users.length > 0) {
-      for (const u of users) {
-          await prisma.user.update({
-              where: { id: u.id },
-              data: { role: 'ADMIN' }
-          });
-          console.log(`Updated ${u.email} to ADMIN`);
-      }
-  } else {
-      console.log("No user found containing 'lucas'. Updating ALL users to ADMIN for testing just in case.");
-      await prisma.user.updateMany({
-          data: { role: 'ADMIN' }
-      });
+  if (!user) {
+      console.error(`Usuário com e-mail '${targetEmail}' não encontrado.`);
+      process.exit(1);
   }
+
+  await prisma.user.update({
+      where: { id: user.id },
+      data: { role: 'ADMIN' }
+  });
+  console.log(`✅ Sucesso: O usuário ${user.email} foi promovido a ADMIN.`);
 }
+
 
 main()
   .then(async () => {

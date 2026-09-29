@@ -44,6 +44,7 @@ type CustomExpense = {
     id: string
     name: string
     value: string
+    reajuste?: string
 }
 
 type StepStatus = "not_started" | "in_progress" | "completed" | "has_error"
@@ -690,29 +691,53 @@ export default function PlanejamentoJornadaPage() {
     }, [])
 
     // Handle single input update
-    const handleInputChange = (name: string, value: string) => {
-        const nextData = { ...formData, [name]: value }
-        setFormData(nextData)
-        setSaveStatus("pending")
+    const handleInputChange = useCallback((name: string, value: string) => {
+        setFormData((prev) => {
+            if (prev[name] === value) return prev
+            const nextData = { ...prev, [name]: value }
+            setSaveStatus("pending")
+            triggerSave(nextData, false)
+            return nextData
+        })
 
-        // Clear error on change if field becomes valid
-        if (fieldErrors[name]) {
-            const nextErrors = { ...fieldErrors }
-            delete nextErrors[name]
-            setFieldErrors(nextErrors)
+        if (name === "customExpensesJson") {
+            try {
+                const exp = JSON.parse(value)
+                if (Array.isArray(exp)) setCustomExpenses(exp)
+            } catch (e) {}
         }
 
-        triggerSave(nextData, false)
-    }
+        // Clear error on change if field becomes valid
+        setFieldErrors((prev) => {
+            if (prev[name]) {
+                const nextErrors = { ...prev }
+                delete nextErrors[name]
+                return nextErrors
+            }
+            return prev
+        })
+    }, [triggerSave])
 
     // Handle batch updates (e.g. from credit card invoice reconciliation)
     const handleBulkChange = useCallback((updates: Record<string, string>) => {
         setFormData((prev) => {
+            let hasChanged = false
+            for (const [key, value] of Object.entries(updates)) {
+                if (prev[key] !== value) {
+                    hasChanged = true
+                    break
+                }
+            }
+            if (!hasChanged) {
+                return prev
+            }
             const nextData = { ...prev, ...updates }
-            triggerSave(nextData, false)
+            setTimeout(() => {
+                setSaveStatus("pending")
+                triggerSave(nextData, false)
+            }, 0)
             return nextData
         })
-        setSaveStatus("pending")
     }, [triggerSave])
 
     // Handle Custom Expenses (Etapa 1)
@@ -720,7 +745,8 @@ export default function PlanejamentoJornadaPage() {
         const newExpense: CustomExpense = {
             id: Date.now().toString(),
             name: "",
-            value: ""
+            value: "",
+            reajuste: ""
         }
         const updated = [...customExpenses, newExpense]
         setCustomExpenses(updated)
@@ -732,7 +758,7 @@ export default function PlanejamentoJornadaPage() {
         triggerSave(nextData, false)
     }
 
-    const handleUpdateCustomExpense = (id: string, key: "name" | "value", val: string) => {
+    const handleUpdateCustomExpense = (id: string, key: "name" | "value" | "reajuste", val: string) => {
         const updated = customExpenses.map(item => item.id === id ? { ...item, [key]: val } : item)
         setCustomExpenses(updated)
         const nextData = {
@@ -776,6 +802,25 @@ export default function PlanejamentoJornadaPage() {
             return parseInt(clean, 10) / 100
         }
 
+        let basketTotal = 0
+        let hasBasket = false
+        const commitmentKeys = ["financiamento_imobiliario", "financiamento_veicular", "outros_emprestimos"]
+        Object.entries(formData).forEach(([k, v]) => {
+            if (k.startsWith("gasto_") || commitmentKeys.includes(k)) {
+                let val = 0
+                if (commitmentKeys.includes(k) && !v.includes(",") && !v.includes("R$")) {
+                    const num = parseFloat(v.replace(/[^\d.]/g, ""))
+                    val = isFinite(num) ? num : 0
+                } else {
+                    val = parseValue(v)
+                }
+                if (val > 0) {
+                    basketTotal += val
+                    hasBasket = true
+                }
+            }
+        })
+
         const moradia = parseValue(formData.gastoMoradia)
         const alimentacao = parseValue(formData.gastoAlimentacao)
         const transporte = parseValue(formData.gastoTransporte)
@@ -783,7 +828,9 @@ export default function PlanejamentoJornadaPage() {
         const dividas = formData.possuiDividas === "Sim, possuo" ? parseValue(formData.parcelasDividas) : 0
         const customTotal = customExpenses.reduce((sum, item) => sum + parseValue(item.value), 0)
 
-        return moradia + alimentacao + transporte + saude + dividas + customTotal
+        const legacyTotal = moradia + alimentacao + transporte + saude + dividas + customTotal
+
+        return hasBasket ? basketTotal + customTotal : legacyTotal
     }, [formData, customExpenses])
 
     const totalExpensesFormatted = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(totalExpenses)
@@ -1100,7 +1147,7 @@ export default function PlanejamentoJornadaPage() {
                                                                         aria-label={`Ir para pergunta ${qIdx + 1}`}
                                                                         className={`h-2.5 rounded-full transition-all duration-200 cursor-pointer ${
                                                                             isQCurrent 
-                                                                                ? "w-8 bg-[#123044]" 
+                                                                                ? "w-8 bg-[#475569]" 
                                                                                 : isQAnswered 
                                                                                     ? "w-2.5 bg-[#1f674f]" 
                                                                                     : "w-2.5 bg-[#e4e0d7]"
@@ -1131,29 +1178,31 @@ export default function PlanejamentoJornadaPage() {
                                                                 onClick={() => handleSelectQuizOption(currentQuizQ.name, opt.text)}
                                                                 className={`w-full p-4 rounded-xl border text-left flex items-center justify-between gap-3.5 transition-all duration-150 cursor-pointer ${
                                                                     isSelected
-                                                                        ? "bg-[#123044] text-white border-[#123044] shadow-sm"
-                                                                        : "bg-white hover:bg-[#f2efe6] text-[#123044] border-[#e4e0d7] hover:border-[#2b6e76]"
+                                                                        ? "bg-[#e8e4da] text-[#123044] border-2 border-[#475569] shadow-sm"
+                                                                        : "bg-white hover:bg-[#f6f4ef] text-[#123044] border-[#e4e0d7] hover:border-[#b8b2a5]"
                                                                 }`}
                                                             >
                                                                 <div className="flex items-center gap-3">
                                                                     <span 
                                                                         className={`w-7 h-7 rounded-lg text-xs flex items-center justify-center shrink-0 font-extrabold ${
-                                                                            isSelected ? "bg-amber-400 shadow-xs" : "bg-[#e8f1ed]"
+                                                                            isSelected 
+                                                                                ? "bg-[#475569] text-white shadow-xs" 
+                                                                                : "bg-[#f0ece1] text-[#667085]"
                                                                         }`}
-                                                                        style={{ color: isSelected ? "#0F2A3D" : "#1F674F" }}
                                                                     >
                                                                         {opt.letter}
                                                                     </span>
                                                                     <span 
-                                                                        className="text-sm font-medium leading-relaxed" 
-                                                                        style={{ color: isSelected ? "#FFFFFF" : "#123044" }}
+                                                                        className={`text-sm leading-relaxed text-[#123044] ${
+                                                                            isSelected ? "font-bold" : "font-medium"
+                                                                        }`}
                                                                     >
                                                                         {opt.text}
                                                                     </span>
                                                                 </div>
                                                                 {isSelected && (
-                                                                    <span className="w-6 h-6 rounded-full bg-amber-400/20 border border-amber-400 flex items-center justify-center shrink-0 shadow-xs">
-                                                                        <Check size={14} className="text-amber-400" style={{ color: "#FBBF24" }} strokeWidth={3.5} />
+                                                                    <span className="w-6 h-6 rounded-full bg-[#475569] text-white flex items-center justify-center shrink-0 shadow-xs">
+                                                                        <Check size={14} className="text-white" strokeWidth={3} />
                                                                     </span>
                                                                 )}
                                                             </button>

@@ -1371,16 +1371,18 @@ export function CalculadoraAposentadoriaBase() {
                   {/* Tooltip Flutuante */}
                   {hoverData && (
                     <div
-                      className="absolute pointer-events-none bg-[#123044] text-white text-xs px-3 py-2 rounded-xl shadow-lg transform -translate-x-1/2 -translate-y-full mb-2 z-10 whitespace-nowrap"
+                      className="absolute pointer-events-none bg-[#123044] text-white text-xs px-3.5 py-2.5 rounded-xl shadow-2xl border border-white/25 transform -translate-x-1/2 -translate-y-full mb-2 z-20 whitespace-nowrap"
                       style={{
                         left: `${hoverData.x}px`,
-                        top: `${hoverData.y}px`
+                        top: `${hoverData.y}px`,
+                        backgroundColor: "#123044",
+                        color: "#ffffff"
                       }}
                     >
-                      <div className="font-bold">
+                      <div className="font-semibold text-white text-[11px]" style={{ color: "#ffffff" }}>
                         {hoverData.age} anos · {hoverData.fase}
                       </div>
-                      <div className="text-emerald-300 font-extrabold text-sm tabular-nums mt-0.5">
+                      <div className="font-black text-sm tabular-nums mt-0.5" style={{ color: "#34d399" }}>
                         {formatarMoeda(hoverData.saldo)}
                       </div>
                     </div>

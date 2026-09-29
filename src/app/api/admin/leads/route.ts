@@ -42,25 +42,17 @@ async function readAllLeads(): Promise<any[]> {
 
 export async function GET(req: Request) {
   try {
-    let session = null;
-    try {
-      session = await getServerSession(authOptions);
-    } catch {
-      // In non-server context or test harness, proceed
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.email) {
+      return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    // Optional admin check - allow if logged in user is admin, or if internal check
-    if (session?.user?.email) {
-      try {
-        const currentUser = await prisma.user.findUnique({
-          where: { email: session.user.email }
-        });
-        if (currentUser && currentUser.role !== "ADMIN" && !session.user.email.includes("lucas")) {
-          return new NextResponse("Forbidden", { status: 403 });
-        }
-      } catch {
-        // Continue if db check fails
-      }
+    const currentUser = await prisma.user.findUnique({
+      where: { email: session.user.email }
+    });
+
+    if (!currentUser || currentUser.role !== "ADMIN") {
+      return new NextResponse("Forbidden - Requires Admin", { status: 403 });
     }
 
     const rawLeads = await readAllLeads();
@@ -143,16 +135,19 @@ export async function GET(req: Request) {
 
 export async function PATCH(req: Request) {
   try {
-    let session = null;
-    try {
-      session = await getServerSession(authOptions);
-    } catch {
-      // In non-server context or test harness, proceed
-    }
-
-    if (!session?.user?.email && process.env.NODE_ENV === "production") {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.email) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
+
+    const currentUser = await prisma.user.findUnique({
+      where: { email: session.user.email }
+    });
+
+    if (!currentUser || currentUser.role !== "ADMIN") {
+      return new NextResponse("Forbidden - Requires Admin", { status: 403 });
+    }
+
 
     const body = await req.json();
     const { leadId, contactStatus } = body;

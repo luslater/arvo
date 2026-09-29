@@ -38,6 +38,43 @@ const CATEGORY_OPTIONS: Array<{ id: string; label: string; color: string }> = [
   { id: "outros", label: "Outros / A Categorizar", color: "#6B7280" }
 ];
 
+function formatDisplayDate(raw: string | undefined): string {
+  if (!raw) return "";
+  const trimmed = String(raw).trim();
+
+  // Trata número de série do Excel (ex: 46056.99967592592)
+  const num = Number(trimmed);
+  if (!isNaN(num) && num > 20000 && num < 80000) {
+    const excelEpochMs = Math.round((num - 25569) * 86400 * 1000);
+    const date = new Date(excelEpochMs);
+    if (!isNaN(date.getTime())) {
+      const day = String(date.getUTCDate()).padStart(2, "0");
+      const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+      return `${day}/${month}`;
+    }
+  }
+
+  // DD/MM/YYYY ou DD/MM
+  const ddmmyyyy = trimmed.match(/^(\d{1,2})\/(\d{1,2})(?:\/\d{2,4})?/);
+  if (ddmmyyyy) {
+    return `${ddmmyyyy[1].padStart(2, "0")}/${ddmmyyyy[2].padStart(2, "0")}`;
+  }
+
+  // YYYY-MM-DD
+  const isoMatch = trimmed.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (isoMatch) {
+    return `${isoMatch[3]}/${isoMatch[2]}`;
+  }
+
+  // DD-MM-YYYY
+  const dashMatch = trimmed.match(/^(\d{1,2})-(\d{1,2})-(\d{2,4})/);
+  if (dashMatch) {
+    return `${dashMatch[1].padStart(2, "0")}/${dashMatch[2].padStart(2, "0")}`;
+  }
+
+  return trimmed.length > 5 ? trimmed.slice(0, 5) : trimmed;
+}
+
 export function InvoiceImportModal({ isOpen, onClose, onApply }: InvoiceImportModalProps) {
   const [file, setFile] = useState<File | null>(null);
   const [pasteText, setPasteText] = useState("");
@@ -406,13 +443,14 @@ export function InvoiceImportModal({ isOpen, onClose, onApply }: InvoiceImportMo
               {/* Transactions List */}
               <div className="border border-[#e4e0d7] rounded-2xl overflow-hidden bg-white">
                 <div className="px-4 py-2.5 bg-[#f6f4ef] border-b border-[#e4e0d7] flex items-center justify-between text-[11px] font-bold text-[#667085] uppercase tracking-wider">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-3">
                     <input
                       type="checkbox"
                       checked={transactions.length > 0 && transactions.every((t) => t.selected)}
                       onChange={handleToggleSelectAll}
-                      className="rounded text-[#1f674f] focus:ring-[#1f674f] cursor-pointer"
+                      className="rounded text-[#1f674f] focus:ring-[#1f674f] cursor-pointer shrink-0"
                     />
+                    <span className="w-14 text-center shrink-0">Data</span>
                     <span>Transação / Estabelecimento</span>
                   </div>
                   <div className="flex items-center gap-6">
@@ -434,27 +472,32 @@ export function InvoiceImportModal({ isOpen, onClose, onApply }: InvoiceImportMo
                           tx.needsReview ? "bg-amber-50/50 hover:bg-amber-50" : "hover:bg-slate-50/70"
                         } ${!tx.selected ? "opacity-40" : ""}`}
                       >
-                        {/* Checkbox + Desc */}
-                        <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                        {/* Checkbox + Date + Desc */}
+                        <div className="flex items-center gap-3 min-w-0 flex-1">
                           <input
                             type="checkbox"
                             checked={tx.selected}
                             onChange={() => handleToggleSelect(tx.id)}
                             className="rounded text-[#1f674f] focus:ring-[#1f674f] cursor-pointer shrink-0"
                           />
-                          <span className="text-[11px] text-[#8492a6] font-mono shrink-0 w-12">{tx.date}</span>
-                          <div className="min-w-0">
+                          <span
+                            className="text-[11px] text-[#8492a6] font-mono shrink-0 w-14 text-center truncate"
+                            title={tx.date}
+                          >
+                            {formatDisplayDate(tx.date)}
+                          </span>
+                          <div className="min-w-0 flex-1">
                             <div className="font-semibold text-[#123044] truncate flex items-center gap-1.5">
-                              <span>{tx.description}</span>
+                              <span className="truncate">{tx.description}</span>
                               {tx.installment && (
-                                <span className="bg-[#e8f1ed] text-[#1f674f] text-[10px] font-bold px-1.5 py-0.2 rounded-md">
+                                <span className="bg-[#e8f1ed] text-[#1f674f] text-[10px] font-bold px-1.5 py-0.2 rounded-md shrink-0">
                                   {tx.installment}
                                 </span>
                               )}
                             </div>
                             {tx.needsReview && (
                               <span className="text-[10px] text-amber-700 font-semibold flex items-center gap-0.5 mt-0.5">
-                                <AlertTriangle className="w-3 h-3 text-amber-600 inline" /> Confirmar categoria
+                                <AlertTriangle className="w-3 h-3 text-amber-600 inline shrink-0" /> Confirmar categoria
                               </span>
                             )}
                           </div>

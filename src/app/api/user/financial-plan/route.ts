@@ -81,15 +81,16 @@ export async function PUT(req: Request) {
         const body = await req.json()
         const { desiredLifestyleCost, monthlyContribution, investmentPeriod, expectedReturn, currentCapital } = body
 
-        // Validate basic types
+        // Validate finite numbers
         if (
-            typeof desiredLifestyleCost !== "number" ||
-            typeof monthlyContribution !== "number" ||
-            typeof investmentPeriod !== "number" ||
-            typeof expectedReturn !== "number"
+            typeof desiredLifestyleCost !== "number" || !Number.isFinite(desiredLifestyleCost) || desiredLifestyleCost < 0 || desiredLifestyleCost > 1e10 ||
+            typeof monthlyContribution !== "number" || !Number.isFinite(monthlyContribution) || monthlyContribution < 0 || monthlyContribution > 1e9 ||
+            typeof investmentPeriod !== "number" || !Number.isFinite(investmentPeriod) || investmentPeriod < 1 || investmentPeriod > 1200 ||
+            typeof expectedReturn !== "number" || !Number.isFinite(expectedReturn) || expectedReturn < 0 || expectedReturn > 500
         ) {
-            return NextResponse.json({ error: "Invalid input" }, { status: 400 })
+            return NextResponse.json({ error: "Invalid numeric input" }, { status: 400 })
         }
+
 
         const url = new URL(req.url)
         const adminViewUser = url.searchParams.get("adminViewUser")

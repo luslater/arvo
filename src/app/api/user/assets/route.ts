@@ -2,6 +2,18 @@ import { NextResponse } from "next/server"
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/lib/auth-options"
 import { prisma } from "@/lib/prisma"
+import { z } from "zod"
+
+const assetActionSchema = z.object({
+    id: z.string().optional(),
+    type: z.string().max(100).optional(),
+    ticker: z.string().max(100).optional(),
+    name: z.string().max(200).optional(),
+    category: z.string().max(100).optional(),
+    value: z.number().finite().min(0).max(1e12).optional(),
+    quantity: z.number().finite().min(0).max(1e9).optional(),
+    action: z.enum(["DELETE", "UPSERT"]).optional(),
+})
 
 export async function POST(req: Request) {
     try {
@@ -11,8 +23,19 @@ export async function POST(req: Request) {
             return new NextResponse("Unauthorized", { status: 401 })
         }
 
-        const body = await req.json()
-        const { id, type, value, quantity, name, category, ticker, action } = body
+        let body: any
+        try {
+            body = await req.json()
+        } catch {
+            return new NextResponse("Invalid JSON format", { status: 400 })
+        }
+
+        const parseResult = assetActionSchema.safeParse(body)
+        if (!parseResult.success) {
+            return NextResponse.json({ error: "Invalid payload format", details: parseResult.error.issues }, { status: 400 })
+        }
+
+        const { id, type, value, quantity, name, category, ticker, action } = parseResult.data
 
         // If action is DELETE
         if (action === "DELETE") {
@@ -34,6 +57,7 @@ export async function POST(req: Request) {
         if (!type || value === undefined) {
             return new NextResponse("Missing required fields", { status: 400 })
         }
+
 
         // Map 'type' to 'ticker' for the DB
         const dbTicker = type || ticker || "outro"

@@ -449,7 +449,7 @@ export default function PreviewUserInterviewsPage() {
             </h1>
 
             <p style={{ fontSize: "17px", color: "var(--text-secondary)", lineHeight: "1.65", margin: "0 0 28px 0", maxWidth: "46ch" }}>
-              Organizamos sua vida financeira em um plano: calculamos quanto você precisa investir, indicamos a carteira adequada ao seu momento e acompanhamos sua evolução até seus objetivos. Sem comissão, sem tirar seu dinheiro do banco ou da corretora.
+              Planejamento financeiro completo para organizar sua vida hoje e construir o futuro que você deseja. Com orientação em cada etapa, das decisões do dia a dia aos grandes planos.
             </p>
 
             <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "10px" }}>

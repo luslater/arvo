@@ -32,12 +32,10 @@ export interface SuitabilityDiagnosticResult {
     };
     description: string;
     recommendedAssetAllocation: {
-        rfPosFixada: number;
-        rfIpca: number;
-        rfPre: number;
-        fiis: number;
+        rendaFixaCaixa: number;
+        acoesGlobais: number;
         acoesBrasil: number;
-        internacional: number;
+        multimercados: number;
     };
 }
 
@@ -46,12 +44,10 @@ export const PROFILE_ALLOCATIONS: Record<InvestorProfileType, {
     description: string;
     expectedNominalReturn: number;
     allocation: {
-        rfPosFixada: number;
-        rfIpca: number;
-        rfPre: number;
-        fiis: number;
+        rendaFixaCaixa: number;
+        acoesGlobais: number;
         acoesBrasil: number;
-        internacional: number;
+        multimercados: number;
     };
 }> = {
     ABRIGO: {
@@ -59,51 +55,43 @@ export const PROFILE_ALLOCATIONS: Record<InvestorProfileType, {
         description: "Foco absoluto em segurança, liquidez diária e preservação de capital. Baixíssima tolerância a oscilações negativas.",
         expectedNominalReturn: 13.9,
         allocation: {
-            rfPosFixada: 60,
-            rfIpca: 25,
-            rfPre: 5,
-            fiis: 5,
-            acoesBrasil: 5,
-            internacional: 0
+            rendaFixaCaixa: 100,
+            acoesGlobais: 0,
+            acoesBrasil: 0,
+            multimercados: 0
         }
     },
     RITMO: {
         label: "Ritmo (Moderado)",
-        description: "Equilíbrio entre segurança e proteção real contra a inflação (IPCA+), aceitando pequenas oscilações de curto prazo em busca de ganho real.",
+        description: "Equilíbrio entre segurança e proteção real contra a inflação, aceitando pequenas oscilações de curto prazo em busca de ganho real.",
         expectedNominalReturn: 14.8,
         allocation: {
-            rfPosFixada: 30,
-            rfIpca: 30,
-            rfPre: 10,
-            fiis: 15,
-            acoesBrasil: 10,
-            internacional: 5
+            rendaFixaCaixa: 82,
+            acoesGlobais: 7,
+            acoesBrasil: 6,
+            multimercados: 5
         }
     },
     "VISÃO": {
         label: "Visão (Arrojado)",
-        description: "Crescimento patrimonial consistente no longo prazo, combinando renda fixa estratégica com ações, fundos imobiliários e exposição internacional.",
+        description: "Crescimento patrimonial consistente no longo prazo, combinando solidez em renda fixa com ações nacionais, globais e multimercados.",
         expectedNominalReturn: 17.2,
         allocation: {
-            rfPosFixada: 20,
-            rfIpca: 20,
-            rfPre: 5,
-            fiis: 20,
-            acoesBrasil: 20,
-            internacional: 15
+            rendaFixaCaixa: 68,
+            acoesGlobais: 17,
+            acoesBrasil: 10,
+            multimercados: 5
         }
     },
     OCEANO: {
         label: "Oceano (Agressivo)",
-        description: "Máximo potencial de valorização a longo prazo com exposição ampla a renda variável, ativos globais e teses assimétricas, tolerando alta volatilidade.",
+        description: "Máximo potencial de valorização a longo prazo com exposição ampla a renda variável, ativos globais e teses assimétricas, tolerando volatilidade.",
         expectedNominalReturn: 21.5,
         allocation: {
-            rfPosFixada: 10,
-            rfIpca: 15,
-            rfPre: 0,
-            fiis: 20,
-            acoesBrasil: 30,
-            internacional: 25
+            rendaFixaCaixa: 43,
+            acoesGlobais: 29,
+            acoesBrasil: 20,
+            multimercados: 8
         }
     }
 };

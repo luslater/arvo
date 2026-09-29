@@ -97,9 +97,8 @@ export const authOptions: NextAuthOptions = {
                     id: user.id,
                     email: user.email,
                     name: user.name,
-                    // @ts-ignore
+                    role: user.role || "USER",
                     accountStatus: user.accountStatus,
-                    // @ts-ignore
                     subscriptionStatus: user.subscriptionStatus,
                 }
             }
@@ -109,8 +108,9 @@ export const authOptions: NextAuthOptions = {
         async session({ session, token }) {
             if (session.user) {
                 session.user.id = token.id as string
+                session.user.role = (token.role as string) || "USER"
                 session.user.accountStatus = token.accountStatus as string
-                const isPremium = token?.subscriptionStatus === "PREMIUM" || token?.subscriptionStatus === "ADMIN"
+                const isPremium = token?.subscriptionStatus === "PREMIUM" || token?.subscriptionStatus === "ADMIN" || token?.role === "ADMIN"
                 session.user.subscriptionStatus = isPremium ? "PREMIUM" : "FREE"
             }
             return session
@@ -118,25 +118,23 @@ export const authOptions: NextAuthOptions = {
         async jwt({ token, user }) {
             if (user) {
                 token.id = user.id
-                // @ts-ignore
+                token.role = user.role || "USER"
                 token.accountStatus = user.accountStatus || "PENDING"
-                // @ts-ignore
                 token.subscriptionStatus = user.subscriptionStatus || "FREE"
             } else if (token.id) {
                 // Refresh from DB on each request to pick up admin changes
                 const dbUser = await prisma.user.findUnique({
                     where: { id: token.id as string },
-                    // @ts-ignore
-                    select: { subscriptionStatus: true, accountStatus: true }
+                    select: { subscriptionStatus: true, accountStatus: true, role: true }
                 })
                 if (dbUser) {
-                    // @ts-ignore
                     token.subscriptionStatus = dbUser.subscriptionStatus
-                    // @ts-ignore
                     token.accountStatus = dbUser.accountStatus
+                    token.role = dbUser.role || "USER"
                 }
             }
             return token
         }
     }
 }
+

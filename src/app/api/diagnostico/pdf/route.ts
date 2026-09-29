@@ -2,10 +2,15 @@ import {z} from 'zod';
 import data from '@/data/diagnostic-data.json';
 import {portfolioForProfile} from '@/lib/diagnostic-options';
 import {makeDiagnosticPDF} from '@/lib/diagnostic-pdf';
+import {rateLimit, getClientIp} from '@/lib/rate-limit';
 export const runtime='nodejs';
 const schema=z.object({profile:z.enum(['Conservador','Moderado','Arrojado']).optional(),portfolioId:z.string().optional(),withdrawalMode:z.enum(['fixed','portfolio']).default('fixed'),name:z.string().trim().min(1).max(100),family:z.enum(['Geral Light','Geral','Qualificado']),input:z.object({initial:z.number().finite().min(0).max(1e9),monthly:z.number().finite().min(0).max(1e7),income:z.number().finite().positive().max(1e7),inflation:z.number().min(0).max(.2),withdrawal:z.number().min(.01).max(1),indexed:z.boolean()})});
 export async function POST(request:Request){
+ const ip = getClientIp(request);
+ const rl = rateLimit('api:diagnostico-pdf', ip, 10, 5 * 60 * 1000);
+ if (!rl.success) return new Response('Limite de geração de PDF excedido. Tente novamente em alguns minutos.', {status: 429, headers: {'Retry-After': '300'}});
  if(request.headers.get('origin')!==new URL(request.url).origin)return new Response('Origem inválida',{status:403});
  if(Number(request.headers.get('content-length')||0)>6000)return new Response('Limite excedido',{status:413});
+
  try{const raw=await request.text();if(raw.length>6000)return new Response('Limite excedido',{status:413});const parsed=schema.safeParse(JSON.parse(raw));if(!parsed.success)return new Response('Dados inválidos',{status:400});const {name,input,family,profile,portfolioId,withdrawalMode}=parsed.data;const selected=profile?portfolioForProfile(profile):portfolioId?data.portfolios.find(p=>p.id===portfolioId&&p.family===family&&!p.pendingIdentity&&p.annualReal!==null):undefined;if(portfolioId&&!selected)return new Response('Carteira indisponível',{status:400});if(withdrawalMode==='portfolio'&&(!selected||selected.annualReal!<=0))return new Response('Escolha uma carteira válida',{status:400});const rate=selected?.annualReal??.06;const effectiveInput={...input,withdrawal:withdrawalMode==='portfolio'?rate:input.withdrawal};const label=(profile?profile+' / ':'')+(selected?.name||'Referência da calculadora')+(withdrawalMode==='portfolio'?' - retirada pela referência histórica':'');const bytes=await makeDiagnosticPDF(effectiveInput,name,profile?'Geral':family,new URL(request.url).origin,rate,label);return new Response(new Uint8Array(bytes),{headers:{'Content-Type':'application/pdf','Content-Disposition':'attachment; filename="Meu-mapa-ARVO.pdf"','Cache-Control':'no-store'}})}catch{return new Response('Não foi possível gerar o relatório. Tente novamente.',{status:500})}
 }

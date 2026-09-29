@@ -79,13 +79,18 @@ export async function POST(req: Request) {
                 })
             } catch (err) {
                 console.error('Erro ao enviar email via Resend:', err)
-                // Fallback para console
-                console.log("[RESET LINK FALLBACK]: %s", resetUrl)
+                if (process.env.NODE_ENV === "development") {
+                    console.log("[DEV ONLY - RESET LINK]: %s", resetUrl)
+                }
             }
         } else {
-            // Fallback development (ou se não tem chave)
-            console.log("[RESET LINK FALLBACK (Sem Resend configurado)]: %s", resetUrl)
+            if (process.env.NODE_ENV === "development") {
+                console.log("[DEV ONLY - RESET LINK (Sem Resend)]: %s", resetUrl)
+            } else {
+                console.warn("Resend API Key não configurada para envio de e-mails de recuperação de senha.")
+            }
         }
+
 
         return NextResponse.json({ 
             message: 'Se o email ou documento existir em nossa base, você receberá um link para resetar a senha.' 

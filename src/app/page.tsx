@@ -228,13 +228,19 @@ export default function LandingPage() {
           display: grid;
           grid-template-columns: 1.15fr 0.85fr;
           gap: 48px;
-          align-items: center;
+          align-items: start;
         }
         @media (max-width: 960px) {
           .ui-hero-grid {
             grid-template-columns: 1fr;
             gap: 36px;
+            align-items: start;
           }
+        }
+        .ui-hero-left-col {
+          display: flex;
+          flex-direction: column;
+          gap: 28px;
         }
 
         .ui-split-grid {
@@ -280,41 +286,66 @@ export default function LandingPage() {
           }
         }
 
-        /* Stat Banner Strip */
-        .ui-stat-strip {
-          border-top: 1px solid var(--border);
-          border-bottom: 1px solid var(--border);
-          background: var(--card);
-          padding: 20px 0;
+        html {
+          scroll-behavior: smooth;
         }
-        .ui-stat-strip-inner {
+
+        /* Hero Pillars Card - Caixa Branca Expandida */
+        .ui-hero-pillars-card {
+          margin-top: 0;
+          background: #ffffff;
+          border: 1px solid var(--border);
+          border-radius: 18px;
+          padding: 22px 26px;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
+          width: 100%;
+        }
+        .ui-hero-pillars-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 16px 20px;
+          text-align: center;
+        }
+        .ui-hero-pillar-cell {
           display: flex;
-          justify-content: space-around;
+          flex-direction: column;
           align-items: center;
-          flex-wrap: wrap;
-          gap: 20px;
+          justify-content: center;
+          text-align: center;
+        }
+        .ui-hero-pillar-cell strong {
           font-family: 'IBM Plex Mono', monospace;
           font-size: 12px;
-          color: var(--text-secondary);
-          text-transform: uppercase;
-          letter-spacing: 0.05em;
-        }
-        @media (max-width: 768px) {
-          .ui-stat-strip-inner {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px 10px;
-            font-size: 11px;
-            text-align: center;
-          }
-          .ui-stat-divider { display: none; }
-        }
-        .ui-stat-strip-inner strong {
+          font-weight: 700;
           color: var(--ink-navy);
-          font-weight: 600;
+          letter-spacing: 0.05em;
+          text-transform: uppercase;
+          display: block;
+          margin-bottom: 4px;
         }
-        .ui-stat-divider {
-          color: var(--border);
+        .ui-hero-pillar-cell span {
+          font-family: 'IBM Plex Mono', monospace;
+          font-size: 11px;
+          color: var(--text-secondary);
+          letter-spacing: 0.02em;
+        }
+        .ui-hero-pillar-cell-bottom {
+          border-top: 1px solid var(--border);
+          padding-top: 14px;
+        }
+        @media (max-width: 600px) {
+          .ui-hero-pillars-card {
+            padding: 18px 16px;
+            margin-top: 0;
+          }
+          .ui-hero-pillars-grid {
+            grid-template-columns: 1fr;
+            gap: 12px;
+          }
+          .ui-hero-pillar-cell-bottom {
+            border-top: none;
+            padding-top: 0;
+          }
         }
 
         @media (max-width: 600px) {
@@ -476,6 +507,28 @@ export default function LandingPage() {
           max-height: 300px;
           padding-bottom: 20px;
         }
+
+        /* Footer */
+        .ui-footer {
+          background: var(--section-alt);
+          color: var(--text-secondary);
+          padding: 48px 0 28px 0;
+          border-top: 1px solid var(--border);
+        }
+        .ui-footer-links {
+          display: flex;
+          gap: 24px;
+          font-size: 14px;
+          flex-wrap: wrap;
+        }
+        .ui-footer-links a {
+          color: var(--text-secondary);
+          text-decoration: none;
+          transition: color 0.15s ease;
+        }
+        .ui-footer-links a:hover {
+          color: var(--deep-teal);
+        }
       `}} />
 
       <div className="ui-page-frame">
@@ -501,40 +554,92 @@ export default function LandingPage() {
         </header>
 
         {/* 1 & 2. HERO + SIMULADOR */}
-        <section className="ui-section" style={{ paddingTop: "40px", paddingBottom: "56px" }}>
+        <section className="ui-section" style={{ paddingTop: "24px", paddingBottom: "24px" }}>
           <div className="ui-wrap ui-hero-grid">
-            <div>
-              <div className="ui-eyebrow">
-                <span className="ui-eyebrow-dot"></span>
-                PLANEJAMENTO FINANCEIRO · ORIENTAÇÃO DE INVESTIMENTOS
+            <div className="ui-hero-left-col">
+              {/* 1. Eyebrow + Título */}
+              <div>
+                <div className="ui-eyebrow" style={{ marginBottom: "18px" }}>
+                  <span className="ui-eyebrow-dot"></span>
+                  PLANEJAMENTO FINANCEIRO · ORIENTAÇÃO DE INVESTIMENTOS
+                </div>
+
+                <h1 className="ui-serif" style={{ fontSize: "clamp(38px, 4.6vw, 60px)", lineHeight: "1.14", color: "var(--ink-navy)", margin: 0, letterSpacing: "-0.015em" }}>
+                  Não basta investir.<br />
+                  <i style={{ color: "var(--deep-teal)", fontStyle: "italic" }}>É preciso ter um plano.</i>
+                </h1>
               </div>
 
-              <h1 className="ui-serif" style={{ fontSize: "clamp(34px, 4.5vw, 58px)", lineHeight: "1.12", color: "var(--ink-navy)", margin: "0 0 18px 0" }}>
-                Não basta investir.<br />
-                <i style={{ color: "var(--deep-teal)", fontStyle: "italic" }}>É preciso ter um plano.</i>
-              </h1>
-
-              <p style={{ fontSize: "17px", color: "var(--text-secondary)", lineHeight: "1.65", margin: "0 0 28px 0", maxWidth: "46ch" }}>
-                Organizamos sua vida financeira em um plano: calculamos quanto você precisa investir, indicamos a carteira adequada ao seu momento e acompanhamos sua evolução até seus objetivos. Sem comissão, sem tirar seu dinheiro do banco ou da corretora.
+              {/* 2. Parágrafo explicativo */}
+              <p style={{ fontSize: "18px", color: "var(--text-secondary)", lineHeight: "1.72", margin: 0, maxWidth: "52ch" }}>
+                Planejamento financeiro completo para organizar sua vida hoje e construir o futuro que você deseja. Com orientação em cada etapa, das decisões do dia a dia aos grandes planos.
               </p>
 
+              {/* 3. Botões de ação + microcopy */}
               <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "10px", width: "100%" }}>
                 <div className="ui-cta-actions">
-                  <a href="/register" className="ui-btn ui-btn-primary" style={{ fontSize: "15.5px", padding: "15px 30px" }}>
+                  <a href="/register" className="ui-btn ui-btn-primary" style={{ fontSize: "16px", padding: "16px 34px" }}>
                     Descobrir meu plano →
                   </a>
-                  <a href="#como-funciona" className="ui-btn ui-btn-outline" style={{ fontSize: "14.5px", padding: "14px 22px" }}>
+                  <a href="#problema" className="ui-btn ui-btn-outline" style={{ fontSize: "15px", padding: "15px 24px" }}>
                     Ver como funciona ↓
                   </a>
                 </div>
-                <div className="ui-mono" style={{ fontSize: "11.5px", color: "var(--text-muted)", marginTop: "4px" }}>
+                <div className="ui-mono" style={{ fontSize: "12px", color: "var(--text-muted)", letterSpacing: "0.04em" }}>
                   ✓ 5 MINUTOS · ✓ GRATUITO · ✓ SEM CARTÃO
                 </div>
               </div>
 
-              {/* Profile note card */}
-              <div style={{ marginTop: "28px", padding: "14px 18px", background: "var(--section-alt)", border: "1px solid var(--border)", borderRadius: "12px", fontSize: "13px", color: "var(--text-secondary)", lineHeight: "1.55", maxWidth: "44ch" }}>
-                <strong style={{ color: "var(--ink-navy)", fontWeight: 600 }}>Para quem é a ARVO?</strong> Feito para quem guarda a partir de R$ 1.000/mês ou já tem patrimônio acumulado e quer direção profissional.
+              {/* 4. Caixa Branca Integrada: Perfil + Pilares de Confiança */}
+              <div className="ui-hero-pillars-card">
+                <div style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: "12px",
+                  paddingBottom: "18px",
+                  borderBottom: "1px solid var(--border)",
+                }}>
+                  <div style={{
+                    width: "26px",
+                    height: "26px",
+                    borderRadius: "50%",
+                    background: "rgba(43, 110, 118, 0.1)",
+                    color: "var(--deep-teal)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "13px",
+                    flexShrink: 0,
+                    marginTop: "2px"
+                  }}>
+                    ✦
+                  </div>
+                  <div style={{ fontSize: "14px", lineHeight: "1.6", color: "var(--text-secondary)" }}>
+                    <strong style={{ color: "var(--ink-navy)", fontWeight: 600, display: "inline-block", marginRight: "6px" }}>
+                      Para quem é a ARVO?
+                    </strong>
+                    Feito para quem guarda a partir de R$ 1.000/mês ou já tem patrimônio acumulado e quer direção profissional.
+                  </div>
+                </div>
+
+                <div className="ui-hero-pillars-grid" style={{ paddingTop: "18px" }}>
+                  <div className="ui-hero-pillar-cell">
+                    <strong>100% Fee-Only</strong>
+                    <span>Sem comissão oculta</span>
+                  </div>
+                  <div className="ui-hero-pillar-cell">
+                    <strong>Carteira sob medida</strong>
+                    <span>Para seu momento e perfil</span>
+                  </div>
+                  <div className="ui-hero-pillar-cell ui-hero-pillar-cell-bottom">
+                    <strong>Custódia própria</strong>
+                    <span>No seu banco ou corretora</span>
+                  </div>
+                  <div className="ui-hero-pillar-cell ui-hero-pillar-cell-bottom">
+                    <strong>CFP® Certified</strong>
+                    <span>Metodologia institucional</span>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -545,21 +650,8 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* STAT STRIP */}
-        <div className="ui-stat-strip">
-          <div className="ui-wrap ui-stat-strip-inner">
-            <div><strong>100% FEE-ONLY</strong> SEM COMISSÃO OCULTA</div>
-            <span className="ui-stat-divider">|</span>
-            <div><strong>CARTEIRA SOB MEDIDA</strong> PARA O SEU MOMENTO E PERFIL</div>
-            <span className="ui-stat-divider">|</span>
-            <div><strong>CUSTÓDIA PRÓPRIA</strong> NO SEU BANCO OU CORRETORA</div>
-            <span className="ui-stat-divider">|</span>
-            <div><strong>CFP® CERTIFIED</strong> METODOLOGIA INSTITUCIONAL</div>
-          </div>
-        </div>
-
         {/* 3. O PROBLEMA */}
-        <section className="ui-section" id="problema">
+        <section className="ui-section ui-section-alt" id="problema">
           <div className="ui-wrap">
             <div className="ui-split-grid" style={{ marginBottom: "40px" }}>
               <div>
@@ -594,7 +686,7 @@ export default function LandingPage() {
               ))}
             </div>
 
-            <div style={{ marginTop: "28px", padding: "22px 24px", background: "var(--section-alt)", border: "1px solid var(--border)", borderRadius: "14px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "16px" }}>
+            <div style={{ marginTop: "28px", padding: "22px 24px", background: "var(--card)", border: "1px solid var(--border)", borderRadius: "14px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "16px" }}>
               <div style={{ fontSize: "15.5px", fontWeight: 500, color: "var(--ink-navy)" }}>
                 <strong>É isso que a ARVO organiza.</strong> Clareza e método para suas decisões financeiras.
               </div>
@@ -606,7 +698,7 @@ export default function LandingPage() {
         </section>
 
         {/* 4. COMO FUNCIONA */}
-        <section className="ui-section ui-section-alt" id="como-funciona">
+        <section className="ui-section" id="como-funciona">
           <div className="ui-wrap">
             <div style={{ textAlign: "center", marginBottom: "48px" }}>
               <div className="ui-eyebrow"><span className="ui-eyebrow-dot"></span> Método ARVO</div>
@@ -638,7 +730,7 @@ export default function LandingPage() {
         </section>
 
         {/* 5. CARTEIRAS */}
-        <section className="ui-section" id="carteiras">
+        <section className="ui-section ui-section-alt" id="carteiras">
           <div className="ui-wrap">
             <div className="ui-split-grid" style={{ marginBottom: "44px" }}>
               <div>
@@ -686,7 +778,7 @@ export default function LandingPage() {
         </section>
 
         {/* 6. RESULTADOS / PERFORMANCE */}
-        <section className="ui-section ui-section-alt" id="resultados">
+        <section className="ui-section" id="resultados">
           <div className="ui-wrap">
             <div className="ui-split-grid" style={{ marginBottom: "36px" }}>
               <div>
@@ -717,7 +809,7 @@ export default function LandingPage() {
         </section>
 
         {/* 7. INDEPENDÊNCIA */}
-        <section className="ui-section" id="independencia">
+        <section className="ui-section ui-section-alt" id="independencia">
           <div className="ui-wrap">
             <div style={{ textAlign: "center", maxWidth: "720px", margin: "0 auto 40px auto" }}>
               <div className="ui-eyebrow"><span className="ui-eyebrow-dot"></span> Modelo Fee-Only</div>
@@ -731,9 +823,18 @@ export default function LandingPage() {
             </div>
 
             {/* Highlight banner */}
-            <div style={{ background: "var(--ink-navy)", borderRadius: "18px", padding: "32px 24px", color: "#ffffff", marginBottom: "28px", textAlign: "center" }}>
-              <div className="ui-serif" style={{ fontSize: "clamp(20px, 2.6vw, 30px)", lineHeight: "1.3", maxWidth: "42ch", margin: "0 auto" }}>
-                Você sabe exatamente quanto paga. E sabe quem está remunerando: <span style={{ color: "var(--accent-green)", fontStyle: "italic" }}>a ARVO.</span>
+            <div style={{
+              background: "#ffffff",
+              border: "1px solid var(--border)",
+              borderRadius: "18px",
+              padding: "32px 28px",
+              color: "var(--ink-navy)",
+              marginBottom: "28px",
+              textAlign: "center",
+              boxShadow: "0 4px 20px rgba(0, 0, 0, 0.03)"
+            }}>
+              <div className="ui-serif" style={{ fontSize: "clamp(20px, 2.6vw, 30px)", lineHeight: "1.35", maxWidth: "42ch", margin: "0 auto", color: "var(--ink-navy)" }}>
+                Você sabe exatamente quanto paga. E sabe quem está remunerando: <span style={{ color: "var(--deep-teal)", fontStyle: "italic" }}>a ARVO.</span>
               </div>
             </div>
 
@@ -756,7 +857,7 @@ export default function LandingPage() {
         </section>
 
         {/* 8. FILOSOFIA + FUNDADOR */}
-        <section className="ui-section ui-section-alt" id="fundador">
+        <section className="ui-section" id="fundador">
           <div className="ui-wrap">
             <div className="ui-fundador-grid">
               <div style={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: "18px", padding: "32px 24px", textAlign: "center" }}>
@@ -791,7 +892,7 @@ export default function LandingPage() {
         </section>
 
         {/* 8.5 PROVA SOCIAL & CASES */}
-        <section className="ui-section" id="depoimentos" style={{ borderTop: "1px solid var(--border)" }}>
+        <section className="ui-section ui-section-alt" id="depoimentos">
           <div className="ui-wrap">
             <div style={{ textAlign: "center", marginBottom: "48px" }}>
               <div className="ui-eyebrow"><span className="ui-eyebrow-dot"></span> Prova Social & Confiança</div>
@@ -844,9 +945,9 @@ export default function LandingPage() {
             </div>
 
             {/* Social Proof Stats Banner */}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "16px", background: "var(--section-alt)", border: "1px solid var(--border)", borderRadius: "16px", padding: "24px 28px", textAlign: "center" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "16px", background: "var(--card)", border: "1px solid var(--border)", borderRadius: "16px", padding: "24px 28px", textAlign: "center" }}>
               <div>
-                <div className="ui-serif" style={{ fontSize: "32px", color: "var(--ink-navy)", fontWeight: 600 }}>R$ 50M+</div>
+                <div className="ui-serif" style={{ fontSize: "32px", color: "var(--ink-navy)", fontWeight: 600 }}>+R$ 200MM</div>
                 <div style={{ fontSize: "12.5px", color: "var(--text-muted)" }}>Patrimônio orientado</div>
               </div>
               <div>
@@ -855,7 +956,7 @@ export default function LandingPage() {
               </div>
               <div>
                 <div className="ui-serif" style={{ fontSize: "32px", color: "var(--ink-navy)", fontWeight: 600 }}>27</div>
-                <div style={{ fontSize: "12.5px", color: "var(--text-muted)" }}>Carteiras calibradas</div>
+                <div style={{ fontSize: "12.5px", color: "var(--text-muted)" }}>Carteiras personalizadas</div>
               </div>
               <div>
                 <div className="ui-serif" style={{ fontSize: "32px", color: "var(--deep-teal)", fontWeight: 600 }}>4.9 / 5.0</div>
@@ -1004,25 +1105,25 @@ export default function LandingPage() {
         </section>
 
         {/* FOOTER */}
-        <footer style={{ background: "var(--ink-navy)", color: "#ffffff", padding: "56px 0 28px 0" }}>
+        <footer className="ui-footer">
           <div className="ui-wrap">
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "24px", borderBottom: "1px solid rgba(255,255,255,0.1)", paddingBottom: "32px" }}>
-              <div className="ui-logo" style={{ color: "#ffffff" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "24px", borderBottom: "1px solid var(--border)", paddingBottom: "28px" }}>
+              <div className="ui-logo">
                 <img src="/arvo-simbolo-green.png" alt="ARVO Símbolo Oficial" style={{ width: "24px", height: "24px", objectFit: "contain" }} />
                 <span>ARVO</span>
               </div>
-              <div style={{ display: "flex", gap: "24px", fontSize: "14px", color: "rgba(255,255,255,0.7)", flexWrap: "wrap" }}>
-                <a href="#como-funciona" style={{ color: "inherit", textDecoration: "none" }}>Método</a>
-                <a href="#carteiras" style={{ color: "inherit", textDecoration: "none" }}>Carteiras</a>
-                <a href="#depoimentos" style={{ color: "inherit", textDecoration: "none" }}>Depoimentos</a>
-                <a href="#independencia" style={{ color: "inherit", textDecoration: "none" }}>Independência</a>
-                <a href="#assinatura" style={{ color: "inherit", textDecoration: "none" }}>Planos</a>
-                <a href="#faq" style={{ color: "inherit", textDecoration: "none" }}>Dúvidas</a>
-                <Link href="/politica-de-privacidade" style={{ color: "inherit", textDecoration: "none" }}>Privacidade</Link>
-                <Link href="/termos" style={{ color: "inherit", textDecoration: "none" }}>Termos</Link>
+              <div className="ui-footer-links">
+                <a href="#como-funciona">Método</a>
+                <a href="#carteiras">Carteiras</a>
+                <a href="#depoimentos">Depoimentos</a>
+                <a href="#independencia">Independência</a>
+                <a href="#assinatura">Planos</a>
+                <a href="#faq">Dúvidas</a>
+                <Link href="/politica-de-privacidade">Privacidade</Link>
+                <Link href="/termos">Termos</Link>
               </div>
             </div>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px", paddingTop: "20px", fontSize: "12px", color: "rgba(255,255,255,0.5)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px", paddingTop: "20px", fontSize: "12px", color: "var(--text-muted)" }}>
               <span>ARVO Orientação Financeira LTDA · ARVO® 2026</span>
               <span>Plataforma independente fee-only · Todos os direitos reservados</span>
             </div>

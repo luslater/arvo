@@ -44,19 +44,19 @@ function SliderInput({ label, value, onChange, min, max, step, prefix = "R$", su
   const pct = ((value - min) / (max - min)) * 100;
 
   return (
-    <div style={{ marginBottom: 12 }}>
+    <div style={{ marginBottom: 8 }}>
       <div style={{
         display: "flex", justifyContent: "space-between", alignItems: "baseline",
-        marginBottom: 6
+        marginBottom: 4
       }}>
         <span style={{ fontSize: 13, color: "#888", fontWeight: 500 }}>{label}</span>
-        <span style={{ fontSize: 18, fontWeight: 600, color: "#1A1A1A", letterSpacing: -0.5 }}>
+        <span style={{ fontSize: 17, fontWeight: 600, color: "#1A1A1A", letterSpacing: -0.5 }}>
           {prefix && <span style={{ fontSize: 13, color: "#999", marginRight: 2 }}>{prefix}</span>}
           {fmt(value)}
           {suffix && <span style={{ fontSize: 13, color: "#999", marginLeft: 2 }}>{suffix}</span>}
         </span>
       </div>
-      <div style={{ position: "relative", height: 28, display: "flex", alignItems: "center" }}>
+      <div style={{ position: "relative", height: 24, display: "flex", alignItems: "center" }}>
         <div style={{
           position: "absolute", left: 0, right: 0, height: 6, borderRadius: 3,
           background: "#E8E2D6",
@@ -104,9 +104,9 @@ function SliderInput({ label, value, onChange, min, max, step, prefix = "R$", su
 // ─── Mini Chart SVG ───
 function MiniChart({ pontos, metaPatrimonio, anoIndependencia, maxAnos = 30 }: any) {
   const W = 440;
-  const H = 84;
+  const H = 64;
   const padX = 0;
-  const padY = 10;
+  const padY = 8;
 
   const dados = pontos.filter((p: any) => p.mes <= maxAnos * 12);
   const maxSaldo = Math.max(...dados.map((d: any) => d.saldo), metaPatrimonio * 1.1);
@@ -125,7 +125,7 @@ function MiniChart({ pontos, metaPatrimonio, anoIndependencia, maxAnos = 30 }: a
   const patrimonioInicial = dados[0]?.saldo || 0;
 
   return (
-    <svg viewBox={`0 0 ${W} ${H + 20}`} style={{ width: "100%", display: "block" }}>
+    <svg viewBox={`0 0 ${W} ${H + 16}`} style={{ width: "100%", display: "block" }}>
       <defs>
         <linearGradient id="arvo-grad" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#4FA080" stopOpacity="0.25" />
@@ -194,7 +194,7 @@ export default function ArvoSimulador() {
       maxWidth: 560,
       background: "white",
       borderRadius: 24,
-      padding: "20px 24px",
+      padding: "16px 22px",
       boxShadow: "0 24px 80px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04)",
       border: "1px solid rgba(0,0,0,0.04)",
       fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
@@ -204,7 +204,7 @@ export default function ArvoSimulador() {
       <style dangerouslySetInnerHTML={{ __html: `
         @media (max-width: 500px) {
           .ui-sim-wrapper {
-            padding: 16px 14px !important;
+            padding: 14px 12px !important;
             border-radius: 20px !important;
           }
           .ui-sim-results-grid {
@@ -212,32 +212,32 @@ export default function ArvoSimulador() {
             gap: 8px !important;
           }
           .ui-sim-val-lg {
-            font-size: 28px !important;
+            font-size: 26px !important;
           }
         }
       `}} />
       {/* Header do card */}
           <div style={{
             display: "flex", justifyContent: "space-between", alignItems: "flex-start",
-            marginBottom: 16, gap: 8
+            marginBottom: 10, gap: 8
           }}>
             <div>
               <span style={{
-                fontSize: 11, letterSpacing: 1.5, textTransform: "uppercase",
+                fontSize: 10.5, letterSpacing: 1.5, textTransform: "uppercase",
                 color: "#4FA080", fontWeight: 600
               }}>
                 Simulação em tempo real
               </span>
               <p style={{
-                fontSize: 15, color: "#123044", margin: "4px 0 0 0", fontWeight: 500
+                fontSize: 14.5, color: "#123044", margin: "2px 0 0 0", fontWeight: 500
               }}>
                 Quando seu dinheiro pode trabalhar por você?
               </p>
             </div>
             <div style={{
               display: "flex", alignItems: "center", gap: 4,
-              fontSize: 11, color: "#1f674f", background: "#e8f1ed",
-              padding: "4px 8px", borderRadius: 8, fontWeight: 600,
+              fontSize: 10.5, color: "#1f674f", background: "#e8f1ed",
+              padding: "3px 7px", borderRadius: 8, fontWeight: 600,
               whiteSpace: "nowrap", flexShrink: 0
             }}>
               6% a.a. acima da inflação
@@ -273,9 +273,9 @@ export default function ArvoSimulador() {
           {/* Gráfico */}
           <div style={{
             background: "#FAFAF7",
-            borderRadius: 16,
-            padding: "12px 16px 4px 16px",
-            marginBottom: 12,
+            borderRadius: 14,
+            padding: "8px 12px 2px 12px",
+            marginBottom: 10,
           }}>
             <MiniChart
               pontos={proj.pontos}
@@ -289,35 +289,35 @@ export default function ArvoSimulador() {
           <div className="ui-sim-results-grid" style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
-            gap: 10,
-            marginBottom: 12,
+            gap: 8,
+            marginBottom: 8,
           }}>
             {/* Resultado 1: Quando */}
             <div style={{
-              background: "#E8F1ED", borderRadius: 12, padding: "12px 16px",
+              background: "#E8F1ED", borderRadius: 12, padding: "10px 14px",
               border: "1px solid #C2DDD0"
             }}>
               <span style={{
-                fontSize: 10, letterSpacing: 1.5, textTransform: "uppercase",
-                color: "#1F674F", display: "block", marginBottom: 8, fontWeight: 600
+                fontSize: 9.5, letterSpacing: 1.5, textTransform: "uppercase",
+                color: "#1F674F", display: "block", marginBottom: 4, fontWeight: 600
               }}>
                 Independência financeira
               </span>
               {anoAlvo ? (
                 <>
-                  <span className="ui-sim-val-lg" style={{ fontSize: 36, fontWeight: 300, letterSpacing: -1, display: "block", color: "#1F674F" }}>
+                  <span className="ui-sim-val-lg" style={{ fontSize: 30, fontWeight: 300, letterSpacing: -1, display: "block", color: "#1F674F", lineHeight: 1.1 }}>
                     {anoAlvo}
                   </span>
-                  <span style={{ fontSize: 12, color: "#4A6B5D" }}>
+                  <span style={{ fontSize: 11.5, color: "#4A6B5D" }}>
                     em {proj.anoIndependencia} {proj.anoIndependencia === 1 ? "ano" : "anos"}
                   </span>
                 </>
               ) : (
                 <>
-                  <span style={{ fontSize: 20, fontWeight: 400, display: "block", color: "#1F674F" }}>
+                  <span style={{ fontSize: 18, fontWeight: 400, display: "block", color: "#1F674F" }}>
                     +40 anos
                   </span>
-                  <span style={{ fontSize: 12, color: "#667085" }}>
+                  <span style={{ fontSize: 11.5, color: "#667085" }}>
                     Aumente o aporte ou reduza o gasto
                   </span>
                 </>
@@ -326,19 +326,19 @@ export default function ArvoSimulador() {
 
             {/* Resultado 2: Retirada estimada em 20 anos */}
             <div style={{
-              background: "#FBFAF5", borderRadius: 12, padding: "12px 16px",
+              background: "#FBFAF5", borderRadius: 12, padding: "10px 14px",
               border: "1px solid #E4DFD5"
             }}>
               <span style={{
-                fontSize: 10, letterSpacing: 1.5, textTransform: "uppercase",
-                color: "#2B6E76", display: "block", marginBottom: 8, fontWeight: 600
+                fontSize: 9.5, letterSpacing: 1.5, textTransform: "uppercase",
+                color: "#2B6E76", display: "block", marginBottom: 4, fontWeight: 600
               }}>
                 Retirada estimada em 20 anos
               </span>
-              <span className="ui-sim-val-lg" style={{ fontSize: 32, fontWeight: 300, letterSpacing: -1, color: "#123044", display: "block" }}>
+              <span className="ui-sim-val-lg" style={{ fontSize: 27, fontWeight: 300, letterSpacing: -1, color: "#123044", display: "block", lineHeight: 1.1 }}>
                 {fmtCurrency(Math.round(proj.rendaMensal20))}
               </span>
-              <span style={{ fontSize: 12, color: "#667085" }}>
+              <span style={{ fontSize: 11.5, color: "#667085" }}>
                 por mês
               </span>
             </div>
@@ -347,8 +347,8 @@ export default function ArvoSimulador() {
           {/* Meta de patrimônio */}
           <div style={{
             display: "flex", justifyContent: "space-between", alignItems: "center",
-            padding: "8px 0", borderTop: "1px solid #f0f0f0",
-            fontSize: 12, color: "#667085", marginBottom: 12,
+            padding: "5px 0", borderTop: "1px solid #f0f0f0",
+            fontSize: 11.5, color: "#667085", marginBottom: 8,
           }}>
             <span>Patrimônio necessário (regra dos 4% · valores de hoje)</span>
             <span style={{ fontWeight: 600, color: "#123044" }}>
@@ -371,21 +371,21 @@ export default function ArvoSimulador() {
               width: "100%",
               background: "#2B6E76", color: "#FFFFFF",
               border: "none", borderRadius: 100,
-              padding: "13px 0", fontSize: 14.5, fontWeight: 600, cursor: "pointer",
+              padding: "11px 0", fontSize: 14, fontWeight: 600, cursor: "pointer",
               display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
               textDecoration: "none", transition: "all 0.2s ease",
               boxShadow: "0 4px 12px rgba(43, 110, 118, 0.25)"
             }}
             className="hover:brightness-110 hover:-translate-y-0.5"
           >
-            Receber meu mapa gratuito <ArrowRight size={16} />
+            Receber meu mapa gratuito <ArrowRight size={15} />
           </a>
 
           <p style={{
-            fontSize: 10.5, color: "#667085", textAlign: "center", marginTop: 10, marginBottom: 0,
-            lineHeight: 1.45
+            fontSize: 10, color: "#667085", textAlign: "center", marginTop: 7, marginBottom: 0,
+            lineHeight: 1.35
           }}>
-            💡 Projeção com <strong>6,0% a.a. de rendimento real</strong>. Todos os valores já são <strong>descontados da inflação (valores de hoje em poder de compra)</strong>. Aportes corrigidos pela inflação. Retirada inicial de 4% a.a., sem garantia de renda vitalícia. Custos e tributos não deduzidos.
+            💡 Projeção com <strong>6,0% a.a. de rendimento real</strong> acima da inflação. Valores em poder de compra de hoje. Não constitui garantia de retorno.
           </p>
         </div>
   );

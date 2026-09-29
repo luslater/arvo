@@ -2,7 +2,9 @@ import {appendFile,mkdir} from 'node:fs/promises';
 import path from 'node:path';
 import {randomUUID} from 'node:crypto';
 import {z} from 'zod';
+import {rateLimit, getClientIp} from '@/lib/rate-limit';
 export const runtime='nodejs';
+
 const schema = z.object({
   name: z.string().trim().min(2, "Nome deve ter pelo menos 2 caracteres").max(100),
   email: z.string().trim().email("E-mail inválido").max(254),
@@ -24,6 +26,15 @@ const schema = z.object({
 });
 
 export async function POST(request: Request) {
+  const ip = getClientIp(request);
+  const rl = rateLimit('api:diagnostico', ip, 20, 10 * 60 * 1000);
+  if (!rl.success) {
+    return Response.json(
+      { error: 'Muitas tentativas enviadas. Por favor, aguarde alguns minutos.' },
+      { status: 429, headers: { 'Retry-After': '600' } }
+    );
+  }
+
   const origin = request.headers.get('origin');
   if (origin && origin !== new URL(request.url).origin && process.env.NODE_ENV === 'production') {
     return Response.json({ error: 'Origem inválida' }, { status: 403 });
@@ -32,6 +43,7 @@ export async function POST(request: Request) {
   if (!request.headers.get('content-type')?.startsWith('application/json')) {
     return Response.json({ error: 'Formato inválido' }, { status: 415 });
   }
+
 
   try {
     const raw = await request.text();

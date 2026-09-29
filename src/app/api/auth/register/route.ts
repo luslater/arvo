@@ -2,49 +2,54 @@ import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import bcrypt from "bcrypt"
 import { sendNewUserNotification, sendRegistrationPendingEmail } from "@/lib/email"
-import { LRUCache } from "lru-cache"
+import { z } from "zod"
+import { rateLimit, getClientIp } from "@/lib/rate-limit"
 
-const registerRateLimit = new LRUCache<string, number>({
-    max: 500,
-    ttl: 15 * 60 * 1000, // 15 minutes
+const registerSchema = z.object({
+    name: z.string().trim().min(2, "Nome deve ter no mínimo 2 caracteres").max(100),
+    email: z.string().trim().toLowerCase().email("E-mail inválido").max(254),
+    password: z.string().min(8, "A senha deve ter no mínimo 8 caracteres").max(128),
+    cpf: z.string().trim().max(20).optional().nullable(),
+    phone: z.string().trim().max(25).optional().nullable(),
 })
 
 export async function POST(req: Request) {
     try {
-        const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown-ip"
-        const attempts = registerRateLimit.get(ip) || 0
-        if (attempts >= 5) {
+        const ip = getClientIp(req)
+        const rl = rateLimit("auth:register", ip, 5, 15 * 60 * 1000)
+        if (!rl.success) {
             return NextResponse.json(
                 { message: "Muitas tentativas de cadastro a partir deste dispositivo. Tente novamente em 15 minutos." },
-                { status: 429 }
+                { status: 429, headers: { "Retry-After": "900" } }
             )
         }
 
-        const { name, email, password, cpf, phone } = await req.json()
+        let body: any
+        try {
+            body = await req.json()
+        } catch {
+            return NextResponse.json({ message: "Payload inválido" }, { status: 400 })
+        }
 
-        if (!email || !password) {
-            registerRateLimit.set(ip, attempts + 1)
+        const parseResult = registerSchema.safeParse(body)
+        if (!parseResult.success) {
             return NextResponse.json(
-                { message: "Email e senha são obrigatórios" },
+                { message: parseResult.error.issues[0]?.message || "Dados de cadastro inválidos" },
                 { status: 400 }
             )
         }
 
-        if (typeof password !== "string" || password.length < 6) {
-            return NextResponse.json(
-                { message: "A senha deve ter no mínimo 6 caracteres" },
-                { status: 400 }
-            )
-        }
+        const { name, email, password, cpf, phone } = parseResult.data
 
         const existingUser = await prisma.user.findUnique({ where: { email } })
 
         if (existingUser) {
             return NextResponse.json(
-                { message: "Usuário já existe com este email" },
+                { message: "Já existe uma conta registrada com este e-mail." },
                 { status: 409 }
             )
         }
+
 
         const hashedPassword = await bcrypt.hash(password, 10)
 

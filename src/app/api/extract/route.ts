@@ -4,6 +4,7 @@ import * as xlsx from "xlsx";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth-options";
 import { parseXpWorkbook } from "@/lib/portfolio-xp-parser";
+import { rateLimit, getClientIp } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
@@ -33,13 +34,21 @@ export interface ExtractionResponse {
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    const isDev = process.env.NODE_ENV !== "production";
-    const origin = req.headers.get("origin") || req.headers.get("referer") || "";
-    const isLocal = origin.includes("localhost") || origin.includes("127.0.0.1");
 
-    if (!session?.user?.id && !session?.user?.email && !isDev && !isLocal) {
+    if (!session?.user?.id && !session?.user?.email) {
       return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
     }
+
+    const clientIp = getClientIp(req);
+    const identifier = session?.user?.id || session?.user?.email || clientIp;
+    const rl = rateLimit("ai:extract", identifier, 15, 60 * 1000);
+    if (!rl.success) {
+      return NextResponse.json(
+        { error: "Muitas requisições de extração. Aguarde um minuto e tente novamente." },
+        { status: 429, headers: { "Retry-After": "60" } }
+      );
+    }
+
 
     const contentType = req.headers.get("content-type") || "";
     let fileBuffer: Buffer | null = null;
@@ -482,8 +491,7 @@ function parseCurrencyValue(raw: any): number | null {
     return NextResponse.json(
       {
         success: false,
-        error: error?.message || "Falha ao processar arquivo com IA",
-        details: String(error)
+        error: "Falha ao processar arquivo com IA. Verifique se o formato é suportado e tente novamente."
       },
       { status: 500 }
     );

@@ -164,11 +164,12 @@ const CARTEIRA_TRACKS = [
 ]
 
 export default function BussolaPage() {
-    const [tier, setTier] = useState<string>("Light")
+    const [tier, setTier] = useState<string>("Normal")
     const [itype, setItype] = useState<string>("Geral")
     const [riskPosition, setRiskPosition] = useState(50) // 0 to 100 (50 is Ritmo, exact center)
     const [clientProfile, setClientProfile] = useState<string>("RITMO")
     const [hasDiagnosedProfile, setHasDiagnosedProfile] = useState<boolean>(false)
+    const [timeHorizon, setTimeHorizon] = useState<12 | 24 | 36>(36)
 
     useEffect(() => {
         async function fetchProfile() {
@@ -548,7 +549,7 @@ export default function BussolaPage() {
         let cdiValue = 10000
 
         const historyLength = HISTORICAL_DATA.cdi ? HISTORICAL_DATA.cdi.length : 36;
-        const months = Math.min(36, historyLength);
+        const months = Math.min(timeHorizon, historyLength);
 
         const today = new Date()
         
@@ -612,7 +613,7 @@ export default function BussolaPage() {
         }
 
         return { chartData: data, realAnual: anual, realMes: mes, pctCdi: pct, calculatedVolatility: vol }
-    }, [activeAssets, riskPosition, cashTotal])
+    }, [activeAssets, riskPosition, cashTotal, timeHorizon])
 
     // Needle Angle: -90 (0%) to +90 (100%)
     const needleAngle = -90 + (riskPosition / 100) * 180
@@ -816,10 +817,30 @@ export default function BussolaPage() {
 
                     {/* GRÁFICO HISTÓRICO */}
                     <section className="bg-[#fffdf8]/90 border border-[#e4e0d7] rounded-[24px] p-6 shadow-[0_20px_50px_rgba(23,33,43,0.05)] overflow-hidden flex flex-col">
-                        <h2 className="text-lg font-bold text-[#123044] mb-2">Histórico Real de Desempenho (36 meses)</h2>
-                        <p className="text-xs text-[#667085] mb-6">Evolução real de <strong>R$ 10.000</strong> com base no histórico dos fundos que compõem a carteira atual versus CDI.</p>
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2">
+                            <div>
+                                <h2 className="text-lg font-bold text-[#123044]">Histórico Real de Desempenho ({timeHorizon} meses)</h2>
+                                <p className="text-xs text-[#667085] mt-0.5">Evolução real de <strong>R$ 10.000</strong> com base no histórico dos fundos que compõem a carteira atual versus CDI.</p>
+                            </div>
+                            <div className="inline-flex items-center gap-1 bg-[#f0ece1] p-1 rounded-xl border border-[#e4e0d7] self-start sm:self-auto shrink-0">
+                                {([12, 24, 36] as const).map((m) => (
+                                    <button
+                                        key={m}
+                                        type="button"
+                                        onClick={() => setTimeHorizon(m)}
+                                        className={`px-3 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                                            timeHorizon === m
+                                                ? "bg-white text-[#123044] shadow-xs"
+                                                : "text-[#667085] hover:text-[#123044]"
+                                        }`}
+                                    >
+                                        {m} meses
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
                         
-                        <div className="flex flex-wrap gap-4 mb-6 p-4 bg-white border border-[#e4e0d7] rounded-2xl">
+                        <div className="flex flex-wrap gap-4 my-4 p-4 bg-white border border-[#e4e0d7] rounded-2xl">
                             <div>
                                 <div className="text-[10px] font-bold text-[#667085] uppercase tracking-wider">Retorno Anual</div>
                                 <div className="text-xl font-extrabold tabular-nums text-[#123044] mt-1">{realAnual.toFixed(1)}%</div>
@@ -840,7 +861,7 @@ export default function BussolaPage() {
                             <ResponsiveContainer width="100%" height={260}>
                                 <LineChart data={chartData} margin={{ top: 5, right: 10, bottom: 5, left: 10 }}>
                                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e4e0d7" />
-                                    <XAxis dataKey="month" tick={{ fontSize: 10, fill: '#8d97a5' }} tickLine={false} axisLine={false} minTickGap={30} />
+                                    <XAxis dataKey="month" tick={{ fontSize: 10, fill: '#8d97a5' }} tickLine={false} axisLine={false} minTickGap={timeHorizon === 12 ? 15 : 30} />
                                     <YAxis tickFormatter={(val) => `R$ ${(val/1000).toFixed(1)}k`} tick={{ fontSize: 10, fill: '#8d97a5' }} tickLine={false} axisLine={false} domain={['dataMin - 500', 'auto']} />
                                     <Tooltip 
                                         formatter={(value) => [`R$ ${Number(value).toLocaleString('pt-BR')}`, '']}
@@ -871,7 +892,7 @@ export default function BussolaPage() {
                     <div className="border border-[#e4e0d7] rounded-2xl p-4 bg-white shadow-sm">
                         <div className="text-[10px] font-bold text-[#667085] uppercase tracking-wider">Retorno Anual (a.a.)</div>
                         <div className="text-2xl font-extrabold text-[#123044] mt-1">{formatDecimalPct(realAnual)}</div>
-                        <div className="text-[11px] text-[#667085] mt-0.5">histórico 36 meses</div>
+                        <div className="text-[11px] text-[#667085] mt-0.5">histórico {timeHorizon} meses</div>
                     </div>
                     <div className="border border-[#e4e0d7] rounded-2xl p-4 bg-white shadow-sm">
                         <div className="text-[10px] font-bold text-[#667085] uppercase tracking-wider">Volatilidade (Risco)</div>

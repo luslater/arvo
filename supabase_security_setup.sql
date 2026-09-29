@@ -1,34 +1,49 @@
--- 1. Criar um usuário dedicado para a aplicação (menos privilégios que o superusuário postgres)
--- Altere a senha abaixo para uma senha forte antes de rodar!
-CREATE ROLE app_user WITH LOGIN PASSWORD 'insira_uma_senha_forte_aqui';
+-- =====================================================================
+-- BLINDAGEM DE BANCO DE DADOS SUPABASE / POSTGRESQL (ARVO PLATFORM)
+-- =====================================================================
+-- O Prisma conecta diretamente ao PostgreSQL via pooler (porta 6543)
+-- como usuário 'postgres' (que possui BYPASSRLS por padrão).
+-- 
+-- Para proteger o banco contra vazamento via API REST pública do Supabase
+-- (PostgREST / anon key exposta no frontend), execute os comandos abaixo
+-- no SQL Editor do Dashboard do Supabase:
+-- =====================================================================
 
--- 2. Conceder permissão de conexão ao banco de dados
-GRANT CONNECT ON DATABASE postgres TO app_user;
+-- 1. HABILITAR ROW LEVEL SECURITY (RLS) EM TODAS AS TABELAS DO PRISMA
+-- Sem políticas para 'anon', qualquer chamada via PostgREST/anon key retornará vazio ou negado.
+-- O Prisma (como 'postgres') continuará lendo e escrevendo normalmente sem qualquer quebra!
 
--- 3. Conceder uso do schema público
-GRANT USAGE ON SCHEMA public TO app_user;
+ALTER TABLE IF EXISTS "User" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS "Profile" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS "Asset" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS "FinancialPlan" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS "Account" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS "Session" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS "UsedToken" ENABLE ROW LEVEL SECURITY;
 
--- 4. Conceder permissões apenas de leitura, escrita e exclusão nas tabelas do Prisma (Sem permissão de DROP TABLE ou ALTER)
-GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO app_user;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO app_user;
+-- 2. REVOGAR ACESSO DAS ROLES PÚBLICAS DO SUPABASE (anon e authenticated)
+-- Como o frontend da ARVO não consome o Supabase Client diretamente (tudo passa
+-- pelas rotas /api do Next.js via Prisma), as roles anon e authenticated NÃO
+-- precisam de permissão direta nas tabelas.
 
--- 5. Conceder acesso às sequências (necessário para auto-incremento de IDs e campos CUID/UUID gerados pelo banco)
-GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO app_user;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT USAGE, SELECT ON SEQUENCES TO app_user;
+REVOKE ALL ON ALL TABLES IN SCHEMA public FROM anon;
+REVOKE ALL ON ALL SEQUENCES IN SCHEMA public FROM anon;
 
----------------------------------------------------------------------
--- Opcional (Mas Recomendado contra IDOR/BOLA): Ativar RLS (Row Level Security)
--- Atenção: Ative o RLS apenas se o Prisma estiver configurado para fazer Bypass ou assumir o papel correto,
--- Do contrário, a API poderá não conseguir ler dados. Como o Prisma atualmente usa a mesma string de conexão para tudo, 
--- o RLS nativo do Postgres é mais difícil de implementar perfeitamente com Next.js+Prisma sem JWT customizado.
--- O passo de 'app_user' acima já reduz 90% do risco de vazamento catastrófico.
----------------------------------------------------------------------
+REVOKE ALL ON ALL TABLES IN SCHEMA public FROM authenticated;
+REVOKE ALL ON ALL SEQUENCES IN SCHEMA public FROM authenticated;
 
--- Exemplo de ativação de RLS na tabela User (Bloqueia tudo por padrão se a role não for superuser)
--- ALTER TABLE "User" ENABLE ROW LEVEL SECURITY;
--- ALTER TABLE "Profile" ENABLE ROW LEVEL SECURITY;
--- ALTER TABLE "Asset" ENABLE ROW LEVEL SECURITY;
--- ALTER TABLE "FinancialPlan" ENABLE ROW LEVEL SECURITY;
+-- Garante que futuras tabelas também não sejam concedidas automaticamente para anon
+ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE ALL ON TABLES FROM anon;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE ALL ON SEQUENCES FROM anon;
 
--- Política permissiva temporária para o Prisma (já que a lógica de autorização ocorre no código Next.js)
--- CREATE POLICY "Permitir leitura/escrita para app_user" ON "User" FOR ALL TO app_user USING (true) WITH CHECK (true);
+-- =====================================================================
+-- 3. (OPCIONAL/RECOMENDADO) USUÁRIO DEDICADO COM MENOS PRIVILÉGIOS (LEAST PRIVILEGE)
+-- Se desejar que a aplicação não use o superuser postgres:
+-- =====================================================================
+-- CREATE ROLE app_user WITH LOGIN PASSWORD 'insira_uma_senha_forte_aqui';
+-- GRANT CONNECT ON DATABASE postgres TO app_user;
+-- GRANT USAGE ON SCHEMA public TO app_user;
+-- GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO app_user;
+-- GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO app_user;
+-- ALTER TABLE "User" FORCE ROW LEVEL SECURITY;
+

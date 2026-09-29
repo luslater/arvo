@@ -135,25 +135,56 @@ body.light {
   color: var(--arvo-gray-900) !important;
 }
 
-.light h1,
-.light h2,
-.light h3,
-.light h4,
-.light h5,
-.light h6,
-.light p,
-.light span,
-.light label,
-.light div {
-  color: inherit;
+/* ─── GARANTIA GLOBAL DE ALTO CONTRASTE EM FUNDOS AZUIS E ESCUROS EM TODO O SITE ─── */
+.bg-\[\#123044\],
+.bg-\[\#0F2A3D\],
+.bg-\[\#1E3A5F\],
+.bg-\[\#0A192F\],
+.bg-\[\#0A0A0A\],
+.bg-dash-text,
+.bg-dash-blue,
+.bg-profundo,
+.bg-slate-900,
+.bg-slate-950,
+[data-theme="dark"] {
+  color: #FFFFFF !important;
 }
 
-/* Escada Patrimonial — dark island override
-   The .light rules force `color: inherit` on all elements, cascading from body's dark color.
-   We override the cascade root so `inherit` picks up a light color instead. */
-[data-theme="dark"] {
-  color: #e2e8f0 !important;
-  /* slate-200 base text color */
+/* Garante texto branco legível em containers azuis/escuros sem sobrescrever classes de cor explícitas */
+.bg-\[\#123044\] div:not([class*="text-"]):not([style*="color"]),
+.bg-\[\#123044\] span:not([class*="text-"]):not([style*="color"]),
+.bg-\[\#123044\] p:not([class*="text-"]):not([style*="color"]),
+.bg-\[\#123044\] h1:not([class*="text-"]):not([style*="color"]),
+.bg-\[\#123044\] h2:not([class*="text-"]):not([style*="color"]),
+.bg-\[\#123044\] h3:not([class*="text-"]):not([style*="color"]),
+.bg-\[\#123044\] h4:not([class*="text-"]):not([style*="color"]),
+.bg-\[\#123044\] strong:not([class*="text-"]):not([style*="color"]),
+.bg-\[\#0F2A3D\] div:not([class*="text-"]):not([style*="color"]),
+.bg-\[\#0F2A3D\] span:not([class*="text-"]):not([style*="color"]),
+.bg-\[\#0F2A3D\] p:not([class*="text-"]):not([style*="color"]),
+.bg-\[\#0F2A3D\] h1:not([class*="text-"]):not([style*="color"]),
+.bg-\[\#0F2A3D\] h2:not([class*="text-"]):not([style*="color"]),
+.bg-\[\#0F2A3D\] h3:not([class*="text-"]):not([style*="color"]),
+.bg-\[\#0F2A3D\] strong:not([class*="text-"]):not([style*="color"]),
+.bg-\[\#1E3A5F\] div:not([class*="text-"]):not([style*="color"]),
+.bg-\[\#1E3A5F\] span:not([class*="text-"]):not([style*="color"]),
+.bg-\[\#1E3A5F\] p:not([class*="text-"]):not([style*="color"]),
+.bg-\[\#0A192F\] div:not([class*="text-"]):not([style*="color"]),
+.bg-\[\#0A192F\] span:not([class*="text-"]):not([style*="color"]),
+.bg-\[\#0A192F\] p:not([class*="text-"]):not([style*="color"]) {
+  color: #FFFFFF;
+}
+
+/* Recharts Tooltips com contraste garantido */
+.recharts-default-tooltip {
+  border-radius: 12px !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25) !important;
+}
+.recharts-tooltip-label {
+  color: inherit !important;
+}
+.recharts-tooltip-item {
+  color: inherit !important;
 }
 
 [data-theme="dark"],

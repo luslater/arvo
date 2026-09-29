@@ -725,6 +725,8 @@ export function CalculadoraFinanciamento() {
                           color: "#fff",
                           fontSize: 13,
                         }}
+                        labelStyle={{ color: "#ffffff", fontWeight: 600 }}
+                        itemStyle={{ color: "#ffffff" }}
                       />
                       <Legend
                         wrapperStyle={{ fontSize: 12, color: "#9ca3af" }}
@@ -807,6 +809,8 @@ export function CalculadoraFinanciamento() {
                           color: "#fff",
                           fontSize: 13,
                         }}
+                        labelStyle={{ color: "#ffffff", fontWeight: 600 }}
+                        itemStyle={{ color: "#ffffff" }}
                       />
                       <Legend
                         wrapperStyle={{ fontSize: 12, color: "#9ca3af" }}
@@ -881,6 +885,8 @@ export function CalculadoraFinanciamento() {
                           color: "#fff",
                           fontSize: 13,
                         }}
+                        labelStyle={{ color: "#ffffff", fontWeight: 600 }}
+                        itemStyle={{ color: "#ffffff" }}
                       />
                       <Legend
                         wrapperStyle={{ fontSize: 12, color: "#9ca3af" }}

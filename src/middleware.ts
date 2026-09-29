@@ -38,12 +38,12 @@ export default withAuth(
         }
 
         // 4. Admin Route Protection
-        if (pathname.startsWith("/dashboard/admin") || pathname.startsWith("/api/admin")) {
-            // @ts-ignore
+        if (pathname.startsWith("/dashboard/admin") || pathname.startsWith("/admin") || pathname.startsWith("/api/admin")) {
             const userRole = token?.role || (token?.subscriptionStatus === "ADMIN" ? "ADMIN" : "USER")
-            // @ts-ignore
-            const isLucasAdmin = token?.email?.includes("lucas")
-            if (userRole !== "ADMIN" && !isLucasAdmin) {
+            if (userRole !== "ADMIN") {
+                if (pathname.startsWith("/api/")) {
+                    return NextResponse.json({ error: "Acesso negado. Requer perfil de administrador." }, { status: 403 })
+                }
                 return NextResponse.redirect(new URL("/dashboard", req.url))
             }
         }
@@ -73,7 +73,7 @@ export default withAuth(
                 ) {
                     return true
                 }
-                // All protected routes (dashboard, user APIs) require valid token
+                // All protected routes (dashboard, user APIs, admin) require valid token
                 return !!token
             },
         },
@@ -86,8 +86,10 @@ export default withAuth(
 export const config = {
     matcher: [
         "/dashboard/:path*",
+        "/admin/:path*",
         "/api/user/:path*",
         "/api/admin/:path*",
         "/pending",
     ],
 }
+

@@ -2,17 +2,28 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { jwtVerify } from 'jose'
 import bcrypt from 'bcrypt'
+import { rateLimit, getClientIp } from '@/lib/rate-limit'
 
 export async function POST(req: Request) {
     try {
+        const ip = getClientIp(req)
+        const rl = rateLimit('auth:reset-confirm', ip, 10, 15 * 60 * 1000)
+        if (!rl.success) {
+            return NextResponse.json(
+                { error: 'Muitas tentativas. Aguarde 15 minutos e tente novamente.' },
+                { status: 429, headers: { 'Retry-After': '900' } }
+            )
+        }
+
         const { token, password } = await req.json()
         if (!token || !password) {
             return NextResponse.json({ error: 'Token e nova senha são obrigatórios' }, { status: 400 })
         }
 
-        if (typeof password !== 'string' || password.length < 6) {
-            return NextResponse.json({ error: 'A senha deve ter no mínimo 6 caracteres.' }, { status: 400 })
+        if (typeof password !== 'string' || password.length < 8) {
+            return NextResponse.json({ error: 'A nova senha deve ter no mínimo 8 caracteres.' }, { status: 400 })
         }
+
 
         if (!process.env.NEXTAUTH_SECRET) {
             console.error('NEXTAUTH_SECRET não configurado — recusando validar token de reset de senha.')

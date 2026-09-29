@@ -31,6 +31,8 @@ import {
   ShoppingBag,
   Tv
 } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from "recharts";
 import { InvoiceImportModal } from "./invoice-import-modal";
 import { ExtractedInvoiceTransaction } from "@/app/api/extract/invoice/route";
 import Link from "next/link";
@@ -154,19 +156,34 @@ export const EXPENSE_GROUPS_DEF: ExpenseGroupDef[] = [
       { id: "eletro", label: "Eletrônicos e eletrodomésticos" },
       { id: "moveis", label: "Móveis e utensílios domésticos" }
     ]
+  }
+];
+
+export interface FinancialCommitmentDef {
+  id: string;
+  label: string;
+  sub: string;
+  defaultVar: number;
+}
+
+export const FINANCIAL_COMMITMENTS_DEF: FinancialCommitmentDef[] = [
+  {
+    id: "financiamento_imobiliario",
+    label: "Financiamento Imobiliário (Parcela Atual)",
+    sub: "Prestação mensal do imóvel",
+    defaultVar: 0.00
   },
   {
-    id: "dividas",
-    label: "Compromissos Financeiros & Dívidas",
-    icon: CreditCard,
-    color: "#EF4444",
-    desc: "Financiamentos, empréstimos e parcelamentos",
-    items: [
-      { id: "financiamento_imobiliario", label: "Parcela de financiamento imobiliário" },
-      { id: "financiamento_veiculo", label: "Parcela de financiamento de veículo" },
-      { id: "emprestimo_consignado", label: "Empréstimo consignado ou pessoal" },
-      { id: "fatura_cartao_parcelas", label: "Parcelamentos no cartão de crédito / rotativo" }
-    ]
+    id: "financiamento_veicular",
+    label: "Financiamento Veicular / Consórcio",
+    sub: "Parcela mensal de automóvel ou moto",
+    defaultVar: 0.00
+  },
+  {
+    id: "outros_emprestimos",
+    label: "Empréstimos e Parcelamentos Financeiros",
+    sub: "Crédito pessoal, consignado ou dívidas parceladas",
+    defaultVar: 0.00
   }
 ];
 
@@ -211,12 +228,16 @@ const IBGE_RATES: Record<string, number> = {
 };
 
 export function RaioXFluxoCaixa({ formData, onChange, onBulkChange }: RaioXFluxoCaixaProps) {
-  const [activeTab, setActiveTab] = useState<"entradas" | "gastos" | "alertas" | "inflacao">("entradas");
+  const [activeTab, setActiveTab] = useState<"entradas" | "gastos" | "alertas">("entradas");
   const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
+  const { data: session } = useSession();
+  const userEmail = session?.user?.email;
+  const storageKey = userEmail ? `arvo_inflacao_real_v2_${userEmail}` : "arvo_inflacao_real_v2_guest";
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
     habitacao: true,
     alimentacao: true,
-    transportes: true
+    transportes: true,
+    compromissos: true
   });
 
   const parseNum = (val?: string | number): number => {
@@ -235,6 +256,35 @@ export function RaioXFluxoCaixa({ formData, onChange, onBulkChange }: RaioXFluxo
     if (!clean) return "";
     const num = parseInt(clean, 10) / 100;
     return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(num);
+  };
+
+  const parseCommitmentNum = (val?: string | number): number => {
+    if (!val) return 0;
+    if (typeof val === "number") return val;
+    const str = String(val).trim();
+    if (!str) return 0;
+
+    if (str.includes("R$")) {
+      const clean = str.replace(/\D/g, "");
+      return clean ? parseInt(clean, 10) / 100 : 0;
+    }
+
+    if (str.includes(",")) {
+      const normalized = str.replace(/\./g, "").replace(",", ".");
+      const num = parseFloat(normalized);
+      return isFinite(num) ? num : 0;
+    }
+
+    const num = parseFloat(str.replace(/[^\d.]/g, ""));
+    return isFinite(num) ? num : 0;
+  };
+
+  const parseReajusteNum = (val?: string | number): number => {
+    if (!val) return 0;
+    if (typeof val === "number") return val;
+    const str = String(val).trim().replace("%", "").replace(",", ".");
+    const num = parseFloat(str);
+    return isFinite(num) ? num : 0;
   };
 
   // ─── 1. CÁLCULO DAS ENTRADAS CLASSIFICADAS ──────────────────────────────────
@@ -300,7 +350,7 @@ export function RaioXFluxoCaixa({ formData, onChange, onBulkChange }: RaioXFluxo
 
     // Gastos customizados adicionais
     let customTotal = 0;
-    let customList: Array<{ id: string; name: string; value: string }> = [];
+    let customList: Array<{ id: string; name: string; value: string; reajuste?: string }> = [];
     if (formData.customExpensesJson) {
       try {
         const parsed = JSON.parse(formData.customExpensesJson);
@@ -320,7 +370,6 @@ export function RaioXFluxoCaixa({ formData, onChange, onBulkChange }: RaioXFluxo
         parseNum(formData.gastoAlimentacao) +
         parseNum(formData.gastoTransporte) +
         parseNum(formData.gastoSaude) +
-        parseNum(formData.parcelasDividas) +
         customTotal;
       if (legacyTotal > 0) {
         finalTotal = legacyTotal;
@@ -337,16 +386,249 @@ export function RaioXFluxoCaixa({ formData, onChange, onBulkChange }: RaioXFluxo
     };
   }, [formData]);
 
+  // ─── 2.1 COMPROMISSOS FINANCEIROS (FINANCIAMENTOS & DÍVIDAS) ───────────────
+  const financialCommitments = useMemo(() => {
+    const imobVal = parseCommitmentNum(
+      formData.financiamento_imobiliario || formData.gasto_financiamento_imobiliario
+    );
+    const imobAdj = parseReajusteNum(formData.reajuste_financiamento_imobiliario);
+
+    const veicVal = parseCommitmentNum(
+      formData.financiamento_veicular || formData.gasto_financiamento_veiculo
+    );
+    const veicAdj = parseReajusteNum(formData.reajuste_financiamento_veicular);
+
+    const outrosVal = parseCommitmentNum(
+      formData.outros_emprestimos ||
+      formData.gasto_emprestimo_consignado ||
+      formData.gasto_fatura_cartao_parcelas
+    );
+    const outrosAdj = parseReajusteNum(formData.reajuste_outros_emprestimos);
+
+    const total = imobVal + veicVal + outrosVal;
+
+    return {
+      imobVal,
+      imobAdj,
+      veicVal,
+      veicAdj,
+      outrosVal,
+      outrosAdj,
+      total,
+      items: [
+        {
+          id: "financiamento_imobiliario",
+          label: "Financiamento Imobiliário (Parcela Atual)",
+          sub: "Prestação mensal do imóvel",
+          value: imobVal,
+          rate: imobAdj,
+          rawVal: formData.financiamento_imobiliario ?? (imobVal > 0 ? String(imobVal) : ""),
+          rawAdj: formData.reajuste_financiamento_imobiliario ?? "0,0%"
+        },
+        {
+          id: "financiamento_veicular",
+          label: "Financiamento Veicular / Consórcio",
+          sub: "Parcela mensal de automóvel ou moto",
+          value: veicVal,
+          rate: veicAdj,
+          rawVal: formData.financiamento_veicular ?? (veicVal > 0 ? String(veicVal) : ""),
+          rawAdj: formData.reajuste_financiamento_veicular ?? "0,0%"
+        },
+        {
+          id: "outros_emprestimos",
+          label: "Empréstimos e Parcelamentos Financeiros",
+          sub: "Crédito pessoal, consignado ou dívidas parceladas",
+          value: outrosVal,
+          rate: outrosAdj,
+          rawVal: formData.outros_emprestimos ?? (outrosVal > 0 ? String(outrosVal) : ""),
+          rawAdj: formData.reajuste_outros_emprestimos ?? "0,0%"
+        }
+      ]
+    };
+  }, [
+    formData.financiamento_imobiliario,
+    formData.gasto_financiamento_imobiliario,
+    formData.reajuste_financiamento_imobiliario,
+    formData.financiamento_veicular,
+    formData.gasto_financiamento_veiculo,
+    formData.reajuste_financiamento_veicular,
+    formData.outros_emprestimos,
+    formData.gasto_emprestimo_consignado,
+    formData.gasto_fatura_cartao_parcelas,
+    formData.reajuste_outros_emprestimos
+  ]);
+
   // Sincroniza dados agregados com as chaves globais da Jornada e Perfil
   useEffect(() => {
     if (incomeDetails.total > 0 && !formData.salarioLiquido) {
       onChange("salarioLiquido", formatBRL(incomeDetails.total));
     }
-  }, [incomeDetails.total]);
+  }, [incomeDetails.total, formData.salarioLiquido, onChange]);
+
+  // Carrega compromissos previamente preenchidos na Calculadora de Inflação Real se houver
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const localData = localStorage.getItem(storageKey);
+        if (localData && onBulkChange) {
+          const parsed = JSON.parse(localData);
+          const updates: Record<string, string> = {};
+          if (parsed.financialValues) {
+            if (parsed.financialValues.financiamento_imobiliario && !formData.financiamento_imobiliario) {
+              updates["financiamento_imobiliario"] = String(parsed.financialValues.financiamento_imobiliario);
+            }
+            if (parsed.financialValues.financiamento_veicular && !formData.financiamento_veicular) {
+              updates["financiamento_veicular"] = String(parsed.financialValues.financiamento_veicular);
+            }
+            if (parsed.financialValues.outros_emprestimos && !formData.outros_emprestimos) {
+              updates["outros_emprestimos"] = String(parsed.financialValues.outros_emprestimos);
+            }
+          }
+          if (parsed.financialAdjustments) {
+            if (parsed.financialAdjustments.financiamento_imobiliario && !formData.reajuste_financiamento_imobiliario) {
+              updates["reajuste_financiamento_imobiliario"] = parsed.financialAdjustments.financiamento_imobiliario;
+            }
+            if (parsed.financialAdjustments.financiamento_veicular && !formData.reajuste_financiamento_veicular) {
+              updates["reajuste_financiamento_veicular"] = parsed.financialAdjustments.financiamento_veicular;
+            }
+            if (parsed.financialAdjustments.outros_emprestimos && !formData.reajuste_outros_emprestimos) {
+              updates["reajuste_outros_emprestimos"] = parsed.financialAdjustments.outros_emprestimos;
+            }
+          }
+          if (Object.keys(updates).length > 0) {
+            onBulkChange(updates);
+          }
+        }
+      } catch (e) {}
+    }
+  }, []);
+
+  // Sincroniza dados da cesta e compromissos com o localStorage da Calculadora de Inflação Real
+  useEffect(() => {
+    if (typeof window !== "undefined" && (expenseDetails.totalDetailed > 0 || financialCommitments.total > 0)) {
+      try {
+        const rawValues: Record<string, number> = {};
+        Object.entries(expenseDetails.byItem).forEach(([k, v]) => {
+          if (v > 0) rawValues[k] = v;
+        });
+
+        const financialValues: Record<string, string> = {};
+        if (financialCommitments.imobVal > 0) financialValues["financiamento_imobiliario"] = String(financialCommitments.imobVal);
+        if (financialCommitments.veicVal > 0) financialValues["financiamento_veicular"] = String(financialCommitments.veicVal);
+        if (financialCommitments.outrosVal > 0) financialValues["outros_emprestimos"] = String(financialCommitments.outrosVal);
+
+        const financialAdjustments: Record<string, string> = {
+          financiamento_imobiliario: formData.reajuste_financiamento_imobiliario || "0,0%",
+          financiamento_veicular: formData.reajuste_financiamento_veicular || "0,0%",
+          outros_emprestimos: formData.reajuste_outros_emprestimos || "0,0%"
+        };
+
+        const currentSaved = localStorage.getItem(storageKey);
+        const parsed = currentSaved ? JSON.parse(currentSaved) : {};
+        
+        const newPayload = {
+          ...parsed,
+          rawValues: { ...(parsed.rawValues || {}), ...rawValues },
+          financialValues: { ...(parsed.financialValues || {}), ...financialValues },
+          financialAdjustments: { ...(parsed.financialAdjustments || {}), ...financialAdjustments },
+          lastUpdated: new Date().toISOString()
+        };
+
+        const newStr = JSON.stringify({ rawValues, financialValues, financialAdjustments });
+        const oldStr = JSON.stringify({
+          rawValues: parsed.rawValues || {},
+          financialValues: parsed.financialValues || {},
+          financialAdjustments: parsed.financialAdjustments || {}
+        });
+
+        if (newStr !== oldStr) {
+          localStorage.setItem(storageKey, JSON.stringify(newPayload));
+        }
+      } catch (e) {}
+    }
+  }, [
+    expenseDetails.totalDetailed,
+    financialCommitments.total,
+    financialCommitments.imobVal,
+    financialCommitments.veicVal,
+    financialCommitments.outrosVal,
+    formData.reajuste_financiamento_imobiliario,
+    formData.reajuste_financiamento_veicular,
+    formData.reajuste_outros_emprestimos,
+    storageKey
+  ]);
+
+  // Sincroniza totais das categorias com as chaves gerais da Jornada (Plano ARVO)
+  useEffect(() => {
+    if (!onBulkChange || (expenseDetails.totalDetailed === 0 && financialCommitments.total === 0)) return;
+
+    const updates: Record<string, string> = {};
+
+    const habitacaoVal = expenseDetails.byGroup["habitacao"] || 0;
+    if (habitacaoVal > 0) {
+      const formatted = formatBRL(habitacaoVal);
+      if (formData.gastoMoradia !== formatted) {
+        updates["gastoMoradia"] = formatted;
+      }
+    }
+
+    const alimentacaoVal = expenseDetails.byGroup["alimentacao"] || 0;
+    if (alimentacaoVal > 0) {
+      const formatted = formatBRL(alimentacaoVal);
+      if (formData.gastoAlimentacao !== formatted) {
+        updates["gastoAlimentacao"] = formatted;
+      }
+    }
+
+    const transportesVal = expenseDetails.byGroup["transportes"] || 0;
+    if (transportesVal > 0) {
+      const formatted = formatBRL(transportesVal);
+      if (formData.gastoTransporte !== formatted) {
+        updates["gastoTransporte"] = formatted;
+      }
+    }
+
+    const saudeVal = expenseDetails.byGroup["saude"] || 0;
+    if (saudeVal > 0) {
+      const formatted = formatBRL(saudeVal);
+      if (formData.gastoSaude !== formatted) {
+        updates["gastoSaude"] = formatted;
+      }
+    }
+
+    const dividasVal = financialCommitments.total;
+    if (dividasVal > 0) {
+      const formatted = formatBRL(dividasVal);
+      if (formData.parcelasDividas !== formatted) {
+        updates["parcelasDividas"] = formatted;
+      }
+      if (formData.possuiDividas !== "Sim, possuo") {
+        updates["possuiDividas"] = "Sim, possuo";
+      }
+    }
+
+    if (Object.keys(updates).length > 0) {
+      onBulkChange(updates);
+    }
+  }, [
+    expenseDetails.totalDetailed,
+    expenseDetails.byGroup.habitacao,
+    expenseDetails.byGroup.alimentacao,
+    expenseDetails.byGroup.transportes,
+    expenseDetails.byGroup.saude,
+    financialCommitments.total,
+    formData.gastoMoradia,
+    formData.gastoAlimentacao,
+    formData.gastoTransporte,
+    formData.gastoSaude,
+    formData.parcelasDividas,
+    formData.possuiDividas,
+    onBulkChange
+  ]);
 
   // ─── 3. CAPACIDADE DE APORTE E INDICADORES DE CONTROLE ────────────────────────
   const totalIncomes = incomeDetails.total;
-  const totalExpenses = expenseDetails.total;
+  const totalExpenses = expenseDetails.total + financialCommitments.total;
   const monthlySavings = Math.max(0, totalIncomes - totalExpenses);
   const savingsRate = totalIncomes > 0 ? (monthlySavings / totalIncomes) * 100 : 0;
 
@@ -364,7 +646,9 @@ export function RaioXFluxoCaixa({ formData, onChange, onBulkChange }: RaioXFluxo
     (expenseDetails.byGroup["saude"] || 0) +
     (expenseDetails.byItem["combustivel"] || 0) +
     (expenseDetails.byItem["onibus"] || 0) +
-    (expenseDetails.byItem["mensalidade"] || 0);
+    (expenseDetails.byItem["mensalidade"] || 0) +
+    financialCommitments.imobVal +
+    financialCommitments.veicVal;
 
   const lifestyleExpenses = Math.max(0, totalExpenses - essentialExpenses);
   const essentialPct = totalIncomes > 0 ? (essentialExpenses / totalIncomes) * 100 : 0;
@@ -398,14 +682,14 @@ export function RaioXFluxoCaixa({ formData, onChange, onBulkChange }: RaioXFluxo
       });
     }
 
-    // Alerta Dívidas
-    const debtTotal = expenseDetails.byGroup["dividas"] || parseNum(formData.parcelasDividas);
+    // Alerta Dívidas / Financiamentos
+    const debtTotal = financialCommitments.total || parseNum(formData.parcelasDividas);
     const debtPct = totalIncomes > 0 ? (debtTotal / totalIncomes) * 100 : 0;
     if (debtPct > 20) {
       list.push({
         type: "danger",
         title: "Pressão Crítica de Dívidas / Financiamentos",
-        desc: `Dívidas consom ${debtPct.toFixed(1)}% do seu fluxo mensal. Priorize amortizações extraordinárias antes de alocações de risco.`,
+        desc: `Compromissos financeiros consom ${debtPct.toFixed(1)}% do seu fluxo mensal. Priorize amortizações extraordinárias antes de alocações de risco.`,
         metric: `${debtPct.toFixed(1)}% da renda`
       });
     }
@@ -479,20 +763,24 @@ export function RaioXFluxoCaixa({ formData, onChange, onBulkChange }: RaioXFluxo
     }
 
     return list;
-  }, [totalIncomes, totalExpenses, expenseDetails, reserveMonthsCoverage, recommendedMonths, targetReserve, currentReserve, savingsRate, formData.tipoVinculo]);
+  }, [totalIncomes, totalExpenses, expenseDetails, financialCommitments, reserveMonthsCoverage, recommendedMonths, targetReserve, currentReserve, savingsRate, formData.tipoVinculo]);
 
-  // ─── 5. CÁLCULO EMBUTIDO DA INFLAÇÃO PESSOAL DA CESTA ─────────────────────────
+  // ─── 5. CÁLCULO EMBUTIDO DA INFLAÇÃO PESSOAL DA CESTA & COMPROMISSOS ──────────
   const personalInflationMetrics = useMemo(() => {
-    let totalExpenseBasket = 0;
-    let weightedInflationSum = 0;
+    let costCurrent = 0;
+    let costInitial = 0;
     const itemBreakdown: Array<{ id: string; label: string; expense: number; weightPct: number; ratePct: number; impact: number }> = [];
 
+    // 1. Cesta de Consumo (Itens dos Grupos)
     EXPENSE_GROUPS_DEF.forEach((group) => {
       group.items.forEach((item) => {
         const val = expenseDetails.byItem[item.id] || 0;
         if (val > 0) {
-          totalExpenseBasket += val;
+          costCurrent += val;
           const rate = IBGE_RATES[item.id] ?? 4.50;
+          const valInitial = val / (1 + rate / 100);
+          costInitial += valInitial;
+
           itemBreakdown.push({
             id: item.id,
             label: item.label,
@@ -505,29 +793,142 @@ export function RaioXFluxoCaixa({ formData, onChange, onBulkChange }: RaioXFluxo
       });
     });
 
-    if (totalExpenseBasket > 0) {
+    // 2. Compromissos Financeiros (Financiamentos e parcelas)
+    financialCommitments.items.forEach((fc) => {
+      if (fc.value > 0) {
+        costCurrent += fc.value;
+        const rateDecimal = fc.rate / 100;
+        const valInitial = fc.value / (1 + rateDecimal);
+        costInitial += valInitial;
+
+        itemBreakdown.push({
+          id: fc.id,
+          label: fc.label,
+          expense: fc.value,
+          weightPct: 0,
+          ratePct: fc.rate,
+          impact: 0
+        });
+      }
+    });
+
+    // 3. Outros Gastos Específicos Livres (com reajuste customizado ou IPCA padrão)
+    expenseDetails.customList.forEach((item) => {
+      const val = parseNum(item.value);
+      if (val > 0) {
+        costCurrent += val;
+        const rate = (item.reajuste && item.reajuste.trim() !== "") ? parseReajusteNum(item.reajuste) : 4.50;
+        const rateDecimal = rate / 100;
+        const valInitial = val / (1 + rateDecimal);
+        costInitial += valInitial;
+
+        itemBreakdown.push({
+          id: `custom_${item.id}`,
+          label: item.name ? `Outro: ${item.name}` : "Outro Gasto Livre",
+          expense: val,
+          weightPct: 0,
+          ratePct: rate,
+          impact: 0
+        });
+      }
+    });
+
+    let personalRate = 0;
+    if (costInitial > 0) {
+      personalRate = ((costCurrent - costInitial) / costInitial) * 100;
+    }
+
+    if (costCurrent > 0) {
       itemBreakdown.forEach((it) => {
-        it.weightPct = (it.expense / totalExpenseBasket) * 100;
+        it.weightPct = (it.expense / costCurrent) * 100;
         it.impact = (it.weightPct * it.ratePct) / 100;
-        weightedInflationSum += it.impact;
       });
     }
 
     itemBreakdown.sort((a, b) => b.impact - a.impact);
     const topVillains = itemBreakdown.slice(0, 3);
     const ipcaBenchmark = 4.50;
-    const diffIpca = weightedInflationSum - ipcaBenchmark;
+    const diffIpca = personalRate - ipcaBenchmark;
 
     return {
-      personalRate: weightedInflationSum,
+      personalRate,
       ipcaBenchmark,
       diffIpca,
       topVillains,
-      hasData: totalExpenseBasket > 0
+      hasData: costCurrent > 0
     };
-  }, [expenseDetails]);
+  }, [expenseDetails, financialCommitments]);
+
+  // ─── DADOS DO GRÁFICO PIZZA / ROSCA DE GASTOS ──────────────────────────────
+  const expensePieData = useMemo(() => {
+    const list: Array<{ id: string; name: string; value: number; color: string; pct: number }> = [];
+    
+    EXPENSE_GROUPS_DEF.forEach((group) => {
+      const val = expenseDetails.byGroup[group.id] || 0;
+      if (val > 0) {
+        list.push({
+          id: group.id,
+          name: group.label,
+          value: val,
+          color: group.color,
+          pct: totalExpenses > 0 ? (val / totalExpenses) * 100 : 0
+        });
+      }
+    });
+
+    // Compromissos Financeiros / Financiamentos
+    if (financialCommitments.imobVal > 0) {
+      list.push({
+        id: "fin_imob",
+        name: "Financ. Imobiliário",
+        value: financialCommitments.imobVal,
+        color: "#D97706",
+        pct: totalExpenses > 0 ? (financialCommitments.imobVal / totalExpenses) * 100 : 0
+      });
+    }
+    if (financialCommitments.veicVal > 0) {
+      list.push({
+        id: "fin_veic",
+        name: "Financ. Veicular / Consórcio",
+        value: financialCommitments.veicVal,
+        color: "#EA580C",
+        pct: totalExpenses > 0 ? (financialCommitments.veicVal / totalExpenses) * 100 : 0
+      });
+    }
+    if (financialCommitments.outrosVal > 0) {
+      list.push({
+        id: "fin_outros",
+        name: "Empréstimos / Parcelamentos",
+        value: financialCommitments.outrosVal,
+        color: "#EF4444",
+        pct: totalExpenses > 0 ? (financialCommitments.outrosVal / totalExpenses) * 100 : 0
+      });
+    }
+
+    if (expenseDetails.customTotal > 0) {
+      list.push({
+        id: "custom",
+        name: "Outros Gastos Específicos",
+        value: expenseDetails.customTotal,
+        color: "#8A9A86",
+        pct: totalExpenses > 0 ? (expenseDetails.customTotal / totalExpenses) * 100 : 0
+      });
+    }
+
+    return list;
+  }, [expenseDetails, financialCommitments, totalExpenses]);
 
   // ─── HANDLERS DE AÇÃO ───────────────────────────────────────────────────────
+  const handleCommitmentChange = (id: string, val: string) => {
+    onChange(id, val);
+    if (id === "financiamento_imobiliario") {
+      onChange("gasto_financiamento_imobiliario", val ? formatBRL(parseCommitmentNum(val)) : "");
+    } else if (id === "financiamento_veicular") {
+      onChange("gasto_financiamento_veiculo", val ? formatBRL(parseCommitmentNum(val)) : "");
+    } else if (id === "outros_emprestimos") {
+      onChange("gasto_emprestimo_consignado", val ? formatBRL(parseCommitmentNum(val)) : "");
+    }
+  };
   const toggleGroup = (groupId: string) => {
     setOpenGroups((prev) => ({ ...prev, [groupId]: !prev[groupId] }));
   };
@@ -553,12 +954,16 @@ export function RaioXFluxoCaixa({ formData, onChange, onBulkChange }: RaioXFluxo
 
   // Custom Expenses Handlers
   const handleAddCustomExpense = () => {
-    const newItem = { id: Date.now().toString(), name: "", value: "" };
+    const newItem = { id: Date.now().toString(), name: "", value: "", reajuste: "" };
     const nextList = [...expenseDetails.customList, newItem];
     onChange("customExpensesJson", JSON.stringify(nextList));
   };
 
-  const handleUpdateCustomExpense = (id: string, key: "name" | "value", val: string) => {
+  const handleUpdateCustomExpense = (
+    id: string,
+    key: "name" | "value" | "reajuste",
+    val: string
+  ) => {
     const nextList = expenseDetails.customList.map((item) =>
       item.id === id ? { ...item, [key]: val } : item
     );
@@ -590,6 +995,10 @@ export function RaioXFluxoCaixa({ formData, onChange, onBulkChange }: RaioXFluxo
     if (categoryTotals["saude"]) {
       const cur = parseNum(formData.gasto_remedios) || 0;
       updates["gasto_remedios"] = formatBRL(cur + categoryTotals["saude"]);
+    }
+    if (categoryTotals["educacao"]) {
+      const cur = parseNum(formData.gasto_cursos) || 0;
+      updates["gasto_cursos"] = formatBRL(cur + categoryTotals["educacao"]);
     }
     if (categoryTotals["comunicacao"]) {
       const cur = parseNum(formData.gasto_streaming) || 0;
@@ -646,7 +1055,7 @@ export function RaioXFluxoCaixa({ formData, onChange, onBulkChange }: RaioXFluxo
           </div>
         </button>
 
-        {/* Gastos */}
+        {/* Gastos & Inflação */}
         <button
           type="button"
           onClick={() => setActiveTab("gastos")}
@@ -657,7 +1066,7 @@ export function RaioXFluxoCaixa({ formData, onChange, onBulkChange }: RaioXFluxo
           }`}
         >
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[10px] font-bold text-[#667085] uppercase tracking-wider">Gastos Mensais</span>
+            <span className="text-[10px] font-bold text-[#667085] uppercase tracking-wider">Gastos & Inflação</span>
             <span className="p-1.5 rounded-lg bg-rose-50 text-rose-600">
               <ArrowDownRight className="w-3.5 h-3.5" />
             </span>
@@ -666,7 +1075,11 @@ export function RaioXFluxoCaixa({ formData, onChange, onBulkChange }: RaioXFluxo
             {formatBRL(totalExpenses)}
           </div>
           <div className="text-[11px] text-[#667085] mt-1">
-            {totalIncomes > 0 ? `${((totalExpenses / totalIncomes) * 100).toFixed(0)}% da renda` : "Custo de vida total"}
+            {personalInflationMetrics.hasData
+              ? `Inflação pessoal: ${personalInflationMetrics.personalRate.toFixed(2)}% a.a.`
+              : totalIncomes > 0
+              ? `${((totalExpenses / totalIncomes) * 100).toFixed(0)}% da renda`
+              : "Custo de vida total"}
           </div>
         </button>
 
@@ -760,7 +1173,7 @@ export function RaioXFluxoCaixa({ formData, onChange, onBulkChange }: RaioXFluxo
           </button>
 
 
-          {/* Passo 2: Gastos */}
+          {/* Passo 2: Gastos & Inflação */}
           <button
             type="button"
             onClick={() => setActiveTab("gastos")}
@@ -782,10 +1195,12 @@ export function RaioXFluxoCaixa({ formData, onChange, onBulkChange }: RaioXFluxo
               </div>
               <div className="min-w-0">
                 <div className="text-xs font-bold truncate" style={{ color: activeTab === "gastos" ? "#1f674f" : "#123044" }}>
-                  Gastos
+                  Gastos & Inflação
                 </div>
                 <div className="text-[10px] text-[#667085] font-semibold tabular-nums mt-0.5">
-                  {totalExpenses > 0 ? formatBRL(totalExpenses) : "Não preenchido"}
+                  {totalExpenses > 0
+                    ? `${formatBRL(totalExpenses)} · ${personalInflationMetrics.personalRate.toFixed(1)}%`
+                    : "Cesta & Inflação"}
                 </div>
               </div>
             </div>
@@ -803,18 +1218,13 @@ export function RaioXFluxoCaixa({ formData, onChange, onBulkChange }: RaioXFluxo
           >
             <div className="flex items-center gap-2.5">
               <div
-                className="w-7 h-7 rounded-xl flex items-center justify-center text-xs font-black shrink-0 transition-all relative"
+                className="w-7 h-7 rounded-xl flex items-center justify-center text-xs font-black shrink-0 transition-all"
                 style={{
                   background: activeTab === "alertas" ? "#1f674f" : "#f0ece1",
                   color: activeTab === "alertas" ? "#ffffff" : "#1d2939"
                 }}
               >
                 3
-                {alerts.filter(a => a.type === "danger" || a.type === "warning").length > 0 && (
-                  <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-amber-500 text-white text-[8px] font-extrabold flex items-center justify-center">
-                    {alerts.filter(a => a.type === "danger" || a.type === "warning").length}
-                  </span>
-                )}
               </div>
               <div className="min-w-0">
                 <div className="text-xs font-bold truncate" style={{ color: activeTab === "alertas" ? "#1f674f" : "#123044" }}>
@@ -824,39 +1234,6 @@ export function RaioXFluxoCaixa({ formData, onChange, onBulkChange }: RaioXFluxo
                   {totalIncomes > 0
                     ? `${savingsRate.toFixed(0)}% poupado`
                     : "Alertas e análise"}
-                </div>
-              </div>
-            </div>
-          </button>
-
-          {/* Passo 4: Minha Inflação Real */}
-          <button
-            type="button"
-            onClick={() => setActiveTab("inflacao")}
-            className={`w-full text-left px-4 py-4 border-b border-[#e4e0d7] transition-all cursor-pointer group ${
-              activeTab === "inflacao"
-                ? "bg-white border-l-2 border-l-[#1f674f]"
-                : "hover:bg-[#f0ece1]/50 border-l-2 border-l-transparent"
-            }`}
-          >
-            <div className="flex items-center gap-2.5">
-              <div
-                className="w-7 h-7 rounded-xl flex items-center justify-center text-xs font-black shrink-0 transition-all"
-                style={{
-                  background: activeTab === "inflacao" ? "#1f674f" : "#f0ece1",
-                  color: activeTab === "inflacao" ? "#ffffff" : "#1d2939"
-                }}
-              >
-                4
-              </div>
-              <div className="min-w-0">
-                <div className="text-xs font-bold truncate" style={{ color: activeTab === "inflacao" ? "#1f674f" : "#123044" }}>
-                  Inflação Real
-                </div>
-                <div className="text-[10px] text-[#667085] font-semibold mt-0.5">
-                  {personalInflationMetrics.hasData
-                    ? `${personalInflationMetrics.personalRate.toFixed(1)}% a.a.`
-                    : "Preencha gastos"}
                 </div>
               </div>
             </div>
@@ -1119,7 +1496,7 @@ export function RaioXFluxoCaixa({ formData, onChange, onBulkChange }: RaioXFluxo
                     Cesta Completa de Gastos Mensais
                   </h4>
                   <p className="text-xs text-[#667085] mt-0.5">
-                    Organizada nos 9 grupos oficiais. Cada valor informado aqui calibra simultaneamente seu orçamento e sua Calculadora de Inflação Real.
+                    Organizada por grupos da cesta de consumo e compromissos financeiros. Cada valor informado aqui calibra simultaneamente seu orçamento e sua Calculadora de Inflação Real.
                   </p>
                 </div>
                 <button
@@ -1208,48 +1585,6 @@ export function RaioXFluxoCaixa({ formData, onChange, onBulkChange }: RaioXFluxo
                             ))}
                           </div>
 
-                          {group.id === "dividas" && (
-                            <div className="mt-4 pt-4 border-t border-[#f0ece1] grid sm:grid-cols-2 gap-3">
-                              <div className="space-y-1">
-                                <label className="text-[11px] font-bold text-[#123044] block">
-                                  Saldo Devedor Total Acumulado (para quitação hoje)
-                                </label>
-                                <input
-                                  type="text"
-                                  inputMode="numeric"
-                                  placeholder="R$ 0,00"
-                                  value={formData.totalDividas || ""}
-                                  onChange={(e) => {
-                                    const val = formatCurrencyInput(e.target.value);
-                                    onChange("totalDividas", val);
-                                    onChange("possuiDividas", val && val !== "R$ 0,00" ? "Sim, possuo" : "Não possuo dívidas");
-                                  }}
-                                  className="w-full bg-white border border-[#e4e0d7] rounded-xl px-3 py-2 text-xs text-[#123044] font-semibold focus:outline-none focus:border-[#1f674f] tabular-nums"
-                                />
-                                <span className="text-[10px] text-[#667085] block">Montante total devedor para quitar passivos.</span>
-                              </div>
-
-                              <div className="space-y-1">
-                                <label className="text-[11px] font-bold text-[#123044] block">
-                                  Tipo Principal de Dívida / Financiamento
-                                </label>
-                                <select
-                                  value={formData.tipoDivida || ""}
-                                  onChange={(e) => onChange("tipoDivida", e.target.value)}
-                                  className="w-full bg-white border border-[#e4e0d7] rounded-xl px-3 py-2 text-xs text-[#123044] font-semibold focus:outline-none focus:border-[#1f674f]"
-                                >
-                                  <option value="">Selecione uma opção...</option>
-                                  <option value="Financiamento Imobiliário">Financiamento Imobiliário</option>
-                                  <option value="Financiamento de Veículo">Financiamento de Veículo</option>
-                                  <option value="Empréstimo Consignado">Empréstimo Consignado</option>
-                                  <option value="Cartão de Crédito / Rotativo">Cartão de Crédito / Rotativo</option>
-                                  <option value="Empréstimo Pessoal">Empréstimo Pessoal</option>
-                                  <option value="Outro">Outro tipo de dívida</option>
-                                </select>
-                                <span className="text-[10px] text-[#667085] block">Identifica a taxa média de juros e prioridade de quitação.</span>
-                              </div>
-                            </div>
-                          )}
                         </div>
                       )}
                     </div>
@@ -1257,45 +1592,180 @@ export function RaioXFluxoCaixa({ formData, onChange, onBulkChange }: RaioXFluxo
                 })}
               </div>
 
+              {/* ── SEÇÃO: COMPROMISSOS FINANCEIROS (FINANCIAMENTOS & DÍVIDAS) ── */}
+              {(() => {
+                const isCommitmentsOpen = !!openGroups["compromissos"];
+                return (
+                  <div className="bg-white border border-[#e4e0d7] rounded-2xl overflow-hidden shadow-xs transition-all">
+                    {/* Header com toggle */}
+                    <div
+                      onClick={() => toggleGroup("compromissos")}
+                      className="px-5 py-3.5 flex items-center justify-between cursor-pointer hover:bg-slate-50/70 transition-colors"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div
+                          className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 border transition-all ${
+                            isCommitmentsOpen
+                              ? "bg-[#e8f1ed] text-[#1f674f] border-[#1f674f]/30 shadow-xs"
+                              : "bg-[#f6f4ef] text-[#123044] border-[#e4e0d7]"
+                          }`}
+                        >
+                          <Wallet size={17} className={isCommitmentsOpen ? "text-[#1f674f]" : "text-[#123044]"} />
+                        </div>
+                        <div>
+                          <div className="text-xs sm:text-sm font-bold text-[#123044] flex items-center gap-2">
+                            <span>Compromissos Financeiros (Opcional)</span>
+                            {financialCommitments.total > 0 && totalExpenses > 0 && (
+                              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#f0ece1] text-[#123044]">
+                                {((financialCommitments.total / totalExpenses) * 100).toFixed(1)}% do total
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-[11px] text-[#667085] hidden sm:block">
+                            Financiamentos e parcelas para acompanhar a pressão sobre o orçamento total, fora da cesta de consumo.
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-3">
+                        <div className="text-right">
+                          <div className="text-xs sm:text-sm font-extrabold text-[#123044] tabular-nums">
+                            {formatBRL(financialCommitments.total)}
+                          </div>
+                          <div className="text-[10px] text-[#667085]">por mês</div>
+                        </div>
+                        {isCommitmentsOpen ? (
+                          <ChevronUp className="w-4 h-4 text-slate-400" />
+                        ) : (
+                          <ChevronDown className="w-4 h-4 text-slate-400" />
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Conteúdo Expansível */}
+                    {isCommitmentsOpen && (
+                      <div className="px-5 pb-5 pt-2 border-t border-[#f0ece1] bg-[#fdfbf7]/50 space-y-3">
+                        <div className="space-y-3 pt-1">
+                          {financialCommitments.items.map((fc) => (
+                            <div key={fc.id} className="p-3.5 bg-white rounded-2xl border border-[#e4e0d7] space-y-2">
+                              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                <div>
+                                  <span className="text-xs font-bold text-[#123044] block">{fc.label}</span>
+                                  <span className="text-[11px] text-[#667085] block">{fc.sub}</span>
+                                </div>
+
+                                <div className="flex items-center gap-3">
+                                  <div className="w-36">
+                                    <label className="text-[10px] font-bold text-[#667085] block mb-1">Parcela Atual:</label>
+                                    <div className="relative">
+                                      <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs font-bold text-[#667085]">R$</span>
+                                      <input
+                                        type="text"
+                                        placeholder="0"
+                                        value={fc.rawVal}
+                                        onChange={(e) => {
+                                          const cleaned = e.target.value.replace(/[^\d.,]/g, "").replace(",", ".");
+                                          handleCommitmentChange(fc.id, cleaned);
+                                        }}
+                                        className="w-full bg-white border border-[#e4e0d7] rounded-xl pl-8 pr-3 py-1.5 text-xs font-bold text-right text-[#123044] focus:outline-none focus:border-[#1f674f] tabular-nums"
+                                      />
+                                    </div>
+                                  </div>
+
+                                  <div className="w-24">
+                                    <label className="text-[10px] font-bold text-[#667085] block mb-1">Reajuste (%):</label>
+                                    <div className="relative">
+                                      <input
+                                        type="text"
+                                        placeholder="0,0%"
+                                        value={fc.rawAdj}
+                                        onChange={(e) => onChange(`reajuste_${fc.id}`, e.target.value)}
+                                        className="w-full bg-white border border-[#e4e0d7] rounded-xl px-2 py-1.5 text-xs font-bold text-center text-[#123044] focus:outline-none focus:border-[#1f674f]"
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
+
               {/* Gastos Customizados */}
               <div className="space-y-3 pt-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-[#123044] uppercase tracking-wider">
-                    Outros Gastos Específicos Livres
-                  </span>
+                  <div>
+                    <span className="text-xs font-bold text-[#123044] uppercase tracking-wider block">
+                      Outros Gastos Específicos Livres
+                    </span>
+                    <span className="text-[11px] text-[#667085]">
+                      Adicione despesas que não estão na cesta acima (ex: Babá, Terapia, Personal, Assinaturas) e informe o reajuste anual estimado.
+                    </span>
+                  </div>
                 </div>
 
                 {expenseDetails.customList.map((item) => (
-                  <div key={item.id} className="grid sm:grid-cols-2 gap-3 p-3 bg-white rounded-xl border border-[#e4e0d7]">
-                    <div>
-                      <label className="text-[11px] font-bold text-[#123044] block mb-1">Nome do Gasto</label>
-                      <input
-                        type="text"
-                        placeholder="Ex: Terapia, Hobbies, etc."
-                        value={item.name}
-                        onChange={(e) => handleUpdateCustomExpense(item.id, "name", e.target.value)}
-                        className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-3 py-2 text-xs text-[#123044] font-medium focus:outline-none focus:border-[#1f674f]"
-                      />
+                  <div key={item.id} className="p-3.5 bg-white rounded-2xl border border-[#e4e0d7] shadow-xs space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-[#123044]">
+                        {item.name ? item.name : "Gasto Personalizado"}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveCustomExpense(item.id)}
+                        className="text-slate-400 hover:text-red-600 text-[11px] font-medium flex items-center gap-1 cursor-pointer transition-colors"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" /> Remover
+                      </button>
                     </div>
-                    <div>
-                      <div className="flex items-center justify-between mb-1">
-                        <label className="text-[11px] font-bold text-[#123044]">Valor Mensal</label>
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveCustomExpense(item.id)}
-                          className="text-slate-400 hover:text-red-600 text-[11px] font-medium flex items-center gap-1 cursor-pointer"
-                        >
-                          <Trash2 className="w-3 h-3" /> Remover
-                        </button>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
+                      <div className="sm:col-span-6">
+                        <label className="text-[11px] font-bold text-[#123044] block mb-1">
+                          Nome do Gasto
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="Ex: Terapia, Babá, Personal, etc."
+                          value={item.name}
+                          onChange={(e) => handleUpdateCustomExpense(item.id, "name", e.target.value)}
+                          className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-3 py-2 text-xs text-[#123044] font-medium focus:outline-none focus:border-[#1f674f]"
+                        />
                       </div>
-                      <input
-                        type="text"
-                        inputMode="numeric"
-                        placeholder="R$ 0,00"
-                        value={item.value}
-                        onChange={(e) => handleUpdateCustomExpense(item.id, "value", formatCurrencyInput(e.target.value))}
-                        className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-3 py-2 text-xs text-[#123044] font-medium focus:outline-none focus:border-[#1f674f]"
-                      />
+
+                      <div className="sm:col-span-3">
+                        <label className="text-[11px] font-bold text-[#123044] block mb-1">
+                          Valor Mensal
+                        </label>
+                        <input
+                          type="text"
+                          inputMode="numeric"
+                          placeholder="R$ 0,00"
+                          value={item.value}
+                          onChange={(e) => handleUpdateCustomExpense(item.id, "value", formatCurrencyInput(e.target.value))}
+                          className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-3 py-2 text-xs text-[#123044] font-semibold focus:outline-none focus:border-[#1f674f] tabular-nums"
+                        />
+                      </div>
+
+                      <div className="sm:col-span-3">
+                        <div className="flex items-center justify-between mb-1">
+                          <label className="text-[11px] font-bold text-[#123044] block">
+                            Reajuste (%)
+                          </label>
+                          <span className="text-[9px] text-[#667085]">(opcional)</span>
+                        </div>
+                        <input
+                          type="text"
+                          placeholder="0,0%"
+                          value={item.reajuste || ""}
+                          onChange={(e) => handleUpdateCustomExpense(item.id, "reajuste", e.target.value)}
+                          className="w-full bg-[#f6f4ef] border border-[#e4e0d7] rounded-xl px-3 py-2 text-xs text-[#123044] font-semibold text-center focus:outline-none focus:border-[#1f674f] tabular-nums"
+                        />
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -1307,6 +1777,203 @@ export function RaioXFluxoCaixa({ formData, onChange, onBulkChange }: RaioXFluxo
                 >
                   <Plus className="w-4 h-4" /> Adicionar Outro Gasto Específico
                 </button>
+              </div>
+
+              {/* ── CONSOLIDADO DE GASTOS, INFLAÇÃO E GRÁFICO PIZZA ── */}
+              <div className="mt-8 pt-6 border-t-2 border-[#e4e0d7] space-y-4">
+                <div className="bg-white border border-[#e4e0d7] rounded-3xl p-5 sm:p-7 shadow-xs space-y-6">
+                  
+                  {/* Cabeçalho */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[#f0ece1]">
+                    <div>
+                      <span className="text-[10px] font-extrabold text-[#1f674f] uppercase tracking-wider block">
+                        Resultado Consolidado
+                      </span>
+                      <h4 className="text-lg sm:text-xl font-bold text-[#123044] mt-0.5">
+                        Consolidado dos Gastos & Inflação Real
+                      </h4>
+                    </div>
+                    {totalExpenses > 0 && (
+                      <span className="text-xs font-bold px-3.5 py-1.5 rounded-full bg-[#f6f4ef] text-[#123044] border border-[#e4e0d7] self-start sm:self-auto">
+                        {totalIncomes > 0 ? `${((totalExpenses / totalIncomes) * 100).toFixed(1)}% da renda líquida` : "Cesta mensal apurada"}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* 3 Métricas Diretas: Consolidado | Minha Inflação | Inflação Média */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                    {/* 1. Consolidado dos Gastos */}
+                    <div className="p-4 rounded-2xl bg-[#fbfaf8] border border-[#e4e0d7] flex flex-col justify-between">
+                      <div className="h-5 flex items-center">
+                        <span className="text-[10px] sm:text-[11px] text-[#667085] font-bold uppercase tracking-wider truncate">
+                          Consolidado dos Gastos
+                        </span>
+                      </div>
+                      <div className="text-lg sm:text-xl md:text-2xl font-black text-[#123044] my-1 tabular-nums tracking-tight">
+                        {formatBRL(totalExpenses)}
+                      </div>
+                      <div className="text-[11px] text-[#667085] truncate">
+                        {formatBRL(totalExpenses * 12)} ao ano
+                      </div>
+                    </div>
+
+                    {/* 2. Minha Inflação Pessoal */}
+                    <div className="p-4 rounded-2xl bg-[#e8f1ed]/60 border border-[#1f674f]/30 flex flex-col justify-between">
+                      <div className="h-5 flex items-center">
+                        <span className="text-[10px] sm:text-[11px] text-[#1f674f] font-bold uppercase tracking-wider truncate">
+                          Minha Inflação Pessoal
+                        </span>
+                      </div>
+                      <div className="text-lg sm:text-xl md:text-2xl font-black text-[#1f674f] my-1 tabular-nums tracking-tight">
+                        {personalInflationMetrics.hasData ? `${personalInflationMetrics.personalRate.toFixed(2)}%` : "0,00%"}
+                      </div>
+                      <div className="text-[11px] text-[#1f674f]/80 truncate">
+                        ao ano (ponderada pela sua cesta)
+                      </div>
+                    </div>
+
+                    {/* 3. Inflação Média (IPCA) */}
+                    <div className="p-4 rounded-2xl bg-[#fbfaf8] border border-[#e4e0d7] flex flex-col justify-between">
+                      <div className="h-5 flex items-center justify-between gap-1">
+                        <span className="text-[10px] sm:text-[11px] text-[#667085] font-bold uppercase tracking-wider truncate" title="Inflação Média (IPCA)">
+                          Inflação Média (IPCA)
+                        </span>
+                        {personalInflationMetrics.hasData && (
+                          <span className={`text-[10px] font-extrabold px-1.5 py-0.5 rounded shrink-0 ${
+                            personalInflationMetrics.diffIpca > 0 
+                              ? "bg-rose-100 text-rose-700" 
+                              : "bg-emerald-100 text-emerald-700"
+                          }`}>
+                            {personalInflationMetrics.diffIpca >= 0 ? "+" : ""}
+                            {personalInflationMetrics.diffIpca.toFixed(2)} pp
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-lg sm:text-xl md:text-2xl font-black text-[#123044] my-1 tabular-nums tracking-tight">
+                        {personalInflationMetrics.ipcaBenchmark.toFixed(2)}%
+                      </div>
+                      <div className="text-[11px] text-[#667085] truncate">
+                        ao ano (referência nacional IBGE)
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Gráfico Pizza dos Gastos + Legenda com Valores */}
+                  {totalExpenses > 0 ? (
+                    <div className="pt-2">
+                      <div className="text-xs font-bold text-[#123044] uppercase tracking-wider mb-3">
+                        Gráfico Pizza dos Gastos por Categoria
+                      </div>
+
+                      <div className="grid md:grid-cols-[280px_1fr] gap-6 items-center bg-[#fbfaf8] p-5 rounded-2xl border border-[#e4e0d7]">
+                        
+                        {/* Gráfico Pizza / Rosca */}
+                        <div className="h-64 w-full relative flex items-center justify-center">
+                          <ResponsiveContainer width="100%" height="100%">
+                            <PieChart>
+                              <Pie
+                                data={expensePieData}
+                                cx="50%"
+                                cy="50%"
+                                innerRadius={65}
+                                outerRadius={95}
+                                paddingAngle={2}
+                                dataKey="value"
+                                nameKey="name"
+                                animationDuration={500}
+                              >
+                                {expensePieData.map((entry) => (
+                                  <Cell key={`cell-${entry.id}`} fill={entry.color} stroke="#FFFFFF" strokeWidth={2} />
+                                ))}
+                              </Pie>
+                              <Tooltip
+                                formatter={(val: any) => [
+                                  `${formatBRL(Number(val))} (${totalExpenses > 0 ? ((Number(val) / totalExpenses) * 100).toFixed(1) : 0}%)`,
+                                  "Gasto"
+                                ]}
+                                contentStyle={{
+                                  backgroundColor: "#123044",
+                                  borderRadius: "12px",
+                                  border: "none",
+                                  color: "#ffffff",
+                                  fontSize: "12px",
+                                  fontWeight: 600,
+                                  boxShadow: "0 4px 14px rgba(0,0,0,0.15)"
+                                }}
+                                itemStyle={{ color: "#ffffff" }}
+                              />
+                            </PieChart>
+                          </ResponsiveContainer>
+
+                          {/* Centro da Rosca */}
+                          <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-center">
+                            <span className="text-[10px] font-bold text-[#667085] uppercase tracking-wider">
+                              Total Mensal
+                            </span>
+                            <span className="text-base font-extrabold text-[#123044] tabular-nums mt-0.5">
+                              {formatBRL(totalExpenses)}
+                            </span>
+                            <span className="text-[10px] text-[#1f674f] font-bold">
+                              {personalInflationMetrics.personalRate.toFixed(1)}% a.a.
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Legenda dos Gastos com Valores e Percentuais */}
+                        <div className="grid sm:grid-cols-2 gap-2.5 max-h-64 overflow-y-auto pr-1">
+                          {expensePieData.map((item) => (
+                            <div
+                              key={item.id}
+                              className="flex items-center justify-between p-2.5 rounded-xl bg-white border border-[#e4e0d7] text-xs hover:border-[#1f674f]/30 transition-colors"
+                            >
+                              <div className="flex items-center gap-2 min-w-0 pr-2">
+                                <span
+                                  className="w-3 h-3 rounded-md shrink-0"
+                                  style={{ backgroundColor: item.color }}
+                                />
+                                <span className="font-semibold text-[#123044] truncate" title={item.name}>
+                                  {item.name}
+                                </span>
+                              </div>
+                              <div className="text-right shrink-0">
+                                <div className="font-extrabold text-[#123044] tabular-nums">
+                                  {formatBRL(item.value)}
+                                </div>
+                                <div className="text-[10px] text-[#667085] font-semibold">
+                                  {item.pct.toFixed(1)}%
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="p-6 rounded-2xl bg-[#fbfaf8] border border-[#e4e0d7] text-center text-xs text-[#667085]">
+                      Preencha os valores nos grupos acima ou importe sua fatura de cartão para visualizar o gráfico pizza e sua taxa de inflação.
+                    </div>
+                  )}
+
+                  {/* Rodapé com Botão de Avanço para o Passo 3 */}
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-[#f0ece1]">
+                    <div className="text-xs text-[#667085]">
+                      Gastos e inflação apurados. Prossiga para auditar a divisão 50/30/20 e os alertas preventivos.
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setActiveTab("alertas");
+                        window.scrollTo({ top: 300, behavior: "smooth" });
+                      }}
+                      className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#1f674f] hover:bg-[#1a5541] text-white text-xs font-bold flex items-center justify-center gap-2 shadow-xs transition-colors cursor-pointer shrink-0"
+                    >
+                      <span>Avançar para Passo 3: Controle</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                </div>
               </div>
             </div>
           )}
@@ -1397,110 +2064,22 @@ export function RaioXFluxoCaixa({ formData, onChange, onBulkChange }: RaioXFluxo
               </div>
 
               {/* Simulador */}
-              <div style={{ background: "#123044" }} className="p-5 rounded-2xl space-y-2">
-                <div className="text-sm leading-relaxed" style={{ color: "#ffffff" }}>
-                  Se você otimizar <strong style={{ color: "#ffffff", fontWeight: 700 }}>R$ 500,00 por mês</strong> cortando pequenos ralos identificados na sua fatura e investir com a alocação da sua Carteira ARVO, você acumulará aproximadamente:
+              <div className="p-5 rounded-2xl bg-[#f6f4ef] border border-[#e4e0d7] space-y-3">
+                <div className="text-sm leading-relaxed text-[#123044]">
+                  Se você otimizar <strong className="font-extrabold text-[#123044]">R$ 500,00 por mês</strong> cortando pequenos ralos identificados na sua fatura e investir com a alocação da sua Carteira ARVO, você acumulará aproximadamente:
                 </div>
-                <div className="grid grid-cols-2 gap-3 pt-2">
-                  <div className="rounded-xl p-3" style={{ background: "rgba(255,255,255,0.1)" }}>
-                    <div className="text-[11px] font-medium" style={{ color: "rgba(255,255,255,0.75)" }}>Em 10 Anos</div>
-                    <div className="text-lg font-extrabold" style={{ color: "#ffffff" }}>~ R$ 138.000,00</div>
+                <div className="grid grid-cols-2 gap-3 pt-1">
+                  <div className="rounded-xl p-3.5 bg-white border border-[#e4e0d7] shadow-xs">
+                    <div className="text-[11px] font-bold text-[#667085] uppercase tracking-wider">Em 10 Anos</div>
+                    <div className="text-lg sm:text-xl font-extrabold text-[#123044] mt-0.5">~ R$ 138.000,00</div>
                   </div>
-                  <div className="rounded-xl p-3" style={{ background: "rgba(255,255,255,0.1)" }}>
-                    <div className="text-[11px] font-medium" style={{ color: "rgba(255,255,255,0.75)" }}>Em 20 Anos</div>
-                    <div className="text-lg font-extrabold" style={{ color: "#ffffff" }}>~ R$ 584.000,00</div>
+                  <div className="rounded-xl p-3.5 bg-white border border-[#e4e0d7] shadow-xs">
+                    <div className="text-[11px] font-bold text-[#667085] uppercase tracking-wider">Em 20 Anos</div>
+                    <div className="text-lg sm:text-xl font-extrabold text-[#1f674f] mt-0.5">~ R$ 584.000,00</div>
                   </div>
                 </div>
               </div>
 
-            </div>
-          )}
-
-
-          {/* ─── PAINEL 4: MINHA INFLAÇÃO REAL ─── */}
-          {activeTab === "inflacao" && (
-            <div className="space-y-5 animate-in fade-in duration-150">
-              <div className="bg-white border border-[#e4e0d7] rounded-2xl p-5 shadow-xs space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                  <div>
-                    <span className="text-[11px] font-bold text-[#1f674f] uppercase tracking-wider">
-                      Cálculo Conectado em Tempo Real
-                    </span>
-                    <h4 className="text-lg font-bold text-[#123044] mt-0.5">
-                      Inflação Estimada da Sua Cesta Familiar
-                    </h4>
-                  </div>
-                  <Link
-                    href="/dashboard/inflacao"
-                    className="px-4 py-2 rounded-xl bg-[#e8f1ed] text-[#1f674f] hover:bg-[#d8e9e2] text-xs font-bold flex items-center gap-1.5 transition-colors self-start sm:self-auto"
-                  >
-                    <span>Abrir Calculadora Completa</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </Link>
-                </div>
-
-                <div className="grid sm:grid-cols-3 gap-3">
-                  <div className="p-4 rounded-2xl bg-[#f6f4ef] border border-[#e4e0d7] text-center">
-                    <div className="text-[11px] text-[#667085] font-bold uppercase">Sua Inflação Pessoal</div>
-                    <div className="text-2xl sm:text-3xl font-black text-[#123044] mt-1 tabular-nums">
-                      {personalInflationMetrics.personalRate.toFixed(2)}%
-                    </div>
-                    <div className="text-[10px] text-[#667085] mt-0.5">ao ano (estimativa ponderada)</div>
-                  </div>
-
-                  <div className="p-4 rounded-2xl bg-[#f6f4ef] border border-[#e4e0d7] text-center">
-                    <div className="text-[11px] text-[#667085] font-bold uppercase">IPCA Oficial (IBGE)</div>
-                    <div className="text-2xl sm:text-3xl font-black text-[#667085] mt-1 tabular-nums">
-                      {personalInflationMetrics.ipcaBenchmark.toFixed(2)}%
-                    </div>
-                    <div className="text-[10px] text-[#667085] mt-0.5">ao ano (média Brasil)</div>
-                  </div>
-
-                  <div className="p-4 rounded-2xl bg-[#f6f4ef] border border-[#e4e0d7] text-center">
-                    <div className="text-[11px] text-[#667085] font-bold uppercase">Diferença em Relação ao IPCA</div>
-                    <div className={`text-2xl sm:text-3xl font-black mt-1 tabular-nums ${
-                      personalInflationMetrics.diffIpca > 0 ? "text-rose-600" : "text-emerald-600"
-                    }`}>
-                      {personalInflationMetrics.diffIpca >= 0 ? "+" : ""}
-                      {personalInflationMetrics.diffIpca.toFixed(2)} pp
-                    </div>
-                    <div className="text-[10px] text-[#667085] mt-0.5">
-                      {personalInflationMetrics.diffIpca > 0 ? "Seu custo sobe mais que o índice oficial" : "Seu custo sobe menos que a média"}
-                    </div>
-                  </div>
-                </div>
-
-                {personalInflationMetrics.topVillains.length > 0 && (
-                  <div className="pt-2">
-                    <div className="text-xs font-bold text-[#123044] uppercase tracking-wider mb-2.5">
-                      Maiores Impactos na Sua Inflação (Top Vilões)
-                    </div>
-                    <div className="space-y-2">
-                      {personalInflationMetrics.topVillains.map((v, i) => (
-                        <div key={v.id} className="p-3 bg-[#fdfbf7] rounded-xl border border-[#e4e0d7] flex items-center justify-between text-xs">
-                          <div className="flex items-center gap-2">
-                            <span className="w-5 h-5 rounded-full bg-[#123044] text-white text-[10px] font-bold flex items-center justify-center">
-                              {i + 1}
-                            </span>
-                            <div>
-                              <div className="font-bold text-[#123044]">{v.label}</div>
-                              <div className="text-[11px] text-[#667085]">
-                                Gasto: {formatBRL(v.expense)}/mês ({v.weightPct.toFixed(1)}% da sua cesta)
-                              </div>
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <div className="font-extrabold text-[#123044] tabular-nums">
-                              +{v.ratePct.toFixed(2)}% a.a.
-                            </div>
-                            <div className="text-[10px] text-[#667085]">impacto ponderado: +{v.impact.toFixed(2)} pp</div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
             </div>
           )}
         </div>

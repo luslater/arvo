@@ -44,3 +44,10 @@ next-env.d.ts
 
 # Private diagnostic registrations
 /data/diagnostic-leads/
+
+# local databases
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+
