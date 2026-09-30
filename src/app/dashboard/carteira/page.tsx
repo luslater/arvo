@@ -369,7 +369,21 @@ export default function MinhaCarteiraPage() {
       const OCEANO_WEALTH = wealthCurve(DATA.oceano);
       const CDI_FINAL = CDI_WEALTH[CDI_WEALTH.length - 1];
 
-      const CLASSE_COLOR_HEX: any = {Zaga:'#3b82f6', Meio:'#f59e0b', Ataque:'#ef4444', '?':'#9aa0b8', Personalizado:'#8b5cf6'};
+      const CLASSE_COLOR_HEX: any = {
+        Zaga: '#3b82f6',
+        Meio: '#f59e0b',
+        Ataque: '#ef4444',
+        '?': '#9aa0b8',
+        Personalizado: '#7c3aed',
+        'Pós-fixado (CDI)': '#0d9488',
+        'Pós-fixado (Selic)': '#14b8a6',
+        'IPCA+': '#d97706',
+        'Prefixado': '#6366f1',
+        'Ações': '#ef4444',
+        'FIIs': '#ec4899',
+        'Multimercado': '#8b5cf6',
+        'Dólar': '#0284c7'
+      };
 
       function computeFundStats(values: any){
         const wealth = wealthCurve(values);
@@ -797,7 +811,7 @@ export default function MinhaCarteiraPage() {
       const CUSTOM_SENTINEL = '__custom__';
       let customFundCounter = 1;
 
-      function registerCustomFund(rawName: any, monthlyReturnPct: any, indexador?: string, monthlyHistory?: any[]){
+      function registerCustomFund(rawName: any, monthlyReturnPct: any, indexador?: string, taxaOrHistory?: any, monthlyHistory?: any[]){
         let cleanName = String(rawName || '')
           .replace(/\s*\(personalizado\)+/gi, '')
           .replace(/[-:–—|;,•\s]+$/g, '')
@@ -806,6 +820,7 @@ export default function MinhaCarteiraPage() {
           .trim();
         
         let key = cleanName || ('Ativo ' + customFundCounter);
+        const taxa = typeof taxaOrHistory === 'string' ? taxaOrHistory : '';
         const frac = (monthlyReturnPct || 0) / 100;
         
         let values: number[] = [];
@@ -825,11 +840,21 @@ export default function MinhaCarteiraPage() {
           values = DATA.ibov.map((ibovM: number) => ibovM);
         } else {
           // Prefixado ou taxa contratada constante
-          values = new Array(N).fill(frac);
+          values = new Array(N).fill(frac > 0 ? frac : 0.01);
         }
 
-        const fund = { name: key, gestora: 'Informado por você', classe: indexador || 'Prefixado', iq_geral: '?', minimo: null, values, isCustom: true };
+        const fund = { 
+          name: key, 
+          gestora: 'Informado por você', 
+          classe: indexador || 'Prefixado', 
+          taxa: taxa,
+          iq_geral: '?', 
+          minimo: null, 
+          values, 
+          isCustom: true 
+        };
         FUND_BY_NAME[key] = fund;
+        FUND_STATS[key] = computeFundStats(values);
         customFundCounter++;
         return key;
       }
@@ -860,8 +885,14 @@ export default function MinhaCarteiraPage() {
       function saveState(){
         try{
           const customFunds = Object.values(FUND_BY_NAME)
-            .filter((f:any) => f.isCustom)
-            .map((f:any) => ({ name: f.name, values: f.values }));
+            .filter((f:any) => f && f.isCustom)
+            .map((f:any) => ({ 
+              name: f.name, 
+              values: f.values,
+              classe: f.classe || 'Personalizado',
+              gestora: f.gestora || 'Informado por você',
+              taxa: f.taxa || ''
+            }));
           const payload = { 
             portfolios, 
             nextId, 
@@ -908,8 +939,18 @@ export default function MinhaCarteiraPage() {
         if (!currentHasHoldings && incomingHasHoldings) {
           if (Array.isArray(externalState.customFunds)) {
             externalState.customFunds.forEach((cf: any) => {
-              const fundObj = { name: cf.name, gestora: 'Informado por você', classe: 'Personalizado', iq_geral: '?', minimo: null, values: cf.values, isCustom: true };
+              const fundObj = { 
+                name: cf.name, 
+                gestora: cf.gestora || 'Informado por você', 
+                classe: cf.classe || 'Personalizado', 
+                iq_geral: '?', 
+                minimo: null, 
+                values: cf.values, 
+                isCustom: true,
+                taxa: cf.taxa || ''
+              };
               FUND_BY_NAME[cf.name] = fundObj;
+              if (cf.values) FUND_STATS[cf.name] = computeFundStats(cf.values);
             });
           }
           portfolios = externalState.portfolios;
@@ -937,13 +978,26 @@ export default function MinhaCarteiraPage() {
           
           let values = cf.values;
           const lower = cleanName.toLowerCase();
-          if (lower.includes('nubank') || lower.includes('mercado pago') || lower.includes('cdi')) {
+          if (!values || !values.length) {
             values = DATA.cdi.map((cdiM: number) => cdiM * 1.20);
           }
 
-          const fundObj = { name: cleanName || cf.name, gestora: 'Informado por você', classe: 'Personalizado', iq_geral: '?', minimo: null, values, isCustom: true };
+          const fundObj = { 
+            name: cleanName || cf.name, 
+            gestora: cf.gestora || 'Informado por você', 
+            classe: cf.classe || 'Personalizado', 
+            iq_geral: '?', 
+            minimo: null, 
+            values, 
+            isCustom: true,
+            taxa: cf.taxa || ''
+          };
           FUND_BY_NAME[cf.name] = fundObj;
           if (cleanName) FUND_BY_NAME[cleanName] = fundObj;
+          if (values) {
+            FUND_STATS[cf.name] = computeFundStats(values);
+            if (cleanName) FUND_STATS[cleanName] = FUND_STATS[cf.name];
+          }
         });
         portfolios = savedState.portfolios.map((p: any) => {
           if (p.holdings) {
@@ -1141,6 +1195,24 @@ export default function MinhaCarteiraPage() {
         if (!box) return;
         box.innerHTML = '';
         const targetP = portfolios.find(p => p.id === targetPortfolioId);
+
+        if (targetP) {
+          const manualBanner = document.createElement('div');
+          manualBanner.style.cssText = 'margin-bottom: 12px; padding: 10px 12px; background: #f8fafc; border: 1.5px dashed #cbd5e1; border-radius: 10px; display: flex; flex-direction: column; gap: 6px;';
+          manualBanner.innerHTML = `
+            <div style="font-size: 11.5px; font-weight: 600; color: #475569; display: flex; align-items: center; justify-content: space-between;">
+              <span>Tem um CDB ou outro ativo?</span>
+              <span style="font-size: 10px; color: #64748b;">(fora da lista)</span>
+            </div>
+            <button type="button" class="btn-sidebar-manual-add" style="background: #1e293b; color: #fff; border: none; border-radius: 6px; padding: 7px 10px; font-size: 11.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px;">
+              <span>➕ Adicionar manual à carteira</span>
+            </button>
+          `;
+          const btn = manualBanner.querySelector('.btn-sidebar-manual-add') as HTMLElement;
+          if (btn) btn.onclick = () => openManualAssetModal(targetP);
+          box.appendChild(manualBanner);
+        }
+
         const already = targetP ? new Set(targetP.holdings.map((h:any) => h.name)) : new Set();
         const q = assetSearch.trim().toLowerCase();
         const list = DATA.funds.filter((f:any) => {
@@ -1314,7 +1386,15 @@ export default function MinhaCarteiraPage() {
           card.appendChild(hint);
         } else {
           p.holdings.forEach((h:any, idx:any) => {
-            const f = FUND_BY_NAME[h.name];
+            const f = FUND_BY_NAME[h.name] || {
+              name: h.name,
+              gestora: 'Informado por você',
+              classe: 'Personalizado',
+              iq_geral: '?',
+              minimo: null,
+              values: DATA.cdi.map((c: number) => c),
+              isCustom: true
+            };
             const hDiv = document.createElement('div');
             hDiv.className = 'holding';
             const top = document.createElement('div');
@@ -1371,12 +1451,22 @@ export default function MinhaCarteiraPage() {
             meta.className = 'holding-meta';
             const classePill = document.createElement('span');
             classePill.className = 'pill';
-            classePill.style.background = CLASSE_COLOR_HEX[f.classe] || CLASSE_COLOR_HEX['?'];
-            classePill.textContent = f.classe;
+            classePill.style.background = CLASSE_COLOR_HEX[f.classe] || CLASSE_COLOR_HEX['Personalizado'] || CLASSE_COLOR_HEX['?'];
+            classePill.textContent = f.classe || 'Personalizado';
             const gestoraSpan = document.createElement('span');
             gestoraSpan.style.fontSize = '11px'; gestoraSpan.style.color = 'var(--muted)';
-            gestoraSpan.textContent = f.gestora;
+            gestoraSpan.textContent = f.gestora || 'Informado por você';
             meta.appendChild(classePill); meta.appendChild(gestoraSpan);
+            if (f.isCustom) {
+              const customTag = document.createElement('span');
+              customTag.className = 'pill';
+              customTag.style.background = '#e9d5ff';
+              customTag.style.color = '#6b21a8';
+              customTag.style.fontSize = '10px';
+              customTag.style.fontWeight = '700';
+              customTag.textContent = 'Manual';
+              meta.appendChild(customTag);
+            }
             hDiv.appendChild(meta);
 
             const slider = document.createElement('input');
@@ -1427,6 +1517,30 @@ export default function MinhaCarteiraPage() {
         select.className = 'fund-select';
         let anyOption = false;
 
+        const manualGroup = document.createElement('optgroup');
+        manualGroup.label = 'Personalizado / Outro ativo';
+        const manualOpt = document.createElement('option');
+        manualOpt.value = '__MANUAL__';
+        manualOpt.textContent = '➕ Adicionar ativo manual (CDB, LCI, etc.)...';
+        manualGroup.appendChild(manualOpt);
+        select.appendChild(manualGroup);
+        anyOption = true;
+
+        const already = new Set(p.holdings.map((h:any) => h.name));
+        const customFundsAvailable = Object.values(FUND_BY_NAME)
+          .filter((f: any) => f && f.isCustom && !already.has(f.name));
+        if (customFundsAvailable.length > 0) {
+          const customOg = document.createElement('optgroup');
+          customOg.label = 'Meus ativos manuais cadastrados';
+          customFundsAvailable.forEach((f: any) => {
+            const opt = document.createElement('option');
+            opt.value = f.name;
+            opt.textContent = f.name + ' (' + (f.classe || 'Manual') + ')';
+            customOg.appendChild(opt);
+          });
+          select.appendChild(customOg);
+        }
+
         TIER_ORDER.forEach(tier => {
           const recOptions: any[] = [];
           ITYPE_ORDER.forEach(itype => {
@@ -1447,7 +1561,6 @@ export default function MinhaCarteiraPage() {
           select.appendChild(og);
         });
 
-        const already = new Set(p.holdings.map((h:any) => h.name));
         const groups: any = {Zaga:[], Meio:[], Ataque:[], '?':[]};
         DATA.funds.forEach(f => { if (!already.has(f.name)) groups[f.classe].push(f); });
         const groupLabels: any = {Zaga:'Mais conservadores (Zaga)', Meio:'Equilíbrio (Meio)', Ataque:'Mais arrojados (Ataque)', '?':'Sem classificação'};
@@ -1470,6 +1583,10 @@ export default function MinhaCarteiraPage() {
         if (!anyOption){ addBtn.disabled = true; select.disabled = true; }
         addBtn.onclick = () => {
           if (!select.value) return;
+          if (select.value === '__MANUAL__'){
+            openManualAssetModal(p);
+            return;
+          }
           if (select.value.startsWith('REC::')){
             const [, tier, itype, perfil] = select.value.split('::');
             const rec = findRecommended(tier, itype, perfil);
@@ -1490,6 +1607,21 @@ export default function MinhaCarteiraPage() {
         };
         addRow.appendChild(select); addRow.appendChild(addBtn);
         card.appendChild(addRow);
+
+        const manualActionRow = document.createElement('div');
+        manualActionRow.className = 'manual-action-row';
+        manualActionRow.style.cssText = 'margin-top: 6px; width: 100%;';
+        const manualBtn = document.createElement('button');
+        manualBtn.type = 'button';
+        manualBtn.className = 'btn-add-manual-direct';
+        manualBtn.innerHTML = `
+          <span style="font-weight:700; font-size:12.5px;">➕ Adicionar ativo manual</span>
+          <span style="font-size:11.5px; opacity:0.8; font-weight:400;">(CDB, LCI, Ações, FIIs...)</span>
+        `;
+        manualBtn.title = 'Adicionar um CDB, LCI ou qualquer outro ativo manualmente nesta carteira';
+        manualBtn.onclick = () => openManualAssetModal(p);
+        manualActionRow.appendChild(manualBtn);
+        card.appendChild(manualActionRow);
 
         if (p.holdings.length > 0){
           const headline = document.createElement('div');
@@ -1950,6 +2082,157 @@ export default function MinhaCarteiraPage() {
         editingPortfolioId = null;
         const modal = document.getElementById('importReviewModal');
         if (modal) modal.style.display = 'none';
+      }
+
+      let currentManualPortfolio: any = null;
+
+      function openManualAssetModal(p: any){
+        currentManualPortfolio = p;
+        const modal = document.getElementById('manualAssetModal');
+        if (!modal) return;
+        const targetName = document.getElementById('manualAssetTargetName');
+        if (targetName) targetName.textContent = p.name;
+        
+        const nameInput = document.getElementById('manualAssetName') as HTMLInputElement;
+        const idxSelect = document.getElementById('manualAssetIndexador') as HTMLSelectElement;
+        const taxaInput = document.getElementById('manualAssetTaxa') as HTMLInputElement;
+        const amtInput = document.getElementById('manualAssetAmount') as HTMLInputElement;
+        const wInput = document.getElementById('manualAssetWeight') as HTMLInputElement;
+        const warnEl = document.getElementById('manualAssetNameWarn');
+
+        if (warnEl) warnEl.style.display = 'none';
+        if (nameInput) {
+          nameInput.value = '';
+          nameInput.style.borderColor = '#cbd5e1';
+        }
+        if (idxSelect) idxSelect.value = 'Pós-fixado (CDI)';
+        if (taxaInput) {
+          taxaInput.value = '';
+          taxaInput.placeholder = getTaxaPlaceholder('Pós-fixado (CDI)');
+        }
+
+        const m = computeMetrics(p);
+        const remaining = Math.max(0, 100 - m.sumWeight);
+        const defW = remaining > 0 ? Math.round(remaining * 10) / 10 : 10;
+        if (wInput) wInput.value = defW.toString();
+        if (amtInput) {
+          const defAmt = p.totalValue ? Math.round((p.totalValue * defW) / 100) : 0;
+          amtInput.value = defAmt > 0 ? formatBRL(defAmt) : '';
+        }
+
+        updateManualYieldHint();
+        modal.style.display = 'flex';
+        setTimeout(() => { if (nameInput) nameInput.focus(); }, 60);
+      }
+
+      function closeManualAssetModal(){
+        currentManualPortfolio = null;
+        const modal = document.getElementById('manualAssetModal');
+        if (modal) modal.style.display = 'none';
+      }
+
+      function updateManualYieldHint(){
+        const idxSelect = document.getElementById('manualAssetIndexador') as HTMLSelectElement;
+        const taxaInput = document.getElementById('manualAssetTaxa') as HTMLInputElement;
+        const hintEl = document.getElementById('manualAssetYieldHint');
+        if (!idxSelect || !hintEl) return;
+        const idx = idxSelect.value;
+        const taxa = taxaInput ? taxaInput.value : '';
+        const monthlyYield = calculateYieldFromIndexadorAndTaxa(idx, taxa);
+        const annualYield = (Math.pow(1 + monthlyYield / 100, 12) - 1) * 100;
+        hintEl.textContent = `Rentabilidade estimada: ~${monthlyYield.toFixed(2)}% ao mês (~${annualYield.toFixed(2)}% ao ano)`;
+      }
+
+      function setupManualAssetModal(){
+        const modal = document.getElementById('manualAssetModal');
+        const closeBtn = document.getElementById('manualAssetModalClose');
+        const cancelBtn = document.getElementById('manualAssetCancelBtn');
+        const submitBtn = document.getElementById('manualAssetSubmitBtn');
+        const idxSelect = document.getElementById('manualAssetIndexador') as HTMLSelectElement;
+        const taxaInput = document.getElementById('manualAssetTaxa') as HTMLInputElement;
+        const amtInput = document.getElementById('manualAssetAmount') as HTMLInputElement;
+        const wInput = document.getElementById('manualAssetWeight') as HTMLInputElement;
+        const nameInput = document.getElementById('manualAssetName') as HTMLInputElement;
+        const warnEl = document.getElementById('manualAssetNameWarn');
+
+        if (closeBtn) closeBtn.onclick = closeManualAssetModal;
+        if (cancelBtn) cancelBtn.onclick = closeManualAssetModal;
+        if (modal) {
+          modal.onclick = (e: any) => {
+            if (e.target === modal) closeManualAssetModal();
+          };
+        }
+
+        if (idxSelect) {
+          idxSelect.onchange = () => {
+            if (taxaInput) taxaInput.placeholder = getTaxaPlaceholder(idxSelect.value);
+            updateManualYieldHint();
+          };
+        }
+
+        if (taxaInput) {
+          taxaInput.oninput = updateManualYieldHint;
+        }
+
+        if (nameInput) {
+          nameInput.oninput = () => {
+            if (warnEl) warnEl.style.display = 'none';
+            nameInput.style.borderColor = '#cbd5e1';
+          };
+        }
+
+        if (amtInput) {
+          amtInput.oninput = (e: any) => {
+            const v = parseFlexNumber(e.target.value);
+            if (currentManualPortfolio && currentManualPortfolio.totalValue > 0 && v !== null && v >= 0) {
+              if (wInput) wInput.value = (Math.round((v / currentManualPortfolio.totalValue) * 1000) / 10).toString();
+            }
+          };
+        }
+
+        if (wInput) {
+          wInput.oninput = (e: any) => {
+            const w = parseFloat(e.target.value);
+            if (currentManualPortfolio && currentManualPortfolio.totalValue > 0 && isFinite(w) && w >= 0) {
+              if (amtInput) amtInput.value = formatBRL((currentManualPortfolio.totalValue * w) / 100);
+            }
+          };
+        }
+
+        if (submitBtn) {
+          submitBtn.onclick = () => {
+            if (!currentManualPortfolio) return;
+            const rawName = (nameInput?.value || '').trim();
+            if (!rawName) {
+              if (warnEl) warnEl.style.display = 'block';
+              if (nameInput) {
+                nameInput.style.borderColor = '#ef4444';
+                nameInput.focus();
+              }
+              return;
+            }
+
+            const idx = idxSelect ? idxSelect.value : 'Pós-fixado (CDI)';
+            const taxa = taxaInput ? taxaInput.value : '';
+            const yieldPct = calculateYieldFromIndexadorAndTaxa(idx, taxa);
+
+            let w = wInput ? parseFloat(wInput.value) : 10;
+            if (isNaN(w) || w < 0) w = 10;
+
+            const amt = amtInput ? parseFlexNumber(amtInput.value) : null;
+            if ((!currentManualPortfolio.totalValue || currentManualPortfolio.totalValue <= 0) && amt && amt > 0) {
+              currentManualPortfolio.totalValue = amt;
+            }
+
+            const key = registerCustomFund(rawName, yieldPct, idx, taxa);
+            currentManualPortfolio.holdings.push({ name: key, weight: w });
+            activeSeries.add('p_' + currentManualPortfolio.id);
+
+            closeManualAssetModal();
+            renderAll();
+            saveState();
+          };
+        }
       }
 
       function renderImportReviewRows(){
@@ -2527,6 +2810,7 @@ export default function MinhaCarteiraPage() {
 
       setupRecBuilder();
       setupImportBuilder();
+      setupManualAssetModal();
       setupChartTabs();
 
       const resetAllBtnEl = document.getElementById('resetAllBtn');
@@ -2797,6 +3081,8 @@ export default function MinhaCarteiraPage() {
         .minha-carteira-app .add-btn { flex:0 0 auto; background:var(--accent); color:#fff; border:none; border-radius:8px; padding:9px 14px; font-size:13px; font-weight:700; cursor:pointer; white-space:nowrap; }
         .minha-carteira-app .add-btn:hover { background:#3d5adf; }
         .minha-carteira-app .add-btn:disabled { background:#c6cdf0; cursor:not-allowed; }
+        .minha-carteira-app .btn-add-manual-direct { width:100%; display:flex; align-items:center; justify-content:center; gap:6px; background:#f8fafc; color:#334155; border:1.5px dashed #cbd5e1; border-radius:8px; padding:8px 12px; font-size:12.5px; cursor:pointer; transition:all .15s ease; box-sizing:border-box; }
+        .minha-carteira-app .btn-add-manual-direct:hover { background:#f1f5f9; border-color:#64748b; color:#0f172a; }
 
         .minha-carteira-app .headline { display:flex; gap:18px; border-top:1px solid var(--border); padding-top:12px; margin-top:2px; }
         .minha-carteira-app .headline .hl { flex:1; }
@@ -3159,6 +3445,79 @@ export default function MinhaCarteiraPage() {
             </div>
             <div class="import-modal-footer">
               <button type="button" class="rec-build-btn" id="importConfirmBtn">Confirmar e criar carteira</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="manualAssetModal" class="import-modal" style="display:none;">
+          <div class="import-modal-inner" style="max-width:520px;">
+            <div class="import-modal-header">
+              <div>
+                <h3 style="margin:0; font-size:17px; font-weight:700; color:#1e293b;">Adicionar ativo manual</h3>
+                <p style="margin:4px 0 0 0; font-size:12.5px; color:#64748b;">
+                  Adicionar diretamente à carteira: <b id="manualAssetTargetName" style="color:#0f172a;">Carteira A</b>
+                </p>
+              </div>
+              <button type="button" class="iconbtn" id="manualAssetModalClose" title="Fechar">✕</button>
+            </div>
+            <div class="import-modal-body" style="padding:20px; display:flex; flex-direction:column; gap:16px;">
+              <div>
+                <label style="display:block; font-size:12.5px; font-weight:700; color:#334155; margin-bottom:6px;">
+                  Nome do ativo *
+                </label>
+                <input type="text" id="manualAssetName" placeholder="Ex: CDB Banco Inter 110% CDI, LCI Caixa, Vale3..." style="width:100%; border:1px solid #cbd5e1; border-radius:8px; padding:10px 12px; font-size:13.5px; box-sizing:border-box;">
+                <span id="manualAssetNameWarn" style="display:none; color:#ef4444; font-size:11.5px; margin-top:4px;">Por favor, digite o nome do ativo.</span>
+              </div>
+
+              <div>
+                <label style="display:block; font-size:12.5px; font-weight:700; color:#334155; margin-bottom:6px;">
+                  Classe / Indexador
+                </label>
+                <select id="manualAssetIndexador" style="width:100%; border:1px solid #cbd5e1; border-radius:8px; padding:10px 12px; font-size:13.5px; background:#fff; box-sizing:border-box;">
+                  <option value="Pós-fixado (CDI)">Pós-fixado (CDI) — ex: CDB, LCI, LCA a % do CDI</option>
+                  <option value="IPCA+">IPCA+ (Inflação) — ex: Tesouro IPCA+, CDB IPCA + taxa</option>
+                  <option value="Prefixado">Prefixado — taxa fixa anual (ex: 12% a.a.)</option>
+                  <option value="Pós-fixado (Selic)">Pós-fixado (Selic) — ex: Tesouro Selic</option>
+                  <option value="Ações">Ações / Renda Variável</option>
+                  <option value="FIIs">Fundos Imobiliários (FIIs)</option>
+                  <option value="Multimercado">Multimercado</option>
+                  <option value="Dólar">Internacional / Dólar</option>
+                </select>
+              </div>
+
+              <div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                  <label style="font-size:12.5px; font-weight:700; color:#334155;">Taxa contratada / rentabilidade</label>
+                  <span style="font-size:11.5px; color:#64748b;">(opcional)</span>
+                </div>
+                <input type="text" id="manualAssetTaxa" placeholder="ex: 110% CDI ou 120%" style="width:100%; border:1px solid #cbd5e1; border-radius:8px; padding:10px 12px; font-size:13.5px; box-sizing:border-box;">
+                <div id="manualAssetYieldHint" style="font-size:11.5px; color:#0284c7; margin-top:5px; font-weight:500;">
+                  Rentabilidade estimada: ~1,20% ao mês
+                </div>
+              </div>
+
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                <div>
+                  <label style="display:block; font-size:12.5px; font-weight:700; color:#334155; margin-bottom:6px;">
+                    Valor alocado (R$)
+                  </label>
+                  <input type="text" inputmode="decimal" id="manualAssetAmount" placeholder="R$ 10.000,00" style="width:100%; border:1px solid #cbd5e1; border-radius:8px; padding:10px 12px; font-size:13.5px; box-sizing:border-box;">
+                </div>
+                <div>
+                  <label style="display:block; font-size:12.5px; font-weight:700; color:#334155; margin-bottom:6px;">
+                    Peso na carteira (%)
+                  </label>
+                  <input type="number" step="0.1" min="0" max="100" id="manualAssetWeight" placeholder="10.0" style="width:100%; border:1px solid #cbd5e1; border-radius:8px; padding:10px 12px; font-size:13.5px; box-sizing:border-box;">
+                </div>
+              </div>
+            </div>
+            <div class="import-modal-footer" style="display:flex; justify-content:flex-end; gap:10px; padding:16px 20px; border-top:1px solid #e2e8f0; background:#f8fafc;">
+              <button type="button" id="manualAssetCancelBtn" style="background:#fff; border:1px solid #cbd5e1; color:#475569; padding:9px 16px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer;">
+                Cancelar
+              </button>
+              <button type="button" id="manualAssetSubmitBtn" style="background:#1e293b; border:none; color:#fff; padding:9px 20px; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer;">
+                + Adicionar à Carteira
+              </button>
             </div>
           </div>
         </div>
