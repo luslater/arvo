@@ -544,28 +544,45 @@ export default function PreviewUserInterviewsPage() {
         <div className="ui-wrap">
           <div style={{ textAlign: "center", marginBottom: "48px" }}>
             <div className="ui-eyebrow"><span className="ui-eyebrow-dot"></span> Método ARVO</div>
-            <h2 className="ui-serif" style={{ fontSize: "clamp(32px, 3.8vw, 48px)", color: "var(--ink-navy)", margin: 0 }}>
-              Um plano. <i style={{ fontStyle: "italic", color: "var(--deep-teal)" }}>Três movimentos.</i>
+            <h2 className="ui-serif" style={{ fontSize: "clamp(30px, 3.8vw, 48px)", color: "var(--ink-navy)", margin: 0 }}>
+              Sua vida financeira, <i style={{ fontStyle: "italic", color: "var(--deep-teal)" }}>com um caminho claro.</i>
             </h2>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "20px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "20px" }}>
             {[
-              { idx: "01 — Planeje", title: "Metas claras", desc: "Transforme patrimônio, renda e objetivos em metas financeiras claras e mensuráveis." },
-              { idx: "02 — Invista", title: "Estratégia sob medida", desc: "Organize sua estratégia de investimentos de acordo com seu perfil, patrimônio e momento de vida." },
-              { idx: "03 — Acompanhe", title: "Evolução contínua", desc: "Veja sua evolução e ajuste o plano conforme sua vida e seus objetivos mudam." },
+              { 
+                idx: "01 — ENTENDA SEU MOMENTO", 
+                title: "Clareza sobre onde você está", 
+                desc: "Mapeamos suas finanças, identificamos o que precisa de atenção e definimos as prioridades para construir seu plano." 
+              },
+              { 
+                idx: "02 — PLANEJE SEU FUTURO", 
+                title: "Seus objetivos viram um plano", 
+                desc: "Estruturamos sua aposentadoria-base e seus demais objetivos, calculando quanto guardar, por quanto tempo e quais ajustes fazer." 
+              },
+              { 
+                idx: "03 — SAIBA ONDE INVESTIR", 
+                title: "Carteiras prontas para seu perfil", 
+                desc: "Você recebe uma carteira com investimentos selecionados e a distribuição dos recursos alinhada ao seu perfil, aos prazos e aos objetivos." 
+              },
+              { 
+                idx: "04 — AVANCE COM ORIENTAÇÃO", 
+                title: "Tecnologia e pessoas ao seu lado", 
+                desc: "Acompanhe seu plano na plataforma e conte com nossa equipe para tirar dúvidas, orientar os próximos passos e ajustar o caminho." 
+              },
             ].map((step, idx) => (
-              <div key={idx} style={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: "16px", padding: "32px 28px", display: "flex", flexDirection: "column" }}>
-                <span className="ui-mono" style={{ fontSize: "11.5px", fontWeight: 600, color: "var(--deep-teal)" }}>{step.idx}</span>
-                <h3 className="ui-serif" style={{ fontSize: "22px", color: "var(--ink-navy)", margin: "12px 0 8px 0" }}>{step.title}</h3>
-                <p style={{ fontSize: "14.5px", color: "var(--text-secondary)", lineHeight: "1.6", margin: 0 }}>{step.desc}</p>
+              <div key={idx} style={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: "16px", padding: "28px 24px", display: "flex", flexDirection: "column" }}>
+                <span className="ui-mono" style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.04em", color: "var(--deep-teal)" }}>{step.idx}</span>
+                <h3 className="ui-serif" style={{ fontSize: "20px", color: "var(--ink-navy)", margin: "12px 0 8px 0", lineHeight: "1.25" }}>{step.title}</h3>
+                <p style={{ fontSize: "14px", color: "var(--text-secondary)", lineHeight: "1.6", margin: 0 }}>{step.desc}</p>
               </div>
             ))}
           </div>
 
           <div style={{ textAlign: "center", marginTop: "40px" }}>
             <a href="/register" className="ui-btn ui-btn-primary" style={{ fontSize: "15px", padding: "15px 30px" }}>
-              Descobrir meu plano →
+              Começar meu planejamento →
             </a>
           </div>
         </div>
