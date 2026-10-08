@@ -3412,14 +3412,14 @@ export default function MinhaCarteiraPage() {
             <details class="notes-toggle">
               <summary>Sobre os dados e critérios desta simulação</summary>
               <div class="notes">
-                <div class="note-item"><b>Fonte:</b> retornos mensais reais da sua planilha oficial (abas "Fundos Selecionados" e "Dados Mês a mês") — 30 ativos, de janeiro de 2023 a maio de 2026 (41 meses). Padronizei todos os fundos nesse mesmo período de 41 meses para poder comparar qualquer combinação de forma justa (os 7 fundos que só entraram para viabilizar as carteiras recomendadas oficiais têm dado real só até mai/2026, um mês a menos do que os 23 originais tinham antes).</div>
+                <div class="note-item"><b>Fonte:</b> retornos mensais reais da sua planilha oficial (abas "Fundos Selecionados" e "Dados Mês a mês") — ativos de janeiro de 2023 a setembro de 2026 (45 meses). Padronizei todos os fundos nesse mesmo período de 45 meses para poder comparar qualquer combinação de forma justa.</div>
                 <div class="note-item"><b>Carteiras recomendadas:</b> o seletor cria qualquer uma das 36 carteiras oficiais, usando os pesos da planilha “Carteiras Recomendadas”, sem alterar as versões já montadas.</div>
                 <div class="note-item"><b>Atenção ao CDBI11:</b> ele foi deixado de fora porque sua série na fonte está idêntica à do Tesouro Selic e precisa ser corrigida antes de voltar à simulação.</div>
                 <div class="note-item"><b>Dados incompletos:</b> IVVB11, NASD11 e WRLD11 ainda não têm gestora ou classificação de risco cadastradas.</div>
                 <div class="note-item"><b>Percentual não alocado</b> vira caixa parado (rendimento zero), não CDI. Se a soma passar de 100%, o simulador simplesmente pondera os fundos do jeito que você configurou, sem travar — é o modo livre que você pediu (isso vale para as carteiras que você monta manualmente; as recomendadas já vêm fechadas em 100%).</div>
                 <div class="note-item"><b>Sem limites de concentração</b> nas carteiras montadas manualmente: ao contrário das carteiras recomendadas (que já respeitam os tetos de 10% por fundo / 15% por gestora da planilha oficial), aqui não há trava — os números de concentração em "ver mais números" são só informativos.</div>
-                <div class="note-item">Os 41 meses de histórico (~3,4 anos) ainda são um período curto, especialmente para os fundos de ações (Ataque) — vale cautela antes de tirar conclusões definitivas só pelo ranking.</div>
-                <div class="note-item"><b>Retorno a.a. / vol / queda máxima</b> mostrados na lista lateral são calculados sobre o fundo isoladamente (100% dele), no mesmo período de 41 meses — servem para comparar fundos entre si, não como previsão de retorno futuro.</div>
+                <div class="note-item">Os 45 meses de histórico (~3,8 anos) ainda são um período curto, especialmente para os fundos de ações (Ataque) — vale cautela antes de tirar conclusões definitivas só pelo ranking.</div>
+                <div class="note-item"><b>Retorno a.a. / vol / queda máxima</b> mostrados na lista lateral são calculados sobre o fundo isoladamente (100% dele), no mesmo período de 45 meses — servem para comparar fundos entre si, não como previsão de retorno futuro.</div>
               </div>
             </details>
           </section>

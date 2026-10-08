@@ -1665,7 +1665,7 @@ export default function Diagnostic() {
                 </h2>
 
                 <p className="text-stone-600 text-sm sm:text-base max-w-2xl mb-6">
-                  A comparação abaixo utiliza dados consolidados da <strong>Planilha Oficial ARVO</strong>, com os pesos vigentes aplicados aos retornos mensais de janeiro de 2023 a agosto de 2026.
+                  A comparação abaixo utiliza dados consolidados da <strong>Planilha Oficial ARVO</strong>, com os pesos vigentes aplicados aos retornos mensais de janeiro de 2023 a setembro de 2026.
                 </p>
 
                 {/* Gráfico Comparativo */}
@@ -1885,7 +1885,7 @@ export default function Diagnostic() {
                   Emitido em {new Date().toLocaleDateString('pt-BR')}. Dados informados: patrimônio {money(input.initial)}, aporte {money(input.monthly)}, renda desejada {money(input.income)}. Inflação média: {pct(input.inflation)} a.a. Retirada inicial de {pct(input.withdrawal)} a.a. Simulação determinística com taxa e aportes constantes por até 60 anos.
                 </p>
                 <p>
-                  Fonte interna: Planilha Oficial .xlsx, abas Geral Light - IG, Carteira IG, Carteira IQ e Dados (séries de janeiro de 2023 a agosto de 2026). Retornos passados não representam garantia de rentabilidade futura. Este relatório não substitui análise individual de suitability.
+                  Fonte interna: Planilha Oficial .xlsx, abas Geral Light - IG, Carteira IG, Carteira IQ e Dados (séries de janeiro de 2023 a setembro de 2026). Retornos passados não representam garantia de rentabilidade futura. Este relatório não substitui análise individual de suitability.
                 </p>
               </div>
             </section>
