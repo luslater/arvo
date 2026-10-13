@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useRef } from "react"
-import { useSession } from "next-auth/react"
 import { initCarta } from "./carta-init"
 
 /**
@@ -11,32 +10,17 @@ import { initCarta } from "./carta-init"
  */
 export function CartaView({ html }: { html: string }) {
     const ref = useRef<HTMLDivElement>(null)
-    const { data: session } = useSession()
 
     useEffect(() => {
         const el = ref.current
         if (!el) return
         el.innerHTML = html
-
-        if (session?.user) {
-            const loginBtn = el.querySelector<HTMLAnchorElement>('.nav-cta a[href="/login"]')
-            if (loginBtn) {
-                loginBtn.href = "/dashboard"
-                loginBtn.textContent = "Meu Painel"
-            }
-        }
-
         return initCarta()
-    }, [html, session])
+    }, [html])
 
     return (
         <div className="carta">
-            <div
-                ref={ref}
-                className="carta-frame"
-                suppressHydrationWarning
-                dangerouslySetInnerHTML={{ __html: html }}
-            />
+            <div ref={ref} className="carta-frame" />
             <div className="tip" aria-hidden="true" />
         </div>
     )

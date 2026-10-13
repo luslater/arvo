@@ -54,8 +54,8 @@ var H={
    con:{pos:76,inf:13,pre:1,mm:7,br:0,intl:3,alt:0}},
  arvo:{name:'ARVO · Robustez 360',date:'Out/26',sub:{con:'Abrigo · geral',mod:'Visão · geral',arr:'Oceano · geral'},
    con:{pos:100,inf:0,pre:0,mm:0,br:0,intl:0,alt:0},
-   mod:{pos:68,inf:0,pre:0,mm:5,br:10,intl:17,alt:0},
-   arr:{pos:43,inf:0,pre:0,mm:8,br:20,intl:29,alt:0}}
+   mod:{pos:40,inf:28,pre:0,mm:5,br:10,intl:17,alt:0},
+   arr:{pos:16,inf:27,pre:0,mm:8,br:20,intl:29,alt:0}}
 };
 var F={ /* ARVO fine */
  cls:[['Pós-fixado (Selic / DI)','#123044'],['Crédito privado CDI+','#2B6E76'],['IPCA+ título público','#1F674F'],['Debêntures incentivadas','#4FA080'],['Prefixado','#B9D6C8'],['Multimercados','#C08A34'],['Ações Brasil','#B34A3C'],['Internacional','#5687AF'],['Alternativos / FIIs','#8B7355']],
@@ -105,7 +105,7 @@ function casas(p){var g=document.getElementById('pies-casas');if(!g)return;var k
  st.innerHTML=rows.map(function(k){var h=H[k],o=h[p];return '<div class="stack-row'+(k==='arvo'?' me':'')+'"><div class="lbl">'+h.name+'<small>'+h.sub[p]+' · '+h.date+'</small></div><div class="stack-bar">'+K.filter(function(c){return o[c]>0}).map(function(c){return '<span data-t="'+h.name+' · '+N[c]+': '+fmt(o[c])+'" style="flex-basis:'+o[c]+'%;background:'+C[c]+';color:'+(c==='pre'?'#0E1511':'#fff')+'">'+(o[c]>=7?fmt(o[c]):'')+'</span>'}).join('')+'</div></div>'}).join('');
  st.querySelectorAll('[data-t]').forEach(function(s){s.addEventListener('mousemove',function(e){showTip(e,s.getAttribute('data-t'))});s.addEventListener('mouseleave',hideTip);s.addEventListener('touchstart',function(e){showTip(e,s.getAttribute('data-t'))},{passive:true})});
  document.getElementById('stack-legend').innerHTML=K.map(function(c){return '<span><i style="background:'+C[c]+'"></i>'+N[c]+'</span>'}).join('');}
-casas('con');seg('perfil-casas',casas);
+casas('mod');seg('perfil-casas',casas);
 var pg=document.getElementById('pie-btg-global');if(pg)donut(pg,GLOBAL,'BTG Global');
 /* arvo */
 function arvo(p){var f=F[p],el=document.getElementById('pie-arvo');if(!el)return;
