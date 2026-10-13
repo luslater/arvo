@@ -985,3 +985,40 @@
   .carta section { break-inside: avoid; padding: 40px 0; }
   .carta .dark { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
+
+/* ---------- simulador de impacto ---------- */
+.carta .impacto-sim {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 36px 32px;
+  box-shadow: 0 4px 20px rgba(18, 48, 68, 0.04);
+}
+.carta .sim-ctrl {
+  background: var(--alt);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 20px 22px;
+}
+.carta .sim-ctrl input[type="range"] {
+  accent-color: var(--teal);
+  cursor: pointer;
+  height: 6px;
+  width: 100%;
+}
+.carta .sim-res-card {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 26px 20px;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.carta .sim-res-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(18, 48, 68, 0.06);
+}
+@media (max-width: 768px) {
+  .carta .impacto-sim { padding: 24px 18px; }
+  .carta .sim-ctrl { padding: 16px 14px; }
+}

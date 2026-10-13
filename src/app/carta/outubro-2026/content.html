@@ -382,19 +382,6 @@
       <div id="aa-bars" class="bars" aria-live="polite"></div>
       <p class="cap" id="aa-cap">Carteiras oficiais ARVO (Robustez 360), com a mesma base da Bússola: composição atual aplicada aos retornos mensais reais dos fundos até setembro de 2026, rebalanceamento mensal, sem custos e impostos. É simulação, não rentabilidade obtida por clientes. "% do CDI" compara o ganho acumulado da carteira com o do CDI no período.</p>
     </div>
-
-    <h3 class="mt-48">O que os grandes alocadores ensinam</h3>
-    <div class="card mt-24" style="padding:28px 32px">
-      <ul class="mini" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));gap:14px 28px;margin:0">
-        <li><b>Harry Markowitz (1952):</b> Descorrelação reduz o risco global sem cortar o retorno na mesma proporção. <i>(Na ARVO: correlação penaliza o risco de cada carteira).</i></li>
-        <li><b>Brinson, Hood & Beebower (1986):</b> A alocação por classes dita ~90% da variação dos retornos no tempo, antes da escolha de fundos. <i>(Na ARVO: estrutura por classe antes do produto).</i></li>
-        <li><b>David Swensen (Yale):</b> Alocação disciplinada e rebalanceamento por bandas superam o timing de mercado. <i>(Na ARVO: bandas fixas de rebalanceamento).</i></li>
-        <li><b>John Bogle (Vanguard):</b> O custo é a única certeza antes de investir; minimize atritos para preservar retorno líquido. <i>(Na ARVO: modelo fee-only, sem rebates).</i></li>
-        <li><b>William Bernstein (2002):</b> O maior perigo é comportamental (girar na euforia e no pânico); o plano deve anteceder crises. <i>(Na ARVO: regras escritas antes da turbulência).</i></li>
-        <li><b>Ray Dalio (Bridgewater):</b> Equilíbrio de risco entre cenários de inflação e crescimento, sem apostas concentradas. <i>(Na ARVO: testes de estresse e mapa de lacunas).</i></li>
-      </ul>
-      <p class="note mt-24" style="margin-bottom:0"><b>Contrapontos práticos:</b> Swensen questionaria excesso de crédito privado; Bogle cobraria taxas de fundos ativos; Dalio exigiria maior proteção contra inflação — lições que usamos diretamente para calibrar nossas bandas de risco.</p>
-    </div>
   </div>
 </section>
 
@@ -416,26 +403,6 @@
       <h3>Comparativo do perfil selecionado</h3>
       <div id="stack-casas" class="stack" aria-live="polite"></div>
       <div id="stack-legend" class="legend-row"></div>
-    </div>
-
-    <div class="grid g2 mt-32">
-      <div class="chart-card">
-        <h3>BTG Global · parcela em dólar (perfil moderado)</h3>
-        <div class="pie-wrap" id="pie-btg-global"></div>
-        <p class="cap">O BTG trata a parcela internacional em uma carteira separada, em dólar. Por isso ela não aparece na carteira Brasil acima.</p>
-      </div>
-      <div class="card">
-        <h3>Onde as casas convergem e onde divergem</h3>
-        <ul class="check">
-          <li><b>Juro real (IPCA+):</b> maior convergência de mercado (~28% na média das casas no moderado e ~27% no arrojado). A ARVO adota essa fatia reduzindo a âncora de pós-fixado puro.</li>
-          <li><b>Pós-fixado:</b> base de liquidez e estabilidade em todos os conservadores, de 48% (Safra) a 81% (Nu).</li>
-        </ul>
-        <ul class="check warn mt-24">
-          <li><b>Prefixado:</b> 11% a 14% no moderado de XP, Santander e Safra; 2,5% no BTG</li>
-          <li><b>Bolsa brasileira:</b> no moderado, de 2% (Santander) a 39% (Nu)</li>
-          <li><b>Internacional:</b> de 3% no Itaú a 16% no moderado do Safra; BTG em carteira separada</li>
-        </ul>
-      </div>
     </div>
 
     <h3 class="mt-48">Visão tática declarada por cada casa</h3>
@@ -538,17 +505,42 @@
 <!-- 11 IMPACTO -->
 <section id="impacto">
   <div class="wrap">
-    <div class="sec-head"><div><p class="eyebrow"><span class="dot"></span>11 · O impacto</p><h2>Pequenas decisões, repetidas por muitos anos, <i>fazem uma diferença enorme.</i></h2></div></div>
-    <div class="grid g2 mt-48" style="align-items:center">
-      <div>
-        <p class="lead" style="margin-top:0">Um ponto percentual de retorno real a mais por ano parece pouco. Em R$ 1 milhão, ao longo de 20 anos, é a diferença entre cerca de R$ 2,65 milhões e R$ 3,21 milhões, em valores de hoje.</p>
-        <p class="note mt-24">Exemplo ilustrativo: 5% versus 6% ao ano acima da inflação, juros compostos, sem aportes. Não é promessa de retorno.</p>
+    <div class="sec-head"><div><p class="eyebrow"><span class="dot"></span>11 · O impacto</p><h2>Pequenas decisões, repetidas no tempo, <i>fazem uma diferença enorme.</i></h2></div><p class="lead">Simule abaixo quanto uma rentabilidade adicional no seu portfólio — obtida via otimização de custos, melhor alocação e disciplina — agrega em valores reais ao seu patrimônio em 1, 5 e 10 anos.</p></div>
+
+    <div class="impacto-sim mt-40">
+      <div class="grid g2" style="gap:24px">
+        <div class="sim-ctrl">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+            <label for="sim-patrimonio" style="font-size:14px;font-weight:700;color:var(--navy)">Patrimônio investido</label>
+            <span id="sim-patrimonio-val" style="font-family:'IBM Plex Mono',monospace;font-size:16px;font-weight:700;color:var(--teal)">R$ 1 milhão</span>
+          </div>
+          <input type="range" id="sim-patrimonio" min="0" max="16" step="1" value="4">
+          <div style="display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted);font-family:'IBM Plex Mono',monospace;margin-top:6px">
+            <span>R$ 200 mil</span>
+            <span>R$ 10 mi</span>
+            <span>R$ 1 bi</span>
+          </div>
+        </div>
+
+        <div class="sim-ctrl">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+            <label for="sim-delta" style="font-size:14px;font-weight:700;color:var(--navy)">Rentabilidade adicional no portfólio</label>
+            <span id="sim-delta-val" style="font-family:'IBM Plex Mono',monospace;font-size:16px;font-weight:700;color:var(--teal)">+1,0% a.a.</span>
+          </div>
+          <input type="range" id="sim-delta" min="0.2" max="3.0" step="0.1" value="1.0">
+          <div style="display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted);font-family:'IBM Plex Mono',monospace;margin-top:6px">
+            <span>+0,2% a.a.</span>
+            <span>+1,5% a.a.</span>
+            <span>+3,0% a.a.</span>
+          </div>
+        </div>
       </div>
-      <div class="kpi" style="padding:32px">
-        <div class="k">Diferença em 20 anos</div>
-        <div class="v" style="font-size:56px;color:var(--green)">R$ 554 mil</div>
-        <div class="s">em poder de compra de hoje, vinda de 1 ponto percentual ao ano</div>
-      </div>
+
+      <div class="grid g3 mt-32" id="sim-results"></div>
+
+      <p class="cap mt-24" style="text-align:center;font-size:12.5px;color:var(--muted);margin-bottom:0">
+        Cálculo a juros compostos considerando taxa real base de 6% a.a. (juro real de longo prazo do Brasil) comparada ao ganho com o percentual adicional selecionado, sem novos aportes.
+      </p>
     </div>
 
     <div class="grid g3 mt-48">

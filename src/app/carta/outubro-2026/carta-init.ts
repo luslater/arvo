@@ -397,7 +397,73 @@ setTimeout(function(){if(!started){started=true;show(0)}},4000);
 })();
 }
 
-const BLOCOS = [navegacao, bloco1, bloco2, bloco3, bloco4, bloco5, bloco6, bloco7];
+function blocoImpacto() {
+  var pInput = document.getElementById('sim-patrimonio');
+  var dInput = document.getElementById('sim-delta');
+  var pVal = document.getElementById('sim-patrimonio-val');
+  var dVal = document.getElementById('sim-delta-val');
+  var resBox = document.getElementById('sim-results');
+  if (!pInput || !dInput || !resBox) return;
+
+  var PATRIMONIOS = [
+    200000, 300000, 500000, 750000, 1000000, 2000000, 3000000, 5000000,
+    10000000, 20000000, 30000000, 50000000, 100000000, 200000000, 300000000,
+    500000000, 1000000000
+  ];
+
+  function formatMoney(val) {
+    if (val >= 1e9) {
+      var b = val / 1e9;
+      return 'R$ ' + (b % 1 === 0 ? b : b.toFixed(1).replace('.', ',')) + ' bilhão' + (b > 1 ? 's' : '');
+    }
+    if (val >= 1e6) {
+      var m = val / 1e6;
+      return 'R$ ' + (m % 1 === 0 ? m : m.toFixed(1).replace('.', ',')) + ' milhão' + (m > 1 ? 'ões' : '');
+    }
+    if (val >= 1e3) {
+      var k = val / 1e3;
+      return 'R$ ' + (k % 1 === 0 ? k : k.toFixed(0)) + ' mil';
+    }
+    return 'R$ ' + Math.round(val).toLocaleString('pt-BR');
+  }
+
+  function formatExact(val) {
+    return 'R$ ' + Math.round(val).toLocaleString('pt-BR');
+  }
+
+  function update() {
+    var pIdx = Math.min(PATRIMONIOS.length - 1, Math.max(0, +pInput.value));
+    var P = PATRIMONIOS[pIdx];
+    var deltaPct = +dInput.value;
+
+    if (pVal) pVal.textContent = formatMoney(P);
+    if (dVal) dVal.textContent = '+' + deltaPct.toFixed(1).replace('.', ',') + '% a.a.';
+
+    var r0 = 0.06; // 6% juro real de longo prazo
+    var r1 = r0 + (deltaPct / 100);
+
+    var years = [1, 5, 10];
+    resBox.innerHTML = years.map(function(t) {
+      var v0 = P * Math.pow(1 + r0, t);
+      var v1 = P * Math.pow(1 + r1, t);
+      var diff = v1 - v0;
+      var label = t === 1 ? 'Em 1 ano' : ('Em ' + t + ' anos');
+
+      return '<div class="sim-res-card">' +
+        '<div class="k" style="font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted)">' + label + '</div>' +
+        '<div class="v" style="font-size:clamp(22px, 2.2vw, 30px);color:var(--green);font-weight:800;margin:10px 0 6px">+ ' + formatExact(diff) + '</div>' +
+        '<div class="s" style="font-size:12.5px;color:var(--body);line-height:1.4">valor agregado a mais no bolso</div>' +
+        '<div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)">Patrimônio final: <b style="color:var(--navy)">' + formatMoney(v1) + '</b></div>' +
+      '</div>';
+    }).join('');
+  }
+
+  pInput.addEventListener('input', update);
+  dInput.addEventListener('input', update);
+  update();
+}
+
+const BLOCOS = [navegacao, bloco1, bloco2, bloco3, bloco4, bloco5, bloco6, bloco7, blocoImpacto];
 
 export function initCarta(): () => void {
   let vivo = true;
