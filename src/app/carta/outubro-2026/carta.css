@@ -222,6 +222,39 @@
   max-width: 680px;
   margin-top: 14px;
 }
+.carta .sec-head.eyebrow-only,
+.carta .sec-head:not(:has(h2)) {
+  margin-bottom: 0;
+}
+.carta .sec-head.eyebrow-only .eyebrow,
+.carta .sec-head:not(:has(h2)) .eyebrow {
+  margin-bottom: 0;
+}
+
+/* Símbolo de marca registrada (CFP®) */
+.carta sup,
+.carta .reg {
+  font-size: 0.46em;
+  line-height: 0;
+  vertical-align: 0.65em;
+  font-style: normal;
+  font-weight: 600;
+  margin-left: 2px;
+  display: inline-block;
+}
+
+#quem-sou .sec-head h2 {
+  font-size: clamp(28px, 3.4vw, 42px);
+}
+#quem-sou .sec-head h2 strong {
+  font-weight: 600;
+  color: #ffffff;
+}
+#quem-sou .sec-head h2 i {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--mint-on-dark);
+}
 
 /* ---------- hero ---------- */
 .carta .hero { padding: 72px 0 64px; }
