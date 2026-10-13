@@ -2,7 +2,7 @@
 <header class="topnav">
   <div class="wrap nav-inner">
     <a class="logo" href="/"><img src="/arvo-simbolo-green.png" alt="" width="24" height="24"><span>ARVO</span></a>
-    <nav class="nav-links" aria-label="Seções da carta"><a href="#metodo">Metodologia</a><a href="#cenario">Cenário</a><a href="#gestores">Gestores</a><a href="#por-que-aa">Asset allocation</a><a href="#casas">Casas</a><a href="#alocacao">Carteiras</a><a href="#posicoes">Posições</a></nav>
+    <nav class="nav-links" aria-label="Seções da carta"><a href="#metodo">Metodologia</a><a href="#cenario">Cenário</a><a href="#gestores">Gestores</a><a href="#por-que-aa">Asset allocation</a><a href="#alocacao">Carteiras</a><a href="#posicoes">Considerações</a></nav>
   </div>
 </header>
 <main>
@@ -23,7 +23,7 @@
       </dl>
       <nav class="toc" aria-label="Nesta carta">
         <p class="toc-t">Nesta carta</p>
-        <ol><li><a href="#arvo"><span>01</span>A ARVO</a></li><li><a href="#quem-sou"><span>02</span>Quem sou</a></li><li><a href="#metodo"><span>03</span>Metodologia</a></li><li><a href="#cenario"><span>04</span>Cenário</a></li><li><a href="#gestores"><span>05</span>Gestores</a></li><li><a href="#por-que-aa"><span>06</span>Asset allocation</a></li><li><a href="#casas"><span>07</span>Casas</a></li><li><a href="#alocacao"><span>08</span>Carteiras ARVO</a></li><li><a href="#posicoes"><span>09</span>Posições</a></li><li><a href="#trabalho"><span>10</span>Meu trabalho</a></li><li><a href="#impacto"><span>11</span>O impacto</a></li></ol>
+        <ol><li><a href="#arvo"><span>01</span>A ARVO</a></li><li><a href="#quem-sou"><span>02</span>Quem sou</a></li><li><a href="#metodo"><span>03</span>Metodologia</a></li><li><a href="#cenario"><span>04</span>Cenário</a></li><li><a href="#gestores"><span>05</span>Gestores</a></li><li><a href="#por-que-aa"><span>06</span>Asset allocation</a></li><li><a href="#alocacao"><span>07</span>Carteiras ARVO</a></li><li><a href="#posicoes"><span>08</span>Considerações</a></li><li><a href="#trabalho"><span>09</span>Meu trabalho</a></li><li><a href="#impacto"><span>10</span>O impacto</a></li></ol>
       </nav>
     </aside>
   </div>
@@ -298,16 +298,11 @@
   </div>
 </section>
 
-<!-- 6 POR QUE AA -->
+<!-- 6 ASSET ALLOCATION -->
 <section id="por-que-aa">
+  <div id="casas"></div>
   <div class="wrap">
-    <div class="sec-head"><div><p class="eyebrow"><span class="dot"></span>06 · Asset allocation</p><h2>A decisão que mais pesa no resultado <i>não é qual fundo comprar.</i></h2></div><p class="lead">É quanto colocar em cada classe de ativo. Estudos clássicos sobre carteiras institucionais mostram que a política de alocação explica a maior parte da variação dos retornos ao longo do tempo, muito mais do que a escolha de ativos ou o momento de entrada.</p></div>
-
-    <div class="grid g3 mt-48">
-      <div class="kpi"><div class="k">Variação explicada</div><div class="v">~90%</div><div class="s">da oscilação dos retornos ao longo do tempo vem da política de alocação (Brinson, Hood e Beebower; Ibbotson e Kaplan).</div></div>
-      <div class="kpi"><div class="k">Risco</div><div class="v">10×</div><div class="s">é quanto a volatilidade das carteiras ARVO muda do Abrigo (0,5% a.a.) para o Oceano (4,9% a.a.) em 36 meses, só mudando os pesos por classe.</div></div>
-      <div class="kpi"><div class="k">Disciplina</div><div class="v">Bandas</div><div class="s">Rebalancear quando uma classe sai da banda obriga a vender o que subiu e comprar o que caiu.</div></div>
-    </div>
+    <div class="sec-head"><div><p class="eyebrow"><span class="dot"></span>06 · Asset allocation</p><h2>A política de alocação <i>e o que as casas recomendam.</i></h2></div><p class="lead">BTG, XP, Santander, Safra, Itaú e Nu Asset nas mesmas sete classes, e como a disciplina de pesos por classe dita a consistência das carteiras no tempo.</p></div>
 
     <div class="chart-card mt-32">
       <div class="chart-head">
@@ -324,16 +319,9 @@
       <div id="aa-bars" class="bars" aria-live="polite"></div>
       <p class="cap" id="aa-cap">Carteiras oficiais ARVO (Robustez 360), com a mesma base da Bússola: composição atual aplicada aos retornos mensais reais dos fundos até setembro de 2026, rebalanceamento mensal, sem custos e impostos. É simulação, não rentabilidade obtida por clientes. "% do CDI" compara o ganho acumulado da carteira com o do CDI no período.</p>
     </div>
-  </div>
-</section>
 
-
-<!-- 7 CASAS -->
-<section id="casas">
-  <div class="wrap">
-    <div class="sec-head"><div><p class="eyebrow"><span class="dot"></span>07 · O que as casas recomendam</p><h2>Seis casas, <i>lado a lado.</i></h2></div><p class="lead">BTG, XP, Santander, Safra, Itaú e Nu Asset: as carteiras públicas mais recentes, nas mesmas sete classes. Escolha o perfil e passe o cursor nas fatias.</p></div>
-
-    <div class="seg seg-lg mt-32" role="tablist" aria-label="Perfil" id="perfil-casas">
+    <h3 class="mt-48">Seis casas, lado a lado</h3>
+    <div class="seg seg-lg mt-24" role="tablist" aria-label="Perfil" id="perfil-casas">
       <button data-p="con" role="tab" aria-selected="false">Conservador</button>
       <button class="on" data-p="mod" role="tab" aria-selected="true">Moderado</button>
       <button data-p="arr" role="tab" aria-selected="false">Arrojado / Sofisticado</button>
@@ -367,10 +355,10 @@
   </div>
 </section>
 
-<!-- 8 CARTEIRA ARVO -->
+<!-- 7 CARTEIRA ARVO -->
 <section id="alocacao" class="tint">
   <div class="wrap">
-    <div class="sec-head"><div><p class="eyebrow"><span class="dot"></span>08 · Carteiras ARVO · Robustez 360</p><h2>Nossas carteiras, <i>lidas à luz das cartas do mês.</i></h2></div><p class="lead">Nove degraus de risco, para investidor geral e qualificado. Escolha a carteira e veja classes, fundos e o que cada gestora disse no mês.</p></div>
+    <div class="sec-head"><div><p class="eyebrow"><span class="dot"></span>07 · Carteiras ARVO · Robustez 360</p><h2>Nossas carteiras, <i>lidas à luz das cartas do mês.</i></h2></div><p class="lead">Nove degraus de risco, para investidor geral e qualificado. Escolha a carteira e veja classes, fundos e o que cada gestora disse no mês.</p></div>
 
     <div class="cart-controls mt-32">
       <div class="seg seg-lg" role="tablist" aria-label="Público" id="pub-seg">
@@ -410,20 +398,20 @@
   </div>
 </section>
 
-<!-- 9 POSICOES -->
+<!-- 8 CONSIDERACOES -->
 <section id="posicoes">
   <div class="wrap">
-    <div class="sec-head"><div><p class="eyebrow"><span class="dot"></span>09 · Implicações para a carteira</p><h2>Precisamos ter opinião. <i>Não podemos depender dela.</i></h2></div><p class="lead">O cenário traduzido em classes de ativos. Não é lista de compras: cada movimento só faz sentido dentro do plano e das bandas.</p></div>
+    <div class="sec-head"><div><p class="eyebrow"><span class="dot"></span>08 · Considerações para a carteira</p><h2>Observações e diretrizes. <i>O que considerar em cada classe.</i></h2></div><p class="lead">Onde faz sentido alocar com disciplina, pontos de monitoramento e cuidados essenciais no cenário atual, sempre respeitando os objetivos do seu plano.</p></div>
 
     <div class="grid g3 mt-48"><div class="pos go"><span class="lbl">Faz sentido considerar</span><h3>Inflação de longo prazo (IPCA+)</h3><ul class="mini"><li>Juro real entre os mais altos do mundo</li><li>Protege objetivos longos</li><li>Já subiu em outubro: é posição de prazo</li></ul></div><div class="pos go"><span class="lbl">Faz sentido considerar</span><h3>Pós-fixado como âncora</h3><ul class="mini"><li>Selic a 13,75%</li><li>Liquidez para atravessar o 2º turno sem pressa</li></ul></div><div class="pos go"><span class="lbl">Faz sentido considerar</span><h3>Internacional gradual</h3><ul class="mini"><li>Dólar abaixo de R$ 5</li><li>Aportes escalonados, sem tentar acertar o câmbio</li></ul></div><div class="pos wait"><span class="lbl">Acompanhar de perto</span><h3>Bolsa brasileira</h3><ul class="mini"><li>Assimetria se vier agenda fiscal crível</li><li>Muito já subiu em um dia: rebalancear pela banda</li></ul></div><div class="pos wait"><span class="lbl">Acompanhar de perto</span><h3>Debêntures incentivadas</h3><ul class="mini"><li>Spreads nos maiores níveis em dois anos</li><li>Mais resgates à frente: entrada gradual</li></ul></div><div class="pos wait"><span class="lbl">Acompanhar de perto</span><h3>Tecnologia e IA nos EUA</h3><ul class="mini"><li>Ciclo real, mas dívida do setor crescendo</li><li>Via carteira global diversificada</li></ul></div><div class="pos avoid"><span class="lbl">Redobrar o cuidado</span><h3>Incentivadas com hedge para CDI</h3><ul class="mini"><li>Pior mês da história da categoria</li><li>Nas carteiras ARVO: 4% a 13%, em monitoramento</li></ul></div><div class="pos avoid"><span class="lbl">Redobrar o cuidado</span><h3>Apostas na eleição</h3><ul class="mini"><li>Prefixado longo, bolsa alavancada ou dólar zerado</li><li>Se só funciona em um resultado, não é plano</li></ul></div><div class="pos avoid"><span class="lbl">Redobrar o cuidado</span><h3>Crédito longo com spread baixo</h3><ul class="mini"><li>Prêmio não paga prazo e liquidez</li><li>Spread baixo é preço, não segurança</li></ul></div></div>
   </div>
   </div>
 </section>
 
-<!-- 10 TRABALHO -->
+<!-- 9 TRABALHO -->
 <section id="trabalho" class="dark">
   <div class="wrap">
-    <div class="sec-head"><div><p class="eyebrow"><span class="dot"></span>10 · Meu trabalho</p><h2>Uma central de inteligência <i>a serviço do plano.</i></h2></div><p class="lead">Todo mês, um processo próprio coleta cartas de gestoras, relatórios de fundos e dados oficiais. A leitura e o julgamento são humanos.</p></div>
+    <div class="sec-head"><div><p class="eyebrow"><span class="dot"></span>09 · Meu trabalho</p><h2>Uma central de inteligência <i>a serviço do plano.</i></h2></div><p class="lead">Todo mês, um processo próprio coleta cartas de gestoras, relatórios de fundos e dados oficiais. A leitura e o julgamento são humanos.</p></div>
 
     <div class="grid g4 mt-48">
       <div class="card"><div class="k" style="font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#9DB3C2">Coletados em outubro</div><div style="font-size:44px;font-weight:800;color:#fff">66</div><p style="font-size:14px">documentos: cartas, relatórios, atas e séries de dados</p></div>
@@ -444,10 +432,10 @@
   </div>
 </section>
 
-<!-- 11 IMPACTO -->
+<!-- 10 IMPACTO -->
 <section id="impacto">
   <div class="wrap">
-    <div class="sec-head"><div><p class="eyebrow"><span class="dot"></span>11 · O impacto</p><h2>Pequenas decisões, repetidas no tempo, <i>fazem uma diferença enorme.</i></h2></div><p class="lead">Simule abaixo quanto uma rentabilidade adicional no seu portfólio — gerada por gestão profissional, custos menores e disciplina — gera a mais para o seu patrimônio em 1, 5 e 10 anos.</p></div>
+    <div class="sec-head"><div><p class="eyebrow"><span class="dot"></span>10 · O impacto</p><h2>Pequenas decisões, repetidas no tempo, <i>fazem uma diferença enorme.</i></h2></div><p class="lead">Simule abaixo quanto uma rentabilidade adicional no seu portfólio — gerada por gestão profissional, custos menores e disciplina — gera a mais para o seu patrimônio em 1, 5 e 10 anos.</p></div>
 
     <div class="impacto-sim mt-40">
       <div class="grid g2" style="gap:24px">
