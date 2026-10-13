@@ -22,6 +22,8 @@ export const metadata: Metadata = {
     twitter: { card: "summary_large_image", title: `${TITLE} | ARVO`, description: DESCRIPTION },
 }
 
+export const dynamic = "force-static"
+
 export default function CartaOutubro2026Page() {
     const html = fs.readFileSync(path.join(process.cwd(), "src/app/carta/outubro-2026/content.html"), "utf8")
     return <CartaView html={html} />

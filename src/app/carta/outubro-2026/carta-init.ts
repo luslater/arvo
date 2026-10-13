@@ -416,6 +416,14 @@ function blocoImpacto() {
 
   pInput.max = String(PATRIMONIOS.length - 1);
 
+  var midSpan = document.getElementById('sim-patrimonio-mid');
+  if (midSpan) midSpan.textContent = 'R$ 100 mi';
+  var ctrl = pInput.closest ? pInput.closest('.sim-ctrl') : pInput.parentElement;
+  if (ctrl) {
+    var spans = ctrl.querySelectorAll('div:last-child span');
+    if (spans.length >= 2) spans[1].textContent = 'R$ 100 mi';
+  }
+
   function formatMoney(val) {
     if (val >= 1e9) {
       var b = val / 1e9;
