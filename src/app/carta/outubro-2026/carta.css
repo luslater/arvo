@@ -212,13 +212,16 @@
 .carta .dark a { color: var(--mint-on-dark); }
 
 .carta .sec-head {
-  display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
-  gap: 48px;
-  align-items: end;
-  margin-bottom: 8px;
+  display: block;
+  margin-bottom: 24px;
 }
-.carta .sec-head .lead { padding-bottom: 6px; }
+.carta .sec-head h2 {
+  max-width: 860px;
+}
+.carta .sec-head .lead {
+  max-width: 680px;
+  margin-top: 14px;
+}
 
 /* ---------- hero ---------- */
 .carta .hero { padding: 72px 0 64px; }
@@ -908,11 +911,9 @@
   .carta .nav-cta { margin-left: auto; }
 }
 @media (max-width: 960px) {
-  .carta .sec-head,
   .carta .hero-grid,
   .carta .cx-intro,
   .carta .pillars { grid-template-columns: 1fr; gap: 28px; }
-  .carta .sec-head { gap: 18px; }
   .carta .g3,
   .carta .g4 { grid-template-columns: 1fr 1fr; }
   .carta .tema-cols,
