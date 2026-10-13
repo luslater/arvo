@@ -406,19 +406,24 @@ function blocoImpacto() {
   if (!pInput || !dInput || !resBox) return;
 
   var PATRIMONIOS = [
-    200000, 300000, 500000, 750000, 1000000, 2000000, 3000000, 5000000,
-    10000000, 20000000, 30000000, 50000000, 100000000, 200000000, 300000000,
-    500000000, 1000000000
+    300000, 500000,
+    1000000, 2000000, 3000000, 4000000, 5000000, 6000000, 7000000, 8000000, 9000000, 10000000,
+    20000000, 30000000, 40000000, 50000000, 60000000, 70000000, 80000000, 90000000, 100000000,
+    150000000, 200000000, 250000000, 300000000, 350000000, 400000000, 450000000, 500000000,
+    550000000, 600000000, 650000000, 700000000, 750000000, 800000000, 850000000, 900000000,
+    950000000, 1000000000
   ];
+
+  pInput.max = String(PATRIMONIOS.length - 1);
 
   function formatMoney(val) {
     if (val >= 1e9) {
       var b = val / 1e9;
-      return 'R$ ' + (b % 1 === 0 ? b : b.toFixed(1).replace('.', ',')) + ' bilhão' + (b > 1 ? 's' : '');
+      return 'R$ ' + (b % 1 === 0 ? b : b.toFixed(1).replace('.', ',')) + ' bi';
     }
     if (val >= 1e6) {
       var m = val / 1e6;
-      return 'R$ ' + (m % 1 === 0 ? m : m.toFixed(1).replace('.', ',')) + ' milhão' + (m > 1 ? 'ões' : '');
+      return 'R$ ' + (m % 1 === 0 ? m : m.toFixed(1).replace('.', ',')) + ' mi';
     }
     if (val >= 1e3) {
       var k = val / 1e3;
@@ -452,7 +457,7 @@ function blocoImpacto() {
       return '<div class="sim-res-card">' +
         '<div class="k" style="font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted)">' + label + '</div>' +
         '<div class="v" style="font-size:clamp(22px, 2.2vw, 30px);color:var(--green);font-weight:800;margin:10px 0 6px">+ ' + formatExact(diff) + '</div>' +
-        '<div class="s" style="font-size:12.5px;color:var(--body);line-height:1.4">valor agregado a mais no bolso</div>' +
+        '<div class="s" style="font-size:12.5px;color:var(--body);line-height:1.4">a mais gerado no patrimônio</div>' +
         '<div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)">Patrimônio final: <b style="color:var(--navy)">' + formatMoney(v1) + '</b></div>' +
       '</div>';
     }).join('');
