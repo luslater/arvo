@@ -543,7 +543,6 @@ export default function LandingPage() {
               <a href="#como-funciona">Método</a>
               <a href="#carteiras">Carteiras</a>
               <a href="#independencia">Independência</a>
-              <a href="#assinatura">Planos</a>
               <Link href="/carta/outubro-2026">Carta Mensal</Link>
               <a href="#faq">Dúvidas</a>
             </nav>
@@ -909,136 +908,6 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* 8.5 PROVA SOCIAL & CASES */}
-        <section className="ui-section ui-section-alt" id="depoimentos">
-          <div className="ui-wrap">
-            <div style={{ textAlign: "center", marginBottom: "48px" }}>
-              <div className="ui-eyebrow"><span className="ui-eyebrow-dot"></span> Prova Social & Confiança</div>
-              <h2 className="ui-serif" style={{ fontSize: "clamp(30px, 3.8vw, 46px)", color: "var(--ink-navy)", margin: 0 }}>
-                Quem organiza a vida com a ARVO.<br />
-                <i style={{ fontStyle: "italic", color: "var(--deep-teal)" }}>Histórias reais de tranquilidade e método.</i>
-              </h2>
-            </div>
-
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "20px", marginBottom: "36px" }}>
-              {[
-                {
-                  name: "Carlos Eduardo S.",
-                  role: "Empresário · 42 anos",
-                  dep: "“Eu tinha dinheiro espalhado em 3 corretoras diferentes e vivia ansioso com oscilações. A ARVO organizou meu patrimônio na Bússola e agora sei exatamente quanto aportar para minha independência.”",
-                  tag: "Carteira Visão",
-                  rating: "★★★★★"
-                },
-                {
-                  name: "Mariana R. Prado",
-                  role: "Médica · 36 anos",
-                  dep: "“O que mais me conquistou foi o modelo fee-only. Saber que o planejador não ganha comissão de fundos me deu a segurança que eu nunca tive com assessores de bancão.”",
-                  tag: "Carteira Ritmo",
-                  rating: "★★★★★"
-                },
-                {
-                  name: "Rodrigo F. Lima",
-                  role: "Engenheiro de Software · 31 anos",
-                  dep: "“O Plano Patrimonial e a Jornada dos 7 Pilares me deram um plano visual e prático. Em 10 minutos entendi o impacto dos juros compostos na minha aposentadoria.”",
-                  tag: "Carteira Oceano",
-                  rating: "★★★★★"
-                }
-              ].map((t, idx) => (
-                <div key={idx} style={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: "18px", padding: "28px 24px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-                  <div>
-                    <div style={{ color: "#d97706", fontSize: "16px", marginBottom: "10px", letterSpacing: "2px" }}>{t.rating}</div>
-                    <p style={{ fontSize: "14.5px", color: "var(--text-secondary)", lineHeight: "1.6", fontStyle: "italic", margin: "0 0 16px 0" }}>{t.dep}</p>
-                  </div>
-                  <div style={{ paddingTop: "14px", borderTop: "1px solid var(--border)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <div>
-                      <strong style={{ fontSize: "14px", color: "var(--ink-navy)", display: "block" }}>{t.name}</strong>
-                      <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>{t.role}</span>
-                    </div>
-                    <span className="ui-mono" style={{ fontSize: "10.5px", background: "var(--section-alt)", color: "var(--deep-teal)", padding: "4px 8px", borderRadius: "8px", fontWeight: 600 }}>
-                      {t.tag}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Social Proof Stats Banner */}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "16px", background: "var(--card)", border: "1px solid var(--border)", borderRadius: "16px", padding: "24px 28px", textAlign: "center" }}>
-              <div>
-                <div className="ui-serif" style={{ fontSize: "32px", color: "var(--ink-navy)", fontWeight: 600 }}>+R$ 200MM</div>
-                <div style={{ fontSize: "12.5px", color: "var(--text-muted)" }}>Patrimônio orientado</div>
-              </div>
-              <div>
-                <div className="ui-serif" style={{ fontSize: "32px", color: "var(--deep-teal)", fontWeight: 600 }}>100%</div>
-                <div style={{ fontSize: "12.5px", color: "var(--text-muted)" }}>Alinhamento Fee-Only</div>
-              </div>
-              <div>
-                <div className="ui-serif" style={{ fontSize: "32px", color: "var(--ink-navy)", fontWeight: 600 }}>27</div>
-                <div style={{ fontSize: "12.5px", color: "var(--text-muted)" }}>Carteiras personalizadas</div>
-              </div>
-              <div>
-                <div className="ui-serif" style={{ fontSize: "32px", color: "var(--deep-teal)", fontWeight: 600 }}>4.9 / 5.0</div>
-                <div style={{ fontSize: "12.5px", color: "var(--text-muted)" }}>Satisfação dos clientes</div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* 9. OFERTA / ASSINATURA */}
-        <section className="ui-section" id="assinatura">
-          <div className="ui-wrap">
-            <div style={{ textAlign: "center", marginBottom: "48px" }}>
-              <div className="ui-eyebrow"><span className="ui-eyebrow-dot"></span> Acesso Completo</div>
-              <h2 className="ui-serif" style={{ fontSize: "clamp(30px, 3.8vw, 48px)", color: "var(--ink-navy)", margin: "0 0 12px 0" }}>
-                Sua vida financeira não precisa de mais uma dica.<br />
-                <i style={{ fontStyle: "italic", color: "var(--deep-teal)" }}>Precisa de acompanhamento.</i>
-              </h2>
-            </div>
-
-            <div className="ui-pricing-card" style={{ maxWidth: "660px", margin: "0 auto", background: "var(--card)", border: "2px solid var(--deep-teal)", borderRadius: "20px", padding: "44px 36px", textAlign: "center" }}>
-              <span className="ui-mono" style={{ fontSize: "11.5px", color: "var(--deep-teal)", fontWeight: 600 }}>PLANO ANUAL ARVO</span>
-              <h3 className="ui-serif" style={{ fontSize: "30px", color: "var(--ink-navy)", margin: "6px 0 14px 0" }}>Acesso Completo</h3>
-
-              <div style={{ display: "flex", alignItems: "baseline", justifyContent: "center", gap: "6px" }}>
-                <span className="ui-serif" style={{ fontSize: "52px", fontWeight: 600, color: "var(--ink-navy)" }}>R$ 59,90</span>
-                <span style={{ fontSize: "17px", color: "var(--text-muted)" }}>/ mês</span>
-              </div>
-              <div style={{ fontSize: "13px", color: "var(--text-muted)", marginTop: "4px" }}>
-                Cobrado em 12x de R$ 59,90 ou R$ 599,00 à vista (2 meses grátis)
-              </div>
-
-              <ul className="ui-pricing-features" style={{ listStyle: "none", padding: 0, margin: "28px auto", maxWidth: "440px", textAlign: "left", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px 20px", fontSize: "14px", color: "var(--text-secondary)" }}>
-                {["Planejamento financeiro", "Estratégias de investimento", "Atualizações e rebalanceamentos", "Acompanhamento contínuo", "Conteúdo e comunidade", "Calculadoras e ferramentas"].map((feat, i) => (
-                  <li key={i} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                    <span style={{ color: "var(--deep-teal)", fontWeight: "bold" }}>✓</span> {feat}
-                  </li>
-                ))}
-                <li style={{ gridColumn: "span 2", display: "flex", alignItems: "center", gap: "8px" }}>
-                  <span style={{ color: "var(--deep-teal)", fontWeight: "bold" }}>✓</span> Suporte direto ARVO
-                </li>
-              </ul>
-
-              <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "360px", margin: "0 auto", width: "100%" }}>
-                <a href="/register" className="ui-btn ui-btn-primary" style={{ fontSize: "15.5px", padding: "15px 26px", width: "100%" }}>
-                  Começar pela ARVO
-                </a>
-                <div style={{ borderTop: "1px solid var(--border)", paddingTop: "14px" }}>
-                  <div style={{ fontSize: "12.5px", color: "var(--text-muted)", marginBottom: "6px" }}>
-                    Antes de assinar, conheça seu plano.
-                  </div>
-                  <a href="/register" className="ui-btn ui-btn-outline" style={{ fontSize: "13.5px", padding: "11px 18px", width: "100%" }}>
-                    Fazer meu diagnóstico gratuito
-                  </a>
-                </div>
-              </div>
-
-              <div style={{ fontSize: "11.5px", color: "var(--text-muted)", marginTop: "20px" }}>
-                🔒 Garantia incondicional de 7 dias com 100% de reembolso.
-              </div>
-            </div>
-          </div>
-        </section>
-
         {/* 10. FAQ */}
         <section className="ui-section ui-section-alt" id="faq">
           <div className="ui-wrap" style={{ maxWidth: "860px" }}>
@@ -1133,9 +1002,7 @@ export default function LandingPage() {
               <div className="ui-footer-links">
                 <a href="#como-funciona">Método</a>
                 <a href="#carteiras">Carteiras</a>
-                <a href="#depoimentos">Depoimentos</a>
                 <a href="#independencia">Independência</a>
-                <a href="#assinatura">Planos</a>
                 <Link href="/carta/outubro-2026">Carta Mensal</Link>
                 <a href="#faq">Dúvidas</a>
                 <Link href="/politica-de-privacidade">Privacidade</Link>
