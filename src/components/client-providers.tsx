@@ -7,15 +7,16 @@ import { AIChatWidget } from "@/components/ai-chat-widget";
 
 export function ClientProviders({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
-    const isPublicPage = [
-        "/",
-        "/login",
-        "/register",
-        "/onboarding",
-        "/obrigado",
-        "/politica-de-privacidade",
-        "/termos",
-    ].includes(pathname);
+    const isPublicPage =
+        [
+            "/",
+            "/login",
+            "/register",
+            "/onboarding",
+            "/obrigado",
+            "/politica-de-privacidade",
+            "/termos",
+        ].includes(pathname || "") || Boolean(pathname?.startsWith("/carta"));
 
     return (
         <AuthProvider>

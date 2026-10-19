@@ -1056,3 +1056,10 @@
   .carta .impacto-sim { padding: 24px 18px; }
   .carta .sim-ctrl { padding: 16px 14px; }
 }
+
+/* Ocultar widget flutuante de chat de IA na página da carta */
+body:has(.carta) [class*="fixed bottom"],
+body:has(.carta) button:has(svg.lucide-message-circle) {
+  display: none !important;
+}
+
