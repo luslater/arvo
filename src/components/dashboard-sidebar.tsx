@@ -125,7 +125,7 @@ export function DashboardSidebar() {
 
                 <span className="text-[10px] font-semibold text-dash-text-light uppercase tracking-widest px-3 py-2 mt-4">Aprendizado & Relatórios</span>
                 <NavLink href="/dashboard/educacao" icon={<BookOpen className="w-4 h-4" />} label="Educação" onClick={closeMobileMenu} />
-                <NavLink href="/carta/outubro-2026" icon={<FileText className="w-4 h-4" />} label="Carta Mensal (Out/26)" onClick={closeMobileMenu} />
+                <NavLink href="/carta/novembro-2026" icon={<FileText className="w-4 h-4" />} label="Carta Mensal (Nov/26)" onClick={closeMobileMenu} />
                 <NavLink href="/dashboard/calculadoras" icon={<Calculator className="w-4 h-4" />} label="Outras Calculadoras" onClick={closeMobileMenu} />
                 <span className="text-[10px] font-semibold text-dash-text-light uppercase tracking-widest px-3 py-2 mt-4">Conta & Contato</span>
                 <NavLink href="/dashboard/assinatura" icon={<CreditCard className="w-4 h-4" />} label="Assinatura" onClick={closeMobileMenu} />
