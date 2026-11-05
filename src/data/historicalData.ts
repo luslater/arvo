@@ -67,7 +67,8 @@ export const HISTORICAL_DATA: HistoricalData = {
     "2026-06",
     "2026-07",
     "2026-08",
-    "2026-09"
+    "2026-09",
+    "2026-10"
 ],
   "cdi": [
     0.0112,
@@ -114,7 +115,8 @@ export const HISTORICAL_DATA: HistoricalData = {
     0.0112,
     0.0122,
     0.0109,
-    0.0108
+    0.0108,
+    0.0107
 ],
   "ipca": [
     0.0053,
@@ -161,7 +163,8 @@ export const HISTORICAL_DATA: HistoricalData = {
     0.0041,
     0.0005,
     -0.0028,
-    0.0048
+    0.0048,
+    0.0032
 ],
   "selic": [
     0.0112,
@@ -208,7 +211,8 @@ export const HISTORICAL_DATA: HistoricalData = {
     0.0112,
     0.0122,
     0.0109,
-    0.0108
+    0.0108,
+    0.0107
 ],
   "ibov": [
     0.0337,
@@ -255,7 +259,8 @@ export const HISTORICAL_DATA: HistoricalData = {
     -0.0101,
     0.0347,
     -0.0033,
-    0.0503
+    0.0503,
+    -0.0988
 ],
   "dolar": [
     -0.0227,
@@ -302,7 +307,8 @@ export const HISTORICAL_DATA: HistoricalData = {
     0.0237,
     -0.0192,
     0.0205,
-    -0.0001
+    -0.0001,
+    0.0464
 ],
   "funds": [
     {
@@ -355,7 +361,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             0.0112,
             0.0122,
             0.0109,
-            0.0108
+            0.0108,
+            0.0107
         ]
     },
     {
@@ -408,7 +415,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             0.0116,
             0.0123,
             0.0113,
-            0.0108
+            0.0108,
+            0.0107
         ]
     },
     {
@@ -461,7 +469,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             0.0103,
             0.0122,
             0.0108,
-            0.0108
+            0.0108,
+            0.012
         ]
     },
     {
@@ -514,7 +523,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             0.0139,
             0.012,
             0.009,
-            -0.0024
+            -0.0024,
+            0.0067
         ]
     },
     {
@@ -567,6 +577,7 @@ export const HISTORICAL_DATA: HistoricalData = {
             0.0123,
             0.0127,
             0.0131,
+            0.0102,
             0.0102
         ]
     },
@@ -620,7 +631,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             0.0123,
             0.0141,
             0.0106,
-            0.01
+            0.01,
+            0.0073
         ]
     },
     {
@@ -673,7 +685,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             0.0119,
             0.0133,
             0.0108,
-            0.0108
+            0.0108,
+            0.0083
         ]
     },
     {
@@ -726,7 +739,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             0.0121,
             0.0131,
             0.0112,
-            0.0103
+            0.0103,
+            0.0102
         ]
     },
     {
@@ -779,7 +793,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             0.0099,
             0.0125,
             0.0117,
-            0.0114
+            0.0114,
+            0.0098
         ]
     },
     {
@@ -832,7 +847,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             0.011,
             0.0126,
             0.0095,
-            0.0034
+            0.0034,
+            0.0088
         ]
     },
     {
@@ -885,7 +901,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             0.0107,
             0.0121,
             0.0095,
-            0.0055
+            0.0055,
+            0.0103
         ]
     },
     {
@@ -938,7 +955,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             0.0012,
             0.0004,
             -0.0067,
-            0.001
+            0.001,
+            -0.0295
         ]
     },
     {
@@ -991,7 +1009,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             0.0025,
             -0.0115,
             -0.0118,
-            0.0065
+            0.0065,
+            -0.0408
         ]
     },
     {
@@ -1044,7 +1063,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             0.0132,
             0.0136,
             0.0121,
-            0.012
+            0.012,
+            0.0114
         ]
     },
     {
@@ -1097,7 +1117,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             0.012,
             0.0123,
             0.0097,
-            0.0059
+            0.0059,
+            0.0073
         ]
     },
     {
@@ -1150,7 +1171,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             0.0135,
             0.0161,
             0.0107,
-            -0.0016
+            -0.0016,
+            0.0089
         ]
     },
     {
@@ -1203,7 +1225,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             0.0174,
             0.0099,
             0.0137,
-            0.0334
+            0.0334,
+            -0.0003
         ]
     },
     {
@@ -1256,7 +1279,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             -0.0101,
             0.0071,
             0.0053,
-            -0.0019
+            -0.0019,
+            0.0107
         ]
     },
     {
@@ -1309,7 +1333,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             0.011,
             0.0121,
             0.0109,
-            0.0104
+            0.0104,
+            0.0102
         ]
     },
     {
@@ -1362,7 +1387,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             0.018,
             0.0116,
             0.0083,
-            -0.0145
+            -0.0145,
+            0.0112
         ]
     },
     {
@@ -1415,7 +1441,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             0.0208,
             0.0103,
             0.0092,
-            -0.0088
+            -0.0088,
+            0.0105
         ]
     },
     {
@@ -1468,7 +1495,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             -0.0024,
             0.0068,
             0.008,
-            -0.0114
+            -0.0114,
+            0.0105
         ]
     },
     {
@@ -1521,7 +1549,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             0.0068,
             0.0081,
             0.0101,
-            0.0205
+            0.0205,
+            -0.0153
         ]
     },
     {
@@ -1574,7 +1603,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             -0.0059,
             -0.0007,
             -0.0209,
-            -0.0206
+            -0.0206,
+            -0.0115
         ]
     },
     {
@@ -1627,7 +1657,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             -0.0002,
             0.0078,
             0.0111,
-            0.0111
+            0.0111,
+            -0.0155
         ]
     },
     {
@@ -1680,7 +1711,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             -0.0072,
             0.0056,
             0.0118,
-            0.0035
+            0.0035,
+            -0.0155
         ]
     },
     {
@@ -1733,7 +1765,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             0.0037,
             -0.0035,
             0.0152,
-            0.0221
+            0.0221,
+            0.0447
         ]
     },
     {
@@ -1786,7 +1819,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             -0.0036,
             -0.0041,
             0.0382,
-            0.0138
+            0.0138,
+            -0.0495
         ]
     },
     {
@@ -1839,7 +1873,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             -0.0139,
             -0.0155,
             0.0582,
-            0.0169
+            0.0169,
+            -0.091
         ]
     },
     {
@@ -1892,7 +1927,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             0.0174,
             -0.0019,
             0.0181,
-            0.0136
+            0.0136,
+            -0.0198
         ]
     },
     {
@@ -1945,7 +1981,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             0.0119,
             0.0133,
             0.0108,
-            0.0108
+            0.0108,
+            0.0083
         ]
     },
     {
@@ -1998,7 +2035,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             -0.0372,
             -0.0419,
             -0.0009,
-            0.01
+            0.01,
+            -0.1056
         ]
     },
     {
@@ -2051,7 +2089,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             0.0222,
             -0.0086,
             0.0207,
-            0.0206
+            0.0206,
+            0.0062
         ]
     },
     {
@@ -2104,7 +2143,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             0.033,
             -0.0271,
             0.0329,
-            0.0327
+            0.0327,
+            0.0039
         ]
     },
     {
@@ -2157,7 +2197,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             -0.0095,
             0.0105,
             0.0197,
-            0.0019
+            0.0019,
+            -0.0201
         ]
     },
     {
@@ -2210,7 +2251,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             -0.0408,
             -0.1015,
             0.006,
-            -0.0245
+            -0.0245,
+            -0.1536
         ]
     },
     {
@@ -2263,7 +2305,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             -0.0191,
             -0.0455,
             0.0086,
-            -0.0062
+            -0.0062,
+            -0.0629
         ]
     },
     {
@@ -2316,7 +2359,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             0.0017,
             -0.0023,
             -0.0076,
-            0.027
+            0.027,
+            -0.0238
         ]
     },
     {
@@ -2369,7 +2413,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             -0.0009,
             -0.0065,
             -0.0181,
-            0.0599
+            0.0599,
+            -0.303
         ]
     },
     {
@@ -2422,7 +2467,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             0.0225,
             -0.0709,
             0.0415,
-            0.0534
+            0.0534,
+            -0.0764
         ]
     },
     {
@@ -2475,7 +2521,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             -0.0074,
             0.0063,
             0.0036,
-            0.0289
+            0.0289,
+            -0.166
         ]
     },
     {
@@ -2528,7 +2575,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             -0.0055,
             0.0258,
             -0.0133,
-            0.037
+            0.037,
+            -0.1751
         ]
     },
     {
@@ -2581,7 +2629,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             -0.005,
             0.0277,
             -0.0114,
-            0.0385
+            0.0385,
+            -0.1756
         ]
     },
     {
@@ -2634,7 +2683,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             -0.0484,
             0.0501,
             0.0266,
-            0.0519
+            0.0519,
+            -0.1521
         ]
     },
     {
@@ -2687,7 +2737,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             0.0054,
             0.0075,
             0.0079,
-            0.0452
+            0.0452,
+            -0.0899
         ]
     },
     {
@@ -2740,7 +2791,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             -0.0106,
             -0.0204,
             0.0199,
-            0.0135
+            0.0135,
+            -0.1271
         ]
     },
     {
@@ -2793,7 +2845,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             -0.007,
             -0.045,
             -0.0258,
-            0.0456
+            0.0456,
+            -0.064
         ]
     },
     {
@@ -2846,7 +2899,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             -0.0451,
             -0.0155,
             0.0227,
-            0.0241
+            0.0241,
+            -0.1382
         ]
     },
     {
@@ -2899,7 +2953,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             -0.0134,
             0.0038,
             0.0029,
-            0.0402
+            0.0402,
+            -0.1266
         ]
     },
     {
@@ -2952,7 +3007,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             -0.0201,
             0.0444,
             0.0112,
-            0.0163
+            0.0163,
+            -0.0651
         ]
     },
     {
@@ -3005,7 +3061,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             -0.0774,
             0.0038,
             -0.0942,
-            0.2277
+            0.2277,
+            -0.3095
         ]
     },
     {
@@ -3058,7 +3115,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             0.0141,
             0.0282,
             0.0179,
-            0.0376
+            0.0376,
+            0.0224
         ]
     },
     {
@@ -3111,7 +3169,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             -0.0002,
             -0.0174,
             0.0252,
-            -0.0092
+            -0.0092,
+            -0.026
         ]
     },
     {
@@ -3164,7 +3223,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             0.0133,
             0.0305,
             0.0082,
-            0.0557
+            0.0557,
+            -0.0423
         ]
     },
     {
@@ -3217,7 +3277,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             0.0122,
             -0.0167,
             0.0489,
-            -0.0044
+            -0.0044,
+            0.0428
         ]
     },
     {
@@ -3270,7 +3331,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             0.023,
             -0.0844,
             0.0637,
-            0.0311
+            0.0311,
+            -0.0183
         ]
     },
     {
@@ -3323,7 +3385,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             0.0198,
             -0.0258,
             0.0525,
-            -0.0178
+            -0.0178,
+            0.0371
         ]
     },
     {
@@ -3376,7 +3439,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             0.0112,
             0.0122,
             0.0109,
-            0.0108
+            0.0108,
+            0.0107
         ]
     },
     {
@@ -3429,7 +3493,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             0.0123,
             0.0298,
             -0.0148,
-            0.0439
+            0.0439,
+            -0.0982
         ]
     },
     {
@@ -3482,7 +3547,8 @@ export const HISTORICAL_DATA: HistoricalData = {
             0.0112,
             0.0122,
             0.0109,
-            0.0108
+            0.0108,
+            0.0107
         ]
     },
     {
@@ -3491,51 +3557,52 @@ export const HISTORICAL_DATA: HistoricalData = {
         "classe": "Ataque",
         "macroClass": "Outros",
         "values": [
-            0.0328,
-            -0.0663,
-            -0.0528,
+            0.0337,
+            -0.0749,
+            -0.0291,
+            0.025,
             0.0374,
-            0.1106,
-            0.0721,
-            0.0342,
-            -0.0635,
-            -0.0282,
-            -0.0688,
-            0.1363,
-            0.0424,
-            -0.0367,
-            0.0053,
-            0.0048,
-            -0.0508,
-            0.0108,
-            0.0025,
-            0.0197,
-            0.0527,
-            -0.0195,
-            -0.0265,
-            -0.0896,
-            -0.0823,
-            0.0717,
-            -0.0313,
-            0.0383,
-            0.1121,
-            0.0567,
-            -0.0057,
-            -0.0486,
-            0.0834,
-            0.0274,
-            0.0107,
-            0.0172,
-            -0.0023,
-            0.0602,
-            0.0069,
-            -0.0115,
-            -0.0029,
-            -0.0412,
-            -0.0053,
+            0.09,
+            0.0327,
+            -0.0509,
             0.0071,
+            -0.0294,
+            0.1254,
+            0.0538,
+            -0.0479,
+            0.0099,
+            -0.0071,
+            -0.017,
+            -0.0304,
+            0.0148,
+            0.0302,
+            0.0654,
+            -0.0308,
+            -0.016,
+            -0.0312,
+            -0.0428,
+            0.0486,
+            -0.0264,
+            0.0608,
+            0.0369,
+            0.0145,
+            0.0133,
+            -0.0417,
+            0.0628,
+            0.034,
+            0.0226,
+            0.0637,
+            0.0129,
+            0.1256,
+            0.0409,
+            -0.007,
+            -0.0008,
+            -0.0722,
+            -0.0101,
+            0.0347,
             -0.0033,
-            0.0503
+            0.0503,
+            -0.0988
         ]
     }
 ]

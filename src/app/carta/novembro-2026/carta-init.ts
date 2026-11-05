@@ -233,8 +233,8 @@ function bloco4(setTimeout, clearTimeout, requestAnimationFrame, IntersectionObs
 (function(){
 var el=document.getElementById('curva-chart');if(!el)return;
 var Y=[1,2,3,4,5,6,7,8,9,10];
-var PRE={a:[13.4361,13.7353,13.9599,14.0922,14.1585,14.1828,14.1815,14.1652,14.1406,14.112],d5:[12.5792,12.3056,12.3314,12.4179,12.4907,12.5343,12.5516,12.55,12.5361,12.5151],d:[14.4617,15.118,15.4726,15.6509,15.724,15.7341,15.7072,15.6597,15.6017,15.5396]};
-var IPC={a:[6.5196,7.3486,7.5699,7.6434,7.6622,7.6517,7.6231,7.5834,7.5376,7.4889],d5:[6.2834,6.6644,6.6952,6.6971,6.6977,6.6971,6.6943,6.6894,6.6825,6.6742],d:[6.5332,7.7613,8.0101,8.0435,8.0286,8.0008,7.9678,7.9318,7.894,7.8555]};
+var PRE={a:[13.4361,13.7353,13.9599,14.0922,14.1585,14.1828,14.1815,14.1652,14.1406,14.112],d5:[12.5792,12.3056,12.3314,12.4179,12.4907,12.5343,12.5516,12.55,12.5361,12.5151],d:[14.2909,14.8272,15.1296,15.2833,15.3446,15.3496,15.3214,15.2745,15.2183,15.1585]};
+var IPC={a:[6.5196,7.3486,7.5699,7.6434,7.6622,7.6517,7.6231,7.5834,7.5376,7.4889],d5:[6.2834,6.6644,6.6952,6.6971,6.6977,6.6971,6.6943,6.6894,6.6825,6.6742],d:[6.5059,7.6678,7.9033,7.9356,7.9227,7.8984,7.8698,7.8389,7.8068,7.7743]};
 var W=760,H=320,L=56,R=24,Tp=20,B=44;
 function fx(x){return L+(x-1)/(10-1)*(W-L-R)}
 function fy(y,lo,hi){return Tp+(hi-y)/(hi-lo)*(H-Tp-B)}
@@ -249,21 +249,21 @@ function line(v,lo,hi,col,dash,lbl,kind){var d=v.map(function(y,i){return (i?'L'
  v.forEach(function(y,i){g+='<circle class="pt" cx="'+fx(Y[i])+'" cy="'+fy(y,lo,hi)+'" r="'+(dash?4:6)+'" fill="#fff" stroke="'+col+'" stroke-width="3" data-t="'+kind+' '+Y[i]+(Y[i]===1?' ano':' anos')+' · '+lbl+': '+f2(y)+'%"/>'});return g}
 function bind(){el.querySelectorAll('[data-t]').forEach(function(c){c.addEventListener('mousemove',function(e){tOn(e,c.getAttribute('data-t'))});c.addEventListener('mouseleave',tOff)})}
 var cap=document.getElementById('curva-cap');
-var LEG='<div class="curva-legend"><span><i style="background:#8C8676"></i>30/set, antes do 1º turno</span><span><i style="background:#1F674F"></i>9/out, depois do 1º turno</span><span><i style="background:#B34A3C"></i>3/nov, último fechamento</span></div>';
+var LEG='<div class="curva-legend"><span><i style="background:#8C8676"></i>30/set, antes do 1º turno</span><span><i style="background:#1F674F"></i>9/out, depois do 1º turno</span><span><i style="background:#B34A3C"></i>4/nov, último fechamento</span></div>';
 function draw(m){var svg;
- if(m==='pre'){var lo=12,hi=16;svg='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Curva prefixada ANBIMA em 30 de setembro, 9 de outubro e 3 de novembro">'+axes(lo,hi,0.5);
+ if(m==='pre'){var lo=12,hi=16;svg='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Curva prefixada ANBIMA em 30 de setembro, 9 de outubro e 4 de novembro">'+axes(lo,hi,0.5);
   var sl=fy(13.75,lo,hi);svg+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+sl+'" y2="'+sl+'" stroke="#8A5F17" stroke-dasharray="3 4"/><text x="'+(W-R)+'" y="'+(sl-6)+'" text-anchor="end" font-size="12" font-weight="700" fill="#8A5F17" font-family="Plus Jakarta Sans, Arial">Selic 13,75%</text>';
-  svg+=line(PRE.a,lo,hi,'#8C8676',false,'30/set','Prefixado')+line(PRE.d5,lo,hi,'#1F674F',true,'9/out','Prefixado')+line(PRE.d,lo,hi,'#B34A3C',false,'3/nov','Prefixado')+'</svg>'+LEG;
-  cap.textContent='Depois do 1º turno, a curva ficou plana perto de 12,5%, abaixo da Selic. Depois do 2º, subiu para 14,5% em 1 ano e perto de 15,7% nos prazos intermediários em 3/nov, acima de onde estava em setembro. Passe o cursor nos pontos para ver as taxas.'}
- else if(m==='real'){var lo=6,hi=8.5;svg='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Curva de juro real ANBIMA em 30 de setembro, 9 de outubro e 3 de novembro">'+axes(lo,hi,0.5);
-  svg+=line(IPC.a,lo,hi,'#8C8676',false,'30/set','IPCA+')+line(IPC.d5,lo,hi,'#1F674F',true,'9/out','IPCA+')+line(IPC.d,lo,hi,'#B34A3C',false,'3/nov','IPCA+')+'</svg>'+LEG;
-  cap.textContent='O juro real foi de perto de 6,7% para 7,9% a 8,0% nos prazos acima de 2 anos, acima do nível de setembro. É um dos juros reais mais altos do mundo, com volatilidade à altura.'}
+  svg+=line(PRE.a,lo,hi,'#8C8676',false,'30/set','Prefixado')+line(PRE.d5,lo,hi,'#1F674F',true,'9/out','Prefixado')+line(PRE.d,lo,hi,'#B34A3C',false,'4/nov','Prefixado')+'</svg>'+LEG;
+  cap.textContent='Depois do 1º turno, a curva ficou plana perto de 12,5%, abaixo da Selic. Depois do 2º, subiu para 14,3% em 1 ano e perto de 15,3% nos prazos intermediários em 4/nov, acima de onde estava em setembro. Passe o cursor nos pontos para ver as taxas.'}
+ else if(m==='real'){var lo=6,hi=8.5;svg='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Curva de juro real ANBIMA em 30 de setembro, 9 de outubro e 4 de novembro">'+axes(lo,hi,0.5);
+  svg+=line(IPC.a,lo,hi,'#8C8676',false,'30/set','IPCA+')+line(IPC.d5,lo,hi,'#1F674F',true,'9/out','IPCA+')+line(IPC.d,lo,hi,'#B34A3C',false,'4/nov','IPCA+')+'</svg>'+LEG;
+  cap.textContent='O juro real foi de perto de 6,7% para 7,8% a 7,9% nos prazos acima de 2 anos, acima do nível de setembro. É um dos juros reais mais altos do mundo, com volatilidade à altura.'}
  else {var K=[0,1,2,4,9],max=3.6,bw=46,grp=(W-L-R)/K.length,base=Tp+30,hh=H-Tp-B-70;
-  svg='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Alta das taxas por prazo entre 9 de outubro e 3 de novembro">';
+  svg='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Alta das taxas por prazo entre 9 de outubro e 4 de novembro">';
   K.forEach(function(k,i){var x0=L+i*grp+(grp-2*bw-10)/2;[[PRE,'#123044','Prefixado'],[IPC,'#1F674F','IPCA+']].forEach(function(c,j){var dlt=c[0].d[k]-c[0].d5[k],h=dlt/max*hh,x=x0+j*(bw+10);
    svg+='<rect class="pt" x="'+x+'" y="'+(base+hh-h)+'" width="'+bw+'" height="'+h+'" rx="5" fill="'+c[1]+'" data-t="'+c[2]+' '+Y[k]+(Y[k]===1?' ano':' anos')+': de '+f2(c[0].d5[k])+'% para '+f2(c[0].d[k])+'%"/><text x="'+(x+bw/2)+'" y="'+(base+hh-h-8)+'" text-anchor="middle" font-size="13" font-weight="800" fill="#123044" font-family="Plus Jakarta Sans, Arial">+'+dlt.toFixed(2).replace('.',',')+'</text>'});
    svg+='<text x="'+(x0+bw+5)+'" y="'+(base+hh+22)+'" text-anchor="middle" font-size="13" fill="#5A635C" font-family="Plus Jakarta Sans, Arial">'+Y[k]+(Y[k]===1?' ano':' anos')+'</text>'});
-  svg+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+(base+hh)+'" y2="'+(base+hh)+'" stroke="#CFC9B9"/></svg><div class="curva-legend"><span><i style="background:#123044"></i>Prefixado</span><span><i style="background:#1F674F"></i>IPCA+ (juro real)</span></div>';cap.textContent='Alta em pontos percentuais entre 9/out e 3/nov. O prefixado subiu cerca de 3 p.p. ou mais dos 3 anos em diante; o juro real subiu de 1,1 a 1,4 p.p. acima de 2 anos.'}
+  svg+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+(base+hh)+'" y2="'+(base+hh)+'" stroke="#CFC9B9"/></svg><div class="curva-legend"><span><i style="background:#123044"></i>Prefixado</span><span><i style="background:#1F674F"></i>IPCA+ (juro real)</span></div>';cap.textContent='Alta em pontos percentuais entre 9/out e 4/nov. O prefixado subiu de 2,6 a 2,9 p.p. dos 3 anos em diante; o juro real subiu de 1,0 a 1,2 p.p. acima de 2 anos.'}
  el.innerHTML=svg;bind()}
 var seg=document.getElementById('curva-seg');
 seg.querySelectorAll('button').forEach(function(b){b.addEventListener('click',function(){seg.querySelectorAll('button').forEach(function(x){x.classList.remove('on');x.setAttribute('aria-selected','false')});b.classList.add('on');b.setAttribute('aria-selected','true');draw(b.getAttribute('data-s'))})});

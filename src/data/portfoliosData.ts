@@ -51,268 +51,276 @@ export const PERFIL_ORDER = [
 
 export const ASSET_METRICS: Record<string, { expectedReturn: number, volatility: number }> = {
   "CDI": {
-    "expectedReturn": 13.02,
-    "volatility": 0.48
+    "expectedReturn": 13.05,
+    "volatility": 0.47
   },
   "IPCA": {
-    "expectedReturn": 4.6,
-    "volatility": 0.99
+    "expectedReturn": 4.61,
+    "volatility": 0.97
   },
   "SELIC": {
-    "expectedReturn": 13.02,
-    "volatility": 0.48
+    "expectedReturn": 13.05,
+    "volatility": 0.47
   },
   "IBOV": {
-    "expectedReturn": 13.99,
-    "volatility": 16
+    "expectedReturn": 11.73,
+    "volatility": 16.76
   },
   "Dolar": {
-    "expectedReturn": -0.19,
-    "volatility": 10.25
+    "expectedReturn": 1,
+    "volatility": 10.3
   },
   "Tesouro Selic / Fundo Simples": {
-    "expectedReturn": 12.99,
-    "volatility": 0.48
+    "expectedReturn": 13.02,
+    "volatility": 0.47
   },
   "ARX Fuji": {
-    "expectedReturn": 13.85,
-    "volatility": 0.44
+    "expectedReturn": 13.84,
+    "volatility": 0.43
+  },
+  "VALORA GUARDIAN ADVISORY FIDC – RL": {
+    "expectedReturn": 14.45,
+    "volatility": 0.86
   },
   "Valora Guardian Advisory Fidc": {
-    "expectedReturn": 14.44,
-    "volatility": 0.88
+    "expectedReturn": 14.45,
+    "volatility": 0.86
   },
   "Sparta Deb Inc FIC Incentivados": {
-    "expectedReturn": 14.04,
-    "volatility": 2.53
+    "expectedReturn": 13.52,
+    "volatility": 2.57
   },
   "JGP Corporate": {
-    "expectedReturn": 13.73,
-    "volatility": 1.06
+    "expectedReturn": 13.69,
+    "volatility": 1.03
   },
   "SPX Seahawk Credito Privado": {
-    "expectedReturn": 13.33,
-    "volatility": 1.33
+    "expectedReturn": 13.23,
+    "volatility": 1.31
   },
   "Kinea Oportunidade FIM": {
-    "expectedReturn": 14.29,
+    "expectedReturn": 14.2,
     "volatility": 0.76
   },
   "BNP Paribas Rubi": {
-    "expectedReturn": 13.82,
-    "volatility": 0.56
+    "expectedReturn": 13.79,
+    "volatility": 0.55
   },
   "MAPFRE RF FIF": {
-    "expectedReturn": 13.24,
-    "volatility": 0.72
+    "expectedReturn": 13.25,
+    "volatility": 0.71
   },
   "Augme 30 CIC": {
-    "expectedReturn": 13.15,
-    "volatility": 1.51
+    "expectedReturn": 12.9,
+    "volatility": 1.52
   },
   "Augme 180 FIF": {
-    "expectedReturn": 13.22,
-    "volatility": 1.73
+    "expectedReturn": 13.07,
+    "volatility": 1.71
   },
   "Capitania Premium 45": {
-    "expectedReturn": 9.31,
-    "volatility": 1.9
+    "expectedReturn": 8.07,
+    "volatility": 2.66
   },
   "Capitania Radar 90": {
-    "expectedReturn": 7.71,
-    "volatility": 3.1
+    "expectedReturn": 6.38,
+    "volatility": 3.87
   },
   "Capitania Yield 120": {
-    "expectedReturn": 15.76,
+    "expectedReturn": 15.72,
     "volatility": 0.43
   },
   "Ibiuna Credit": {
-    "expectedReturn": 13.21,
-    "volatility": 1.02
+    "expectedReturn": 12.99,
+    "volatility": 1.03
   },
   "JGP Select Premium": {
-    "expectedReturn": 14.81,
-    "volatility": 1.91
+    "expectedReturn": 14.34,
+    "volatility": 1.99
   },
   "Genoa Capital Radar": {
-    "expectedReturn": 12.98,
-    "volatility": 3.47
+    "expectedReturn": 13.34,
+    "volatility": 3.64
   },
   "Legacy Compound": {
-    "expectedReturn": 11.53,
-    "volatility": 3.01
+    "expectedReturn": 11.26,
+    "volatility": 3
   },
   "Bahia AM DI": {
-    "expectedReturn": 12.92,
-    "volatility": 0.48
+    "expectedReturn": 12.93,
+    "volatility": 0.47
   },
   "ARX Hedge Infra": {
-    "expectedReturn": 15.65,
-    "volatility": 3.23
+    "expectedReturn": 14.81,
+    "volatility": 3.44
   },
   "Kinea Deb Incentivadas": {
-    "expectedReturn": 12.39,
-    "volatility": 1.89
+    "expectedReturn": 11.87,
+    "volatility": 2.08
   },
   "Itau Deb Incentivadas": {
-    "expectedReturn": 8.15,
+    "expectedReturn": 7.75,
     "volatility": 4.57
   },
   "Trend Pre Fixado": {
-    "expectedReturn": 11.26,
-    "volatility": 3.16
+    "expectedReturn": 10.88,
+    "volatility": 3.38
   },
   "JGP Ecossistema": {
-    "expectedReturn": 23.51,
-    "volatility": 5.76
+    "expectedReturn": 21.35,
+    "volatility": 6.14
   },
   "Gavea Macro": {
-    "expectedReturn": 7.45,
-    "volatility": 4.67
+    "expectedReturn": 6.99,
+    "volatility": 4.71
   },
   "Gavea Macro Plus": {
-    "expectedReturn": 5.58,
-    "volatility": 7.05
+    "expectedReturn": 5,
+    "volatility": 6.97
   },
   "Ibiuna Hedge ST": {
-    "expectedReturn": 7.88,
-    "volatility": 8.54
+    "expectedReturn": 9.38,
+    "volatility": 8.6
   },
   "Kapitalo Kappa": {
-    "expectedReturn": 12.66,
-    "volatility": 6.51
+    "expectedReturn": 11,
+    "volatility": 7.06
   },
   "Kapitalo Zeta": {
-    "expectedReturn": 12.19,
-    "volatility": 11.22
+    "expectedReturn": 9.36,
+    "volatility": 12.13
   },
   "Kinea Atlas": {
-    "expectedReturn": 12.47,
-    "volatility": 5.36
+    "expectedReturn": 11.71,
+    "volatility": 5.46
   },
   "Kinea Oportunidade FIF": {
-    "expectedReturn": 14.39,
+    "expectedReturn": 14.29,
     "volatility": 0.72
   },
   "Mar Absoluto": {
-    "expectedReturn": -0.07,
-    "volatility": 14.45
+    "expectedReturn": -2.68,
+    "volatility": 15.14
   },
   "SPX Nimitz": {
-    "expectedReturn": 8.41,
-    "volatility": 5.62
+    "expectedReturn": 8.78,
+    "volatility": 5.54
   },
   "SPX Raptor": {
-    "expectedReturn": 4.25,
-    "volatility": 11.19
+    "expectedReturn": 5.04,
+    "volatility": 11.04
   },
   "Verde AM X60": {
-    "expectedReturn": 13.91,
-    "volatility": 4.64
+    "expectedReturn": 12.72,
+    "volatility": 4.82
   },
   "Vista Multiestrategia": {
-    "expectedReturn": -7.94,
-    "volatility": 27.02
+    "expectedReturn": -12.11,
+    "volatility": 27.51
   },
   "Vista Hedge": {
-    "expectedReturn": 2.55,
-    "volatility": 13.07
+    "expectedReturn": 0.55,
+    "volatility": 13.21
   },
   "Dahlia Total Return": {
-    "expectedReturn": 10.49,
-    "volatility": 10.03
+    "expectedReturn": 10.09,
+    "volatility": 9.99
   },
   "Encore Long Bias": {
-    "expectedReturn": 6.6,
-    "volatility": 19.33
+    "expectedReturn": -1.77,
+    "volatility": 24.84
   },
   "Truxt Long Bias": {
-    "expectedReturn": 18.49,
-    "volatility": 20.11
+    "expectedReturn": 17.23,
+    "volatility": 20.32
   },
   "Atmos Acoes": {
-    "expectedReturn": 11.84,
-    "volatility": 15.62
+    "expectedReturn": 6.94,
+    "volatility": 17.76
   },
   "Bogari Value": {
-    "expectedReturn": 5.16,
-    "volatility": 19.92
+    "expectedReturn": 0.74,
+    "volatility": 21.62
   },
   "Bogari Value Q FIC FIF Acoes RL": {
-    "expectedReturn": 6.12,
-    "volatility": 19.92
+    "expectedReturn": 1.65,
+    "volatility": 21.66
   },
   "Brasil Capital Institucional 30 FIC FIF Acoes RL": {
-    "expectedReturn": 4.64,
-    "volatility": 18.47
+    "expectedReturn": 1.36,
+    "volatility": 19.93
   },
   "Dynamo Cougar": {
-    "expectedReturn": 13.45,
-    "volatility": 18.66
+    "expectedReturn": 11.61,
+    "volatility": 19.05
   },
   "Hix Capital FIC FIA": {
-    "expectedReturn": 14.67,
-    "volatility": 18.06
+    "expectedReturn": 10.4,
+    "volatility": 19.05
   },
   "Hix Capital HS FIA": {
-    "expectedReturn": 18.81,
-    "volatility": 21.72
+    "expectedReturn": 17.16,
+    "volatility": 21.69
   },
   "Forpus Acoes FIC FIF Acoes RL": {
-    "expectedReturn": 0.58,
-    "volatility": 18.92
+    "expectedReturn": -3.88,
+    "volatility": 20
   },
   "Real Investor FIC FIF Acoes RL": {
-    "expectedReturn": 14.68,
-    "volatility": 15.97
+    "expectedReturn": 12.17,
+    "volatility": 17.02
   },
   "IP Participacoes FIC FIF Acoes RL": {
-    "expectedReturn": 16.75,
-    "volatility": 12.41
+    "expectedReturn": 14.43,
+    "volatility": 12.78
   },
   "Alaska Black FIF Cotas FIA": {
-    "expectedReturn": -2.44,
-    "volatility": 39.18
+    "expectedReturn": -6.46,
+    "volatility": 43.15
   },
   "SPX Falcon": {
-    "expectedReturn": 28.31,
-    "volatility": 11.77
-  },
-  "WELLINGTON VENTURA ADVISORY": {
-    "expectedReturn": 23.49,
-    "volatility": 12.03
-  },
-  "SPX Patriot FIF CIC Ações RL": {
-    "expectedReturn": 21.37,
-    "volatility": 16.76
-  },
-  "IVVB11": {
-    "expectedReturn": 20.76,
-    "volatility": 13.31
-  },
-  "NASD11": {
-    "expectedReturn": 30.22,
-    "volatility": 18.33
-  },
-  "WRLD11": {
-    "expectedReturn": 18.8,
-    "volatility": 12.18
-  },
-  "CDBI11": {
-    "expectedReturn": 12.99,
-    "volatility": 0.48
-  },
-  "DIVO11": {
-    "expectedReturn": 16.48,
-    "volatility": 13.88
-  },
-  "VALORA GUARDIAN ADVISORY FIDC – RL": {
-    "expectedReturn": 14.44,
-    "volatility": 0.88
+    "expectedReturn": 27.14,
+    "volatility": 11.28
   },
   "Wellington Ventura Advisory": {
-    "expectedReturn": 23.49,
-    "volatility": 12.03
+    "expectedReturn": 21.23,
+    "volatility": 12.05
+  },
+  "WELLINGTON VENTURA ADVISORY": {
+    "expectedReturn": 21.23,
+    "volatility": 12.05
+  },
+  "SPX Patriot FIF CIC Ações RL": {
+    "expectedReturn": 20.7,
+    "volatility": 16.79
+  },
+  "IVVB11": {
+    "expectedReturn": 20.95,
+    "volatility": 13.12
+  },
+  "NASD11": {
+    "expectedReturn": 29.14,
+    "volatility": 18.05
+  },
+  "WRLD11": {
+    "expectedReturn": 18.48,
+    "volatility": 12.08
+  },
+  "CDBI11": {
+    "expectedReturn": 13.02,
+    "volatility": 0.47
+  },
+  "DIVO11": {
+    "expectedReturn": 13.9,
+    "volatility": 14.81
+  },
+  "Legacy V10": {
+    "expectedReturn": 13.05,
+    "volatility": 0.47
+  },
+  "Velt Partners FIF Cotas FIA": {
+    "expectedReturn": 11.73,
+    "volatility": 16.76
   }
 };
 
@@ -322,7 +330,6 @@ export interface RecommendedPortfolio {
   tier_label: string;
   itype: string;
   perfil: string;
-  level?: number;
   strategy?: string;
   weights: Record<string, number>;
 }
@@ -472,7 +479,8 @@ export const RECOMMENDED_PORTFOLIOS: RecommendedPortfolio[] = [
       "ARX Fuji": 0.04,
       "Sparta Deb Inc FIC Incentivados": 0.04,
       "BNP Paribas Rubi": 0.04,
-      "Kinea Deb Incentivadas": 0.06,
+      "Kinea Deb Incentivadas": 0.03,
+      "Trend Pre Fixado": 0.03,
       "Kapitalo Kappa": 0.09,
       "Kinea Atlas": 0.03,
       "Dahlia Total Return": 0.03,
