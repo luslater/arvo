@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { ArrowRight, ExternalLink } from "lucide-react"
+import { ArrowRight, ExternalLink, BarChart3 } from "lucide-react"
 import { useSession } from "next-auth/react"
 import { useState } from "react"
 import {
@@ -101,6 +101,26 @@ export default function DashboardPortfoliosPage() {
                         Qualificado
                     </button>
                 </div>
+            </div>
+
+            {/* Banner para Visão Mais Retorno */}
+            <div className="mb-6 bg-[#FAF8F5] border border-[#E4E0D7] rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
+                <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-[#E8F3EE] text-[#1F674F] flex items-center justify-center font-bold shrink-0">
+                        <BarChart3 className="w-5 h-5" />
+                    </div>
+                    <div>
+                        <div className="text-xs font-bold text-[#123044]">Nova Visão Analítica (Estilo Mais Retorno)</div>
+                        <div className="text-[11px] text-[#5A6878]">Veja rentabilidade mês a mês, volatilidade, Sharpe e consistência das 27 carteiras ARVO.</div>
+                    </div>
+                </div>
+                <Link
+                    href={`/dashboard/analise-carteiras?family=${isIQ ? "Qualificado" : "Geral"}`}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#1F674F] hover:bg-[#174F3D] text-white text-xs font-bold transition-colors whitespace-nowrap self-start sm:self-auto"
+                >
+                    Abrir Análise de Carteiras
+                    <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
             </div>
 
             <div className="grid grid-cols-2 gap-4 mb-5">

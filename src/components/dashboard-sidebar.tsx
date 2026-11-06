@@ -122,6 +122,7 @@ export function DashboardSidebar() {
                 <NavLink href="/dashboard/planejamento" icon={<TrendingUp className="w-4 h-4" />} label="Plano Patrimonial" onClick={closeMobileMenu} />
                 <NavLink href="/dashboard/bussola" icon={<Compass className="w-4 h-4" />} label="Bússola" onClick={closeMobileMenu} />
                 <NavLink href="/dashboard/carteira" icon={<Wallet className="w-4 h-4" />} label="Minha Carteira" exact onClick={closeMobileMenu} />
+                <NavLink href="/dashboard/analise-carteiras" icon={<BarChart3 className="w-4 h-4" />} label="Análise de Carteiras" onClick={closeMobileMenu} />
 
                 <span className="text-[10px] font-semibold text-dash-text-light uppercase tracking-widest px-3 py-2 mt-4">Aprendizado & Relatórios</span>
                 <NavLink href="/dashboard/educacao" icon={<BookOpen className="w-4 h-4" />} label="Educação" onClick={closeMobileMenu} />

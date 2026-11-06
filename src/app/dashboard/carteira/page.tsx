@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
 import Chart from 'chart.js/auto';
 import { useSession } from "next-auth/react"
 import { Pencil, Check, X, TrendingUp, Wallet, PiggyBank, BarChart3, ShieldCheck } from "lucide-react"
@@ -2845,8 +2846,17 @@ export default function MinhaCarteiraPage() {
                     Importe sua posição atual, organize os ativos e compare alternativas em um só lugar.
                   </div>
                 </div>
-                <div className="inline-flex w-fit items-center gap-2 rounded-full border border-[#cee2d9] bg-[#edf6f2] px-3 py-2 text-xs font-semibold text-[#1f674f]">
-                    <ShieldCheck className="w-4 h-4" /> Alterações salvas automaticamente
+                <div className="flex flex-wrap items-center gap-2">
+                    <Link
+                        href="/dashboard/analise-carteiras"
+                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-[#1f674f]/30 bg-[#e8f3ee] hover:bg-[#d5e8de] text-xs font-bold text-[#1f674f] shadow-2xs transition-colors"
+                    >
+                        <BarChart3 className="w-3.5 h-3.5" />
+                        Visão Mais Retorno
+                    </Link>
+                    <div className="inline-flex w-fit items-center gap-2 rounded-full border border-[#cee2d9] bg-[#edf6f2] px-3 py-1.5 text-xs font-semibold text-[#1f674f]">
+                        <ShieldCheck className="w-3.5 h-3.5" /> Alterações salvas
+                    </div>
                 </div>
             </div>
 
