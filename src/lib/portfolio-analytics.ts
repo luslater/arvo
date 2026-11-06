@@ -32,7 +32,7 @@ export interface WindowMetric {
     pctOfCdi: number | null
     annualizedReturn: number
     annualizedCdi: number
-    annualizedVol: number
+    annualizedVol: number | null
     sharpeRatio: number | null
 }
 
@@ -252,13 +252,17 @@ export function calculateWindowMetrics(
         const annPort = annualizeReturn(portComp, count) * 100
         const annCdi = annualizeReturn(cdiComp, count) * 100
 
-        // Annualized Volatility
-        const std = sampleStdDev(sliceReturns)
-        const annVol = std * Math.sqrt(12) * 100
+        // Annualized Volatility (requires at least 2 months for sample dispersion)
+        let annVol: number | null = null
+        if (count >= 2) {
+            const std = sampleStdDev(sliceReturns)
+            annVol = std * Math.sqrt(12) * 100
+        }
 
         // Sharpe Ratio (excess return over CDI / annualized vol)
+        // Standard ANBIMA/CVM: Minimum 12 months for statistical validity on monthly series
         let sharpeRatio: number | null = null
-        if (annVol > 0.05 && count >= 3) {
+        if (count >= 12 && annVol !== null && annVol > 0.05) {
             sharpeRatio = (annPort - annCdi) / annVol
         }
 

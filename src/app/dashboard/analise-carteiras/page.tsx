@@ -310,10 +310,10 @@ function AnaliseCarteirasContent() {
                         Volatilidade Anualizada
                     </div>
                     <div className="text-xl sm:text-2xl font-mono font-bold text-[#123044] tracking-tight">
-                        {formatNumber(metricTotal?.annualizedVol, 2)}% a.a.
+                        {metricTotal?.annualizedVol !== null && metricTotal?.annualizedVol !== undefined ? `${formatNumber(metricTotal.annualizedVol, 2)}% a.a.` : "-"}
                     </div>
                     <div className="mt-1.5 text-[11px] font-semibold text-[#8D97A5]">
-                        {metricTotal && metricTotal.annualizedVol < 2 ? "Baixíssimo Risco" : metricTotal && metricTotal.annualizedVol < 5 ? "Risco Controlado" : "Risco Moderado/Alto"}
+                        {metricTotal && metricTotal.annualizedVol !== null && metricTotal.annualizedVol !== undefined && metricTotal.annualizedVol < 2 ? "Baixíssimo Risco" : metricTotal && metricTotal.annualizedVol !== null && metricTotal.annualizedVol !== undefined && metricTotal.annualizedVol < 5 ? "Risco Controlado" : "Risco Moderado/Alto"}
                     </div>
                 </div>
 
@@ -322,8 +322,8 @@ function AnaliseCarteirasContent() {
                     <div className="text-[11px] font-semibold text-[#8D97A5] uppercase tracking-wide mb-1">
                         Índice de Sharpe
                     </div>
-                    <div className="text-xl sm:text-2xl font-mono font-bold text-[#1F674F] tracking-tight">
-                        {metricTotal?.sharpeRatio ? formatNumber(metricTotal.sharpeRatio, 2) : "N/A"}
+                    <div className={`text-xl sm:text-2xl font-mono font-bold tracking-tight ${metricTotal?.sharpeRatio !== null && metricTotal?.sharpeRatio !== undefined && metricTotal.sharpeRatio < 0 ? "text-[#B91C1C]" : "text-[#1F674F]"}`}>
+                        {metricTotal?.sharpeRatio !== null && metricTotal?.sharpeRatio !== undefined ? formatNumber(metricTotal.sharpeRatio, 2) : "N/A"}
                     </div>
                     <div className="mt-1.5 text-[11px] font-semibold text-[#5A6878]">
                         Excesso s/ CDI / Risco
@@ -733,7 +733,7 @@ function AnaliseCarteirasContent() {
                                 </td>
                                 {windows.map(w => (
                                     <td key={w.key} className="py-3 px-3">
-                                        {formatNumber(w.annualizedVol, 2)}%
+                                        {w.annualizedVol !== null ? `${formatNumber(w.annualizedVol, 2)}%` : "-"}
                                     </td>
                                 ))}
                             </tr>
@@ -743,14 +743,30 @@ function AnaliseCarteirasContent() {
                                 <td className="py-3 px-4 font-bold text-left sticky left-0 bg-[#FFFFFF] z-10 border-r border-[#E4E0D7] text-[#123044] font-sans">
                                     Índice de Sharpe (a.a.)
                                 </td>
-                                {windows.map(w => (
-                                    <td key={w.key} className="py-3 px-3 font-bold text-[#1F674F]">
-                                        {w.sharpeRatio !== null ? formatNumber(w.sharpeRatio, 2) : "-"}
-                                    </td>
-                                ))}
+                                {windows.map(w => {
+                                    const sharpeClass =
+                                        w.sharpeRatio === null
+                                            ? "text-[#5A6878]"
+                                            : w.sharpeRatio > 0
+                                            ? "text-[#1F674F] font-bold"
+                                            : w.sharpeRatio < 0
+                                            ? "text-[#B91C1C] font-bold"
+                                            : "text-[#5A6878] font-bold"
+                                    return (
+                                        <td key={w.key} className={`py-3 px-3 ${sharpeClass}`}>
+                                            {w.sharpeRatio !== null ? formatNumber(w.sharpeRatio, 2) : "-"}
+                                        </td>
+                                    )
+                                })}
                             </tr>
                         </tbody>
                     </table>
+                </div>
+                <div className="mt-3 flex items-start sm:items-center gap-1.5 text-[11px] text-[#8D97A5]">
+                    <Info className="w-3.5 h-3.5 shrink-0 text-[#8D97A5] mt-0.5 sm:mt-0" />
+                    <span>
+                        * Conforme diretrizes da ANBIMA e boas práticas estatísticas, a volatilidade amostral requer ao menos 2 meses e o Índice de Sharpe anualizado exige série mínima de 12 meses.
+                    </span>
                 </div>
             </section>
 
