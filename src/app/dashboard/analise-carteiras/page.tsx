@@ -347,7 +347,7 @@ function AnaliseCarteirasContent() {
             </div>
 
             {/* Sticky Subnavigation Anchor Bar (Mais Retorno Style) */}
-            <div className="sticky top-14 md:top-0 z-20 bg-[#FFFFFF]/90 backdrop-blur-md border-y border-[#E4E0D7] -mx-3 sm:-mx-6 md:-mx-8 px-3 sm:px-6 md:px-8 py-2.5 flex items-center justify-between gap-2 overflow-x-auto shadow-2xs">
+            <div className="sticky top-14 md:top-0 z-20 bg-[#FFFFFF]/90 backdrop-blur-md border-y border-[#E4E0D7] -mx-3 sm:-mx-6 md:-mx-8 px-3 sm:px-6 md:px-8 py-2.5 flex items-center justify-between gap-2 overflow-x-auto shadow-2xs [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
                 <div className="flex items-center gap-1 sm:gap-2">
                     <a href="#grafico" className="px-3 py-1.5 rounded-lg text-xs font-semibold text-[#123044] hover:bg-[#F0ECE1] transition-colors whitespace-nowrap">
                         Gráfico
@@ -550,25 +550,25 @@ function AnaliseCarteirasContent() {
                 </div>
 
                 {/* Table Responsive Wrapper */}
-                <div className="overflow-x-auto rounded-2xl border border-[#E4E0D7] shadow-2xs">
-                    <table className="w-full text-xs text-center border-collapse">
+                <div className="overflow-x-auto rounded-2xl border border-[#E4E0D7] shadow-2xs [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+                    <table className="w-full text-xs text-center border-collapse table-auto">
                         <thead className="bg-[#123044] text-[#FFFFFF]">
                             <tr className="border-b border-[#123044]">
-                                <th className="py-3.5 px-3.5 text-left font-bold text-xs uppercase tracking-wider sticky left-0 bg-[#123044] z-10 border-r border-[#1e4157]">
+                                <th className="py-2.5 px-2 text-left font-bold text-[11px] uppercase tracking-wider sticky left-0 bg-[#123044] z-10 border-r border-[#1e4157] w-12 shrink-0">
                                     ANO
                                 </th>
-                                <th className="py-3.5 px-3 text-left font-bold text-xs uppercase tracking-wider min-w-[150px]">
+                                <th className="py-2.5 px-2 text-left font-bold text-[11px] uppercase tracking-wider min-w-[80px] max-w-[105px]">
                                     Carteira
                                 </th>
                                 {MONTH_NAMES_PT.map(m => (
-                                    <th key={m} className="py-3.5 px-2 text-center font-bold text-xs text-[#FAF8F5]">
+                                    <th key={m} className="py-2.5 px-1 text-center font-bold text-[11px] text-[#FAF8F5]">
                                         {m}
                                     </th>
                                 ))}
-                                <th className="py-3.5 px-3 text-center font-bold text-xs text-[#FAF8F5] border-l border-[#1e4157]">
+                                <th className="py-2.5 px-1.5 text-center font-bold text-[11px] text-[#FAF8F5] border-l border-[#1e4157] whitespace-nowrap">
                                     No ano
                                 </th>
-                                <th className="py-3.5 px-3.5 text-center font-bold text-xs text-[#FAF8F5] border-l border-[#1e4157]">
+                                <th className="py-2.5 px-1.5 text-center font-bold text-[11px] text-[#FAF8F5] border-l border-[#1e4157] whitespace-nowrap">
                                     Acumulado
                                 </th>
                             </tr>
@@ -577,16 +577,16 @@ function AnaliseCarteirasContent() {
                             {matrix.map((row) => (
                                 <tr key={row.year} className="hover:bg-[#FAF8F5]/80 transition-colors">
                                     {/* Column 1: ANO */}
-                                    <td className="py-3.5 px-3.5 font-bold text-left sticky left-0 bg-[#FFFFFF] z-10 border-r border-[#E4E0D7] text-[#123044] text-xs font-mono">
+                                    <td className="py-2 px-2 font-bold text-left sticky left-0 bg-[#FFFFFF] z-10 border-r border-[#E4E0D7] text-[#123044] text-[11px] font-mono">
                                         {row.year}
                                     </td>
 
                                     {/* Column 2: Portfolio Name + % CDI */}
-                                    <td className="py-3.5 px-3 text-left whitespace-nowrap bg-[#FFFFFF]">
-                                        <div className="font-bold text-[#123044] text-xs tracking-tight">
+                                    <td className="py-2 px-2 text-left bg-[#FFFFFF] max-w-[105px]">
+                                        <div className="font-bold text-[#123044] text-[11px] leading-tight truncate">
                                             ARVO {selectedProfile.toUpperCase()}
                                         </div>
-                                        <div className="text-[10px] text-[#8D97A5] font-normal tracking-wide mt-1">
+                                        <div className="text-[9.5px] text-[#8D97A5] font-normal tracking-wide mt-0.5">
                                             % CDI
                                         </div>
                                     </td>
@@ -595,22 +595,22 @@ function AnaliseCarteirasContent() {
                                     {row.months.map((cell, idx) => {
                                         if (!cell) {
                                             return (
-                                                <td key={idx} className="py-3 px-2 text-center font-mono">
-                                                    <div className="text-slate-300 text-xs leading-tight">-</div>
-                                                    <div className="text-slate-300 text-[10px] leading-tight mt-1">-</div>
+                                                <td key={idx} className="py-2 px-1 text-center font-mono">
+                                                    <div className="text-slate-300 text-[11px] leading-tight">-</div>
+                                                    <div className="text-slate-300 text-[9.5px] leading-tight mt-0.5">-</div>
                                                 </td>
                                             )
                                         }
 
                                         const isNeg = cell.returnPct !== null && cell.returnPct < 0
                                         return (
-                                            <td key={idx} className="py-3 px-2 text-center font-mono">
-                                                <div className={`font-bold text-xs leading-tight ${isNeg ? "text-[#B91C1C]" : "text-[#123044]"}`}>
+                                            <td key={idx} className="py-2 px-1 text-center font-mono">
+                                                <div className={`font-bold text-[11px] leading-tight ${isNeg ? "text-[#B91C1C]" : "text-[#123044]"}`}>
                                                     {cell.returnPct !== null
                                                         ? `${cell.returnPct.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`
                                                         : "-"}
                                                 </div>
-                                                <div className="text-[10px] text-[#8D97A5] font-normal leading-tight mt-1">
+                                                <div className="text-[9.5px] text-[#8D97A5] font-normal leading-tight mt-0.5">
                                                     {cell.pctOfCdi !== null
                                                         ? `${cell.pctOfCdi.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`
                                                         : "-"}
@@ -620,11 +620,11 @@ function AnaliseCarteirasContent() {
                                     })}
 
                                     {/* No Ano (YTD) */}
-                                    <td className="py-3 px-3 text-center font-mono bg-[#FAF8F5] border-l border-[#E4E0D7]">
-                                        <div className={`font-bold text-xs leading-tight ${row.ytdReturn < 0 ? "text-[#B91C1C]" : "text-[#123044]"}`}>
+                                    <td className="py-2 px-1.5 text-center font-mono bg-[#FAF8F5] border-l border-[#E4E0D7]">
+                                        <div className={`font-bold text-[11px] leading-tight ${row.ytdReturn < 0 ? "text-[#B91C1C]" : "text-[#123044]"}`}>
                                             {row.ytdReturn.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
                                         </div>
-                                        <div className="text-[10px] text-[#8D97A5] font-normal leading-tight mt-1">
+                                        <div className="text-[9.5px] text-[#8D97A5] font-normal leading-tight mt-0.5">
                                             {row.ytdPctOfCdi !== null
                                                 ? `${row.ytdPctOfCdi.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`
                                                 : "-"}
@@ -632,11 +632,11 @@ function AnaliseCarteirasContent() {
                                     </td>
 
                                     {/* Acumulado */}
-                                    <td className="py-3 px-3.5 text-center font-mono bg-[#F0ECE1]/50 border-l border-[#E4E0D7]">
-                                        <div className={`font-extrabold text-xs leading-tight ${row.accumReturn < 0 ? "text-[#B91C1C]" : "text-[#123044]"}`}>
+                                    <td className="py-2 px-1.5 text-center font-mono bg-[#F0ECE1]/50 border-l border-[#E4E0D7]">
+                                        <div className={`font-extrabold text-[11px] leading-tight ${row.accumReturn < 0 ? "text-[#B91C1C]" : "text-[#123044]"}`}>
                                             {row.accumReturn.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
                                         </div>
-                                        <div className="text-[10px] text-[#8D97A5] font-normal leading-tight mt-1">
+                                        <div className="text-[9.5px] text-[#8D97A5] font-normal leading-tight mt-0.5">
                                             {row.accumPctOfCdi !== null
                                                 ? `${row.accumPctOfCdi.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`
                                                 : "-"}
@@ -663,8 +663,8 @@ function AnaliseCarteirasContent() {
                     </p>
                 </div>
 
-                <div className="overflow-x-auto rounded-2xl border border-[#E4E0D7]">
-                    <table className="w-full text-xs text-center border-collapse">
+                <div className="overflow-x-auto rounded-2xl border border-[#E4E0D7] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+                    <table className="w-full text-xs text-center border-collapse table-auto">
                         <thead>
                             <tr className="bg-[#FAF8F5] border-b border-[#E4E0D7] text-[#123044] font-bold">
                                 <th className="py-3 px-4 text-left sticky left-0 bg-[#FAF8F5] z-10 border-r border-[#E4E0D7]">
@@ -977,7 +977,7 @@ function AnaliseCarteirasContent() {
                 </div>
 
                 {/* Assets Table */}
-                <div className="overflow-x-auto rounded-2xl border border-[#E4E0D7]">
+                <div className="overflow-x-auto rounded-2xl border border-[#E4E0D7] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
                     <table className="w-full text-xs text-left border-collapse">
                         <thead>
                             <tr className="bg-[#FAF8F5] border-b border-[#E4E0D7] text-[#123044] font-bold">
