@@ -49,16 +49,15 @@ for (let r = startRow; r <= endRow; r++) {
     ibov.push(typeof dados[r][ibovCol] === 'number' ? dados[r][ibovCol] : 0);
     dolar.push(typeof dados[r][dolarCol] === 'number' ? dados[r][dolarCol] : 0);
     
-    // IPCA special handling:
-    // Sep 2026 (index 44, row 46): 0.0048 (official published IBGE)
-    // Oct 2026 (index 45, row 47): 0.0032 (IPCA-15 de outubro de 2026 oficial IBGE)
-    if (r === 46) {
-        ipca.push(0.0048);
+    const vIpca = dados[r][ipcaCol];
+    if (typeof vIpca === 'number' && !isNaN(vIpca)) {
+        ipca.push(vIpca);
+    } else if (r === 46) {
+        ipca.push(0.0082);
     } else if (r === 47) {
-        ipca.push(0.0032);
+        ipca.push(0.0021);
     } else {
-        const v = dados[r][ipcaCol];
-        ipca.push(typeof v === 'number' ? v : 0);
+        ipca.push(0);
     }
 }
 
@@ -250,7 +249,7 @@ const diagData = JSON.parse(fs.readFileSync(diagPath, 'utf8'));
 
 diagData.source = 'Planilha Oficial .xlsx';
 diagData.sha256 = sha256;
-diagData.asOf = '2026-11-05';
+diagData.asOf = '2026-11-06';
 diagData.end = '2026-10';
 diagData.months = months.length;
 diagData.ipcaAnnual = ipcaAnnual;

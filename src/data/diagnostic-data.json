@@ -1,11 +1,11 @@
 {
   "source": "Planilha Oficial .xlsx",
-  "sha256": "530117b6fb6442e3481031db0dddee8ef7f96e1b56edd42a335c76c4bf408f40",
-  "asOf": "2026-11-05",
+  "sha256": "1c7fef459caefc377774bbd26631b630547c73d45e1a8ba3d0dd2395b9f1031b",
+  "asOf": "2026-11-06",
   "start": "2023-01",
   "end": "2026-10",
   "months": 46,
-  "ipcaAnnual": 0.04613654647921961,
+  "ipcaAnnual": 0.04675921565027341,
   "portfolios": [
     {
       "id": "Geral Light-1",
@@ -13,7 +13,7 @@
       "name": "Reserva",
       "level": 1,
       "annualNominal": 0.13022309723031467,
-      "annualReal": 0.0803781791527014,
+      "annualReal": 0.07973551159823455,
       "total": 0.5988069106692366,
       "returns": [
         0.0112,
@@ -74,7 +74,7 @@
       "name": "90% Conservador",
       "level": 2,
       "annualNominal": 0.13104111142010177,
-      "annualReal": 0.08116011741166029,
+      "annualReal": 0.08051698471789459,
       "total": 0.603247233290878,
       "returns": [
         0.0112,
@@ -135,7 +135,7 @@
       "name": "Abrigo",
       "level": 3,
       "annualNominal": 0.1313392631233461,
-      "annualReal": 0.08144512007622406,
+      "annualReal": 0.08080181784741147,
       "total": 0.604867916636538,
       "returns": [
         0.010890000000000002,
@@ -196,7 +196,7 @@
       "name": "Abrigo-Ritmo",
       "level": 4,
       "annualNominal": 0.13233444049948417,
-      "annualReal": 0.08239640829905448,
+      "annualReal": 0.08175254019239686,
       "total": 0.610286236899612,
       "returns": [
         0.0104,
@@ -257,7 +257,7 @@
       "name": "Ritmo",
       "level": 5,
       "annualNominal": 0.13597256141303227,
-      "annualReal": 0.08587408138656127,
+      "annualReal": 0.0852281445712777,
       "total": 0.6302093968602069,
       "returns": [
         0.012974999999999997,
@@ -346,7 +346,7 @@
       "name": "Visão-Oceano",
       "level": 8,
       "annualNominal": 0.16707957838980003,
-      "annualReal": 0.11560922168106558,
+      "annualReal": 0.11494559679112126,
       "total": 0.8080834362174876,
       "returns": [
         0.027168,
@@ -407,7 +407,7 @@
       "name": "Oceano",
       "level": 9,
       "annualNominal": 0.16819687439570963,
-      "annualReal": 0.11667724287740922,
+      "annualReal": 0.1160129826705143,
       "total": 0.8147277751944499,
       "returns": [
         0.028038,
@@ -468,7 +468,7 @@
       "name": "Reserva",
       "level": 1,
       "annualNominal": 0.13022309723031467,
-      "annualReal": 0.0803781791527014,
+      "annualReal": 0.07973551159823455,
       "total": 0.5988069106692366,
       "returns": [
         0.0112,
@@ -529,7 +529,7 @@
       "name": "90% Conservador",
       "level": 2,
       "annualNominal": 0.13104111142010177,
-      "annualReal": 0.08116011741166029,
+      "annualReal": 0.08051698471789459,
       "total": 0.603247233290878,
       "returns": [
         0.0112,
@@ -590,7 +590,7 @@
       "name": "Abrigo",
       "level": 3,
       "annualNominal": 0.1312412661234834,
-      "annualReal": 0.08135144492435953,
+      "annualReal": 0.0807081984186091,
       "total": 0.6043350941958305,
       "returns": [
         0.010317000000000002,
@@ -651,7 +651,7 @@
       "name": "Abrigo-Ritmo",
       "level": 4,
       "annualNominal": 0.13228940513892518,
-      "annualReal": 0.08235335908075636,
+      "annualReal": 0.08170951658210934,
       "total": 0.6100407467197613,
       "returns": [
         0.009642,
@@ -712,7 +712,7 @@
       "name": "Ritmo",
       "level": 5,
       "annualNominal": 0.14148412941669974,
-      "annualReal": 0.09114257910057066,
+      "annualReal": 0.09049350829701641,
       "total": 0.6607382856348225,
       "returns": [
         0.014909999999999998,
@@ -773,7 +773,7 @@
       "name": "Ritmo-Visão",
       "level": 6,
       "annualNominal": 0.14702257939467978,
-      "annualReal": 0.09643677324436561,
+      "annualReal": 0.0957845531669097,
       "total": 0.6918396835048193,
       "returns": [
         0.017227,
@@ -834,7 +834,7 @@
       "name": "Visão",
       "level": 7,
       "annualNominal": 0.1569743833164634,
-      "annualReal": 0.10594968430294238,
+      "annualReal": 0.10529180542988725,
       "total": 0.7488035088545781,
       "returns": [
         0.020810000000000002,
@@ -895,7 +895,7 @@
       "name": "Visão-Oceano",
       "level": 8,
       "annualNominal": 0.16517622045504554,
-      "annualReal": 0.11378980533320893,
+      "annualReal": 0.11312726273081664,
       "total": 0.7968059709981128,
       "returns": [
         0.023618,
@@ -956,7 +956,7 @@
       "name": "Oceano",
       "level": 9,
       "annualNominal": 0.17406281828551395,
-      "annualReal": 0.12228448784896306,
+      "annualReal": 0.12161689214855054,
       "total": 0.8499079360491608,
       "returns": [
         0.027612,
@@ -1017,7 +1017,7 @@
       "name": "Reserva",
       "level": 1,
       "annualNominal": 0.13022309723031467,
-      "annualReal": 0.0803781791527014,
+      "annualReal": 0.07973551159823455,
       "total": 0.5988069106692366,
       "returns": [
         0.0112,
@@ -1078,7 +1078,7 @@
       "name": "90% Conservador",
       "level": 2,
       "annualNominal": 0.13134163269470167,
-      "annualReal": 0.08144738514512317,
+      "annualReal": 0.0808040815689246,
       "total": 0.6048808019236782,
       "returns": [
         0.01117,
@@ -1139,7 +1139,7 @@
       "name": "Abrigo",
       "level": 3,
       "annualNominal": 0.13191346720198727,
-      "annualReal": 0.08199400069852314,
+      "annualReal": 0.08135037196573802,
       "total": 0.6079925678397058,
       "returns": [
         0.010321,
@@ -1200,7 +1200,7 @@
       "name": "Abrigo-Ritmo",
       "level": 4,
       "annualNominal": 0.13298848612381797,
-      "annualReal": 0.08302160930798119,
+      "annualReal": 0.08237736929784445,
       "total": 0.6138545943172176,
       "returns": [
         0.009430999999999998,
@@ -1261,7 +1261,7 @@
       "name": "Ritmo",
       "level": 5,
       "annualNominal": 0.14605887886397362,
-      "annualReal": 0.09551557368016961,
+      "annualReal": 0.09486390158219216,
       "total": 0.68639730223459,
       "returns": [
         0.016739999999999998,
@@ -1322,7 +1322,7 @@
       "name": "Ritmo-Visão",
       "level": 6,
       "annualNominal": 0.15081686113982795,
-      "annualReal": 0.10006372018347953,
+      "annualReal": 0.09940934260121259,
       "total": 0.7133936874477236,
       "returns": [
         0.018782,
@@ -1383,7 +1383,7 @@
       "name": "Visão",
       "level": 7,
       "annualNominal": 0.15597806069309073,
-      "annualReal": 0.10499730134038776,
+      "annualReal": 0.10433998899638808,
       "total": 0.7430376502766214,
       "returns": [
         0.019979000000000004,
@@ -1444,7 +1444,7 @@
       "name": "Visão-Oceano",
       "level": 8,
       "annualNominal": 0.1589375207567203,
-      "annualReal": 0.10782624377012073,
+      "annualReal": 0.107167248617686,
       "total": 0.7602057005968261,
       "returns": [
         0.020897,
@@ -1505,7 +1505,7 @@
       "name": "Oceano",
       "level": 9,
       "annualNominal": 0.17920852235955786,
-      "annualReal": 0.12720325690579593,
+      "annualReal": 0.12653273525469144,
       "total": 0.8811813686147896,
       "returns": [
         0.030462,

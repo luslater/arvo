@@ -55,8 +55,8 @@ export const ASSET_METRICS: Record<string, { expectedReturn: number, volatility:
     "volatility": 0.47
   },
   "IPCA": {
-    "expectedReturn": 4.61,
-    "volatility": 0.97
+    "expectedReturn": 4.68,
+    "volatility": 1
   },
   "SELIC": {
     "expectedReturn": 13.05,
@@ -167,8 +167,8 @@ export const ASSET_METRICS: Record<string, { expectedReturn: number, volatility:
     "volatility": 3.38
   },
   "JGP Ecossistema": {
-    "expectedReturn": 21.35,
-    "volatility": 6.14
+    "expectedReturn": 21.14,
+    "volatility": 6.23
   },
   "Gavea Macro": {
     "expectedReturn": 6.99,

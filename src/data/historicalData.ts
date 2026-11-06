@@ -163,8 +163,8 @@ export const HISTORICAL_DATA: HistoricalData = {
     0.0041,
     0.0005,
     -0.0028,
-    0.0048,
-    0.0032
+    0.0082,
+    0.0021
 ],
   "selic": [
     0.0112,
@@ -1604,7 +1604,7 @@ export const HISTORICAL_DATA: HistoricalData = {
             -0.0007,
             -0.0209,
             -0.0206,
-            -0.0115
+            -0.0182
         ]
     },
     {
