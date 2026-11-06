@@ -69,9 +69,6 @@ function AnaliseCarteirasContent() {
     const [selectedFamily, setSelectedFamily] = useState<string>(initialFamily)
     const [selectedProfile, setSelectedProfile] = useState<string>(initialProfile)
 
-    // Table Mode: absolute return or % of CDI
-    const [tableMode, setTableMode] = useState<"pct" | "cdi">("pct")
-
     // Chart window filter: 6, 12, 24, 36, or 0 (All)
     const [chartWindow, setChartWindow] = useState<number>(0)
 
@@ -135,11 +132,6 @@ function AnaliseCarteirasContent() {
         if (!rec) return []
         return getPortfolioAssets(rec)
     }, [rec])
-
-    // CDI row for matrix comparison
-    const cdiMatrix = useMemo<YearRow[]>(() => {
-        return calculateYearlyMonthlyMatrix(meta.cdi, meta.months, meta.cdi)
-    }, [meta])
 
     // 12M metric for quick badge
     const metric12M = windows.find(w => w.key === "12M")
@@ -543,186 +535,117 @@ function AnaliseCarteirasContent() {
                 </div>
             </section>
 
-            {/* SECTION 2: Tabela de Rentabilidade Histórica (Mês a Mês por Ano - Mais Retorno Style) */}
+            {/* SECTION 2: Tabela de Rentabilidade Histórica (Mês a Mês por Ano - Estilo Mais Retorno) */}
             <section id="tabela-historica" className="bg-[#FFFFFF] border border-[#E4E0D7] rounded-3xl p-6 shadow-xs scroll-mt-20">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                    <div>
-                        <div className="text-xs font-bold text-[#1F674F] uppercase tracking-wider mb-1">
-                            Auditoria Mensal
-                        </div>
-                        <h2 className="text-xl md:text-2xl font-serif font-bold text-[#123044]">
-                            Rentabilidade Histórica (Mês a Mês)
-                        </h2>
-                        <p className="text-xs text-[#5A6878] mt-0.5">
-                            Retornos mensais cota a cota da carteira {selectedProfile} de Jan/2023 a Out/2026
-                        </p>
+                <div className="mb-6">
+                    <div className="text-xs font-bold text-[#1F674F] uppercase tracking-wider mb-1">
+                        Auditoria Mensal
                     </div>
-
-                    {/* Table Mode Selector (% Absoluto vs % do CDI) */}
-                    <div className="inline-flex items-center gap-1 bg-[#FAF8F5] border border-[#E4E0D7] rounded-xl p-1 self-start sm:self-auto">
-                        <button
-                            type="button"
-                            onClick={() => setTableMode("pct")}
-                            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                                tableMode === "pct"
-                                    ? "bg-[#1F674F] text-[#FFFFFF] shadow-2xs"
-                                    : "text-[#5A6878] hover:text-[#123044]"
-                            }`}
-                        >
-                            % Absoluto
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => setTableMode("cdi")}
-                            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                                tableMode === "cdi"
-                                    ? "bg-[#1F674F] text-[#FFFFFF] shadow-2xs"
-                                    : "text-[#5A6878] hover:text-[#123044]"
-                            }`}
-                        >
-                            % do CDI
-                        </button>
-                    </div>
+                    <h2 className="text-xl md:text-2xl font-serif font-bold text-[#123044]">
+                        Rentabilidade Histórica (Mês a Mês)
+                    </h2>
+                    <p className="text-xs text-[#5A6878] mt-0.5">
+                        Retornos absolutos mensais da carteira e percentual do CDI correspondente logo abaixo de Jan/2023 a Out/2026
+                    </p>
                 </div>
 
                 {/* Table Responsive Wrapper */}
-                <div className="overflow-x-auto rounded-2xl border border-[#E4E0D7]">
+                <div className="overflow-x-auto rounded-2xl border border-[#E4E0D7] shadow-2xs">
                     <table className="w-full text-xs text-center border-collapse">
-                        <thead>
-                            <tr className="bg-[#FAF8F5] border-b border-[#E4E0D7] text-[#123044] font-bold">
-                                <th className="py-3 px-3.5 text-left sticky left-0 bg-[#FAF8F5] z-10 border-r border-[#E4E0D7]">
-                                    Ano
+                        <thead className="bg-[#123044] text-[#FFFFFF]">
+                            <tr className="border-b border-[#123044]">
+                                <th className="py-3.5 px-3.5 text-left font-bold text-xs uppercase tracking-wider sticky left-0 bg-[#123044] z-10 border-r border-[#1e4157]">
+                                    ANO
+                                </th>
+                                <th className="py-3.5 px-3 text-left font-bold text-xs uppercase tracking-wider min-w-[150px]">
+                                    Carteira
                                 </th>
                                 {MONTH_NAMES_PT.map(m => (
-                                    <th key={m} className="py-3 px-2 font-semibold text-[#5A6878]">
+                                    <th key={m} className="py-3.5 px-2 text-center font-bold text-xs text-[#FAF8F5]">
                                         {m}
                                     </th>
                                 ))}
-                                <th className="py-3 px-3 bg-[#F0ECE1] font-bold text-[#123044] border-l border-[#E4E0D7]">
-                                    No Ano
+                                <th className="py-3.5 px-3 text-center font-bold text-xs text-[#FAF8F5] border-l border-[#1e4157]">
+                                    No ano
                                 </th>
-                                <th className="py-3 px-3.5 bg-[#E8F3EE] font-extrabold text-[#1F674F] border-l border-[#BCD6CA]">
+                                <th className="py-3.5 px-3.5 text-center font-bold text-xs text-[#FAF8F5] border-l border-[#1e4157]">
                                     Acumulado
                                 </th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-[#E4E0D7]">
                             {matrix.map((row) => (
-                                <tr key={row.year} className="hover:bg-[#FAF8F5]/60 transition-colors">
-                                    <td className="py-3 px-3.5 font-bold text-left sticky left-0 bg-[#FFFFFF] z-10 border-r border-[#E4E0D7] text-[#123044]">
+                                <tr key={row.year} className="hover:bg-[#FAF8F5]/80 transition-colors">
+                                    {/* Column 1: ANO */}
+                                    <td className="py-3.5 px-3.5 font-bold text-left sticky left-0 bg-[#FFFFFF] z-10 border-r border-[#E4E0D7] text-[#123044] text-xs font-mono">
                                         {row.year}
                                     </td>
+
+                                    {/* Column 2: Portfolio Name + % CDI */}
+                                    <td className="py-3.5 px-3 text-left whitespace-nowrap bg-[#FFFFFF]">
+                                        <div className="font-bold text-[#123044] text-xs tracking-tight">
+                                            ARVO {selectedProfile.toUpperCase()}
+                                        </div>
+                                        <div className="text-[10px] text-[#8D97A5] font-normal tracking-wide mt-1">
+                                            % CDI
+                                        </div>
+                                    </td>
+
+                                    {/* Month Columns: Return on top, % CDI below */}
                                     {row.months.map((cell, idx) => {
                                         if (!cell) {
                                             return (
-                                                <td key={idx} className="py-3 px-2 text-slate-300 font-mono">
-                                                    -
+                                                <td key={idx} className="py-3 px-2 text-center font-mono">
+                                                    <div className="text-slate-300 text-xs leading-tight">-</div>
+                                                    <div className="text-slate-300 text-[10px] leading-tight mt-1">-</div>
                                                 </td>
                                             )
                                         }
 
-                                        if (tableMode === "pct") {
-                                            const val = cell.returnPct
-                                            const isPos = val !== null && val >= 0
-                                            const isNeg = val !== null && val < 0
-                                            return (
-                                                <td
-                                                    key={idx}
-                                                    className={`py-3 px-2 font-mono font-medium ${
-                                                        isNeg
-                                                            ? "bg-[#FEF2F2] text-[#B91C1C] font-semibold"
-                                                            : isPos
-                                                            ? "text-[#1F674F]"
-                                                            : "text-[#5A6878]"
-                                                    }`}
-                                                >
-                                                    {formatPct(val, 2)}
-                                                </td>
-                                            )
-                                        } else {
-                                            const pctCdi = cell.pctOfCdi
-                                            const isHigh = pctCdi !== null && pctCdi >= 100
-                                            const isLow = pctCdi !== null && pctCdi < 80
-                                            return (
-                                                <td
-                                                    key={idx}
-                                                    className={`py-3 px-2 font-mono font-medium ${
-                                                        isHigh
-                                                            ? "text-[#1F674F] font-semibold"
-                                                            : isLow
-                                                            ? "text-[#B91C1C]"
-                                                            : "text-[#5A6878]"
-                                                    }`}
-                                                >
-                                                    {pctCdi !== null ? `${pctCdi.toFixed(1)}%` : "-"}
-                                                </td>
-                                            )
-                                        }
+                                        const isNeg = cell.returnPct !== null && cell.returnPct < 0
+                                        return (
+                                            <td key={idx} className="py-3 px-2 text-center font-mono">
+                                                <div className={`font-bold text-xs leading-tight ${isNeg ? "text-[#B91C1C]" : "text-[#123044]"}`}>
+                                                    {cell.returnPct !== null
+                                                        ? `${cell.returnPct.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`
+                                                        : "-"}
+                                                </div>
+                                                <div className="text-[10px] text-[#8D97A5] font-normal leading-tight mt-1">
+                                                    {cell.pctOfCdi !== null
+                                                        ? `${cell.pctOfCdi.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`
+                                                        : "-"}
+                                                </div>
+                                            </td>
+                                        )
                                     })}
 
-                                    {/* No Ano (YTD for that year) */}
-                                    <td className="py-3 px-3 bg-[#F0ECE1]/60 font-mono font-bold text-[#123044] border-l border-[#E4E0D7]">
-                                        {tableMode === "pct"
-                                            ? formatPct(row.ytdReturn, 2)
-                                            : row.ytdPctOfCdi !== null
-                                            ? `${row.ytdPctOfCdi.toFixed(1)}%`
-                                            : "-"}
+                                    {/* No Ano (YTD) */}
+                                    <td className="py-3 px-3 text-center font-mono bg-[#FAF8F5] border-l border-[#E4E0D7]">
+                                        <div className={`font-bold text-xs leading-tight ${row.ytdReturn < 0 ? "text-[#B91C1C]" : "text-[#123044]"}`}>
+                                            {row.ytdReturn.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
+                                        </div>
+                                        <div className="text-[10px] text-[#8D97A5] font-normal leading-tight mt-1">
+                                            {row.ytdPctOfCdi !== null
+                                                ? `${row.ytdPctOfCdi.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`
+                                                : "-"}
+                                        </div>
                                     </td>
 
                                     {/* Acumulado */}
-                                    <td className="py-3 px-3.5 bg-[#E8F3EE]/80 font-mono font-extrabold text-[#1F674F] border-l border-[#BCD6CA]">
-                                        {tableMode === "pct"
-                                            ? formatPct(row.accumReturn, 2)
-                                            : row.accumPctOfCdi !== null
-                                            ? `${row.accumPctOfCdi.toFixed(1)}%`
-                                            : "-"}
+                                    <td className="py-3 px-3.5 text-center font-mono bg-[#F0ECE1]/50 border-l border-[#E4E0D7]">
+                                        <div className={`font-extrabold text-xs leading-tight ${row.accumReturn < 0 ? "text-[#B91C1C]" : "text-[#123044]"}`}>
+                                            {row.accumReturn.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
+                                        </div>
+                                        <div className="text-[10px] text-[#8D97A5] font-normal leading-tight mt-1">
+                                            {row.accumPctOfCdi !== null
+                                                ? `${row.accumPctOfCdi.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`
+                                                : "-"}
+                                        </div>
                                     </td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
-                </div>
-
-                {/* Benchmark CDI Reference Row */}
-                <div className="mt-4 pt-4 border-t border-[#E4E0D7]/60">
-                    <div className="text-[11px] font-bold text-[#8D97A5] uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                        <Info className="w-3.5 h-3.5" />
-                        Referência CDI no Mesmo Período (% Absoluto)
-                    </div>
-                    <div className="overflow-x-auto rounded-xl border border-[#E4E0D7]/70 bg-[#FAF8F5]/60">
-                        <table className="w-full text-[11px] text-center border-collapse">
-                            <thead>
-                                <tr className="text-[#8D97A5] font-semibold">
-                                    <th className="py-2 px-3 text-left border-r border-[#E4E0D7]/70">Ano</th>
-                                    {MONTH_NAMES_PT.map(m => (
-                                        <th key={m} className="py-2 px-1.5">{m}</th>
-                                    ))}
-                                    <th className="py-2 px-2.5 font-bold border-l border-[#E4E0D7]/70">No Ano</th>
-                                    <th className="py-2 px-3 font-bold border-l border-[#E4E0D7]/70">Acumulado</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-[#E4E0D7]/70 font-mono text-[#5A6878]">
-                                {cdiMatrix.map(row => (
-                                    <tr key={row.year}>
-                                        <td className="py-2 px-3 text-left font-bold text-[#123044] border-r border-[#E4E0D7]/70">
-                                            {row.year} (CDI)
-                                        </td>
-                                        {row.months.map((cell, idx) => (
-                                            <td key={idx} className="py-2 px-1.5">
-                                                {cell ? `${cell.returnPct?.toFixed(2)}%` : "-"}
-                                            </td>
-                                        ))}
-                                        <td className="py-2 px-2.5 font-bold text-[#123044] border-l border-[#E4E0D7]/70">
-                                            {row.ytdReturn.toFixed(2)}%
-                                        </td>
-                                        <td className="py-2 px-3 font-bold text-[#123044] border-l border-[#E4E0D7]/70">
-                                            {row.accumReturn.toFixed(2)}%
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
                 </div>
             </section>
 
