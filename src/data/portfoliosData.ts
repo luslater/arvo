@@ -71,7 +71,7 @@ export const ASSET_METRICS: Record<string, { expectedReturn: number, volatility:
     "volatility": 10.3
   },
   "Tesouro Selic / Fundo Simples": {
-    "expectedReturn": 13.02,
+    "expectedReturn": 13.04,
     "volatility": 0.47
   },
   "ARX Fuji": {

@@ -355,7 +355,7 @@ export const HISTORICAL_DATA: HistoricalData = {
             0.0122,
             0.0116,
             0.01,
-            0.0116,
+            0.0121,
             0.0109,
             0.0107,
             0.0112,
