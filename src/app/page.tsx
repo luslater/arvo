@@ -544,6 +544,7 @@ export default function LandingPage() {
               <a href="#carteiras">Carteiras</a>
               <a href="#independencia">Independência</a>
               <Link href="/carta/novembro-2026">Carta Mensal</Link>
+              <Link href="/apresentacao" target="_blank">Apresentação</Link>
               <a href="#faq">Dúvidas</a>
             </nav>
             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -1004,6 +1005,7 @@ export default function LandingPage() {
                 <a href="#carteiras">Carteiras</a>
                 <a href="#independencia">Independência</a>
                 <Link href="/carta/novembro-2026">Carta Mensal</Link>
+                <Link href="/apresentacao" target="_blank">Apresentação</Link>
                 <a href="#faq">Dúvidas</a>
                 <Link href="/politica-de-privacidade">Privacidade</Link>
                 <Link href="/termos">Termos</Link>

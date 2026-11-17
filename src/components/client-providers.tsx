@@ -16,7 +16,7 @@ export function ClientProviders({ children }: { children: React.ReactNode }) {
             "/obrigado",
             "/politica-de-privacidade",
             "/termos",
-        ].includes(pathname || "") || Boolean(pathname?.startsWith("/carta"));
+        ].includes(pathname || "") || Boolean(pathname?.startsWith("/carta")) || Boolean(pathname?.startsWith("/apresentacao"));
 
     return (
         <AuthProvider>

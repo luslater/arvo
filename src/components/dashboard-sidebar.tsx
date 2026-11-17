@@ -5,7 +5,7 @@ import Image from "next/image"
 import { usePathname } from "next/navigation"
 import {
     LayoutDashboard, Wallet, BookOpen, HelpCircle,
-    Target, CreditCard, User, BarChart3, LogOut, ChevronDown, Calculator, TrendingUp, Lock, Check, Menu, X, Compass, Map, ShieldCheck, Scale, Calendar, FileText
+    Target, CreditCard, User, BarChart3, LogOut, ChevronDown, Calculator, TrendingUp, Lock, Check, Menu, X, Compass, Map, ShieldCheck, Scale, Calendar, FileText, Presentation
 } from "lucide-react"
 import { useSession, signOut } from "next-auth/react"
 import { useState } from "react"
@@ -19,9 +19,10 @@ interface NavItem {
     locked?: boolean
     onLockedClick?: () => void
     onClick?: () => void
+    target?: string
 }
 
-function NavLink({ href, icon, label, exact, locked, onLockedClick, onClick }: NavItem) {
+function NavLink({ href, icon, label, exact, locked, onLockedClick, onClick, target }: NavItem) {
     const pathname = usePathname()
     const isActive = exact ? pathname === href : pathname.startsWith(href)
 
@@ -43,6 +44,8 @@ function NavLink({ href, icon, label, exact, locked, onLockedClick, onClick }: N
     return (
         <Link
             href={href}
+            target={target}
+            rel={target === "_blank" ? "noopener noreferrer" : undefined}
             onClick={onClick}
             className={`flex items-center gap-3 md:gap-2.5 px-3.5 py-3 md:py-2.5 rounded-xl md:rounded-lg text-sm md:text-[13px] transition-all ${isActive
                 ? 'bg-dash-accent-light text-dash-accent font-semibold shadow-xs'
@@ -128,6 +131,9 @@ export function DashboardSidebar() {
                 <NavLink href="/dashboard/educacao" icon={<BookOpen className="w-4 h-4" />} label="Educação" onClick={closeMobileMenu} />
                 <NavLink href="/carta/novembro-2026" icon={<FileText className="w-4 h-4" />} label="Carta Mensal (Nov/26)" onClick={closeMobileMenu} />
                 <NavLink href="/dashboard/calculadoras" icon={<Calculator className="w-4 h-4" />} label="Outras Calculadoras" onClick={closeMobileMenu} />
+
+                <span className="text-[10px] font-semibold text-dash-text-light uppercase tracking-widest px-3 py-2 mt-4">Apresentação</span>
+                <NavLink href="/apresentacao" icon={<Presentation className="w-4 h-4" />} label="Apresentação" target="_blank" onClick={closeMobileMenu} />
                 <span className="text-[10px] font-semibold text-dash-text-light uppercase tracking-widest px-3 py-2 mt-4">Conta & Contato</span>
                 <NavLink href="/dashboard/assinatura" icon={<CreditCard className="w-4 h-4" />} label="Assinatura" onClick={closeMobileMenu} />
                 <NavLink href="/dashboard/agendamento" icon={<Calendar className="w-4 h-4" />} label="Agendamento" onClick={closeMobileMenu} />
