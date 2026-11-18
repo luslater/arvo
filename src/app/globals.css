@@ -1,47 +1,47 @@
 @import "tailwindcss";
 
 @theme {
-  /* Dashboard Colors — ARVO Nautical Instrument & Chart Tokens */
-  --color-cartula: #F6F1E7;
-  --color-profundo: #0F2A3D;
+  /* Dashboard Colors — ARVO Official Design Tokens */
+  --color-cartula: #f5f6f4;
+  --color-profundo: #123044;
   --color-farol: #C08A34;
   --color-farol-light: #FBF4E8;
   --color-recife: #B34A3C;
   --color-recife-light: #FBEAEA;
   --color-espuma: #FFFFFF;
-  --color-grafite: #2B3A42;
-  --color-marola: #E4DFD5;
-  --color-alga: #1F674F;
-  --color-alga-light: #E8F1ED;
-  --color-nevoeiro: #6B7C85;
+  --color-grafite: #4b5560;
+  --color-marola: #dde1e3;
+  --color-alga: #2b6e76;
+  --color-alga-light: #e3eeef;
+  --color-nevoeiro: #8a949e;
 
-  /* Aliases for consistency */
-  --color-dash-bg: #F6F1E7;
+  /* Aliases for consistency across Dashboard */
+  --color-dash-bg: #f5f6f4;
   --color-dash-surface: #FFFFFF;
-  --color-dash-surface-active: #EFECE3;
-  --color-dash-border: #E4DFD5;
-  --color-dash-border-strong: rgba(15, 42, 61, 0.20);
-  --color-dash-text: #0F2A3D;
-  --color-dash-text-muted: #2B3A42;
-  --color-dash-text-light: #6B7C85;
-  --color-dash-accent: #1F674F;
-  --color-dash-accent-light: #E8F1ED;
-  --color-dash-accent-mid: #144937;
+  --color-dash-surface-active: #eef0ee;
+  --color-dash-border: #dde1e3;
+  --color-dash-border-strong: rgba(18, 48, 68, 0.18);
+  --color-dash-text: #123044;
+  --color-dash-text-muted: #4b5560;
+  --color-dash-text-light: #8a949e;
+  --color-dash-accent: #2b6e76;
+  --color-dash-accent-light: #e3eeef;
+  --color-dash-accent-mid: #235c63;
   --color-dash-danger: #B34A3C;
   --color-dash-danger-light: #FBEAEA;
   --color-dash-amber: #C08A34;
   --color-dash-amber-light: #FBF4E8;
-  --color-dash-blue: #0F2A3D;
-  --color-dash-blue-light: #E8EEF2;
+  --color-dash-blue: #123044;
+  --color-dash-blue-light: #e8eeef;
 
   /* Fonts */
-  --font-serif: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
-  --font-display: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
-  --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-serif: var(--font-inter-tight, 'Inter Tight'), 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-inter-tight, 'Inter Tight'), var(--font-inter, 'Inter'), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter, 'Inter'), 'Plus Jakarta Sans', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
   /* ARVO Primary & Profiles */
-  --color-arvo-primary: #1F674F;
+  --color-arvo-primary: #2b6e76;
 
   --color-abrigo-primary: #C9B8A3;
   --color-abrigo-secondary: #A89178;

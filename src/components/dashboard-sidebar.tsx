@@ -10,6 +10,7 @@ import {
 import { useSession, signOut } from "next-auth/react"
 import { useState } from "react"
 import { MobileBottomNav } from "@/components/mobile-bottom-nav"
+import { ArvoLogo } from "@/components/brand/ArvoLogo"
 
 interface NavItem {
     href: string
@@ -69,21 +70,21 @@ export function DashboardSidebar() {
     return (
         <>
         {/* Native-style Mobile Top Header */}
-        <header className="md:hidden fixed top-0 left-0 right-0 h-14 bg-[#fffdf8]/95 backdrop-blur-xl border-b border-[#e4e0d7] flex items-center justify-between px-4 z-30 shadow-[0_2px_10px_rgba(18,48,68,0.03)]">
-            <Link href="/dashboard" onClick={closeMobileMenu} className="flex items-center gap-2">
-                <Image src="/meu-arvo-logo.png" alt="ARVO" width={85} height={24} className="object-contain h-6 w-auto" />
+        <header className="md:hidden fixed top-0 left-0 right-0 h-14 bg-white/95 backdrop-blur-xl border-b border-dash-border flex items-center justify-between px-4 z-30 shadow-[0_2px_10px_rgba(18,48,68,0.03)]">
+            <Link href="/dashboard" onClick={closeMobileMenu} className="flex items-center gap-2 py-1">
+                <ArvoLogo height={20} color="#123044" />
             </Link>
             <div className="flex items-center gap-2">
                 <Link
                     href="/dashboard/assinatura"
-                    className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#f0ece1] text-[#1f674f] text-[11px] font-bold border border-[#e4e0d7]"
+                    className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-dash-accent-light text-dash-accent text-[11px] font-bold border border-dash-border"
                 >
                     <ShieldCheck className="w-3 h-3" />
                     Fee-Only
                 </Link>
                 <button
                     onClick={() => setIsMobileMenuOpen(true)}
-                    className="w-8 h-8 rounded-full bg-[#123044] text-white flex items-center justify-center text-xs font-bold shadow-xs active:scale-95 transition-transform"
+                    className="w-8 h-8 rounded-full bg-dash-text text-white flex items-center justify-center text-xs font-bold shadow-xs active:scale-95 transition-transform"
                     aria-label="Abrir Menu Completo"
                 >
                     {session?.user?.name ? session.user.name.charAt(0).toUpperCase() : "A"}
@@ -100,15 +101,15 @@ export function DashboardSidebar() {
         )}
 
         {/* Sidebar Drawer */}
-        <aside className={`w-[280px] md:w-[232px] bg-[#fffdf8] border-r border-dash-border flex flex-col shrink-0 fixed top-0 left-0 h-screen font-sans z-50 transition-transform duration-300 ease-out shadow-2xl md:shadow-none ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
+        <aside className={`w-[280px] md:w-[232px] bg-white border-r border-dash-border flex flex-col shrink-0 fixed top-0 left-0 h-screen font-sans z-50 transition-transform duration-300 ease-out shadow-2xl md:shadow-none ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
             {/* Logo & Close for Mobile */}
             <div className="px-6 py-5 border-b border-dash-border flex items-center justify-between">
-                <Link href="/dashboard" onClick={closeMobileMenu}>
-                    <Image src="/meu-arvo-logo.png" alt="ARVO" width={110} height={32} className="object-contain h-7 w-auto" />
+                <Link href="/dashboard" onClick={closeMobileMenu} className="flex items-center py-0.5">
+                    <ArvoLogo height={24} color="#123044" />
                 </Link>
                 <button 
                     onClick={closeMobileMenu}
-                    className="md:hidden p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100"
+                    className="md:hidden p-1.5 rounded-lg text-dash-text-light hover:text-dash-text hover:bg-dash-surface-active"
                 >
                     <X className="w-5 h-5" />
                 </button>
@@ -146,9 +147,9 @@ export function DashboardSidebar() {
 
             {/* Assessor Card */}
             <div className="px-4 pb-2">
-                <div className="bg-dash-accent-light rounded-xl p-3.5 mb-3">
-                    <div className="text-[13px] font-semibold text-dash-accent leading-tight">Equipe ARVO</div>
-                    <div className="text-[11px] text-dash-accent-mid mt-0.5">Lucas Matos, CFP®</div>
+                <div className="bg-dash-accent-light border border-dash-border rounded-xl p-3.5 mb-3">
+                    <div className="text-[13px] font-semibold text-dash-text leading-tight">Equipe ARVO</div>
+                    <div className="text-[11px] text-dash-text-muted mt-0.5">Lucas Matos, CFP®</div>
                     <Link href="/dashboard/agendamento">
                         <button className="mt-2.5 w-full py-1.5 text-xs bg-dash-accent text-white rounded-lg hover:bg-dash-accent-mid transition-colors font-semibold tracking-tight">
                             Agendar conversa
@@ -163,8 +164,8 @@ export function DashboardSidebar() {
                     onClick={() => setShowUserMenu(!showUserMenu)}
                     className="w-full flex items-center gap-2.5 px-2 py-2 rounded-lg hover:bg-dash-surface-active transition-colors text-left"
                 >
-                    <div className="w-8 h-8 rounded-full bg-dash-accent flex items-center justify-center shrink-0 overflow-hidden">
-                        <img src="/arvo-simbolo-green.png" alt="ARVO" className="w-full h-full object-cover" />
+                    <div className="w-8 h-8 rounded-full bg-dash-text text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-xs">
+                        {session?.user?.name ? session.user.name.charAt(0).toUpperCase() : "A"}
                     </div>
                     <div className="flex-1 min-w-0">
                         <div className="text-[12px] font-semibold text-dash-text truncate">
