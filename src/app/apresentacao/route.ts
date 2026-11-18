@@ -5,7 +5,7 @@ import { NextResponse } from "next/server"
 export const dynamic = "force-static"
 
 export async function GET() {
-    const filePath = path.join(process.cwd(), "public", "apresentacao.html")
+    const filePath = path.join(process.cwd(), "src", "app", "apresentacao", "content.html")
     const html = fs.readFileSync(filePath, "utf8")
     return new NextResponse(html, {
         status: 200,

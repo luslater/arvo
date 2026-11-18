@@ -90,6 +90,8 @@ export const config = {
         "/api/user/:path*",
         "/api/admin/:path*",
         "/pending",
+        "/carta/:path*",
+        "/apresentacao",
     ],
 }
 
