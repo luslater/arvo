@@ -16,6 +16,7 @@ export default withAuth(
             pathname === "/obrigado" ||
             pathname === "/politica-de-privacidade" ||
             pathname === "/termos" ||
+            pathname === "/apresentacao" ||
             pathname.startsWith("/api/auth") ||
             pathname.startsWith("/api/health") ||
             pathname.startsWith("/preview") ||
@@ -64,6 +65,7 @@ export default withAuth(
                     pathname === "/obrigado" ||
                     pathname === "/politica-de-privacidade" ||
                     pathname === "/termos" ||
+                    pathname === "/apresentacao" ||
                     pathname.startsWith("/api/auth") ||
                     pathname.startsWith("/api/health") ||
                     pathname.startsWith("/preview") ||
@@ -91,7 +93,6 @@ export const config = {
         "/api/admin/:path*",
         "/pending",
         "/carta/:path*",
-        "/apresentacao",
     ],
 }
 
