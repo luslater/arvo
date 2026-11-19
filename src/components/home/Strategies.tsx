@@ -120,11 +120,6 @@ export function Strategies() {
               ))}
             </span>
           </div>
-          <ul className="ah-tags">
-            {s.assets.map((a) => (
-              <li key={a}>{a}</li>
-            ))}
-          </ul>
         </div>
 
         <div className="ah-strat__result">
