@@ -7,6 +7,7 @@ import { HISTORICAL_DATA } from "@/data/historicalData";
 import { RECOMMENDED_PORTFOLIOS } from "@/data/portfoliosData";
 
 const tone = ["#BFD9DB", "#6FA7AC", "#2B6E76", "#123044"];
+const volLabels = ["Baixa", "Moderada", "Moderada a alta", "Alta"];
 
 function formatMonthYear(ds: string) {
   if (!ds) return "";
@@ -112,13 +113,14 @@ export function Strategies() {
           <p className="ah-strat__kind">{s.kind}</p>
           <h3 className="ah-strat__name">{s.name}</h3>
           <p className="ah-strat__text">{s.text}</p>
-          <div className="ah-risk" aria-label={`Risco ${s.risk} de 4`}>
-            <span className="ah-risk__label">Risco</span>
+          <div className="ah-risk" aria-label={`Volatilidade: ${volLabels[s.risk - 1]}`}>
+            <span className="ah-risk__label">Volatilidade</span>
             <span className="ah-risk__bars">
               {[1, 2, 3, 4].map((n) => (
                 <span key={n} className={n <= s.risk ? "is-on" : ""} />
               ))}
             </span>
+            <span className="ah-risk__desc">{volLabels[s.risk - 1]}</span>
           </div>
         </div>
 

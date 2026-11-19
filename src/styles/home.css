@@ -177,11 +177,12 @@
 .ah-strat__kind { font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ah-ve); }
 .ah-strat__name { font-family: var(--ah-display); font-weight: 600; font-size: 40px; letter-spacing: -0.025em; line-height: 1; }
 .ah-strat__text { font-size: 17px; line-height: 1.6; color: var(--ah-gr); max-width: 420px; }
-.ah-risk { display: flex; align-items: center; gap: 12px; margin-top: 8px; }
-.ah-risk__label { font-size: 13px; font-weight: 600; }
+.ah-risk { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+.ah-risk__label { font-size: 13px; font-weight: 600; color: var(--ah-az); }
 .ah-risk__bars { display: flex; gap: 4px; }
-.ah-risk__bars span { width: 28px; height: 6px; border-radius: 3px; background: var(--ah-li); }
+.ah-risk__bars span { width: 28px; height: 6px; border-radius: 3px; background: var(--ah-li); transition: background .2s ease; }
 .ah-risk__bars span.is-on { background: var(--ah-az); }
+.ah-risk__desc { font-size: 13px; font-weight: 500; color: var(--ah-gr); margin-left: 2px; }
 .ah-tags { display: flex; flex-wrap: wrap; gap: 8px; }
 .ah-tags li { font-size: 13px; font-weight: 500; padding: 6px 12px; border-radius: 999px; background: var(--ah-pa); border: 1px solid var(--ah-li); }
 .ah-strat__result { padding: 40px; display: flex; flex-direction: column; gap: 6px; background: linear-gradient(var(--ah-pa), var(--ah-pa)); }
