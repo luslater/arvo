@@ -7,7 +7,7 @@ import { HISTORICAL_DATA } from "@/data/historicalData";
 import { RECOMMENDED_PORTFOLIOS } from "@/data/portfoliosData";
 
 const tone = ["#BFD9DB", "#6FA7AC", "#2B6E76", "#123044"];
-const volLabels = ["Baixa", "Moderada", "Moderada a alta", "Alta"];
+const volLabels = ["Baixa", "Moderada / Baixa", "Moderada a alta", "Alta"];
 
 function formatMonthYear(ds: string) {
   if (!ds) return "";
