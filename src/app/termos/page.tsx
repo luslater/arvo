@@ -1,6 +1,6 @@
 import Link from "next/link";
-import Image from "next/image";
 import { Scale, AlertTriangle, ShieldCheck, ArrowLeft, Mail, Lock } from "lucide-react";
+import { ArvoLogo } from "@/components/brand/ArvoLogo";
 
 export const metadata = {
     title: "Termos e Condições de Uso e Contratação da Plataforma ARVO",
@@ -14,14 +14,7 @@ export default function TermosPage() {
             <header className="border-b border-[#e4e0d7]/70 bg-[#fffdf8]/90 backdrop-blur-md sticky top-0 z-30">
                 <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
                     <Link href="/" className="inline-flex items-center gap-2 hover:opacity-80 transition-opacity">
-                        <Image
-                            src="/meu-arvo-logo.png"
-                            alt="ARVO Orientação Financeira"
-                            width={90}
-                            height={40}
-                            className="h-8 w-auto object-contain"
-                            priority
-                        />
+                        <ArvoLogo height={24} color="#123044" />
                     </Link>
                     <Link
                         href="/"

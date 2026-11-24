@@ -356,6 +356,71 @@ const ROUTE_PROGRESS_DESCRIPTIONS = [
     "Marco 7: Responda as 6 perguntas de suitability para calibrar sua tolerância a risco e sua Carteira da Bússola."
 ]
 
+const MARCO_THEME_COLORS = [
+    "#123044", // Marco 1 - Raio-X Financeiro
+    "#1F674F", // Marco 2 - Riscos Pessoais
+    "#5687AF", // Marco 3 - Patrimônio & Metas
+    "#C08A34", // Marco 4 - Futuro & Aposentadoria
+    "#B34A3C", // Marco 5 - Inteligência Fiscal
+    "#8B7355", // Marco 6 - Legado & Sucessão
+    "#2B6E76", // Marco 7 - Suitability & Risco
+]
+
+const MARCO_QUESTIONS = [
+    "Para onde vai o dinheiro, e quanto sobra para construir o futuro?",
+    "O que acontece com o plano se algo der errado na saúde ou na renda?",
+    "Cada real investido está no lugar certo para o objetivo e prazo certo?",
+    "Quanto preciso acumular para ter a renda que quero e em quanto tempo?",
+    "Quanto do retorno e da renda realmente fica com você após impostos?",
+    "Como o patrimônio chega a quem você quer, com menor custo e atrito?",
+    "Qual é a sua real tolerância à volatilidade e o perfil da sua carteira?"
+]
+
+const MARCO_HOW_ARVO_DOES = [
+    [
+        "Diagnóstico do fluxo mensal real e identificação de desperdícios",
+        "Reserva de emergência dimensionada tecnicamente (6 a 12 meses)",
+        "Meta de poupança mensal vinculada à sua capacidade financeira",
+        "Cálculo da taxa de comprometimento e inflação pessoal"
+    ],
+    [
+        "Mapeamento de vulnerabilidades biológicas e perda temporária de renda",
+        "Dimensionamento de capital segurado estritamente necessário",
+        "Orientação isenta e fee-only (sem comissões de corretoras)",
+        "Revisão de apólices existentes para cortar custos duplicados"
+    ],
+    [
+        "Conexão direta entre objetivos de vida e prazos de maturação",
+        "Viabilidade matemática de compra de imóveis, educação ou transições",
+        "Estratégia de aportes mensais com alocação diversificada",
+        "Definição de metas de curto (2a), médio (2-5a) e longo prazo (5a+)"
+    ],
+    [
+        "Cálculo do capital de independência pela Regra dos 4% (300x gastos)",
+        "Simulação de renda passiva mensal na aposentadoria com juro real",
+        "Projeção composta com as carteiras calibradas da Bússola ARVO",
+        "Cálculo do gap temporal e ajuste do aporte necessário até a data-alvo"
+    ],
+    [
+        "Análise comparativa de declaração Completa vs. Simplificada",
+        "Uso eficiente do diferimento fiscal via previdência PGBL (até 12%)",
+        "Seleção de ativos isentos de IRPF (LCI/LCA, CRI/CRA e Debêntures)",
+        "Planejamento de retiradas e tributação societária (lucro vs. pró-labore)"
+    ],
+    [
+        "Diagnóstico de custos e prazos de inventário por estado (ITCMD de 2% a 8%)",
+        "Planejamento sucessório com uso de previdência VGBL fora de inventário",
+        "Alinhamento do regime de bens, pacto antenupcial e meação familiar",
+        "Estruturação de governança familiar e checklist de continuidade patrimonial"
+    ],
+    [
+        "Avaliação das 4 dimensões oficiais de perfil da CVM e ANBIMA",
+        "Calibração de tolerância a oscilações e drawdown aceito",
+        "Definição do modelo oficial de alocação (Abrigo, Ritmo, Visão ou Oceano)",
+        "Parâmetros objetivos de rebalanceamento e bandas de risco"
+    ]
+]
+
 // ─── VALIDATION ENGINE ────────────────────────────────────────────────────────
 function validateStepFields(
     stepIndex: number, 
@@ -970,108 +1035,270 @@ export default function PlanejamentoJornadaPage() {
                     </div>
                 </header>
 
-                {/* ─── TRILHA DE MARCOS ESTRATÉGICOS ────────────────────────────────── */}
-                <section aria-label="Trilha de Navegação dos 7 Marcos" className="bg-white border border-dash-border rounded-3xl p-4 sm:p-6 md:p-7 shadow-xs">
-                    
-                    {/* Top track bar with current step title */}
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-5 mb-5 border-b border-dash-border/60">
-                        <div className="flex items-center gap-2">
-                            <span className="text-base font-bold text-[#123044]">
-                                {currentStepData.title}
-                            </span>
-                        </div>
-                        <div className="text-xs text-dash-text-light flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-[#1F674F] shrink-0" />
-                            <span className="font-medium text-[#667085]">{ROUTE_PROGRESS_DESCRIPTIONS[current]}</span>
-                        </div>
+                {/* ─── NAVEGAÇÃO DOS 7 MARCOS: PILL TABS + CIRCULAR WHEEL + EXECUTIVE CARD ─── */}
+                <section aria-label="Navegação dos 7 Marcos" className="space-y-6">
+                    {/* Top Pill Tabs */}
+                    <div className="flex flex-wrap items-center gap-2 justify-center lg:justify-start" role="tablist" aria-label="Marcos da Jornada">
+                        {PLAN_DATA.map((item, idx) => {
+                            const isCurrent = idx === current
+                            const status = stepStatuses[idx]
+                            const isCompleted = status === "completed"
+                            const color = MARCO_THEME_COLORS[idx]
+
+                            return (
+                                <button
+                                    key={idx}
+                                    type="button"
+                                    role="tab"
+                                    aria-selected={isCurrent}
+                                    onClick={() => handleStepJump(idx)}
+                                    className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs transition-all cursor-pointer border ${
+                                        isCurrent
+                                            ? "bg-[#123044] text-white border-[#123044] shadow-sm font-bold"
+                                            : "bg-white hover:bg-[#faf9f5] text-[#123044] border-[#e4dfd5] font-medium"
+                                    }`}
+                                >
+                                    <span
+                                        className="w-2.5 h-2.5 rounded-full shrink-0"
+                                        style={{ backgroundColor: isCurrent ? "#ffffff" : color }}
+                                    />
+                                    <span>{idx + 1}. {item.title.split("&")[0].trim()}</span>
+                                    {isCompleted && !isCurrent && (
+                                        <Check size={11} className="text-[#1F674F]" strokeWidth={3} />
+                                    )}
+                                </button>
+                            )
+                        })}
                     </div>
 
-                    {/* Nautical Route Waypoints Track */}
-                    <div className="relative overflow-x-auto no-scrollbar py-2">
-                        <div className="min-w-[720px] lg:min-w-0 relative">
-                            
-                            {/* Segmented Connecting Lines between Waypoint Nodes */}
-                            <div className="absolute top-[24px] left-0 right-0 h-0.5 -z-0 pointer-events-none">
-                                {Array.from({ length: 6 }).map((_, i) => {
-                                    const isSegmentPassed = i < current
-                                    const leftPct = ((i + 0.5) / 7) * 100
-                                    const widthPct = (1 / 7) * 100
+                    {/* Wheel + Executive Card Grid */}
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                        {/* Circular Donut Wheel */}
+                        <div className="lg:col-span-5 flex flex-col items-center justify-center p-2 sm:p-4">
+                            <div className="relative w-[300px] h-[300px] sm:w-[320px] sm:h-[320px] flex items-center justify-center">
+                                <svg
+                                    viewBox="0 0 320 320"
+                                    className="w-full h-full drop-shadow-sm select-none"
+                                    role="group"
+                                    aria-label="Os 7 marcos do planejamento financeiro ARVO"
+                                >
+                                    {PLAN_DATA.map((item, idx) => {
+                                        const isSelected = idx === current
+                                        const color = MARCO_THEME_COLORS[idx]
 
-                                    return (
-                                        <div
-                                            key={i}
-                                            className="absolute top-0 h-0.5"
-                                            style={{
-                                                left: `${leftPct}%`,
-                                                width: `${widthPct}%`,
-                                            }}
-                                        >
-                                            {isSegmentPassed ? (
-                                                <div className="w-full h-0.5 bg-[#1F674F] transition-all duration-300" />
+                                        // 7-sector geometry
+                                        const N = 7
+                                        const delta = (2 * Math.PI) / N
+                                        const gap = 0.024
+                                        const startAngle = -Math.PI / 2 + idx * delta + gap
+                                        const endAngle = startAngle + delta - 2 * gap
+
+                                        const R = isSelected ? 152 : 146
+                                        const r = isSelected ? 72 : 76
+
+                                        const x1 = 160 + R * Math.cos(startAngle)
+                                        const y1 = 160 + R * Math.sin(startAngle)
+                                        const x2 = 160 + R * Math.cos(endAngle)
+                                        const y2 = 160 + R * Math.sin(endAngle)
+                                        const x3 = 160 + r * Math.cos(endAngle)
+                                        const y3 = 160 + r * Math.sin(endAngle)
+                                        const x4 = 160 + r * Math.cos(startAngle)
+                                        const y4 = 160 + r * Math.sin(startAngle)
+
+                                        const pathD = `M ${x1.toFixed(2)} ${y1.toFixed(2)} A ${R} ${R} 0 0 1 ${x2.toFixed(2)} ${y2.toFixed(2)} L ${x3.toFixed(2)} ${y3.toFixed(2)} A ${r} ${r} 0 0 0 ${x4.toFixed(2)} ${y4.toFixed(2)} Z`
+
+                                        const rMid = (R + r) / 2
+                                        const midAngle = (startAngle + endAngle) / 2
+                                        const tx = 160 + rMid * Math.cos(midAngle)
+                                        const ty = 160 + rMid * Math.sin(midAngle) + 7
+
+                                        return (
+                                            <g
+                                                key={idx}
+                                                onClick={() => handleStepJump(idx)}
+                                                className="cursor-pointer group focus:outline-none"
+                                                tabIndex={0}
+                                                role="button"
+                                                aria-label={`Marco ${idx + 1}: ${item.title}`}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === "Enter" || e.key === " ") {
+                                                        e.preventDefault()
+                                                        handleStepJump(idx)
+                                                    }
+                                                }}
+                                            >
+                                                <path
+                                                    d={pathD}
+                                                    fill={color}
+                                                    stroke="#ffffff"
+                                                    strokeWidth={isSelected ? 3 : 1.5}
+                                                    opacity={isSelected ? 1 : 0.72}
+                                                    className="transition-all duration-200 group-hover:opacity-100 group-hover:brightness-105"
+                                                    style={{
+                                                        filter: isSelected ? "drop-shadow(0 4px 10px rgba(18, 48, 68, 0.25))" : undefined
+                                                    }}
+                                                />
+                                                <text
+                                                    x={tx.toFixed(2)}
+                                                    y={ty.toFixed(2)}
+                                                    textAnchor="middle"
+                                                    fill="#ffffff"
+                                                    pointerEvents="none"
+                                                    className="font-extrabold select-none text-[22px] font-sans"
+                                                >
+                                                    {idx + 1}
+                                                </text>
+                                            </g>
+                                        )
+                                    })}
+
+                                    {/* Donut center */}
+                                    <circle cx="160" cy="160" r="70" fill="#ffffff" />
+                                    <text
+                                        x="160"
+                                        y="144"
+                                        textAnchor="middle"
+                                        className="text-[13px] font-medium fill-[#8A928E] select-none"
+                                    >
+                                        sua
+                                    </text>
+                                    <text
+                                        x="160"
+                                        y="168"
+                                        textAnchor="middle"
+                                        className="text-[20px] font-serif font-bold fill-[#123044] select-none tracking-tight"
+                                    >
+                                        jornada
+                                    </text>
+                                    <text
+                                        x="160"
+                                        y="188"
+                                        textAnchor="middle"
+                                        className="text-[11px] font-bold fill-[#1F674F] select-none tabular-nums"
+                                    >
+                                        {completedStepsCount} de 7 concluídos
+                                    </text>
+                                </svg>
+                            </div>
+                            <div className="text-[11px] text-[#667085] mt-2 text-center">
+                                Clique em qualquer marco do círculo para navegar
+                            </div>
+                        </div>
+
+                        {/* Executive Summary Card (Presentation Slide Style) */}
+                        <div className="lg:col-span-7">
+                            <div className="bg-white border border-[#e4dfd5] rounded-3xl p-6 sm:p-8 shadow-xs flex flex-col justify-between min-h-[380px]">
+                                <div>
+                                    {/* Header with pill tag */}
+                                    <div className="flex flex-wrap items-center justify-between gap-2 pb-4 mb-4 border-b border-[#f0ece1]">
+                                        <div className="flex items-center gap-2">
+                                            <span
+                                                className="w-2.5 h-2.5 rounded-full"
+                                                style={{ backgroundColor: MARCO_THEME_COLORS[current] }}
+                                            />
+                                            <span
+                                                className="text-xs font-bold uppercase tracking-wider"
+                                                style={{ color: MARCO_THEME_COLORS[current] }}
+                                            >
+                                                Marco {current + 1} de 7 · {currentStepData.title.split("&")[0].trim()}
+                                            </span>
+                                        </div>
+
+                                        <div className="flex items-center gap-2">
+                                            {stepStatuses[current] === "completed" ? (
+                                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                                    <Check size={12} strokeWidth={3} /> Preenchido
+                                                </span>
                                             ) : (
-                                                <div className="w-full h-0.5 border-t-2 border-dashed border-[#e4dfd5]" />
+                                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#faf9f5] text-[#8A928E] border border-[#e4dfd5]">
+                                                    Pendente
+                                                </span>
                                             )}
                                         </div>
-                                    )
-                                })}
+                                    </div>
+
+                                    {/* Title & Key Question */}
+                                    <h2 className="text-2xl sm:text-3xl font-serif text-[#123044] tracking-tight mb-2">
+                                        {currentStepData.title}
+                                    </h2>
+                                    <p className="text-sm italic text-[#2B6E76] font-serif mb-6 leading-relaxed">
+                                        "{MARCO_QUESTIONS[current]}"
+                                    </p>
+
+                                    {/* Two Columns: O QUE OLHAMOS vs COMO A ARVO FAZ */}
+                                    <div className="grid sm:grid-cols-2 gap-6 pt-1">
+                                        <div>
+                                            <h4 className="text-[11px] font-extrabold uppercase tracking-wider text-[#123044] mb-3">
+                                                O que olhamos
+                                            </h4>
+                                            <ul className="space-y-2">
+                                                {currentStepData.analysis.map((item, idx) => (
+                                                    <li key={idx} className="flex items-start gap-2 text-xs text-[#4A5568] leading-relaxed">
+                                                        <span className="text-[#123044] font-bold mt-0.5">•</span>
+                                                        <span>{item}</span>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+
+                                        <div>
+                                            <h4 className="text-[11px] font-extrabold uppercase tracking-wider text-[#1F674F] mb-3">
+                                                Como a ARVO faz & entregáveis
+                                            </h4>
+                                            <ul className="space-y-2">
+                                                {MARCO_HOW_ARVO_DOES[current].map((item, idx) => (
+                                                    <li key={idx} className="flex items-start gap-2 text-xs text-[#4A5568] leading-relaxed">
+                                                        <span className="text-[#1F674F] font-bold mt-0.5">•</span>
+                                                        <span>{item}</span>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Action Bar */}
+                                <div className="mt-8 pt-5 border-t border-[#f0ece1] flex flex-col sm:flex-row items-center justify-between gap-3">
+                                    <a
+                                        href="#form-section"
+                                        onClick={(e) => {
+                                            e.preventDefault()
+                                            document.getElementById("form-section")?.scrollIntoView({ behavior: "smooth" })
+                                        }}
+                                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[#123044] hover:bg-[#1e4866] text-white text-xs font-bold rounded-xl transition-all shadow-xs cursor-pointer"
+                                    >
+                                        <span>Preencher dados deste Marco</span>
+                                        <ArrowRight size={14} />
+                                    </a>
+
+                                    <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+                                        {current > 0 && (
+                                            <button
+                                                type="button"
+                                                onClick={() => handleStepJump(current - 1)}
+                                                className="px-3 py-2 text-xs font-semibold text-[#667085] hover:text-[#123044] transition-colors cursor-pointer"
+                                            >
+                                                ← Anterior
+                                            </button>
+                                        )}
+                                        {current < 6 && (
+                                            <button
+                                                type="button"
+                                                onClick={() => handleStepJump(current + 1)}
+                                                className="px-3 py-2 text-xs font-semibold text-[#1F674F] hover:text-[#123044] transition-colors cursor-pointer"
+                                            >
+                                                Próximo Marco →
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
                             </div>
-
-                            {/* Waypoint Nodes Grid */}
-                            <div className="grid grid-cols-7 gap-2 relative z-10">
-                                {PLAN_DATA.map((item, idx) => {
-                                    const isCurrent = idx === current
-                                    const status = stepStatuses[idx]
-                                    const isCompleted = status === "completed"
-                                    const hasError = status === "has_error"
-
-                                    return (
-                                        <button
-                                            key={idx}
-                                            type="button"
-                                            onClick={() => handleStepJump(idx)}
-                                            aria-current={isCurrent ? "step" : undefined}
-                                            aria-label={`Marco ${idx + 1}: ${item.title}. Status: ${isCompleted ? "Concluído" : hasError ? "Com pendências" : "Pendente"}`}
-                                            className="flex flex-col items-center text-center group cursor-pointer transition-transform duration-150 focus:outline-none"
-                                        >
-                                            {/* Waypoint Beacon Node */}
-                                            <div className="relative flex items-center justify-center mb-3">
-                                                <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-200 relative z-10 ${
-                                                    isCurrent
-                                                        ? "bg-[#1F674F] border-2 border-[#1F674F] shadow-md ring-4 ring-[#1F674F]/20 scale-110"
-                                                        : "bg-white border-2 border-[#e4dfd5] hover:border-[#1F674F] hover:bg-[#faf9f5] shadow-xs"
-                                                }`}>
-                                                    <span 
-                                                        className={`tabular-nums text-base font-bold leading-none ${
-                                                            isCurrent ? "text-white" : "text-[#123044]"
-                                                        }`}
-                                                        style={isCurrent ? { color: "#ffffff" } : { color: "#123044" }}
-                                                    >
-                                                        {idx + 1}
-                                                    </span>
-                                                </div>
-                                            </div>
-
-                                            {/* Labels below node */}
-                                            <div className="mt-2 w-full px-0.5">
-                                                <div className={`text-xs leading-snug transition-colors line-clamp-2 min-h-[32px] flex items-center justify-center ${
-                                                    isCurrent ? "text-[#1F674F] font-extrabold" : "text-[#123044] font-medium group-hover:text-[#1F674F]"
-                                                }`}>
-                                                    {item.title.replace(/:.*/, "")}
-                                                </div>
-                                                <div className="text-[10px] font-medium text-slate-400 leading-tight mt-0.5 whitespace-normal">
-                                                    {item.short}
-                                                </div>
-                                            </div>
-                                        </button>
-                                    )
-                                })}
-                            </div>
-
                         </div>
                     </div>
                 </section>
 
-                {/* ─── MAIN PANEL CONTENT ────────────────────────────────────────────── */}
+                {/* ─── MAIN PANEL CONTENT (DIAGNÓSTICO E FORMULÁRIO) ────────────────── */}
+                <div id="form-section" className="scroll-mt-6">
                 <main className="bg-white border border-[#e4e0d7] rounded-3xl p-5 sm:p-8 md:p-10 shadow-sm flex flex-col w-full min-h-[520px]">
                     <AnimatePresence mode="wait">
                         <motion.div 
@@ -1559,6 +1786,7 @@ export default function PlanejamentoJornadaPage() {
                         </div>
                     )}
                 </main>
+                </div>
             </div>
         </div>
     )

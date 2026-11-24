@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import Image from "next/image"
+import { ArvoLogo } from "@/components/brand/ArvoLogo"
 import { projectFinancialPlan } from "@/lib/financial-planning"
 
 // ─── Formatação ────────────────────────────────────────────────────────────────
@@ -52,7 +53,9 @@ export default function DemoPage() {
         <div className="min-h-screen bg-white text-slate-900 font-sans p-6 md:p-12 overflow-hidden">
             <div className="max-w-6xl mx-auto">
                 <nav className="flex items-center justify-between mb-16">
-                    <Image src="/arvo-logo.png" alt="ARVO" width={80} height={40} />
+                    <Link href="/" className="inline-flex items-center">
+                        <ArvoLogo height={26} color="#123044" />
+                    </Link>
                     <div className="flex items-center gap-6">
                         <Link href="/login" className="text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors">Entrar</Link>
                         <Link href="/register">

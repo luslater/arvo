@@ -4,6 +4,7 @@ import { motion } from "framer-motion"
 import { Check, ShieldCheck, Zap, Star, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { ArvoLogo } from "@/components/brand/ArvoLogo"
 import Image from "next/image"
 import Link from "next/link"
 import { useSession, signOut } from "next-auth/react"
@@ -26,8 +27,8 @@ export default function CheckoutPage() {
 
             <div className="max-w-7xl mx-auto px-6 py-12 relative z-10">
                 <nav className="flex justify-between items-center mb-20">
-                    <Link href="/">
-                        <Image src="/arvo-logo.png" alt="ARVO" width={80} height={40} className="invert mix-blend-screen brightness-150" />
+                    <Link href="/" className="inline-flex items-center">
+                        <ArvoLogo height={26} color="#ffffff" variant="negativo" />
                     </Link>
                     {status === "loading" ? (
                         <div className="w-20 h-8 animate-pulse bg-[#1E3A5F] rounded-lg"></div>

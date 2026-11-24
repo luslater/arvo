@@ -1,6 +1,7 @@
 "use client"
 
-import Image from "next/image"
+import { ArvoLogo } from "@/components/brand/ArvoLogo"
+import Link from "next/link"
 import { Clock, Mail, CheckCircle2 } from "lucide-react"
 
 export default function PendingPage() {
@@ -9,7 +10,9 @@ export default function PendingPage() {
             <div className="max-w-lg w-full">
                 {/* Logo */}
                 <div className="flex justify-center mb-10">
-                    <Image src="/arvo-logo.png" alt="ARVO" width={80} height={32} className="object-contain" />
+                    <Link href="/">
+                        <ArvoLogo height={26} color="#123044" />
+                    </Link>
                 </div>
 
                 {/* Card */}

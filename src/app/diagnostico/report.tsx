@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
+import { ArvoLogo } from '@/components/brand/ArvoLogo';
 import { useSearchParams } from 'next/navigation';
 import { 
   ArrowRight, 
@@ -654,9 +655,8 @@ export default function Diagnostic() {
         {/* HEADER OFICIAL ARVO */}
         <header className="ui-nav no-print">
           <div className="ui-wrap ui-nav-inner">
-            <Link href="/" className="ui-logo" style={{ color: "#2B6E76" }}>
-              <img src="/arvo-simbolo-green.png" alt="ARVO" className="w-6 h-6 object-contain" />
-              <span style={{ color: "#2B6E76", fontWeight: 700 }}>ARVO</span>
+            <Link href="/" className="ui-logo inline-flex items-center">
+              <ArvoLogo height={24} color="#2B6E76" />
             </Link>
 
             <div className="hidden sm:flex items-center gap-3">

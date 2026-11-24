@@ -7,6 +7,7 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { ArvoLogo } from "@/components/brand/ArvoLogo"
 
 // ─── CPF / CNPJ mask ─────────────────────────────────────────────────────────
 function maskCpfCnpj(value: string) {
@@ -113,7 +114,9 @@ function RegisterForm() {
             <Card className="w-full max-w-md border-gray-200 shadow-sm rounded-2xl">
                 <CardHeader className="space-y-1 text-center pb-2">
                     <div className="flex justify-center mb-4">
-                        <Image src="/meu-arvo-logo.png" alt="ARVO" width={80} height={40} />
+                        <Link href="/">
+                            <ArvoLogo height={28} color="#123044" />
+                        </Link>
                     </div>
                     <CardTitle className="text-2xl font-semibold text-[#0A192F]">Criar Conta</CardTitle>
                     <CardDescription className="text-gray-500 text-sm">

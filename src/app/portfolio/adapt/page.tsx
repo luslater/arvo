@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
+import { ArvoLogo } from "@/components/brand/ArvoLogo"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggle"
@@ -145,7 +146,9 @@ export default function AdaptPortfolioPage() {
                     </Link>
 
                     <div className="flex items-center gap-2">
-                        <Image src="/arvo-logo.png" alt="ARVO" width={60} height={30} className="" />
+                        <Link href="/">
+                            <ArvoLogo height={24} color="#123044" />
+                        </Link>
                     </div>
                 </div>
 

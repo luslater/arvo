@@ -1,6 +1,6 @@
 import Link from "next/link";
-import Image from "next/image";
 import { Compass, Map, ArrowLeft, Home, Sparkles } from "lucide-react";
+import { ArvoLogo } from "@/components/brand/ArvoLogo";
 
 export default function NotFound() {
     return (
@@ -8,14 +8,7 @@ export default function NotFound() {
             {/* Header */}
             <header className="flex items-center justify-between max-w-6xl w-full mx-auto">
                 <Link href="/" className="inline-flex items-center gap-2 hover:opacity-80 transition-opacity">
-                    <Image
-                        src="/meu-arvo-logo.png"
-                        alt="ARVO Orientação Financeira"
-                        width={90}
-                        height={40}
-                        className="h-8 w-auto object-contain"
-                        priority
-                    />
+                    <ArvoLogo height={24} color="#123044" />
                 </Link>
                 <Link
                     href="/dashboard"

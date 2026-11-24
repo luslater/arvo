@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react"
 import { useSession } from "next-auth/react"
 import { CheckCircle2, XCircle, Clock, User, RefreshCw } from "lucide-react"
-import Image from "next/image"
+import { ArvoLogo } from "@/components/brand/ArvoLogo"
 
 interface UserRecord {
     id: string
@@ -70,7 +70,7 @@ export default function AdminUsersPage() {
                 {/* Header */}
                 <div className="flex items-center justify-between mb-8">
                     <div className="flex items-center gap-4">
-                        <Image src="/arvo-logo.png" alt="ARVO" width={64} height={26} className="object-contain" />
+                        <ArvoLogo height={22} color="#123044" />
                         <div>
                             <h1 className="text-[22px] font-semibold text-[#0A192F]">Gestão de Cadastros</h1>
                             <p className="text-[13px] text-[#4A5568]">Aprove ou rejeite novos usuários</p>

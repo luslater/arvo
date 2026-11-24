@@ -1,6 +1,6 @@
 import Link from "next/link";
-import Image from "next/image";
 import { CheckCircle2, Clock, Map, Compass, Calculator, ArrowRight, ShieldCheck } from "lucide-react";
+import { ArvoLogo } from "@/components/brand/ArvoLogo";
 
 export const metadata = {
     title: "Mensagem Recebida | ARVO Orientação Financeira",
@@ -13,14 +13,7 @@ export default function ObrigadoPage() {
             {/* Header */}
             <header className="flex items-center justify-between max-w-6xl w-full mx-auto">
                 <Link href="/" className="inline-flex items-center gap-2 hover:opacity-80 transition-opacity">
-                    <Image
-                        src="/meu-arvo-logo.png"
-                        alt="ARVO Orientação Financeira"
-                        width={90}
-                        height={40}
-                        className="h-8 w-auto object-contain"
-                        priority
-                    />
+                    <ArvoLogo height={24} color="#123044" />
                 </Link>
                 <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1f674f] bg-[#e8f1ed] px-3 py-1 rounded-full border border-[#d6e5de]">
                     <ShieldCheck className="w-3.5 h-3.5" />

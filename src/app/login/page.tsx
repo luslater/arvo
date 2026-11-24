@@ -8,11 +8,12 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { ArvoLogo } from "@/components/brand/ArvoLogo"
 
 function LoginForm() {
     const router = useRouter()
     const searchParams = useSearchParams()
-    const callbackUrl = searchParams.get("callbackUrl") || "/dashboard"
+    const callbackUrl = searchParams.get("callbackUrl") || "/dashboard/jornada"
 
     const [identifier, setIdentifier] = useState("")
     const [password, setPassword] = useState("")
@@ -91,7 +92,9 @@ function LoginForm() {
             <Card className="w-full max-w-md border-gray-200 /10">
                 <CardHeader className="text-center">
                     <div className="flex justify-center mb-4">
-                        <Image src="/meu-arvo-logo.png" alt="ARVO" width={100} height={50} className="" />
+                        <Link href="/">
+                            <ArvoLogo height={28} color="#123044" />
+                        </Link>
                     </div>
                     <CardTitle className="text-2xl font-light">Entrar</CardTitle>
                     <CardDescription className="text-center">
