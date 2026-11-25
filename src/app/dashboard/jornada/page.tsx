@@ -139,7 +139,7 @@ const PLAN_DATA: Array<{
     {
         title: "Raio-X Financeiro & Fluxo de Caixa",
         short: "Entradas, Gastos e Reserva",
-        status: "Marco 1 da Rota",
+        status: "Marco 1 de 6",
         desc: "Diagnóstico completo das suas receitas, despesas essenciais, taxa de comprometimento e dimensionamento da reserva de emergência.",
         objective: "Criar clareza sobre suas entradas líquidas, padrão de gastos e fluxo de caixa mensal.",
         delivery: "Diagnóstico de capacidade de aporte e meta técnica de reserva de emergência.",
@@ -170,7 +170,7 @@ const PLAN_DATA: Array<{
     {
         title: "Proteção & Gestão de Riscos Pessoais",
         short: "Coberturas e Vulnerabilidades",
-        status: "Marco 2 da Rota",
+        status: "Marco 2 de 6",
         desc: "Mapeamento das vulnerabilidades financeiras contra imprevistos graves (invalidez, perda de renda e proteção de dependentes).",
         objective: "Identificar exposições a riscos biológicos e estruturar blindagem do padrão de vida.",
         delivery: "Diagnóstico de coberturas necessárias e capital segurado sugerido.",
@@ -198,7 +198,7 @@ const PLAN_DATA: Array<{
     {
         title: "Construção de Patrimônio & Metas",
         short: "Objetivos, Aportes e Prazos",
-        status: "Marco 3 da Rota",
+        status: "Marco 3 de 6",
         desc: "Alinhamento das metas financeiras de médio e longo prazo com o ritmo dos seus aportes mensais.",
         objective: "Conectar sua capacidade de poupança mensal a objetivos concretos de vida.",
         delivery: "Cronograma de metas com alocação e cálculo de viabilidade temporal.",
@@ -220,7 +220,7 @@ const PLAN_DATA: Array<{
                         return "Qual a renda mensal que você gostaria de usufruir? (Em valores de hoje)"
                     }
                     return "Qual o valor estimado para esse objetivo?"
-                },
+                }, 
                 type: "currency", 
                 placeholder: (d) => {
                     const obj = d.objetivoPrincipal
@@ -260,7 +260,7 @@ const PLAN_DATA: Array<{
     {
         title: "Futuro & Aposentadoria",
         short: "Independência Financeira",
-        status: "Marco 4 da Rota",
+        status: "Marco 4 de 6",
         desc: "Projeção de acumulação do capital necessário para sustentar seu padrão de vida desejado na aposentadoria (Regra dos 4%).",
         objective: "Calcular o capital de independência financeira e medir o gap temporal.",
         delivery: "Projeção de acumulação, gap de independência e aporte ideal necessário.",
@@ -284,7 +284,7 @@ const PLAN_DATA: Array<{
     {
         title: "Inteligência Fiscal & Eficiência Tributária",
         short: "IR, Benefício PGBL e Isenções",
-        status: "Marco 5 da Rota",
+        status: "Marco 5 de 6",
         desc: "Mapeamento da eficiência tributária sobre seus rendimentos e investimentos para reter mais patrimônio de forma 100% legal.",
         objective: "Identificar atalhos fiscais legítimos e evitar perdas silenciosas com tributação ineficiente.",
         delivery: "Diagnóstico de elegibilidade a PGBL e oportunidades de ativos isentos.",
@@ -307,7 +307,7 @@ const PLAN_DATA: Array<{
     {
         title: "Legado & Estrutura Sucessória",
         short: "Regime de Bens e Transmissão",
-        status: "Marco 6 da Rota",
+        status: "Marco 6 de 6",
         desc: "Organização preventiva da sucessão patrimonial para proteger herdeiros, mitigar custos de inventário e evitar conflitos.",
         objective: "Mapear a divisão legal de bens e estruturar transferência de patrimônio com liquidez.",
         delivery: "Diagnóstico sucessório, impacto de ITCMD e diretrizes de blindagem familiar.",
@@ -326,25 +326,28 @@ const PLAN_DATA: Array<{
             "Uso Estratégico de Previdência VGBL (Transmissão fora de inventário)",
             "Checklist de Governança e Dossiê Financeiro Familiar"
         ]
-    },
-    {
-        title: "Suitability & Tolerância ao Risco",
-        short: "Seu Perfil de Investidor",
-        status: "Marco 7 da Rota",
-        desc: "Avaliação técnica das 4 dimensões de suitability para calibrar a tolerância a risco e definir sua carteira ideal na Bússola ARVO.",
-        objective: "Determinar seu perfil oficial de alocação de ativos.",
-        delivery: "Diagnóstico dimensional e calibração das carteiras da Bússola.",
-        signal: "Sua carteira reflete sua tolerância emocional, horizonte de tempo e necessidade de liquidez.",
-        icon: <Compass className="text-[#1f674f] shrink-0" size={24} />,
-        fields: [] as FieldDef[],
-        analysis: [
-            "Score Dimensional de Tolerância Emocional ao Risco",
-            "Classificação do Perfil Oficial ARVO (Abrigo, Ritmo, Visão ou Oceano)",
-            "Calibração de Tolerância a Volatilidade na Bússola",
-            "Alinhamento com as Normas de Suitability da CVM"
-        ]
     }
 ]
+
+const SUITABILITY_INFO = {
+    title: "Suitability & Tolerância ao Risco",
+    short: "Seu Perfil de Investidor",
+    status: "Diagnóstico Complementar",
+    desc: "Avaliação técnica das 4 dimensões de suitability da CVM e ANBIMA para calibrar a tolerância a risco e definir sua carteira ideal na Bússola ARVO.",
+    question: "Qual é a sua real tolerância à volatilidade e o perfil da sua carteira?",
+    analysis: [
+        "Score Dimensional de Tolerância Emocional ao Risco",
+        "Classificação do Perfil Oficial ARVO (Abrigo, Ritmo, Visão ou Oceano)",
+        "Calibração de Tolerância a Volatilidade na Bússola",
+        "Alinhamento com as Normas de Suitability da CVM"
+    ],
+    howArvoDoes: [
+        "Avaliação das 4 dimensões oficiais de perfil da CVM e ANBIMA",
+        "Calibração de tolerância a oscilações e drawdown aceito",
+        "Definição do modelo oficial de alocação (Abrigo, Ritmo, Visão ou Oceano)",
+        "Parâmetros objetivos de rebalanceamento e bandas de risco"
+    ]
+}
 
 const ROUTE_PROGRESS_DESCRIPTIONS = [
     "Marco 1: Mapeie suas entradas e gastos essenciais. É o ponto de partida onde todo o plano financeiro se apoia.",
@@ -352,8 +355,7 @@ const ROUTE_PROGRESS_DESCRIPTIONS = [
     "Marco 3: Estruture suas metas patrimoniais e alinhe o valor e o prazo com a sua capacidade de aporte mensal.",
     "Marco 4: Calcule o patrimônio necessário para a aposentadoria sustentável e descubra se há gap na projeção.",
     "Marco 5: Avalie sua eficiência no Imposto de Renda e analise a oportunidade de diferimento fiscal via PGBL.",
-    "Marco 6: Organize a estrutura patrimonial e familiar para mitigar custos de ITCMD e burocracias de inventário.",
-    "Marco 7: Responda as 6 perguntas de suitability para calibrar sua tolerância a risco e sua Carteira da Bússola."
+    "Marco 6: Organize a estrutura patrimonial e familiar para mitigar custos de ITCMD e burocracias de inventário."
 ]
 
 const MARCO_THEME_COLORS = [
@@ -363,7 +365,6 @@ const MARCO_THEME_COLORS = [
     "#C08A34", // Marco 4 - Futuro & Aposentadoria
     "#B34A3C", // Marco 5 - Inteligência Fiscal
     "#8B7355", // Marco 6 - Legado & Sucessão
-    "#2B6E76", // Marco 7 - Suitability & Risco
 ]
 
 const MARCO_QUESTIONS = [
@@ -372,8 +373,7 @@ const MARCO_QUESTIONS = [
     "Cada real investido está no lugar certo para o objetivo e prazo certo?",
     "Quanto preciso acumular para ter a renda que quero e em quanto tempo?",
     "Quanto do retorno e da renda realmente fica com você após impostos?",
-    "Como o patrimônio chega a quem você quer, com menor custo e atrito?",
-    "Qual é a sua real tolerância à volatilidade e o perfil da sua carteira?"
+    "Como o patrimônio chega a quem você quer, com menor custo e atrito?"
 ]
 
 const MARCO_HOW_ARVO_DOES = [
@@ -412,12 +412,6 @@ const MARCO_HOW_ARVO_DOES = [
         "Planejamento sucessório com uso de previdência VGBL fora de inventário",
         "Alinhamento do regime de bens, pacto antenupcial e meação familiar",
         "Estruturação de governança familiar e checklist de continuidade patrimonial"
-    ],
-    [
-        "Avaliação das 4 dimensões oficiais de perfil da CVM e ANBIMA",
-        "Calibração de tolerância a oscilações e drawdown aceito",
-        "Definição do modelo oficial de alocação (Abrigo, Ritmo, Visão ou Oceano)",
-        "Parâmetros objetivos de rebalanceamento e bandas de risco"
     ]
 ]
 
@@ -475,17 +469,6 @@ function validateStepFields(
             missingFields.push("gastos")
         }
 
-        return { isValid: missingFields.length === 0, errors, missingFields }
-    }
-
-    if (stepIndex === 6) {
-        // Suitability Step
-        SUITABILITY_QUESTIONS.forEach(q => {
-            if (!formData[q.name] || formData[q.name].trim() === "") {
-                errors[q.name] = "Selecione uma alternativa para esta pergunta."
-                missingFields.push(q.name)
-            }
-        })
         return { isValid: missingFields.length === 0, errors, missingFields }
     }
 
@@ -548,6 +531,10 @@ function validateStepFields(
     }
 }
 
+function isSuitabilityCompletedCheck(formData: Record<string, string>): boolean {
+    return SUITABILITY_QUESTIONS.every(q => Boolean(formData[q.name]?.trim()))
+}
+
 function computeStepStatus(
     stepIndex: number,
     formData: Record<string, string>,
@@ -563,17 +550,10 @@ function computeStepStatus(
         const parseDigits = (v?: string) => parseInt((v || "").replace(/\D/g, "") || "0", 10)
         const hasAny = parseDigits(formData.salarioLiquido) > 0 || 
             parseDigits(formData.rendaClt) > 0 || 
-            parseDigits(formData.rendaProLabore) > 0 ||
+            parseDigits(formData.rendaProLabore) > 0 || 
             Boolean(formData.tipoVinculo?.trim()) ||
             Object.keys(formData).some(k => k.startsWith("gasto_") && parseDigits(formData[k]) > 0)
         if (hasAny) return "in_progress"
-        return "not_started"
-    }
-
-    if (stepIndex === 6) {
-        const answeredCount = SUITABILITY_QUESTIONS.filter(q => Boolean(formData[q.name]?.trim())).length
-        if (answeredCount === SUITABILITY_QUESTIONS.length) return "completed"
-        if (answeredCount > 0) return "in_progress"
         return "not_started"
     }
 
@@ -607,6 +587,7 @@ export default function PlanejamentoJornadaPage() {
     const [isHydrated, setIsHydrated] = useState(false)
     const [quizQuestionIndex, setQuizQuestionIndex] = useState(0)
     const [showQuizResult, setShowQuizResult] = useState(false)
+    const [isSuitabilityOpen, setIsSuitabilityOpen] = useState(false)
     
     // Validation & Error States
     const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
@@ -905,7 +886,11 @@ export default function PlanejamentoJornadaPage() {
         return getSuitabilityDiagnostic(formData)
     }, [formData])
 
-    // Suitability Option Selection (Step 7)
+    const isSuitabilityCompleted = useMemo(() => {
+        return isSuitabilityCompletedCheck(formData)
+    }, [formData])
+
+    // Suitability Option Selection
     const handleSelectQuizOption = (questionName: string, optionText: string) => {
         const nextData = { ...formData, [questionName]: optionText }
         setFormData(nextData)
@@ -948,6 +933,7 @@ export default function PlanejamentoJornadaPage() {
     const handleStepJump = (idx: number) => {
         // Clear previous step error highlights on switch
         setFieldErrors({})
+        setIsSuitabilityOpen(false)
         setCurrent(idx)
         window.scrollTo({ top: 0, behavior: "smooth" })
     }
@@ -1012,89 +998,86 @@ export default function PlanejamentoJornadaPage() {
                         </div>
 
                         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-light tracking-tight text-dash-text leading-snug">
-                            Diagnóstico em <span className="font-semibold text-dash-text">7 Marcos Estratégicos</span>
+                            Diagnóstico em <span className="font-semibold text-dash-text">6 Marcos Estratégicos</span>
                         </h1>
                         <p className="text-dash-text-light text-sm sm:text-base mt-2 leading-relaxed">
-                            Organizamos suas finanças com dados reais para identificar vulnerabilidades, projetar sua independência e calibrar sua Bússola de Investimentos.
+                            Organizamos suas finanças com dados reais para identificar vulnerabilidades, projetar sua independência e estruturar o seu patrimônio.
                         </p>
                     </div>
 
-                    {/* Consolidated Progress Pill */}
-                    <div className="flex items-center gap-3 bg-white border border-dash-border rounded-2xl px-4 py-3 shadow-xs shrink-0 self-start md:self-auto">
-                        <div className="w-10 h-10 rounded-xl bg-dash-accent-light text-dash-accent flex items-center justify-center font-extrabold text-sm tabular-nums">
-                            {globalProgressPct}%
-                        </div>
-                        <div>
-                            <div className="text-[10px] font-bold text-dash-text-light uppercase tracking-wider">
-                                Progresso da Rota
+                    <div className="flex items-center gap-3 shrink-0 self-start md:self-auto flex-wrap">
+                        {/* Suitability Trigger Button */}
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setIsSuitabilityOpen(true)
+                                document.getElementById("form-section")?.scrollIntoView({ behavior: "smooth" })
+                            }}
+                            className={`flex items-center gap-2.5 px-4 py-2.5 rounded-2xl border transition-all cursor-pointer shadow-xs ${
+                                isSuitabilityOpen
+                                    ? "bg-[#2B6E76] text-white border-[#2B6E76]"
+                                    : isSuitabilityCompleted
+                                        ? "bg-[#e8f1ed] text-[#1f674f] border-[#a3beae] hover:bg-[#d8e8df]"
+                                        : "bg-white text-[#123044] border-dash-border hover:bg-[#faf9f5]"
+                            }`}
+                        >
+                            <Compass size={18} className={isSuitabilityOpen ? "text-white" : isSuitabilityCompleted ? "text-[#1f674f]" : "text-[#2B6E76]"} />
+                            <div className="text-left">
+                                <div className="text-[10px] font-bold uppercase tracking-wider text-dash-text-light">
+                                    Perfil & Suitability
+                                </div>
+                                <div className="text-xs font-bold leading-tight">
+                                    {isSuitabilityCompleted ? suitabilityDiagnostic.label : "Preencher quando quiser"}
+                                </div>
                             </div>
-                            <div className="text-xs font-extrabold text-dash-text tabular-nums">
-                                {completedStepsCount} de {PLAN_DATA.length} marcos concluídos
+                            {isSuitabilityCompleted && (
+                                <Check size={13} className="text-[#1f674f] ml-0.5" strokeWidth={3} />
+                            )}
+                        </button>
+
+                        {/* Consolidated Progress Pill */}
+                        <div className="flex items-center gap-3 bg-white border border-dash-border rounded-2xl px-4 py-3 shadow-xs">
+                            <div className="w-10 h-10 rounded-xl bg-dash-accent-light text-dash-accent flex items-center justify-center font-extrabold text-sm tabular-nums">
+                                {globalProgressPct}%
+                            </div>
+                            <div>
+                                <div className="text-[10px] font-bold text-dash-text-light uppercase tracking-wider">
+                                    Progresso da Rota
+                                </div>
+                                <div className="text-xs font-extrabold text-dash-text tabular-nums">
+                                    {completedStepsCount} de {PLAN_DATA.length} marcos concluídos
+                                </div>
                             </div>
                         </div>
                     </div>
                 </header>
 
-                {/* ─── NAVEGAÇÃO DOS 7 MARCOS: PILL TABS + CIRCULAR WHEEL + EXECUTIVE CARD ─── */}
-                <section aria-label="Navegação dos 7 Marcos" className="space-y-6">
-                    {/* Top Pill Tabs */}
-                    <div className="flex flex-wrap items-center gap-2 justify-center lg:justify-start" role="tablist" aria-label="Marcos da Jornada">
-                        {PLAN_DATA.map((item, idx) => {
-                            const isCurrent = idx === current
-                            const status = stepStatuses[idx]
-                            const isCompleted = status === "completed"
-                            const color = MARCO_THEME_COLORS[idx]
-
-                            return (
-                                <button
-                                    key={idx}
-                                    type="button"
-                                    role="tab"
-                                    aria-selected={isCurrent}
-                                    onClick={() => handleStepJump(idx)}
-                                    className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs transition-all cursor-pointer border ${
-                                        isCurrent
-                                            ? "bg-[#123044] text-white border-[#123044] shadow-sm font-bold"
-                                            : "bg-white hover:bg-[#faf9f5] text-[#123044] border-[#e4dfd5] font-medium"
-                                    }`}
-                                >
-                                    <span
-                                        className="w-2.5 h-2.5 rounded-full shrink-0"
-                                        style={{ backgroundColor: isCurrent ? "#ffffff" : color }}
-                                    />
-                                    <span>{idx + 1}. {item.title.split("&")[0].trim()}</span>
-                                    {isCompleted && !isCurrent && (
-                                        <Check size={11} className="text-[#1F674F]" strokeWidth={3} />
-                                    )}
-                                </button>
-                            )
-                        })}
-                    </div>
-
-                    {/* Wheel + Executive Card Grid */}
+                {/* ─── NAVEGAÇÃO DOS 6 MARCOS: CIRCULAR WHEEL + PILL TABS + EXECUTIVE CARD ─── */}
+                <section aria-label="Navegação dos 6 Marcos">
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-                        {/* Circular Donut Wheel */}
+                        {/* Circular Donut Wheel (Left, lg:col-span-5) */}
                         <div className="lg:col-span-5 flex flex-col items-center justify-center p-2 sm:p-4">
                             <div className="relative w-[300px] h-[300px] sm:w-[320px] sm:h-[320px] flex items-center justify-center">
                                 <svg
                                     viewBox="0 0 320 320"
                                     className="w-full h-full drop-shadow-sm select-none"
                                     role="group"
-                                    aria-label="Os 7 marcos do planejamento financeiro ARVO"
+                                    aria-label="Os 6 pilares do planejamento financeiro ARVO"
                                 >
                                     {PLAN_DATA.map((item, idx) => {
-                                        const isSelected = idx === current
+                                        const isSelected = !isSuitabilityOpen && idx === current
                                         const color = MARCO_THEME_COLORS[idx]
 
-                                        // 7-sector geometry
-                                        const N = 7
+                                        // 6-sector geometry: delta = Math.PI / 3 = 60 degrees
+                                        const N = 6
                                         const delta = (2 * Math.PI) / N
                                         const gap = 0.024
                                         const startAngle = -Math.PI / 2 + idx * delta + gap
-                                        const endAngle = startAngle + delta - 2 * gap
+                                        const endAngle = -Math.PI / 2 + (idx + 1) * delta - gap
 
-                                        const R = isSelected ? 152 : 146
-                                        const r = isSelected ? 72 : 76
+                                        // Fixed radii for all 6 sectors (smooth, symmetrical donut)
+                                        const R = 148
+                                        const r = 76
 
                                         const x1 = 160 + R * Math.cos(startAngle)
                                         const y1 = 160 + R * Math.sin(startAngle)
@@ -1115,7 +1098,10 @@ export default function PlanejamentoJornadaPage() {
                                         return (
                                             <g
                                                 key={idx}
-                                                onClick={() => handleStepJump(idx)}
+                                                onClick={() => {
+                                                    setIsSuitabilityOpen(false)
+                                                    handleStepJump(idx)
+                                                }}
                                                 className="cursor-pointer group focus:outline-none"
                                                 tabIndex={0}
                                                 role="button"
@@ -1123,6 +1109,7 @@ export default function PlanejamentoJornadaPage() {
                                                 onKeyDown={(e) => {
                                                     if (e.key === "Enter" || e.key === " ") {
                                                         e.preventDefault()
+                                                        setIsSuitabilityOpen(false)
                                                         handleStepJump(idx)
                                                     }
                                                 }}
@@ -1131,11 +1118,11 @@ export default function PlanejamentoJornadaPage() {
                                                     d={pathD}
                                                     fill={color}
                                                     stroke="#ffffff"
-                                                    strokeWidth={isSelected ? 3 : 1.5}
+                                                    strokeWidth={isSelected ? 3.5 : 1.5}
                                                     opacity={isSelected ? 1 : 0.72}
                                                     className="transition-all duration-200 group-hover:opacity-100 group-hover:brightness-105"
                                                     style={{
-                                                        filter: isSelected ? "drop-shadow(0 4px 10px rgba(18, 48, 68, 0.25))" : undefined
+                                                        filter: isSelected ? "drop-shadow(0 4px 10px rgba(18, 48, 68, 0.28))" : undefined
                                                     }}
                                                 />
                                                 <text
@@ -1153,30 +1140,30 @@ export default function PlanejamentoJornadaPage() {
                                     })}
 
                                     {/* Donut center */}
-                                    <circle cx="160" cy="160" r="70" fill="#ffffff" />
+                                    <circle cx="160" cy="160" r="72" fill="#ffffff" stroke="#f0ece1" strokeWidth={1} />
                                     <text
                                         x="160"
-                                        y="144"
+                                        y="146"
                                         textAnchor="middle"
                                         className="text-[13px] font-medium fill-[#8A928E] select-none"
                                     >
-                                        sua
+                                        seu
                                     </text>
                                     <text
                                         x="160"
-                                        y="168"
+                                        y="170"
                                         textAnchor="middle"
-                                        className="text-[20px] font-serif font-bold fill-[#123044] select-none tracking-tight"
+                                        className="text-[21px] font-serif font-bold fill-[#123044] select-none tracking-tight"
                                     >
-                                        jornada
+                                        plano
                                     </text>
                                     <text
                                         x="160"
-                                        y="188"
+                                        y="190"
                                         textAnchor="middle"
                                         className="text-[11px] font-bold fill-[#1F674F] select-none tabular-nums"
                                     >
-                                        {completedStepsCount} de 7 concluídos
+                                        {completedStepsCount} de 6 concluídos
                                     </text>
                                 </svg>
                             </div>
@@ -1185,112 +1172,275 @@ export default function PlanejamentoJornadaPage() {
                             </div>
                         </div>
 
-                        {/* Executive Summary Card (Presentation Slide Style) */}
-                        <div className="lg:col-span-7">
-                            <div className="bg-white border border-[#e4dfd5] rounded-3xl p-6 sm:p-8 shadow-xs flex flex-col justify-between min-h-[380px]">
-                                <div>
-                                    {/* Header with pill tag */}
-                                    <div className="flex flex-wrap items-center justify-between gap-2 pb-4 mb-4 border-b border-[#f0ece1]">
-                                        <div className="flex items-center gap-2">
+                        {/* Right Column: Pill Tabs + Executive Card (lg:col-span-7) */}
+                        <div className="lg:col-span-7 flex flex-col justify-between">
+                            {/* Pill Tabs directly above the Executive Card */}
+                            <div className="flex flex-wrap items-center gap-2 mb-3" role="tablist" aria-label="Marcos da Jornada">
+                                {PLAN_DATA.map((item, idx) => {
+                                    const isCurrent = !isSuitabilityOpen && idx === current
+                                    const status = stepStatuses[idx]
+                                    const isCompleted = status === "completed"
+                                    const color = MARCO_THEME_COLORS[idx]
+
+                                    return (
+                                        <button
+                                            key={idx}
+                                            type="button"
+                                            role="tab"
+                                            aria-selected={isCurrent}
+                                            onClick={() => {
+                                                setIsSuitabilityOpen(false)
+                                                handleStepJump(idx)
+                                            }}
+                                            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs transition-all cursor-pointer border ${
+                                                isCurrent
+                                                    ? "bg-[#123044] text-white border-[#123044] shadow-sm font-bold"
+                                                    : "bg-white hover:bg-[#faf9f5] text-[#123044] border-[#e4dfd5] font-medium"
+                                            }`}
+                                        >
                                             <span
-                                                className="w-2.5 h-2.5 rounded-full"
-                                                style={{ backgroundColor: MARCO_THEME_COLORS[current] }}
+                                                className="w-2.5 h-2.5 rounded-full shrink-0"
+                                                style={{ backgroundColor: isCurrent ? "#ffffff" : color }}
                                             />
-                                            <span
-                                                className="text-xs font-bold uppercase tracking-wider"
-                                                style={{ color: MARCO_THEME_COLORS[current] }}
-                                            >
-                                                Marco {current + 1} de 7 · {currentStepData.title.split("&")[0].trim()}
-                                            </span>
-                                        </div>
-
-                                        <div className="flex items-center gap-2">
-                                            {stepStatuses[current] === "completed" ? (
-                                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                                    <Check size={12} strokeWidth={3} /> Preenchido
-                                                </span>
-                                            ) : (
-                                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#faf9f5] text-[#8A928E] border border-[#e4dfd5]">
-                                                    Pendente
-                                                </span>
+                                            <span>{idx + 1}. {item.title.split("&")[0].trim()}</span>
+                                            {isCompleted && !isCurrent && (
+                                                <Check size={11} className="text-[#1F674F]" strokeWidth={3} />
                                             )}
+                                        </button>
+                                    )
+                                })}
+
+                                {/* Dedicated Suitability Pill */}
+                                <button
+                                    type="button"
+                                    role="tab"
+                                    aria-selected={isSuitabilityOpen}
+                                    onClick={() => {
+                                        setIsSuitabilityOpen(true)
+                                        document.getElementById("form-section")?.scrollIntoView({ behavior: "smooth" })
+                                    }}
+                                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs transition-all cursor-pointer border ${
+                                        isSuitabilityOpen
+                                            ? "bg-[#2B6E76] text-white border-[#2B6E76] shadow-sm font-bold"
+                                            : isSuitabilityCompleted
+                                                ? "bg-[#e8f1ed] text-[#1F674F] border-[#a3beae] font-semibold"
+                                                : "bg-[#fbfaf5] text-[#2B6E76] border-[#cfd9d5] hover:bg-[#f0ece1] font-semibold"
+                                    }`}
+                                >
+                                    <Compass size={12} className={isSuitabilityOpen ? "text-white" : "text-[#2B6E76]"} />
+                                    <span>Suitability</span>
+                                    {isSuitabilityCompleted && (
+                                        <span className="text-[10px] font-bold px-1.5 py-0.2 bg-white/70 rounded-md">
+                                            {suitabilityDiagnostic.label}
+                                        </span>
+                                    )}
+                                </button>
+                            </div>
+
+                            {/* Executive Summary Card (Presentation Slide Style) */}
+                            <div className="bg-white border border-[#e4dfd5] rounded-3xl p-6 sm:p-8 shadow-xs flex flex-col justify-between min-h-[380px]">
+                                {isSuitabilityOpen ? (
+                                    <div>
+                                        {/* Header with pill tag */}
+                                        <div className="flex flex-wrap items-center justify-between gap-2 pb-4 mb-4 border-b border-[#f0ece1]">
+                                            <div className="flex items-center gap-2">
+                                                <span className="w-2.5 h-2.5 rounded-full bg-[#2B6E76]" />
+                                                <span className="text-xs font-bold uppercase tracking-wider text-[#2B6E76]">
+                                                    Diagnóstico Complementar · Perfil de Investidor CVM
+                                                </span>
+                                            </div>
+
+                                            <div className="flex items-center gap-2">
+                                                {isSuitabilityCompleted ? (
+                                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                                        <Check size={12} strokeWidth={3} /> {suitabilityDiagnostic.label}
+                                                    </span>
+                                                ) : (
+                                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#faf9f5] text-[#8A928E] border border-[#e4dfd5]">
+                                                        Opcional
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        {/* Title & Key Question */}
+                                        <h2 className="text-2xl sm:text-3xl font-serif text-[#123044] tracking-tight mb-2">
+                                            Suitability & Tolerância ao Risco
+                                        </h2>
+                                        <p className="text-sm italic text-[#2B6E76] font-serif mb-6 leading-relaxed">
+                                            "{SUITABILITY_INFO.question}"
+                                        </p>
+
+                                        {/* Two Columns: O QUE OLHAMOS vs COMO A ARVO FAZ */}
+                                        <div className="grid sm:grid-cols-2 gap-6 pt-1">
+                                            <div>
+                                                <h4 className="text-[11px] font-extrabold uppercase tracking-wider text-[#123044] mb-3">
+                                                    O que olhamos
+                                                </h4>
+                                                <ul className="space-y-2">
+                                                    {SUITABILITY_INFO.analysis.map((item, idx) => (
+                                                        <li key={idx} className="flex items-start gap-2 text-xs text-[#4A5568] leading-relaxed">
+                                                            <span className="text-[#123044] font-bold mt-0.5">•</span>
+                                                            <span>{item}</span>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+
+                                            <div>
+                                                <h4 className="text-[11px] font-extrabold uppercase tracking-wider text-[#1F674F] mb-3">
+                                                    Como a ARVO faz & entregáveis
+                                                </h4>
+                                                <ul className="space-y-2">
+                                                    {SUITABILITY_INFO.howArvoDoes.map((item, idx) => (
+                                                        <li key={idx} className="flex items-start gap-2 text-xs text-[#4A5568] leading-relaxed">
+                                                            <span className="text-[#1F674F] font-bold mt-0.5">•</span>
+                                                            <span>{item}</span>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
                                         </div>
                                     </div>
+                                ) : (
+                                    <div>
+                                        {/* Header with pill tag */}
+                                        <div className="flex flex-wrap items-center justify-between gap-2 pb-4 mb-4 border-b border-[#f0ece1]">
+                                            <div className="flex items-center gap-2">
+                                                <span
+                                                    className="w-2.5 h-2.5 rounded-full"
+                                                    style={{ backgroundColor: MARCO_THEME_COLORS[current] }}
+                                                />
+                                                <span
+                                                    className="text-xs font-bold uppercase tracking-wider"
+                                                    style={{ color: MARCO_THEME_COLORS[current] }}
+                                                >
+                                                    Marco {current + 1} de 6 · {currentStepData.title.split("&")[0].trim()}
+                                                </span>
+                                            </div>
 
-                                    {/* Title & Key Question */}
-                                    <h2 className="text-2xl sm:text-3xl font-serif text-[#123044] tracking-tight mb-2">
-                                        {currentStepData.title}
-                                    </h2>
-                                    <p className="text-sm italic text-[#2B6E76] font-serif mb-6 leading-relaxed">
-                                        "{MARCO_QUESTIONS[current]}"
-                                    </p>
-
-                                    {/* Two Columns: O QUE OLHAMOS vs COMO A ARVO FAZ */}
-                                    <div className="grid sm:grid-cols-2 gap-6 pt-1">
-                                        <div>
-                                            <h4 className="text-[11px] font-extrabold uppercase tracking-wider text-[#123044] mb-3">
-                                                O que olhamos
-                                            </h4>
-                                            <ul className="space-y-2">
-                                                {currentStepData.analysis.map((item, idx) => (
-                                                    <li key={idx} className="flex items-start gap-2 text-xs text-[#4A5568] leading-relaxed">
-                                                        <span className="text-[#123044] font-bold mt-0.5">•</span>
-                                                        <span>{item}</span>
-                                                    </li>
-                                                ))}
-                                            </ul>
+                                            <div className="flex items-center gap-2">
+                                                {stepStatuses[current] === "completed" ? (
+                                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                                        <Check size={12} strokeWidth={3} /> Preenchido
+                                                    </span>
+                                                ) : (
+                                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#faf9f5] text-[#8A928E] border border-[#e4dfd5]">
+                                                        Pendente
+                                                    </span>
+                                                )}
+                                            </div>
                                         </div>
 
-                                        <div>
-                                            <h4 className="text-[11px] font-extrabold uppercase tracking-wider text-[#1F674F] mb-3">
-                                                Como a ARVO faz & entregáveis
-                                            </h4>
-                                            <ul className="space-y-2">
-                                                {MARCO_HOW_ARVO_DOES[current].map((item, idx) => (
-                                                    <li key={idx} className="flex items-start gap-2 text-xs text-[#4A5568] leading-relaxed">
-                                                        <span className="text-[#1F674F] font-bold mt-0.5">•</span>
-                                                        <span>{item}</span>
-                                                    </li>
-                                                ))}
-                                            </ul>
+                                        {/* Title & Key Question */}
+                                        <h2 className="text-2xl sm:text-3xl font-serif text-[#123044] tracking-tight mb-2">
+                                            {currentStepData.title}
+                                        </h2>
+                                        <p className="text-sm italic text-[#2B6E76] font-serif mb-6 leading-relaxed">
+                                            "{MARCO_QUESTIONS[current]}"
+                                        </p>
+
+                                        {/* Two Columns: O QUE OLHAMOS vs COMO A ARVO FAZ */}
+                                        <div className="grid sm:grid-cols-2 gap-6 pt-1">
+                                            <div>
+                                                <h4 className="text-[11px] font-extrabold uppercase tracking-wider text-[#123044] mb-3">
+                                                    O que olhamos
+                                                </h4>
+                                                <ul className="space-y-2">
+                                                    {currentStepData.analysis.map((item, idx) => (
+                                                        <li key={idx} className="flex items-start gap-2 text-xs text-[#4A5568] leading-relaxed">
+                                                            <span className="text-[#123044] font-bold mt-0.5">•</span>
+                                                            <span>{item}</span>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+
+                                            <div>
+                                                <h4 className="text-[11px] font-extrabold uppercase tracking-wider text-[#1F674F] mb-3">
+                                                    Como a ARVO faz & entregáveis
+                                                </h4>
+                                                <ul className="space-y-2">
+                                                    {MARCO_HOW_ARVO_DOES[current].map((item, idx) => (
+                                                        <li key={idx} className="flex items-start gap-2 text-xs text-[#4A5568] leading-relaxed">
+                                                            <span className="text-[#1F674F] font-bold mt-0.5">•</span>
+                                                            <span>{item}</span>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                )}
 
                                 {/* Action Bar */}
                                 <div className="mt-8 pt-5 border-t border-[#f0ece1] flex flex-col sm:flex-row items-center justify-between gap-3">
-                                    <a
-                                        href="#form-section"
-                                        onClick={(e) => {
-                                            e.preventDefault()
-                                            document.getElementById("form-section")?.scrollIntoView({ behavior: "smooth" })
-                                        }}
-                                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[#123044] hover:bg-[#1e4866] text-white text-xs font-bold rounded-xl transition-all shadow-xs cursor-pointer"
-                                    >
-                                        <span>Preencher dados deste Marco</span>
-                                        <ArrowRight size={14} />
-                                    </a>
+                                    {isSuitabilityOpen ? (
+                                        <>
+                                            <a
+                                                href="#form-section"
+                                                onClick={(e) => {
+                                                    e.preventDefault()
+                                                    document.getElementById("form-section")?.scrollIntoView({ behavior: "smooth" })
+                                                }}
+                                                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[#2B6E76] hover:bg-[#23585e] text-white text-xs font-bold rounded-xl transition-all shadow-xs cursor-pointer"
+                                            >
+                                                <span>Responder Perguntas de Suitability</span>
+                                                <ArrowRight size={14} />
+                                            </a>
 
-                                    <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
-                                        {current > 0 && (
                                             <button
                                                 type="button"
-                                                onClick={() => handleStepJump(current - 1)}
+                                                onClick={() => setIsSuitabilityOpen(false)}
                                                 className="px-3 py-2 text-xs font-semibold text-[#667085] hover:text-[#123044] transition-colors cursor-pointer"
                                             >
-                                                ← Anterior
+                                                ← Voltar para Marco {current + 1}
                                             </button>
-                                        )}
-                                        {current < 6 && (
-                                            <button
-                                                type="button"
-                                                onClick={() => handleStepJump(current + 1)}
-                                                className="px-3 py-2 text-xs font-semibold text-[#1F674F] hover:text-[#123044] transition-colors cursor-pointer"
+                                        </>
+                                    ) : (
+                                        <>
+                                            <a
+                                                href="#form-section"
+                                                onClick={(e) => {
+                                                    e.preventDefault()
+                                                    document.getElementById("form-section")?.scrollIntoView({ behavior: "smooth" })
+                                                }}
+                                                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[#123044] hover:bg-[#1e4866] text-white text-xs font-bold rounded-xl transition-all shadow-xs cursor-pointer"
                                             >
-                                                Próximo Marco →
-                                            </button>
-                                        )}
-                                    </div>
+                                                <span>Preencher dados deste Marco</span>
+                                                <ArrowRight size={14} />
+                                            </a>
+
+                                            <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+                                                {current > 0 && (
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => handleStepJump(current - 1)}
+                                                        className="px-3 py-2 text-xs font-semibold text-[#667085] hover:text-[#123044] transition-colors cursor-pointer"
+                                                    >
+                                                        ← Anterior
+                                                    </button>
+                                                )}
+                                                {current < 5 ? (
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => handleStepJump(current + 1)}
+                                                        className="px-3 py-2 text-xs font-semibold text-[#1F674F] hover:text-[#123044] transition-colors cursor-pointer"
+                                                    >
+                                                        Próximo Marco →
+                                                    </button>
+                                                ) : (
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setShowDashboard(true)}
+                                                        className="px-3 py-2 text-xs font-bold text-[#1F674F] hover:text-[#123044] transition-colors cursor-pointer"
+                                                    >
+                                                        Ver Meu Plano ARVO →
+                                                    </button>
+                                                )}
+                                            </div>
+                                        </>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -1310,21 +1460,45 @@ export default function PlanejamentoJornadaPage() {
                             className="flex-1 flex flex-col"
                         >
                             {/* Step Header */}
-                            <div className="pb-5 border-b border-[#e4e0d7] mb-6">
-                                <div className="text-xs font-bold text-[#1f674f] uppercase tracking-wider mb-1 flex items-center gap-2">
-                                    {currentStepData.icon}
-                                    <span>{currentStepData.status}</span>
+                            {isSuitabilityOpen ? (
+                                <div className="pb-5 border-b border-[#e4e0d7] mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                    <div>
+                                        <div className="text-xs font-bold text-[#2B6E76] uppercase tracking-wider mb-1 flex items-center gap-2">
+                                            <Compass size={18} className="text-[#2B6E76]" />
+                                            <span>Diagnóstico Complementar · Perfil de Investidor CVM</span>
+                                        </div>
+                                        <h2 className="text-2xl sm:text-3xl font-light tracking-tight text-[#123044]">
+                                            Suitability & Tolerância ao Risco
+                                        </h2>
+                                        <p className="text-sm text-[#667085] mt-1.5 max-w-2xl leading-relaxed">
+                                            Avaliação técnica das 4 dimensões de suitability da CVM e ANBIMA para calibrar sua tolerância a risco e definir sua carteira ideal na Bússola ARVO.
+                                        </p>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={() => setIsSuitabilityOpen(false)}
+                                        className="self-start sm:self-auto inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-[#123044] bg-[#f0ece1] hover:bg-[#e4dfd5] rounded-xl transition-colors cursor-pointer shrink-0"
+                                    >
+                                        <ArrowLeft size={14} /> Voltar para os 6 Passos
+                                    </button>
                                 </div>
-                                <h2 className="text-2xl sm:text-3xl font-light tracking-tight text-[#123044]">
-                                    {currentStepData.title}
-                                </h2>
-                                <p className="text-sm text-[#667085] mt-1.5 max-w-2xl leading-relaxed">
-                                    {currentStepData.desc}
-                                </p>
-                            </div>
+                            ) : (
+                                <div className="pb-5 border-b border-[#e4e0d7] mb-6">
+                                    <div className="text-xs font-bold text-[#1f674f] uppercase tracking-wider mb-1 flex items-center gap-2">
+                                        {currentStepData.icon}
+                                        <span>{currentStepData.status}</span>
+                                    </div>
+                                    <h2 className="text-2xl sm:text-3xl font-light tracking-tight text-[#123044]">
+                                        {currentStepData.title}
+                                    </h2>
+                                    <p className="text-sm text-[#667085] mt-1.5 max-w-2xl leading-relaxed">
+                                        {currentStepData.desc}
+                                    </p>
+                                </div>
+                            )}
 
                             {/* Global Step Validation Banner (if attempted with errors) */}
-                            {Object.keys(fieldErrors).length > 0 && (
+                            {Object.keys(fieldErrors).length > 0 && !isSuitabilityOpen && (
                                 <div className="mb-6 p-4 rounded-2xl bg-red-50 border border-red-200 text-red-900 flex items-start gap-3">
                                     <AlertCircle size={18} className="text-red-600 shrink-0 mt-0.5" />
                                     <div className="text-xs leading-relaxed">
@@ -1334,8 +1508,8 @@ export default function PlanejamentoJornadaPage() {
                                 </div>
                             )}
 
-                            {/* ─── ETAPA 7: SUITABILITY & TOLERÂNCIA AO RISCO ───────────────── */}
-                            {current === 6 ? (
+                            {/* ─── AVALIAÇÃO DE SUITABILITY (QUANDO ATIVADO) OU MARCOS DA ROTA ─── */}
+                            {isSuitabilityOpen ? (
                                 <div className="my-2 flex-1 flex flex-col">
                                     {!showQuizResult ? (
                                         <div className="bg-[#fbfaf5] border border-[#e4e0d7] rounded-2xl p-5 sm:p-7 flex-1 flex flex-col justify-between">
@@ -1541,14 +1715,23 @@ export default function PlanejamentoJornadaPage() {
                                                     <RotateCcw size={13} /> Revisar Perguntas
                                                 </button>
 
-                                                <button
-                                                    type="button"
-                                                    onClick={goNext}
-                                                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-[#123044] hover:bg-[#1e4866] text-white text-xs font-bold uppercase tracking-wider rounded-xl shadow-md transition-all cursor-pointer"
-                                                >
-                                                    Concluir Jornada & Ver Meu Plano ARVO
-                                                    <ArrowRightCircle size={18} />
-                                                </button>
+                                                <div className="flex flex-col sm:flex-row items-center gap-2.5">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setIsSuitabilityOpen(false)}
+                                                        className="w-full sm:w-auto px-4 py-2.5 text-xs font-bold text-[#123044] bg-[#f0ece1] hover:bg-[#e4dfd5] rounded-xl transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                                                    >
+                                                        <ArrowLeft size={13} /> Voltar para os 6 Passos
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setShowDashboard(true)}
+                                                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-[#123044] hover:bg-[#1e4866] text-white text-xs font-bold uppercase tracking-wider rounded-xl shadow-md transition-all cursor-pointer"
+                                                    >
+                                                        Ver Meu Plano ARVO
+                                                        <ArrowRightCircle size={18} />
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     )}
@@ -1764,25 +1947,70 @@ export default function PlanejamentoJornadaPage() {
                     </AnimatePresence>
 
                     {/* ─── BOTTOM NAVIGATION BUTTONS ────────────────────────────────── */}
-                    {current < 6 && (
+                    {isSuitabilityOpen ? (
                         <div className="flex items-center justify-between mt-auto pt-8 border-t border-[#e4e0d7]">
                             <button
                                 type="button"
-                                onClick={() => handleStepJump(Math.max(0, current - 1))}
-                                disabled={current === 0}
-                                className="px-4 py-2.5 text-xs font-bold text-[#667085] hover:text-[#123044] disabled:opacity-20 disabled:pointer-events-none transition-colors cursor-pointer"
+                                onClick={() => setIsSuitabilityOpen(false)}
+                                className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold text-[#667085] hover:text-[#123044] transition-colors cursor-pointer"
                             >
-                                Voltar para Marco {current}
+                                <ArrowLeft size={14} /> Voltar para Marco {current + 1}
                             </button>
 
                             <button
                                 type="button"
-                                onClick={goNext}
+                                onClick={() => setShowDashboard(true)}
                                 className="inline-flex items-center gap-2 px-7 py-3 bg-[#123044] hover:bg-[#1e4866] text-white text-xs font-bold uppercase tracking-wider rounded-xl shadow-md transition-all cursor-pointer"
                             >
-                                Avançar para Marco {current + 2}
+                                Ver Meu Plano ARVO
                                 <ArrowRight size={16} />
                             </button>
+                        </div>
+                    ) : (
+                        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-auto pt-8 border-t border-[#e4e0d7]">
+                            <button
+                                type="button"
+                                onClick={() => handleStepJump(Math.max(0, current - 1))}
+                                disabled={current === 0}
+                                className="w-full sm:w-auto px-4 py-2.5 text-xs font-bold text-[#667085] hover:text-[#123044] disabled:opacity-20 disabled:pointer-events-none transition-colors cursor-pointer"
+                            >
+                                Voltar para Marco {current}
+                            </button>
+
+                            <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto justify-end">
+                                {current === 5 ? (
+                                    <>
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setIsSuitabilityOpen(true)
+                                                window.scrollTo({ top: 0, behavior: "smooth" })
+                                            }}
+                                            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 bg-[#eef4f1] hover:bg-[#dce9e3] text-[#1f674f] text-xs font-bold rounded-xl transition-all cursor-pointer border border-[#1f674f]/20"
+                                        >
+                                            <Compass size={15} />
+                                            Preencher Suitability (Opcional)
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={goNext}
+                                            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3 bg-[#123044] hover:bg-[#1e4866] text-white text-xs font-bold uppercase tracking-wider rounded-xl shadow-md transition-all cursor-pointer"
+                                        >
+                                            Concluir Rota & Ver Plano ARVO
+                                            <ArrowRight size={16} />
+                                        </button>
+                                    </>
+                                ) : (
+                                    <button
+                                        type="button"
+                                        onClick={goNext}
+                                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3 bg-[#123044] hover:bg-[#1e4866] text-white text-xs font-bold uppercase tracking-wider rounded-xl shadow-md transition-all cursor-pointer"
+                                    >
+                                        Avançar para Marco {current + 2}
+                                        <ArrowRight size={16} />
+                                    </button>
+                                )}
+                            </div>
                         </div>
                     )}
                 </main>
